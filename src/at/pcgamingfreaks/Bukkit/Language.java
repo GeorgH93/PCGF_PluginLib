@@ -114,6 +114,7 @@ public class Language
 				if(LANG_VERSION > lang.getInt("Version"))
 				{
 					doUpdate(lang.getInt("Version"));
+					lang.set("Version", LANG_VERSION);
 				}
 				else
 				{
@@ -123,7 +124,6 @@ public class Language
 					}
 					return false;
 				}
-				lang.set("Version", LANG_VERSION);
 				try
 				{
 					lang.save(file);

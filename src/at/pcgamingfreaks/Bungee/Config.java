@@ -1,66 +1,69 @@
 /*
-* Copyright (C) 2014-2015 GeorgH93
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ *   Copyright (C) 2014-2015 GeorgH93
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
-package at.pcgamingfreaks.Bukkit;
+package at.pcgamingfreaks.Bungee;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
-
+import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
+
+import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
 public class Config
 {
-	protected JavaPlugin plugin;
-	protected FileConfiguration config;
+	protected Plugin plugin;
+	protected Configuration config;
 	
+	private ConfigurationProvider configprovider;
 	private String CONFIG_PATH = "config.yml";
-	private int CONFIG_VERSION = 0, UPGRADE_THRESHOLD = -1;
+	private int CONFIG_VERSION = 1, UPGRADE_THRESHOLD = -1;
 	
-	public Config(JavaPlugin pl, int version)
+	public Config(Plugin pl, int version)
 	{
 		plugin = pl;
 		CONFIG_VERSION = version;
+		configprovider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 		loadConfig();
 	}
 	
-	public Config(JavaPlugin pl, int version, String path)
+	public Config(Plugin pl, int version, String path)
 	{
 		this(pl, version);
 		CONFIG_PATH = path;
 	}
 	
-	public Config(JavaPlugin pl, int version, int upgradeThreshold)
+	public Config(Plugin pl, int version, int upgradeThreshold)
 	{
 		this(pl, version);
 		UPGRADE_THRESHOLD = upgradeThreshold;
 	}
 	
-	public Config(JavaPlugin pl, int version, int upgradeThreshold, String path)
+	public Config(Plugin pl, int version, int upgradeThreshold, String path)
 	{
 		this(pl, version, path);
 		UPGRADE_THRESHOLD = upgradeThreshold;
-	}
-	
-	public boolean isLoaded()
-	{
-		return config != null;
 	}
 	
 	public void reload()
@@ -68,29 +71,32 @@ public class Config
 		loadConfig();
 	}
 	
+	public boolean isLoaded()
+	{
+		return config != null;
+	}
+	
 	protected void doUpgrade(int oldVersion, Config oldConfig) {}
 	
 	protected void doUpdate(int currentVersion) {}
 	
-	private boolean loadConfig()
+	private void loadConfig()
 	{
 		File file = new File(plugin.getDataFolder(), CONFIG_PATH);
 		if(!file.exists())
 		{
-			plugin.getLogger().info("No config found. Create new one ...");
 			newConfig(file);
 		}
 		try
 		{
-			config = YamlConfiguration.loadConfiguration(file);
-			updateConfig(file);
+			config = configprovider.load(file);
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			config = null;
 		}
-		return config != null;
+		updateConfig(file);
 	}
 	
 	private void newConfig(File file)
@@ -101,10 +107,14 @@ public class Config
 			{
 				plugin.getDataFolder().mkdir();
 	        }
-			plugin.saveResource(CONFIG_PATH, true);
+            file.createNewFile();
+            try (InputStream is = plugin.getResourceAsStream("bungee_" + CONFIG_PATH); OutputStream os = new FileOutputStream(file))
+            {
+                ByteStreams.copy(is, os);
+            }
             plugin.getLogger().info("Config extracted successfully!");
         }
-		catch (Exception e)
+		catch (IOException e)
 		{
             e.printStackTrace();
         }
@@ -134,24 +144,16 @@ public class Config
 			}
 			return false;
 		}
-		try 
+		try
 		{
-			if(config != null)
-			{
-				config.save(file);
-				plugin.getLogger().warning("Config has been updated.");
-			}
-			else
-			{
-				return false;
-			}
+			configprovider.save(config, file);
+			plugin.getLogger().info("Config File has been updated.");
 		}
-  	  	catch (Exception e) 
-  	  	{
-  	  		e.printStackTrace();
-  	  		config = null;
-  	  		return false;
-  	  	}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 	
@@ -177,7 +179,7 @@ public class Config
 	}
 	
 	// General getter
-	public FileConfiguration getConfig()
+	public Configuration getConfig()
 	{
 		return config;
 	}
