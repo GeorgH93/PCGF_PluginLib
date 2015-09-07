@@ -99,42 +99,35 @@ public class Language
 	
 	private boolean updateLangFile(File file)
 	{
-		plugin.getLogger().info("Language Version: " + lang.getInt("Version") + " => " + ((lang.getInt("Version") == LANG_VERSION) ? "no updated needed" : "update needed"));
-		if(lang.getInt("Version") != LANG_VERSION)
+		if(lang.getInt("Version") < LANG_VERSION)
 		{
+			plugin.getLogger().info("Language version: " + lang.getInt("Version") + " => Language outdated! Updating ...");
 			if(updateMode.equalsIgnoreCase("overwrite"))
 			{
 				extractLangFile(file);
 				loadFile();
-				plugin.getLogger().info(get("Console.LangUpdated"));
+				plugin.getLogger().info(get("Language file has been updated."));
 				return true;
 			}
 			else
 			{
-				if(LANG_VERSION > lang.getInt("Version"))
-				{
-					doUpdate(lang.getInt("Version"));
-					lang.set("Version", LANG_VERSION);
-				}
-				else
-				{
-					if(LANG_VERSION < lang.getInt("Version"))
-					{
-						plugin.getLogger().warning("Language File Version newer than expected!");
-					}
-					return false;
-				}
+				doUpdate(lang.getInt("Version"));
+				lang.set("Version", LANG_VERSION);
 				try
 				{
 					lang.save(file);
-					plugin.getLogger().info(get("Console.LangUpdated"));
+					plugin.getLogger().info(get("Language file has been updated."));
+					return true;
 				}
 		  	  	catch (Exception e) 
 		  	  	{
 		  	  		e.printStackTrace();
 		  	  	}
-				return true;
 			}
+		}
+		if(LANG_VERSION < lang.getInt("Version"))
+		{
+			plugin.getLogger().warning("Language file version newer than expected!");
 		}
 		return false;
 	}

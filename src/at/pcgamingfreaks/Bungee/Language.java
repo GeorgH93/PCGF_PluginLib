@@ -117,7 +117,7 @@ public class Language
                     ByteStreams.copy(is, os);
                 }
             }
-            plugin.getLogger().info("Lang extracted successfully!");
+            plugin.getLogger().info("Language file extracted successfully!");
         }
 		catch (IOException e)
 		{
@@ -127,40 +127,36 @@ public class Language
 	
 	private boolean updateLangFile(File file)
 	{
-		if(updateMode.equalsIgnoreCase("overwrite") && lang.getInt("Version") < LANG_VERSION)
+		if(lang.getInt("Version") < LANG_VERSION)
 		{
-			extractLangFile(file);
-			loadLang();
-			plugin.getLogger().info(getString("Console.LangUpdated"));
-			return true;
-		}
-		else
-		{
-			if(LANG_VERSION > lang.getInt("Version"))
+			if(updateMode.equalsIgnoreCase("overwrite"))
 			{
-				doUpdate(lang.getInt("Version"));
-				lang.set("Version", LANG_VERSION);
+				extractLangFile(file);
+				loadLang();
+				plugin.getLogger().info(getString("Language file has been updated."));
 			}
 			else
 			{
-				if(LANG_VERSION < lang.getInt("Version"))
+				doUpdate(lang.getInt("Version"));
+				lang.set("Version", LANG_VERSION);
+				try
 				{
-					plugin.getLogger().warning("Language File Version newer than expected!");
+					langprovider.save(lang, file);
+					plugin.getLogger().info("Language file has been updated.");
 				}
-				return false;
+				catch(IOException e)
+				{
+					e.printStackTrace();
+					return false;
+				}
 			}
-			try
-			{
-				langprovider.save(lang, file);
-				plugin.getLogger().info("Config File has been updated.");
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-				return false;
-			}
+			return true;
 		}
-		return true;
+		if(LANG_VERSION < lang.getInt("Version"))
+		{
+			plugin.getLogger().warning("Language file version newer than expected!");
+		}
+		return false;
 	}
 	
 	protected void doUpdate(int currentVersion) {}
