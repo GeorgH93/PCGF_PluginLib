@@ -23,53 +23,88 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.google.common.io.Files;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-public class Config
+public class Configuration
 {
 	protected JavaPlugin plugin;
 	protected FileConfiguration config;
 	
 	private String CONFIG_PATH = "config.yml";
 	private int CONFIG_VERSION = 0, UPGRADE_THRESHOLD = -1;
-	
-	public Config(JavaPlugin pl, int version)
+
+	/**
+	 * @param plugin the instance of the plugin
+	 * @param version current version of the config
+	 */
+	public Configuration(JavaPlugin plugin, int version)
 	{
-		plugin = pl;
+		this.plugin = plugin;
 		CONFIG_VERSION = version;
 		loadConfig();
 	}
-	
-	public Config(JavaPlugin pl, int version, String path)
+
+	/**
+	 * @param plugin the instance of the plugin
+	 * @param version current version of the config
+	 * @param path the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 */
+	public Configuration(JavaPlugin plugin, int version, String path)
 	{
-		this(pl, version);
+		this(plugin, version);
 		CONFIG_PATH = path;
 	}
-	
-	public Config(JavaPlugin pl, int version, int upgradeThreshold)
+
+	/**
+	 * @param plugin the instance of the plugin
+	 * @param version current version of the config
+	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
+	 */
+	public Configuration(JavaPlugin plugin, int version, int upgradeThreshold)
 	{
-		this(pl, version);
+		this(plugin, version);
 		UPGRADE_THRESHOLD = upgradeThreshold;
 	}
-	
-	public Config(JavaPlugin pl, int version, int upgradeThreshold, String path)
+
+	/**
+	 * @param plugin the instance of the plugin
+	 * @param version current version of the config
+	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
+	 * @param path the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 */
+	public Configuration(JavaPlugin plugin, int version, int upgradeThreshold, String path)
 	{
-		this(pl, version, path);
+		this(plugin, version, path);
 		UPGRADE_THRESHOLD = upgradeThreshold;
 	}
-	
+
+	/**
+	 * @return true if the config is loaded, false if not
+	 */
 	public boolean isLoaded()
 	{
 		return config != null;
 	}
-	
+
+	/**
+	 * Reloads the config file
+	 */
 	public void reload()
 	{
 		loadConfig();
 	}
-	
-	protected void doUpgrade(int oldVersion, Config oldConfig) {}
-	
+
+	/**
+	 * Allows inheriting classes to implement code for the config upgrade
+	 * @param oldVersion the old version of the config
+	 * @param oldConfiguration the old config file
+	 */
+	protected void doUpgrade(int oldVersion, Configuration oldConfiguration) {}
+
+	/**
+	 * Allows inheriting classes to implement code for the config update
+	 * @param currentVersion the old version of the config
+	 */
 	protected void doUpdate(int currentVersion) {}
 	
 	private boolean loadConfig()
@@ -78,7 +113,7 @@ public class Config
 		if(!file.exists())
 		{
 			plugin.getLogger().info("No config found. Create new one ...");
-			newConfig(file);
+			newConfig();
 		}
 		try
 		{
@@ -93,7 +128,7 @@ public class Config
 		return config != null;
 	}
 	
-	private void newConfig(File file)
+	private void newConfig()
 	{
 		try
 		{
@@ -102,7 +137,7 @@ public class Config
 				plugin.getDataFolder().mkdir();
 	        }
 			plugin.saveResource(CONFIG_PATH, true);
-            plugin.getLogger().info("Config extracted successfully!");
+            plugin.getLogger().info("Configuration extracted successfully!");
         }
 		catch (Exception e)
 		{
@@ -116,43 +151,39 @@ public class Config
 		{
 			if(UPGRADE_THRESHOLD > 0 && config.getInt("Version") < UPGRADE_THRESHOLD)
 			{
-				plugin.getLogger().info("Config Version: " + config.getInt("Version") + " => Config outdated! Upgrading ...");
+				plugin.getLogger().info("Configuration Version: " + config.getInt("Version") + " => Configuration outdated! Upgrading ...");
 				upgradeConfig(file);
 			}
 			else
 			{
-				plugin.getLogger().info("Config Version: " + config.getInt("Version") + " => Config outdated! Updating ...");
+				plugin.getLogger().info("Configuration Version: " + config.getInt("Version") + " => Configuration outdated! Updating ...");
 				doUpdate(config.getInt("Version"));
 				config.set("Version", CONFIG_VERSION);
 			}
+			try
+			{
+				if(config != null)
+				{
+					config.save(file);
+					plugin.getLogger().warning("Configuration has been updated.");
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				config = null;
+			}
 		}
-		else
+		if(CONFIG_VERSION < config.getInt("Version"))
 		{
-			if(CONFIG_VERSION < config.getInt("Version"))
-			{
-				plugin.getLogger().info("Config File Version newer than expected!");
-			}
-			return false;
+			plugin.getLogger().info("Configuration File Version newer than expected!");
 		}
-		try 
-		{
-			if(config != null)
-			{
-				config.save(file);
-				plugin.getLogger().warning("Config has been updated.");
-			}
-			else
-			{
-				return false;
-			}
-		}
-  	  	catch (Exception e) 
-  	  	{
-  	  		e.printStackTrace();
-  	  		config = null;
-  	  		return false;
-  	  	}
-		return true;
+		return false;
 	}
 	
 	private void upgradeConfig(File file)
@@ -165,9 +196,9 @@ public class Config
 			{
 				oldConfig.delete();
 			}
-			Files.move(file, oldConfig);
+			file.renameTo(oldConfig);
 			loadConfig();
-			doUpgrade(oldVersion, new Config(plugin, oldVersion, CONFIG_PATH + ".old" + oldVersion));
+			doUpgrade(oldVersion, new Configuration(plugin, oldVersion, CONFIG_PATH + ".old" + oldVersion));
 		}
 		catch(Exception e)
 		{
