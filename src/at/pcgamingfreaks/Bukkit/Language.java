@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bukkit;
 import java.io.File;
 import java.io.IOException;
 
+import at.pcgamingfreaks.LanguageUpdateMethod;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,21 +31,33 @@ public class Language
 {
 	protected JavaPlugin plugin;
 	protected FileConfiguration lang = null;
-	protected String language = "en", updateMode = "overwrite";
-	
+	protected String language = "en";
+
+	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
 	private int LANG_VERSION = 1;
 
-	public Language(JavaPlugin pl, int version) 
+	/**
+	 * @param plugin the instance of the plugin
+	 * @param version the current version of the language file
+	 */
+	public Language(JavaPlugin plugin, int version)
 	{
-		plugin = pl;
+		this.plugin = plugin;
 		LANG_VERSION = version;
 	}
-	
+
+	/**
+	 * @return true if a language file is loaded, false if not
+	 */
 	public boolean isLoaded()
 	{
 		return lang != null;
 	}
-	
+
+	/**
+	 * @param path the path to the searched language value
+	 * @return returns the language data
+	 */
 	public String get(String path)
 	{
 		return lang.getString("Language." + path);
@@ -54,8 +67,32 @@ public class Language
 	{
 		lang.set(path, value);
 	}
-	
+
+	/**
+	 * Loads the language file
+	 * @param Language the language to load
+	 * @param UpdateMode how the language file should be updated
+	 */
 	public void load(String Language, String UpdateMode)
+	{
+		language = Language;
+		if(UpdateMode.equalsIgnoreCase("overwrite"))
+		{
+			updateMode = LanguageUpdateMethod.OVERWRITE;
+		}
+		else
+		{
+			updateMode = LanguageUpdateMethod.UPDATE;
+		}
+		loadFile();
+	}
+
+	/**
+	 * Loads the language file
+	 * @param Language the language to load
+	 * @param UpdateMode how the language file should be updated
+	 */
+	public void load(String Language, LanguageUpdateMethod UpdateMode)
 	{
 		language = Language;
 		updateMode = UpdateMode;
@@ -102,7 +139,7 @@ public class Language
 		if(lang.getInt("Version") < LANG_VERSION)
 		{
 			plugin.getLogger().info("Language version: " + lang.getInt("Version") + " => Language outdated! Updating ...");
-			if(updateMode.equalsIgnoreCase("overwrite"))
+			if(updateMode == LanguageUpdateMethod.OVERWRITE)
 			{
 				extractLangFile(file);
 				loadFile();

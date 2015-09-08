@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import at.pcgamingfreaks.LanguageUpdateMethod;
 import com.google.common.io.ByteStreams;
 
 import net.md_5.bungee.api.ChatColor;
@@ -37,31 +38,49 @@ public class Language
 {
 	protected Plugin plugin;
 	protected Configuration lang = null;
-	protected String language = "en", updateMode = "overwrite";
-	
+	protected String language = "en";
+
+	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
 	private ConfigurationProvider langprovider;
 	private String PATH = File.separator + "lang", PREFIX = "";
 	private int LANG_VERSION = 1;
-	
-	public Language(Plugin pl, int version)
+
+	/**
+	 * @param plugin the instance of the plugin
+	 * @param version the current version of the language file
+	 */
+	public Language(Plugin plugin, int version)
 	{
-		plugin = pl;
+		this.plugin = plugin;
 		LANG_VERSION = version;
 		langprovider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 	}
-	
-	public Language(Plugin pl, int version, String path, String prefix)
+
+	/**
+	 * @param plugin the instance of the plugin
+	 * @param version the current version of the language file
+	 * @param path the sub-folder for the language file
+	 * @param prefix the prefix for the language file
+	 */
+	public Language(Plugin plugin, int version, String path, String prefix)
 	{
-		plugin = pl;
-		LANG_VERSION = version;
-		langprovider = ConfigurationProvider.getProvider(YamlConfiguration.class);
+		this(plugin, version);
+		PATH = path;
+		PREFIX = prefix;
 	}
-	
+
+	/**
+	 * @return true if a language file is loaded, false if not
+	 */
 	public boolean isLoaded()
 	{
 		return lang != null;
 	}
-	
+
+	/**
+	 * @param path the path to the searched language value
+	 * @return returns the language data
+	 */
 	public String get(String path)
 	{
 		return lang.getString("Language." + path);
@@ -71,8 +90,32 @@ public class Language
 	{
 		lang.set(path, value);
 	}
-	
+
+	/**
+	 * Loads the language file
+	 * @param Language the language to load
+	 * @param UpdateMode how the language file should be updated
+	 */
 	public void load(String Language, String UpdateMode)
+	{
+		language = Language;
+		if(UpdateMode.equalsIgnoreCase("overwrite"))
+		{
+			updateMode = LanguageUpdateMethod.OVERWRITE;
+		}
+		else
+		{
+			updateMode = LanguageUpdateMethod.UPDATE;
+		}
+		loadLang();
+	}
+
+	/**
+	 * Loads the language file
+	 * @param Language the language to load
+	 * @param UpdateMode how the language file should be updated
+	 */
+	public void load(String Language, LanguageUpdateMethod UpdateMode)
 	{
 		language = Language;
 		updateMode = UpdateMode;
@@ -129,7 +172,7 @@ public class Language
 	{
 		if(lang.getInt("Version") < LANG_VERSION)
 		{
-			if(updateMode.equalsIgnoreCase("overwrite"))
+			if(updateMode == LanguageUpdateMethod.OVERWRITE)
 			{
 				extractLangFile(file);
 				loadLang();
