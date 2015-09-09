@@ -41,7 +41,7 @@ public class Language
 	protected String language = "en";
 
 	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
-	private ConfigurationProvider langprovider;
+	private ConfigurationProvider langprovider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 	private String PATH = File.separator + "lang", PREFIX = "";
 	private int LANG_VERSION = 1;
 
@@ -53,7 +53,6 @@ public class Language
 	{
 		this.plugin = plugin;
 		LANG_VERSION = version;
-		langprovider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 	}
 
 	/**
