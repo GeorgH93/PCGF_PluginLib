@@ -1,10 +1,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>at.pcgamingfreaks</groupId>
 	<artifactId>Bukkit_Bungee_PluginLib</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>PluginLib</name>
+	<packaging>jar</packaging>
+
+	<scm>
+		<connection>scm:git:git@github.com:GeorgH93/Bukkit_Bungee_PluginLib.git</connection>
+		<developerConnection>scm:git:git@github.com:GeorgH93/Bukkit_Bungee_PluginLib.git</developerConnection>
+		<url>git@github.com:GeorgH93/Bukkit_Bungee_PluginLib.git</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/GeorgH93/Bukkit_Bungee_PluginLib/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>jenkins</system>
+		<url>https://ci.pcgamingfreaks.at/</url>
+	</ciManagement>
+
+	<name>Bukkit_Bungee_PluginLib</name>
+	<description>A library to reduce work and code on Bukkit or BungeeCord plugins.</description>
+	<inceptionYear>2015</inceptionYear>
+	<licenses>
+		<license>
+			<name>GNU General Public License (GPL) v3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<repositories>
 		<repository>
 			<id>spigot-nexus</id>
@@ -23,6 +50,38 @@
 			<url>http://ci.pcgamingfreaks.at/plugin/repository/everything/</url>
 		</repository>
 	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-api</artifactId>
+			<version>LATEST</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>http://repo.pcgamingfreaks.at/repository/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>http://repo.pcgamingfreaks.at/repository/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<build>
 		<defaultGoal>clean install</defaultGoal>
 		<sourceDirectory>src</sourceDirectory>
@@ -81,23 +140,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencies>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.8.8-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.md-5</groupId>
-			<artifactId>bungeecord-api</artifactId>
-			<version>LATEST</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
 </project>
