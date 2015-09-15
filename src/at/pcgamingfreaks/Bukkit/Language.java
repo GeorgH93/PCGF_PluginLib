@@ -61,7 +61,7 @@ public class Language
 	 */
 	public String get(String path)
 	{
-		return lang.getString("Language." + path, "§cMessage not found!");
+		return lang.getString("Language." + path, ChatColor.RED + "Message not found!");
 	}
 
 	/**
