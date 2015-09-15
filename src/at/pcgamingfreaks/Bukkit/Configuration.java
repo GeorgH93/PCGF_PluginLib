@@ -19,11 +19,11 @@ package at.pcgamingfreaks.Bukkit;
 
 import java.io.File;
 
+import at.pcgamingfreaks.LanguageUpdateMethod;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class Configuration
 {
@@ -32,6 +32,7 @@ public class Configuration
 	
 	private String CONFIG_PATH = "config.yml";
 	private int CONFIG_VERSION = 0, UPGRADE_THRESHOLD = -1;
+	private File configFile = null;
 
 	/**
 	 * @param plugin the instance of the plugin
@@ -106,19 +107,43 @@ public class Configuration
 	 * @param currentVersion the old version of the config
 	 */
 	protected void doUpdate(int currentVersion) {}
+
+	/**
+	 * Allows inheriting classes to implement code for setting config values in new created config files
+	 * @return if values in the config have been changed
+	 */
+	protected boolean newConfigCreated() { return false; }
+
+	/**
+	 * Checks if the used bukkit version supports uuids
+	 * @return if the used bukkit version is uuid compatible
+	 */
+	protected boolean isBukkitVersionUUIDCompatible()
+	{
+		try
+		{
+			String[] GameVersion = Bukkit.getBukkitVersion().split("-");
+			GameVersion = GameVersion[0].split("\\.");
+			return (Integer.parseInt(GameVersion[0]) > 1 || Integer.parseInt(GameVersion[1]) > 7 || (Integer.parseInt(GameVersion[1]) == 7 && Integer.parseInt(GameVersion[2]) > 5));
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+	}
 	
 	private boolean loadConfig()
 	{
-		File file = new File(plugin.getDataFolder(), CONFIG_PATH);
-		if(!file.exists())
+		configFile = new File(plugin.getDataFolder(), CONFIG_PATH);
+		if(!configFile.exists())
 		{
 			plugin.getLogger().info("No config found. Create new one ...");
 			newConfig();
 		}
 		try
 		{
-			config = YamlConfiguration.loadConfiguration(file);
-			updateConfig(file);
+			config = YamlConfiguration.loadConfiguration(configFile);
+			updateConfig();
 		}
 		catch(Exception e)
 		{
@@ -138,6 +163,10 @@ public class Configuration
 	        }
 			plugin.saveResource(CONFIG_PATH, true);
             plugin.getLogger().info("Configuration extracted successfully!");
+			if(newConfigCreated())
+			{
+				config.save(configFile);
+			}
         }
 		catch (Exception e)
 		{
@@ -145,14 +174,14 @@ public class Configuration
         }
 	}
 	
-	private boolean updateConfig(File file)
+	private boolean updateConfig()
 	{
 		if(CONFIG_VERSION > config.getInt("Version"))
 		{
 			if(UPGRADE_THRESHOLD > 0 && config.getInt("Version") < UPGRADE_THRESHOLD)
 			{
 				plugin.getLogger().info("Configuration Version: " + config.getInt("Version") + " => Configuration outdated! Upgrading ...");
-				upgradeConfig(file);
+				upgradeConfig();
 			}
 			else
 			{
@@ -164,7 +193,7 @@ public class Configuration
 			{
 				if(config != null)
 				{
-					config.save(file);
+					config.save(configFile);
 					plugin.getLogger().warning("Configuration has been updated.");
 					return true;
 				}
@@ -186,17 +215,17 @@ public class Configuration
 		return false;
 	}
 	
-	private void upgradeConfig(File file)
+	private void upgradeConfig()
 	{
 		try
 		{
 			int oldVersion = config.getInt("Version");
-			File oldConfig = new File(file, ".old" + oldVersion);
+			File oldConfig = new File(configFile, ".old" + oldVersion);
 			if(oldConfig.exists())
 			{
 				oldConfig.delete();
 			}
-			file.renameTo(oldConfig);
+			configFile.renameTo(oldConfig);
 			loadConfig();
 			doUpgrade(oldVersion, new Configuration(plugin, oldVersion, CONFIG_PATH + ".old" + oldVersion));
 		}
@@ -231,6 +260,17 @@ public class Configuration
 	public boolean getBool(String path)
 	{
 		return config.getBoolean(path);
+	}
+
+	// Getter for language settings
+	public String getLanguage()
+	{
+		return config.getString("Language");
+	}
+
+	public LanguageUpdateMethod getLanguageUpdateMode()
+	{
+		return ((config.getString("LanguageUpdateMode").equalsIgnoreCase("overwrite")) ? LanguageUpdateMethod.OVERWRITE : LanguageUpdateMethod.UPDATE);
 	}
 	
 	// General setter

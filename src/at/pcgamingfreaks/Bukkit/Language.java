@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 import at.pcgamingfreaks.LanguageUpdateMethod;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -60,7 +61,16 @@ public class Language
 	 */
 	public String get(String path)
 	{
-		return lang.getString("Language." + path);
+		return lang.getString("Language." + path, "§cMessage not found!");
+	}
+
+	/**
+	 * @param path the path to the searched language value
+	 * @return returns the language data
+	 */
+	public String getTranslated(String path)
+	{
+		return ChatColor.translateAlternateColorCodes('&', get(path));
 	}
 	
 	protected void set(String path, String value)
