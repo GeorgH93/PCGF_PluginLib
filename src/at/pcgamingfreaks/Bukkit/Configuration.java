@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit;
 
 import java.io.File;
+import java.util.Set;
 
 import at.pcgamingfreaks.LanguageUpdateMethod;
 import org.bukkit.Bukkit;
@@ -96,11 +97,18 @@ public class Configuration
 	}
 
 	/**
-	 * Allows inheriting classes to implement code for the config upgrade
-	 * @param oldVersion the old version of the config
+	 * Allows inheriting classes to implement own code for the config upgrade
+	 * If no special code is implemented all keys will be copyed 1:1 into the new config file
 	 * @param oldConfiguration the old config file
 	 */
-	protected void doUpgrade(int oldVersion, Configuration oldConfiguration) {}
+	protected void doUpgrade(Configuration oldConfiguration)
+	{
+		Set<String> keys = oldConfiguration.getConfig().getKeys(true);
+		for(String key : keys)
+		{
+			config.set(key, oldConfiguration.getConfig().get(key));
+		}
+	}
 
 	/**
 	 * Allows inheriting classes to implement code for the config update
@@ -176,17 +184,17 @@ public class Configuration
 	
 	private boolean updateConfig()
 	{
-		if(CONFIG_VERSION > config.getInt("Version"))
+		if(CONFIG_VERSION > getVersion())
 		{
-			if(UPGRADE_THRESHOLD > 0 && config.getInt("Version") < UPGRADE_THRESHOLD)
+			if(UPGRADE_THRESHOLD > 0 && getVersion() < UPGRADE_THRESHOLD)
 			{
-				plugin.getLogger().info("Configuration Version: " + config.getInt("Version") + " => Configuration outdated! Upgrading ...");
+				plugin.getLogger().info("Configuration Version: " + getVersion() + " => Configuration outdated! Upgrading ...");
 				upgradeConfig();
 			}
 			else
 			{
-				plugin.getLogger().info("Configuration Version: " + config.getInt("Version") + " => Configuration outdated! Updating ...");
-				doUpdate(config.getInt("Version"));
+				plugin.getLogger().info("Configuration Version: " + getVersion() + " => Configuration outdated! Updating ...");
+				doUpdate(getVersion());
 				config.set("Version", CONFIG_VERSION);
 			}
 			try
@@ -208,7 +216,7 @@ public class Configuration
 				config = null;
 			}
 		}
-		if(CONFIG_VERSION < config.getInt("Version"))
+		if(CONFIG_VERSION < getVersion())
 		{
 			plugin.getLogger().info("Configuration File Version newer than expected!");
 		}
@@ -219,7 +227,7 @@ public class Configuration
 	{
 		try
 		{
-			int oldVersion = config.getInt("Version");
+			int oldVersion = getVersion();
 			File oldConfig = new File(configFile, ".old" + oldVersion);
 			if(oldConfig.exists())
 			{
@@ -227,7 +235,7 @@ public class Configuration
 			}
 			configFile.renameTo(oldConfig);
 			loadConfig();
-			doUpgrade(oldVersion, new Configuration(plugin, oldVersion, CONFIG_PATH + ".old" + oldVersion));
+			doUpgrade(new Configuration(plugin, oldVersion, CONFIG_PATH + ".old" + oldVersion));
 		}
 		catch(Exception e)
 		{
@@ -260,6 +268,11 @@ public class Configuration
 	public boolean getBool(String path)
 	{
 		return config.getBoolean(path);
+	}
+
+	public int getVersion()
+	{
+		return config.getInt("Version");
 	}
 
 	// Getter for language settings

@@ -22,43 +22,20 @@ import org.bukkit.Bukkit;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class Refactor
+public class Reflection
 {
+	private static final String bukkitVersion = Bukkit.getServer().getClass().getName().split("\\.")[3];
+	
+	public static String getVersion()
+	{
+		return bukkitVersion;
+	}
+
 	public static void setValue(Object instance, String fieldName, Object value) throws Exception
 	{
 		Field field = instance.getClass().getDeclaredField(fieldName);
 		field.setAccessible(true);
 		field.set(instance, value);
-	}
-
-	private static String version = null;
-	
-	public static String getVersion()
-	{
-		if(version == null)
-		{
-			String name = Bukkit.getServer().getClass().getPackage().getName();
-			version = name.substring(name.lastIndexOf('.') + 1);
-		}
-		return version;
-	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Enum<?> getEnum(String enumFullName)
-	{
-		String[] x = enumFullName.split("\\.(?=[^\\.]+$)");
-		if (x.length == 2)
-		{
-			try
-			{
-				return Enum.valueOf((Class<Enum>) Class.forName(x[0]), x[1]);
-			}
-			catch (ClassNotFoundException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		return null;
 	}
 
 	public static Class<?> getNMSClass(String className)
@@ -86,12 +63,31 @@ public class Refactor
 		}
 		return null;
 	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Enum<?> getEnum(String enumFullName)
+	{
+		String[] x = enumFullName.split("\\.(?=[^\\.]+$)");
+		if (x.length == 2)
+		{
+			try
+			{
+				return Enum.valueOf((Class<Enum>) Class.forName(x[0]), x[1]);
+			}
+			catch (ClassNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 	
 	public static Object getHandle(Object obj)
 	{
 		try
 		{
-			return getMethod(obj.getClass(), "getHandle", new Class[0]).invoke(obj, new Object[0]);
+			//noinspection ConstantConditions
+			return getMethod(obj.getClass(), "getHandle", new Class[0]).invoke(obj);
 		}
 		catch (Exception e)
 		{
@@ -119,7 +115,7 @@ public class Refactor
 	{
 		for (Method m : clazz.getMethods())
 		{
-			if ((m.getName().equals(name)) && ((args.length == 0) || (ClassListEqual(args, m.getParameterTypes()))))
+			if (m.getName().equals(name) && (args.length == 0 || ClassListEqual(args, m.getParameterTypes())))
 			{
 				m.setAccessible(true);
 				return m;
