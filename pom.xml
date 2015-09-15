@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>at.pcgamingfreaks</groupId>
 	<artifactId>Bukkit_Bungee_PluginLib</artifactId>
 	<version>1.0-SNAPSHOT</version>
@@ -18,7 +17,7 @@
 	</issueManagement>
 	<ciManagement>
 		<system>jenkins</system>
-		<url>https://ci.pcgamingfreaks.at/</url>
+		<url>http://ci.pcgamingfreaks.at/job/Bukkit_Bungee_PluginLib/</url>
 	</ciManagement>
 
 	<name>Bukkit_Bungee_PluginLib</name>
@@ -71,17 +70,6 @@
 		</dependency>
 	</dependencies>
 
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<url>http://repo.pcgamingfreaks.at/repository/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<url>http://repo.pcgamingfreaks.at/repository/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<build>
 		<defaultGoal>clean install</defaultGoal>
 		<sourceDirectory>src</sourceDirectory>
@@ -102,6 +90,25 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>add-wsdl-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${basedir}/libs</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -140,4 +147,15 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>http://repo.pcgamingfreaks.at/repository/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>http://repo.pcgamingfreaks.at/repository/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
