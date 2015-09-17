@@ -22,9 +22,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
 
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -35,9 +35,10 @@ public class Configuration
 	protected Plugin plugin;
 	protected net.md_5.bungee.config.Configuration config;
 	
-	private ConfigurationProvider configprovider = ConfigurationProvider.getProvider(YamlConfiguration.class);
-	private String CONFIG_PATH = "config.yml";
-	private int CONFIG_VERSION = 1, UPGRADE_THRESHOLD = -1;
+	private ConfigurationProvider configProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
+	private final String CONFIG_PATH;
+	private final int CONFIG_VERSION, UPGRADE_THRESHOLD;
+	private final File CONFIG_FILE;
 
 	/**
 	 * @param plugin the instance of the plugin
@@ -45,9 +46,7 @@ public class Configuration
 	 */
 	public Configuration(Plugin plugin, int version)
 	{
-		this.plugin = plugin;
-		CONFIG_VERSION = version;
-		loadConfig();
+		this(plugin, version, -1, "config.yml");
 	}
 
 	/**
@@ -57,8 +56,8 @@ public class Configuration
 	 */
 	public Configuration(Plugin plugin, int version, String path)
 	{
-		this(plugin, version);
-		CONFIG_PATH = path;
+		this(plugin, version, -1, path);
+
 	}
 
 	/**
@@ -68,8 +67,7 @@ public class Configuration
 	 */
 	public Configuration(Plugin plugin, int version, int upgradeThreshold)
 	{
-		this(plugin, version);
-		UPGRADE_THRESHOLD = upgradeThreshold;
+		this(plugin, version, upgradeThreshold, "config.yml");
 	}
 
 	/**
@@ -80,8 +78,13 @@ public class Configuration
 	 */
 	public Configuration(Plugin plugin, int version, int upgradeThreshold, String path)
 	{
-		this(plugin, version, path);
+		this.plugin = plugin;
+		CONFIG_VERSION = version;
+		CONFIG_PATH = path;
 		UPGRADE_THRESHOLD = upgradeThreshold;
+
+		CONFIG_FILE = new File(plugin.getDataFolder(), CONFIG_PATH);
+		loadConfig();
 	}
 
 	/**
@@ -102,52 +105,90 @@ public class Configuration
 
 	/**
 	 * Allows inheriting classes to implement code for the config upgrade
-	 * @param oldVersion the old version of the config
 	 * @param oldConfiguration the old config file
 	 */
-	protected void doUpgrade(int oldVersion, Configuration oldConfiguration) {}
+	protected void doUpgrade(Configuration oldConfiguration)
+	{
+		plugin.getLogger().info("No custom config upgrade code implemented! Copying all data from old config to new one.");
+		Collection<String> keys = oldConfiguration.getConfig().getKeys();
+		for(String key : keys)
+		{
+			if(key.equals("Version")) continue;
+			config.set(key, oldConfiguration.getConfig().get(key));
+		}
+	}
 
 	/**
 	 * Allows inheriting classes to implement code for the config update
-	 * @param currentVersion the old version of the config
 	 */
-	protected void doUpdate(int currentVersion) {}
-	
-	private void loadConfig()
+	protected void doUpdate()
 	{
-		File file = new File(plugin.getDataFolder(), CONFIG_PATH);
-		if(!file.exists())
-		{
-			newConfig(file);
-		}
+		plugin.getLogger().info("No config update code implemented! Just updating version!");
+	}
+
+	/**
+	 * Allows inheriting classes to implement code for setting config values in new created config files
+	 * @return if values in the config have been changed
+	 */
+	protected boolean newConfigCreated() { return false; }
+
+	public void saveConfig()
+	{
 		try
 		{
-			config = configprovider.load(file);
+			configProvider.save(config, CONFIG_FILE);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private void loadConfig()
+	{
+		try
+		{
+			if(!CONFIG_FILE.exists())
+			{
+				newConfig();
+			}
+			else
+			{
+				config = configProvider.load(CONFIG_FILE);
+			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 			config = null;
 		}
-		updateConfig(file);
+		updateConfig(CONFIG_FILE);
 	}
 	
-	private void newConfig(File file)
+	private void newConfig()
 	{
 		try
 		{
-			if (!plugin.getDataFolder().exists())
+			if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdir())
 			{
-				plugin.getDataFolder().mkdir();
+				plugin.getLogger().warning("Couldn't create directory. " + plugin.getDataFolder().toString());
 	        }
-            file.createNewFile();
-            try (InputStream is = plugin.getResourceAsStream("bungee_" + CONFIG_PATH); OutputStream os = new FileOutputStream(file))
+			if (!CONFIG_FILE.createNewFile())
+			{
+				plugin.getLogger().warning("Couldn't create config file. " + CONFIG_FILE.toString());
+			}
+            try (InputStream is = plugin.getResourceAsStream("bungee_" + CONFIG_PATH); OutputStream os = new FileOutputStream(CONFIG_FILE))
             {
-                ByteStreams.copy(is, os);
+	            ByteStreams.copy(is, os);
             }
             plugin.getLogger().info("Configuration extracted successfully!");
+			config = configProvider.load(CONFIG_FILE);
+			if(newConfigCreated())
+			{
+				saveConfig();
+			}
         }
-		catch (IOException e)
+		catch (Exception e)
 		{
             e.printStackTrace();
         }
@@ -155,22 +196,22 @@ public class Configuration
 	
 	private boolean updateConfig(File file)
 	{
-		if(CONFIG_VERSION > config.getInt("Version"))
+		if(CONFIG_VERSION > getVersion())
 		{
-			if(UPGRADE_THRESHOLD > 0 && config.getInt("Version") < UPGRADE_THRESHOLD)
+			if(UPGRADE_THRESHOLD > 0 && getVersion() < UPGRADE_THRESHOLD)
 			{
 				plugin.getLogger().info("Configuration Version: " + config.getInt("Version") + " => Configuration outdated! Upgrading ...");
-				upgradeConfig(file);
+				upgradeConfig();
 			}
 			else
 			{
 				plugin.getLogger().info("Configuration Version: " + config.getInt("Version") + " => Configuration outdated! Updating ...");
-				doUpdate(config.getInt("Version"));
+				doUpdate();
 				config.set("Version", CONFIG_VERSION);
 			}
 			try
 			{
-				configprovider.save(config, file);
+				configProvider.save(config, file);
 				plugin.getLogger().info("Configuration File has been updated.");
 				return true;
 			}
@@ -179,26 +220,30 @@ public class Configuration
 				e.printStackTrace();
 			}
 		}
-		if(CONFIG_VERSION < config.getInt("Version"))
+		if(CONFIG_VERSION < getVersion())
 		{
 			plugin.getLogger().info("Configuration File Version newer than expected!");
 		}
 		return false;
 	}
 	
-	private void upgradeConfig(File file)
+	private void upgradeConfig()
 	{
 		try
 		{
 			int oldVersion = config.getInt("Version");
-			File oldConfig = new File(file, ".old" + oldVersion);
-			if(oldConfig.exists())
+			File oldConfig = new File(CONFIG_FILE + ".old_v" + oldVersion);
+			if(oldConfig.exists() && !oldConfig.delete())
 			{
-				oldConfig.delete();
+				plugin.getLogger().warning("Failed to delete old config backup!");
 			}
-			Files.move(file, oldConfig);
+			if(!CONFIG_FILE.renameTo(oldConfig))
+			{
+				plugin.getLogger().warning("Failed to rename old config! Could not do upgrade!");
+				return;
+			}
 			loadConfig();
-			doUpgrade(oldVersion, new Configuration(plugin, oldVersion, CONFIG_PATH + ".old" + oldVersion));
+			doUpgrade(new Configuration(plugin, oldVersion, CONFIG_PATH + ".old_v" + oldVersion));
 		}
 		catch(Exception e)
 		{
@@ -222,15 +267,20 @@ public class Configuration
 	{
 		return config.getDouble(path);
 	}
-	
+
 	public String getString(String path)
 	{
 		return config.getString(path);
 	}
-	
+
 	public boolean getBool(String path)
 	{
 		return config.getBoolean(path);
+	}
+
+	public int getVersion()
+	{
+		return config.getInt("Version");
 	}
 	
 	// General setter

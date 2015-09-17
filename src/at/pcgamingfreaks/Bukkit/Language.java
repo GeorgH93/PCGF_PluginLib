@@ -35,7 +35,7 @@ public class Language
 	protected String language = "en";
 
 	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
-	private int LANG_VERSION = 1;
+	private final int LANG_VERSION;
 
 	/**
 	 * @param plugin the instance of the plugin
@@ -72,7 +72,12 @@ public class Language
 	{
 		return ChatColor.translateAlternateColorCodes('&', get(path));
 	}
-	
+
+	public int getVersion()
+	{
+		return lang.getInt("Version");
+	}
+
 	protected void set(String path, String value)
 	{
 		lang.set(path, value);
@@ -146,9 +151,9 @@ public class Language
 	
 	private boolean updateLangFile(File file)
 	{
-		if(lang.getInt("Version") < LANG_VERSION)
+		if(getVersion() < LANG_VERSION)
 		{
-			plugin.getLogger().info("Language version: " + lang.getInt("Version") + " => Language outdated! Updating ...");
+			plugin.getLogger().info("Language version: " + getVersion() + " => Language outdated! Updating ...");
 			if(updateMode == LanguageUpdateMethod.OVERWRITE)
 			{
 				extractLangFile(file);
@@ -158,7 +163,7 @@ public class Language
 			}
 			else
 			{
-				doUpdate(lang.getInt("Version"));
+				doUpdate();
 				lang.set("Version", LANG_VERSION);
 				try
 				{
@@ -172,12 +177,12 @@ public class Language
 		  	  	}
 			}
 		}
-		if(LANG_VERSION < lang.getInt("Version"))
+		if(LANG_VERSION < getVersion())
 		{
 			plugin.getLogger().warning("Language file version newer than expected!");
 		}
 		return false;
 	}
 	
-	protected void doUpdate(int currentVersion) {}
+	protected void doUpdate() {}
 }

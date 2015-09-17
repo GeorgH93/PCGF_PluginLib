@@ -41,9 +41,9 @@ public class Language
 	protected String language = "en";
 
 	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
-	private ConfigurationProvider langprovider = ConfigurationProvider.getProvider(YamlConfiguration.class);
-	private String PATH = File.separator + "lang", PREFIX = "";
-	private int LANG_VERSION = 1;
+	private ConfigurationProvider langProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
+	private final String PATH, PREFIX;
+	private final int LANG_VERSION;
 
 	/**
 	 * @param plugin the instance of the plugin
@@ -51,8 +51,7 @@ public class Language
 	 */
 	public Language(Plugin plugin, int version)
 	{
-		this.plugin = plugin;
-		LANG_VERSION = version;
+		this(plugin, version, File.separator + "lang", "");
 	}
 
 	/**
@@ -63,7 +62,8 @@ public class Language
 	 */
 	public Language(Plugin plugin, int version, String path, String prefix)
 	{
-		this(plugin, version);
+		this.plugin = plugin;
+		LANG_VERSION = version;
 		PATH = path;
 		PREFIX = prefix;
 	}
@@ -84,7 +84,12 @@ public class Language
 	{
 		return lang.getString("Language." + path);
 	}
-	
+
+	public int getVersion()
+	{
+		return lang.getInt("Version");
+	}
+
 	protected void set(String path, String value)
 	{
 		lang.set(path, value);
@@ -130,7 +135,7 @@ public class Language
 		}
 		try
 		{
-			lang = langprovider.load(file);
+			lang = langProvider.load(file);
 		}
 		catch (Exception e)
 		{
@@ -143,11 +148,14 @@ public class Language
 	{
 		try
 		{
-			if(file.exists())
+			if(file.exists() && !file.delete())
 			{
-				file.delete();
+				plugin.getLogger().info("Failed deleting old language file.");
 	        }
-            file.createNewFile();
+            if(!file.createNewFile())
+            {
+	            plugin.getLogger().info("Failed create new language file.");
+            }
             try (InputStream is = plugin.getResourceAsStream("lang/bungee_" + language + ".yml"); OutputStream os = new FileOutputStream(file))
             {
                 ByteStreams.copy(is, os);
@@ -169,8 +177,9 @@ public class Language
 	
 	private boolean updateLangFile(File file)
 	{
-		if(lang.getInt("Version") < LANG_VERSION)
+		if(getVersion() < LANG_VERSION)
 		{
+			plugin.getLogger().info("Language version: " + getVersion() + " => Language outdated! Updating ...");
 			if(updateMode == LanguageUpdateMethod.OVERWRITE)
 			{
 				extractLangFile(file);
@@ -179,11 +188,11 @@ public class Language
 			}
 			else
 			{
-				doUpdate(lang.getInt("Version"));
+				doUpdate();
 				lang.set("Version", LANG_VERSION);
 				try
 				{
-					langprovider.save(lang, file);
+					langProvider.save(lang, file);
 					plugin.getLogger().info("Language file has been updated.");
 				}
 				catch(IOException e)
@@ -194,16 +203,16 @@ public class Language
 			}
 			return true;
 		}
-		if(LANG_VERSION < lang.getInt("Version"))
+		if(LANG_VERSION < getVersion())
 		{
 			plugin.getLogger().warning("Language file version newer than expected!");
 		}
 		return false;
 	}
 	
-	protected void doUpdate(int currentVersion) {}
+	protected void doUpdate() {}
 	
-	//Geter
+	// Getter
 	public String getString(String Option)
 	{
 		return ChatColor.translateAlternateColorCodes('&', lang.getString("Language." + Option));

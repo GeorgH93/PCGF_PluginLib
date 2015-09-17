@@ -17,10 +17,11 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import java.io.File;
+import java.io.*;
 import java.util.Set;
 
 import at.pcgamingfreaks.LanguageUpdateMethod;
+import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -31,9 +32,9 @@ public class Configuration
 	protected JavaPlugin plugin;
 	protected FileConfiguration config;
 	
-	private String CONFIG_PATH = "config.yml";
-	private int CONFIG_VERSION = 0, UPGRADE_THRESHOLD = -1;
-	private File configFile = null;
+	private final String CONFIG_PATH;
+	private final int CONFIG_VERSION, UPGRADE_THRESHOLD;
+	private final File configFile;
 
 	/**
 	 * @param plugin the instance of the plugin
@@ -41,9 +42,7 @@ public class Configuration
 	 */
 	public Configuration(JavaPlugin plugin, int version)
 	{
-		this.plugin = plugin;
-		CONFIG_VERSION = version;
-		loadConfig();
+		this(plugin, version, -1, "/config.yml");
 	}
 
 	/**
@@ -53,8 +52,8 @@ public class Configuration
 	 */
 	public Configuration(JavaPlugin plugin, int version, String path)
 	{
-		this(plugin, version);
-		CONFIG_PATH = path;
+		this(plugin, version, -1, path);
+
 	}
 
 	/**
@@ -64,20 +63,24 @@ public class Configuration
 	 */
 	public Configuration(JavaPlugin plugin, int version, int upgradeThreshold)
 	{
-		this(plugin, version);
-		UPGRADE_THRESHOLD = upgradeThreshold;
+		this(plugin, version, upgradeThreshold, "config.yml");
 	}
 
 	/**
-	 * @param plugin the instance of the plugin
+	 * @param javaPlugin the instance of the plugin
 	 * @param version current version of the config
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 * @param path the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(JavaPlugin plugin, int version, int upgradeThreshold, String path)
+	public Configuration(JavaPlugin javaPlugin, int version, int upgradeThreshold, String path)
 	{
-		this(plugin, version, path);
+		plugin = javaPlugin;
 		UPGRADE_THRESHOLD = upgradeThreshold;
+		CONFIG_VERSION = version;
+		CONFIG_PATH = path;
+
+		configFile = new File(plugin.getDataFolder(), CONFIG_PATH);
+		loadConfig();
 	}
 
 	/**
@@ -98,23 +101,27 @@ public class Configuration
 
 	/**
 	 * Allows inheriting classes to implement own code for the config upgrade
-	 * If no special code is implemented all keys will be copyed 1:1 into the new config file
+	 * If no special code is implemented all keys will be copied 1:1 into the new config file
 	 * @param oldConfiguration the old config file
 	 */
 	protected void doUpgrade(Configuration oldConfiguration)
 	{
+		plugin.getLogger().info("No custom config upgrade code implemented! Copying all data from old config to new one.");
 		Set<String> keys = oldConfiguration.getConfig().getKeys(true);
 		for(String key : keys)
 		{
+			if(key.equals("Version")) continue;
 			config.set(key, oldConfiguration.getConfig().get(key));
 		}
 	}
 
 	/**
 	 * Allows inheriting classes to implement code for the config update
-	 * @param currentVersion the old version of the config
 	 */
-	protected void doUpdate(int currentVersion) {}
+	protected void doUpdate()
+	{
+		plugin.getLogger().info("No config update code implemented! Just updating version!");
+	}
 
 	/**
 	 * Allows inheriting classes to implement code for setting config values in new created config files
@@ -123,7 +130,7 @@ public class Configuration
 	protected boolean newConfigCreated() { return false; }
 
 	/**
-	 * Checks if the used bukkit version supports uuids
+	 * Checks if the used bukkit version supports UUIDs
 	 * @return if the used bukkit version is uuid compatible
 	 */
 	protected boolean isBukkitVersionUUIDCompatible()
@@ -139,24 +146,38 @@ public class Configuration
 			return false;
 		}
 	}
+
+	public void saveConfig()
+	{
+		try
+		{
+			config.save(configFile);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 	
 	private boolean loadConfig()
 	{
-		configFile = new File(plugin.getDataFolder(), CONFIG_PATH);
 		if(!configFile.exists())
 		{
 			plugin.getLogger().info("No config found. Create new one ...");
 			newConfig();
 		}
-		try
+		else
 		{
-			config = YamlConfiguration.loadConfiguration(configFile);
-			updateConfig();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			config = null;
+			try
+			{
+				config = YamlConfiguration.loadConfiguration(configFile);
+				updateConfig();
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				config = null;
+			}
 		}
 		return config != null;
 	}
@@ -165,15 +186,16 @@ public class Configuration
 	{
 		try
 		{
-			if (!plugin.getDataFolder().exists())
+			if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdir())
 			{
-				plugin.getDataFolder().mkdir();
-	        }
+				plugin.getLogger().warning("Couldn't create directory. " + plugin.getDataFolder().toString());
+			}
 			plugin.saveResource(CONFIG_PATH, true);
             plugin.getLogger().info("Configuration extracted successfully!");
+			config = YamlConfiguration.loadConfiguration(configFile);
 			if(newConfigCreated())
 			{
-				config.save(configFile);
+				saveConfig();
 			}
         }
 		catch (Exception e)
@@ -194,7 +216,7 @@ public class Configuration
 			else
 			{
 				plugin.getLogger().info("Configuration Version: " + getVersion() + " => Configuration outdated! Updating ...");
-				doUpdate(getVersion());
+				doUpdate();
 				config.set("Version", CONFIG_VERSION);
 			}
 			try
@@ -228,14 +250,18 @@ public class Configuration
 		try
 		{
 			int oldVersion = getVersion();
-			File oldConfig = new File(configFile, ".old" + oldVersion);
-			if(oldConfig.exists())
+			File oldConfig = new File(configFile + ".old_v" + oldVersion);
+			if(oldConfig.exists() && !oldConfig.delete())
 			{
-				oldConfig.delete();
+				plugin.getLogger().warning("Failed to delete old config backup!");
 			}
-			configFile.renameTo(oldConfig);
+			if(!configFile.renameTo(oldConfig))
+			{
+				plugin.getLogger().warning("Failed to rename old config! Could not do upgrade!");
+				return;
+			}
 			loadConfig();
-			doUpgrade(new Configuration(plugin, oldVersion, CONFIG_PATH + ".old" + oldVersion));
+			doUpgrade(new Configuration(plugin, oldVersion, CONFIG_PATH + ".old_v" + oldVersion));
 		}
 		catch(Exception e)
 		{
