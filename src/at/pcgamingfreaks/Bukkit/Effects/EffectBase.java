@@ -19,12 +19,117 @@ package at.pcgamingfreaks.Bukkit.Effects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 public abstract class EffectBase
 {
-	public abstract void SpawnParticle(Location loc, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed) throws Exception;
-	
-	public static EffectBase getEffect()
+	/**
+	 * Spawns a single material based particle.
+	 * Only for Minecraft 1.8 and newer!
+	 * @param location the location where the effect should be spawned
+	 * @param type the type of the effect that should be spawned
+	 * @param material the material of the particle
+	 * @param visibleRange the range that the effect will be visible
+	 */
+	public void spawnParticle(Location location, MaterialEffects type, Material material, double visibleRange)
+	{
+		spawnParticle(location, type, material, visibleRange, 1, 0, 0, 0, 0);
+	}
+
+	/**
+	 * Spawns a group of material based particles.
+	 * Only for Minecraft 1.8 and newer!
+	 * @param location the location where the effect should be spawned
+	 * @param type the type of the effect that should be spawned
+	 * @param material the material of the particle
+	 * @param visibleRange the range that the effect will be visible
+	 * @param count the amount of particles that should be spawned
+	 * @param offsetX is added to the X position after being multiplied by random.nextGaussian() to spread the particles out
+	 * @param offsetY is added to the Y position after being multiplied by random.nextGaussian() to spread the particles out
+	 * @param offsetZ is added to the Z position after being multiplied by random.nextGaussian() to spread the particles out
+	 * @param speed the speed the particles are moving with
+	 */
+	public void spawnParticle(Location location, MaterialEffects type, Material material, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
+	{
+		spawnParticle(location, type, material, 0, visibleRange, count, offsetX, offsetY, offsetZ, speed);
+	}
+
+	/**
+	 * Spawns a single material based particle.
+	 * Only for Minecraft 1.8 and newer!
+	 * @param location the location where the effect should be spawned
+	 * @param type the type of the effect that should be spawned
+	 * @param material the material of the particle
+	 * @param materialData the material data of the particle
+	 * @param visibleRange the range that the effect will be visible
+	 */
+	public void spawnParticle(Location location, MaterialEffects type, Material material, int materialData, double visibleRange)
+	{
+		spawnParticle(location, type, material, materialData, visibleRange, 1, 0, 0, 0, 0);
+	}
+
+	/**
+	 * Spawns a group of material based particles.
+	 * Only for Minecraft 1.8 and newer!
+	 * @param location the location where the effect should be spawned
+	 * @param type the type of the effect that should be spawned
+	 * @param material the material of the particle
+	 * @param materialData the material data of the particle
+	 * @param visibleRange the range that the effect will be visible
+	 * @param count the amount of particles that should be spawned
+	 * @param offsetX is added to the X position after being multiplied by random.nextGaussian() to spread the particles out
+	 * @param offsetY is added to the Y position after being multiplied by random.nextGaussian() to spread the particles out
+	 * @param offsetZ is added to the Z position after being multiplied by random.nextGaussian() to spread the particles out
+	 * @param speed the speed the particles are moving with
+	 */
+	@SuppressWarnings("deprecation")
+	public void spawnParticle(Location location, MaterialEffects type, Material material, int materialData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
+	{
+		int[] data = null;
+		switch(type)
+		{
+			case ITEM_CRACK: data = new int[] { material.getId(), materialData };
+				break;
+			case BLOCK_CRACK: data = new int[] { material.getId() + 4096 * materialData };
+				break;
+			case BLOCK_DUST: data = new int[] { material.getId() };
+				break;
+		}
+		spawnParticle(location, type, visibleRange, count, offsetX, offsetY, offsetZ, speed, data);
+	}
+
+	protected void spawnParticle(Location location, MaterialEffects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data) {}
+
+	/**
+	 * Spawns a single particle.
+	 * @param location the location where the effect should be spawned
+	 * @param type the type of the effect that should be spawned
+	 * @param visibleRange the range that the effect will be visible
+	 */
+	public void spawnParticle(Location location, Effects type, double visibleRange)
+	{
+		spawnParticle(location, type, visibleRange, 1, 0, 0, 0, 0);
+	}
+
+	/**
+	 * Spawns a group of particles.
+	 * @param location the location where the effect should be spawned
+	 * @param type the type of the effect that should be spawned
+	 * @param visibleRange the range that the effect will be visible
+	 * @param count the amount of particles that should be spawned
+	 * @param offsetX is added to the X position after being multiplied by random.nextGaussian() to spread the particles out
+	 * @param offsetY is added to the Y position after being multiplied by random.nextGaussian() to spread the particles out
+	 * @param offsetZ is added to the Z position after being multiplied by random.nextGaussian() to spread the particles out
+	 * @param speed the speed the particles are moving with
+	 */
+	public abstract void spawnParticle(Location location, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed);
+
+	/**
+	 * It is recommended to use this function to get an effect spawner instance! It will give you the right object for your Minecraft version.
+	 * If it returns null your Minecraft version is not compatible! Like version < 1.7 and some modded servers.
+	 * @return A for your Minecraft version compatible effect spawner. null if your Minecraft version is not supported.
+	 */
+	public static EffectBase getEffectSpawner()
 	{
 		EffectBase eb = null;
 		String name = Bukkit.getServer().getClass().getPackage().getName();

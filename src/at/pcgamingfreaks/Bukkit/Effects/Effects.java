@@ -31,37 +31,57 @@ public enum Effects
 	Splash(6, "splash", "WATER_SPLASH"),
 	Suspended(7, "suspended", "SUSPENDED"),
 	Townaura(8, "townaura", "TOWN_AURA"),
-	Crit(9, "crit", "CRIT"),
+	Crit(9, "crit"),
 	MagicCrit(10, "magicCrit", "CRIT_MAGIC"),
 	Smoke(11, "smoke", "SMOKE_NORMAL"),
 	LargeSmoke(12, "largesmoke", "SMOKE_LARGE"),
 	MobSpell(13, "mobSpell", "SPELL_MOB"),
 	InstantSpell(14, "instantSpell", "SPELL_INSTANT"),
-	Spell(15, "spell", "SPELL"),
+	Spell(15, "spell"),
 	WitchMagic(17, "witchMagic", "SPELL_WITCH"),
 	DripWater(18, "dripWater", "DRIP_WATER"),
 	DripLava(19, "dripLava", "DRIP_LAVA"),
 	AngryVillager(20, "angryVillager", "VILLAGER_ANGRY"),
 	HappyVillager(21, "happyVillager", "VILLAGER_HAPPY"),
 	Depthsuspend(22, "depthsuspend", "SUSPENDED_DEPTH"),
-	Note(23, "note", "NOTE"),
-	Portal(24, "portal", "PORTAL"),
+	Note(23, "note"),
+	Portal(24, "portal"),
 	Enchantmenttable(25, "enchantmenttable", "ENCHANTMENT_TABLE"),
-	Flame(26, "flame", "FLAME"),
-	Lava(27, "lava", "LAVA"),
-	Footstep(28, "footstep", "FOOTSTEP"),
-	Cloud(29, "cloud", "CLOUD"),
+	Flame(26, "flame"),
+	Lava(27, "lava"),
+	Footstep(28, "footstep"),
+	Cloud(29, "cloud"),
 	Reddust(30, "reddust", "REDSTONE"),
 	Snowballpoof(31, "snowballpoof", "SNOWBALL"),
 	Snowshovel(32, "snowshovel", "SNOW_SHOVEL"),
-	Slime(33, "slime", "SLIME"),
-	Heart(34, "heart", "HEART"),
-	Barrier(35, "barrier", "BARRIER");
+	Slime(33, "slime"),
+	Heart(34, "heart"),
+	/**
+	 * Only for Minecraft 1.8 and newer!
+	 */
+	Barrier(35, "barrier"),
+	/**
+	 * Only for Minecraft 1.8 and newer!
+	 */
+	Droplet(35, "droplet"),
+	/**
+	 * Only for Minecraft 1.8 and newer!
+	 */
+	Take(36, "take"),
+	/**
+	 * Only for Minecraft 1.8 and newer!
+	 */
+	MobAppearance(36, "mobappearance");
 	
 	private final int id;
 	private final String name, nameUpperCase, newName;
 	private final Enum<?> nmsEnumParticle;
-	
+
+	Effects(int ID, String NAME)
+	{
+		this(ID, NAME, NAME.toUpperCase());
+	}
+
 	Effects(int ID, String NAME, String NEWNAME)
 	{
 		id = ID;

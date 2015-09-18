@@ -39,14 +39,14 @@ public class Effect_1_7 extends EffectBase
 		packetConstructor = Reflection.getNMSClass("PacketPlayOutWorldParticles").getConstructor(String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
 	}
 
-	public void SpawnParticle(Location loc, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed) throws Exception
+	public void spawnParticle(Location location, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
 		try
 		{
-			Object packet = packetConstructor.newInstance(type.getName(), (float) loc.getX(), (float) loc.getY(), (float) loc.getZ(), offsetX, offsetY, offsetZ, speed, count), handle;
-			for(Entity entity : loc.getWorld().getEntities())
+			Object packet = packetConstructor.newInstance(type.getName(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count), handle;
+			for(Entity entity : location.getWorld().getEntities())
 			{
-				if(entity instanceof Player && entity.getLocation().getWorld().equals(loc.getWorld()) && entity.getLocation().distance(loc) < visibleRange)
+				if(entity instanceof Player && entity.getLocation().getWorld().equals(location.getWorld()) && entity.getLocation().distance(location) < visibleRange)
 				{
 					handle = Reflection.getHandle(entity);
 					if(handle != null && handle.getClass() == EntityPlayer)

@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class Effect_1_8 extends EffectBase
@@ -39,27 +40,48 @@ public class Effect_1_8 extends EffectBase
 		packetConstructor = Reflection.getNMSClass("PacketPlayOutWorldParticles").getConstructor(Reflection.getNMSClass("EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
 	}
 
-	public void SpawnParticle(Location loc, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed) throws Exception
+	@Override
+	public void spawnParticle(Location location, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
 		try
 		{
-			Object packet = packetConstructor.newInstance(type.getEnum(), false, (float) loc.getX(), (float) loc.getY(), (float) loc.getZ(), offsetX, offsetY, offsetZ, speed, count, new int[]{}), handle;
-			for(Entity entity : loc.getWorld().getEntities())
-			{
-				if(entity instanceof Player && entity.getLocation().getWorld().equals(loc.getWorld()) && entity.getLocation().distance(loc) < visibleRange)
-				{
-					handle = Reflection.getHandle(entity);
-					if(handle != null && handle.getClass() == EntityPlayer)
-					{
-						sendPacket.invoke(playerConnection.get(handle), packet);
-					}
-				}
-			}
+			spawnParticle(location, visibleRange, packetConstructor.newInstance(type.getEnum(), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, new int[]{}));
 		}
 		catch (Exception e)
 		{
 			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.8)");
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void spawnParticle(Location location, MaterialEffects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data)
+	{
+		try
+		{
+			Object packet = packetConstructor.newInstance(type.getEnum(), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, data);
+			spawnParticle(location, visibleRange, packet);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.8)");
+			e.printStackTrace();
+		}
+	}
+
+	private void spawnParticle(Location location, double visibleRange, Object particle) throws IllegalAccessException, InvocationTargetException
+	{
+		Object handle;
+		for(Entity entity : location.getWorld().getEntities())
+		{
+			if(entity instanceof Player && entity.getLocation().getWorld().equals(location.getWorld()) && entity.getLocation().distance(location) < visibleRange)
+			{
+				handle = Reflection.getHandle(entity);
+				if(handle != null && handle.getClass() == EntityPlayer)
+				{
+					sendPacket.invoke(playerConnection.get(handle), particle);
+				}
+			}
 		}
 	}
 }
