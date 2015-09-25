@@ -72,7 +72,7 @@ public enum Effects
 	 * Only for Minecraft 1.8 and newer!
 	 */
 	MobAppearance(36, "mobappearance");
-	
+
 	private final int id;
 	private final String name, nameUpperCase, newName;
 	private final Enum<?> nmsEnumParticle;
@@ -90,27 +90,27 @@ public enum Effects
 		newName = NEWNAME;
 		nmsEnumParticle = (Reflection.getVersion().contains("1_8")) ? Reflection.getEnum("net.minecraft.server." + Reflection.getVersion() + ".EnumParticle." + newName) : null;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	public String getNameUpperCase()
 	{
 		return nameUpperCase;
 	}
-	
+
 	public String getNewName()
 	{
 		return newName;
 	}
-	
+
 	public int getID()
 	{
 		return id;
 	}
-	
+
 	public Enum<?> getEnum()
 	{
 		return nmsEnumParticle;

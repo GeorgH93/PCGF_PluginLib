@@ -44,22 +44,22 @@ public enum MaterialEffects
 		newName = NEWNAME;
 		nmsEnumParticle = (Reflection.getVersion().contains("1_8")) ? Reflection.getEnum("net.minecraft.server." + Reflection.getVersion() + ".EnumParticle." + newName) : null;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	public String getNameUpperCase()
 	{
 		return nameUpperCase;
 	}
-	
+
 	public String getNewName()
 	{
 		return newName;
 	}
-	
+
 	public Enum<?> getEnum()
 	{
 		return nmsEnumParticle;

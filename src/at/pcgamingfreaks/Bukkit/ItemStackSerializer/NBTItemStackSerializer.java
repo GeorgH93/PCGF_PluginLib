@@ -46,22 +46,22 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 	{
 		try
 		{
-			if (data != null)
+			if(data != null)
 			{
 				Object localNBTTagCompound = ain.invoke(null, new ByteArrayInputStream(data));
-				int size = (int)getInt.invoke(localNBTTagCompound, "size");
+				int size = (int) getInt.invoke(localNBTTagCompound, "size");
 				ItemStack[] its = new ItemStack[size];
-				for (int i = 0; i < size; i++)
+				for(int i = 0; i < size; i++)
 				{
-					if ((boolean)hasKeyOfType.invoke(localNBTTagCompound, String.valueOf(i), 10))
+					if((boolean) hasKeyOfType.invoke(localNBTTagCompound, String.valueOf(i), 10))
 					{
-						its[i] = (ItemStack)asBukkitCopy.invoke(null, createStack.invoke(null, getCompound.invoke(localNBTTagCompound, String.valueOf(i))));
+						its[i] = (ItemStack) asBukkitCopy.invoke(null, createStack.invoke(null, getCompound.invoke(localNBTTagCompound, String.valueOf(i))));
 					}
 				}
 				return its;
 			}
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -82,9 +82,9 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 		{
 			Object localNBTTagCompound = NBTTagCompound.newInstance();
 			setInt.invoke(localNBTTagCompound, "size", itemStacks.length);
-			for (int i = 0; i < itemStacks.length; i++)
+			for(int i = 0; i < itemStacks.length; i++)
 			{
-				if (itemStacks[i] != null)
+				if(itemStacks[i] != null)
 				{
 					set.invoke(localNBTTagCompound, String.valueOf(i), save.invoke(asNMSCopy.invoke(null, itemStacks[i]), NBTTagCompound.newInstance()));
 				}
@@ -96,7 +96,7 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 			ba = byteArrayOutputStream.toByteArray();
 			dataOutputStream.close();
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			e.printStackTrace();
 		}

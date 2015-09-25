@@ -1,7 +1,5 @@
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
 
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public interface ItemStackSerializer

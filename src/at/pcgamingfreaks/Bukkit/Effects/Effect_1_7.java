@@ -56,7 +56,7 @@ public class Effect_1_7 extends EffectBase
 				}
 			}
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.7)");
 			e.printStackTrace();

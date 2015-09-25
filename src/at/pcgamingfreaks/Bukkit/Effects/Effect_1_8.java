@@ -47,7 +47,7 @@ public class Effect_1_8 extends EffectBase
 		{
 			spawnParticle(location, visibleRange, packetConstructor.newInstance(type.getEnum(), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, new int[]{}));
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.8)");
 			e.printStackTrace();
@@ -62,7 +62,7 @@ public class Effect_1_8 extends EffectBase
 			Object packet = packetConstructor.newInstance(type.getEnum(), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, data);
 			spawnParticle(location, visibleRange, packet);
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.8)");
 			e.printStackTrace();

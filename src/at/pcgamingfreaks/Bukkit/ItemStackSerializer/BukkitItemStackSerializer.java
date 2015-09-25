@@ -45,7 +45,7 @@ public class BukkitItemStackSerializer implements ItemStackSerializer
 				bukkitObjectInputStream.close();
 				return its;
 			}
-			catch (Exception e)
+			catch(Exception e)
 			{
 				e.printStackTrace();
 			}
