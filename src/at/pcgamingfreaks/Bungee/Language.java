@@ -18,32 +18,15 @@
 package at.pcgamingfreaks.Bungee;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import at.pcgamingfreaks.LanguageUpdateMethod;
-import com.google.common.io.ByteStreams;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.config.YamlConfiguration;
 
-public class Language
+public class Language extends at.pcgamingfreaks.Language
 {
 	protected Plugin plugin;
-	protected Configuration lang = null;
-	protected String language = "en";
-
-	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
-	private ConfigurationProvider langProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
-	private final String PATH, PREFIX;
-	private final int LANG_VERSION;
 
 	/**
 	 * @param plugin the instance of the plugin
@@ -62,164 +45,18 @@ public class Language
 	 */
 	public Language(Plugin plugin, int version, String path, String prefix)
 	{
+		super(plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, "bungee_");
 		this.plugin = plugin;
-		LANG_VERSION = version;
-		PATH = path;
-		PREFIX = prefix;
 	}
-
-	/**
-	 * @return true if a language file is loaded, false if not
-	 */
-	public boolean isLoaded()
-	{
-		return lang != null;
-	}
-
-	/**
-	 * @param path the path to the searched language value
-	 * @return returns the language data
-	 */
-	public String get(String path)
-	{
-		return lang.getString("Language." + path);
-	}
-
-	public int getVersion()
-	{
-		return lang.getInt("Version");
-	}
-
-	protected void set(String path, String value)
-	{
-		lang.set(path, value);
-	}
-
-	/**
-	 * Loads the language file
-	 * @param Language the language to load
-	 * @param UpdateMode how the language file should be updated
-	 */
-	public void load(String Language, String UpdateMode)
-	{
-		language = Language;
-		if(UpdateMode.equalsIgnoreCase("overwrite"))
-		{
-			updateMode = LanguageUpdateMethod.OVERWRITE;
-		}
-		else
-		{
-			updateMode = LanguageUpdateMethod.UPDATE;
-		}
-		loadLang();
-	}
-
-	/**
-	 * Loads the language file
-	 * @param Language the language to load
-	 * @param UpdateMode how the language file should be updated
-	 */
-	public void load(String Language, LanguageUpdateMethod UpdateMode)
-	{
-		language = Language;
-		updateMode = UpdateMode;
-		loadLang();
-	}
-	
-	private void loadLang()
-	{
-		File file = new File(plugin.getDataFolder() + PATH, PREFIX + language + ".yml");
-		if(!file.exists())
-		{
-			extractLangFile(file);
-		}
-		try
-		{
-			lang = langProvider.load(file);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		updateLangFile(file);
-	}
-	
-	private void extractLangFile(File file)
-	{
-		try
-		{
-			if(file.exists() && !file.delete())
-			{
-				plugin.getLogger().info("Failed deleting old language file.");
-	        }
-            if(!file.createNewFile())
-            {
-	            plugin.getLogger().info("Failed create new language file.");
-            }
-            try (InputStream is = plugin.getResourceAsStream("lang/bungee_" + language + ".yml"); OutputStream os = new FileOutputStream(file))
-            {
-                ByteStreams.copy(is, os);
-            }
-            catch(Exception e)
-            {
-            	try (InputStream is = plugin.getResourceAsStream("lang/bungee_en.yml"); OutputStream os = new FileOutputStream(file))
-                {
-                    ByteStreams.copy(is, os);
-                }
-            }
-            plugin.getLogger().info("Language file extracted successfully!");
-        }
-		catch (IOException e)
-		{
-            e.printStackTrace();
-        }
-	}
-	
-	private boolean updateLangFile(File file)
-	{
-		if(getVersion() < LANG_VERSION)
-		{
-			plugin.getLogger().info("Language version: " + getVersion() + " => Language outdated! Updating ...");
-			if(updateMode == LanguageUpdateMethod.OVERWRITE)
-			{
-				extractLangFile(file);
-				loadLang();
-				plugin.getLogger().info(getString("Language file has been updated."));
-			}
-			else
-			{
-				doUpdate();
-				lang.set("Version", LANG_VERSION);
-				try
-				{
-					langProvider.save(lang, file);
-					plugin.getLogger().info("Language file has been updated.");
-				}
-				catch(IOException e)
-				{
-					e.printStackTrace();
-					return false;
-				}
-			}
-			return true;
-		}
-		if(LANG_VERSION < getVersion())
-		{
-			plugin.getLogger().warning("Language file version newer than expected!");
-		}
-		return false;
-	}
-	
-	protected void doUpdate() {}
 	
 	// Getter
-	public String getString(String Option)
+	public String getString(String option)
 	{
-		return ChatColor.translateAlternateColorCodes('&', lang.getString("Language." + Option));
+		return ChatColor.translateAlternateColorCodes('&', get(option));
 	}
 	
-	public BaseComponent[] getReady(String Option)
+	public BaseComponent[] getReady(String option)
 	{
-		return TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', lang.getString("Language." + Option)));
+		return TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', get(option)));
 	}
 }

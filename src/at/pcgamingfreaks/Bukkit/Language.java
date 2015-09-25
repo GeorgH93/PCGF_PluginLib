@@ -18,24 +18,13 @@
 package at.pcgamingfreaks.Bukkit;
 
 import java.io.File;
-import java.io.IOException;
 
-import at.pcgamingfreaks.LanguageUpdateMethod;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.google.common.io.Files;
-
-public class Language
+public class Language extends at.pcgamingfreaks.Language
 {
 	protected JavaPlugin plugin;
-	protected FileConfiguration lang = null;
-	protected String language = "en";
-
-	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
-	private final int LANG_VERSION;
 
 	/**
 	 * @param plugin the instance of the plugin
@@ -43,25 +32,19 @@ public class Language
 	 */
 	public Language(JavaPlugin plugin, int version)
 	{
+		this(plugin, version, File.separator + "lang", "");
+	}
+
+	/**
+	 * @param plugin the instance of the plugin
+	 * @param version the current version of the language file
+	 * @param path the sub-folder for the language file
+	 * @param prefix the prefix for the language file
+	 */
+	public Language(JavaPlugin plugin, int version, String path, String prefix)
+	{
+		super(plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, "bungee_");
 		this.plugin = plugin;
-		LANG_VERSION = version;
-	}
-
-	/**
-	 * @return true if a language file is loaded, false if not
-	 */
-	public boolean isLoaded()
-	{
-		return lang != null;
-	}
-
-	/**
-	 * @param path the path to the searched language value
-	 * @return returns the language data
-	 */
-	public String get(String path)
-	{
-		return lang.getString("Language." + path, ChatColor.RED + "Message not found!");
 	}
 
 	/**
@@ -72,117 +55,4 @@ public class Language
 	{
 		return ChatColor.translateAlternateColorCodes('&', get(path));
 	}
-
-	public int getVersion()
-	{
-		return lang.getInt("Version");
-	}
-
-	protected void set(String path, String value)
-	{
-		lang.set(path, value);
-	}
-
-	/**
-	 * Loads the language file
-	 * @param Language the language to load
-	 * @param UpdateMode how the language file should be updated
-	 */
-	public void load(String Language, String UpdateMode)
-	{
-		language = Language;
-		if(UpdateMode.equalsIgnoreCase("overwrite"))
-		{
-			updateMode = LanguageUpdateMethod.OVERWRITE;
-		}
-		else
-		{
-			updateMode = LanguageUpdateMethod.UPDATE;
-		}
-		loadFile();
-	}
-
-	/**
-	 * Loads the language file
-	 * @param Language the language to load
-	 * @param UpdateMode how the language file should be updated
-	 */
-	public void load(String Language, LanguageUpdateMethod UpdateMode)
-	{
-		language = Language;
-		updateMode = UpdateMode;
-		loadFile();
-	}
-	
-	private void loadFile()
-	{
-		File file = new File(plugin.getDataFolder() + File.separator + "lang", language + ".yml");
-		if(!file.exists())
-		{
-			extractLangFile(file);
-		}
-		lang = YamlConfiguration.loadConfiguration(file);
-		updateLangFile(file);
-	}
-	
-	private void extractLangFile(File Target)
-	{
-		try
-		{
-			plugin.saveResource("lang" + File.separator + language + ".yml", true);
-		}
-		catch(Exception ex)
-		{
-			try
-			{
-				File file_en = new File(plugin.getDataFolder() + File.separator + "lang", "en.yml");
-				if(!file_en.exists())
-				{
-					plugin.saveResource("lang" + File.separator + "en.yml", true);
-				}
-				Files.copy(file_en, Target);
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	private boolean updateLangFile(File file)
-	{
-		if(getVersion() < LANG_VERSION)
-		{
-			plugin.getLogger().info("Language version: " + getVersion() + " => Language outdated! Updating ...");
-			if(updateMode == LanguageUpdateMethod.OVERWRITE)
-			{
-				extractLangFile(file);
-				loadFile();
-				plugin.getLogger().info(get("Language file has been updated."));
-				return true;
-			}
-			else
-			{
-				doUpdate();
-				lang.set("Version", LANG_VERSION);
-				try
-				{
-					lang.save(file);
-					plugin.getLogger().info(get("Language file has been updated."));
-					return true;
-				}
-		  	  	catch (Exception e) 
-		  	  	{
-		  	  		e.printStackTrace();
-		  	  	}
-			}
-		}
-		if(LANG_VERSION < getVersion())
-		{
-			plugin.getLogger().warning("Language file version newer than expected!");
-		}
-		return false;
-	}
-	
-	protected void doUpdate() {}
 }
