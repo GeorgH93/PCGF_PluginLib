@@ -27,7 +27,7 @@ public class Language extends at.pcgamingfreaks.Language
 	protected JavaPlugin plugin;
 
 	/**
-	 * @param plugin the instance of the plugin
+	 * @param plugin  the instance of the plugin
 	 * @param version the current version of the language file
 	 */
 	public Language(JavaPlugin plugin, int version)
@@ -36,10 +36,10 @@ public class Language extends at.pcgamingfreaks.Language
 	}
 
 	/**
-	 * @param plugin the instance of the plugin
+	 * @param plugin  the instance of the plugin
 	 * @param version the current version of the language file
-	 * @param path the sub-folder for the language file
-	 * @param prefix the prefix for the language file
+	 * @param path    the sub-folder for the language file
+	 * @param prefix  the prefix for the language file
 	 */
 	public Language(JavaPlugin plugin, int version, String path, String prefix)
 	{

@@ -25,18 +25,18 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	protected JavaPlugin plugin;
 
 	/**
-	 * @param plugin the instance of the plugin
+	 * @param plugin  the instance of the plugin
 	 * @param version current version of the config
 	 */
 	public Configuration(JavaPlugin plugin, int version)
 	{
-		this(plugin, version, -1, "/config.yml");
+		this(plugin, version, -1, "config.yml");
 	}
 
 	/**
-	 * @param plugin the instance of the plugin
+	 * @param plugin  the instance of the plugin
 	 * @param version current version of the config
-	 * @param path the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 * @param path    the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	public Configuration(JavaPlugin plugin, int version, String path)
 	{
@@ -45,8 +45,8 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	}
 
 	/**
-	 * @param plugin the instance of the plugin
-	 * @param version current version of the config
+	 * @param plugin           the instance of the plugin
+	 * @param version          current version of the config
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
 	public Configuration(JavaPlugin plugin, int version, int upgradeThreshold)
@@ -55,10 +55,10 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	}
 
 	/**
-	 * @param plugin the instance of the plugin
-	 * @param version current version of the config
+	 * @param plugin           the instance of the plugin
+	 * @param version          current version of the config
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
-	 * @param path the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	public Configuration(JavaPlugin plugin, int version, int upgradeThreshold, String path)
 	{
@@ -68,6 +68,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 
 	/**
 	 * Checks if the used bukkit version supports UUIDs
+	 *
 	 * @return if the used bukkit version is uuid compatible
 	 */
 	protected boolean isBukkitVersionUUIDCompatible()

@@ -24,7 +24,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	protected Plugin plugin;
 
 	/**
-	 * @param plugin the instance of the plugin
+	 * @param plugin  the instance of the plugin
 	 * @param version current version of the config
 	 */
 	public Configuration(Plugin plugin, int version)
@@ -33,9 +33,9 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	}
 
 	/**
-	 * @param plugin the instance of the plugin
+	 * @param plugin  the instance of the plugin
 	 * @param version current version of the config
-	 * @param path the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 * @param path    the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	public Configuration(Plugin plugin, int version, String path)
 	{
@@ -44,8 +44,8 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	}
 
 	/**
-	 * @param plugin the instance of the plugin
-	 * @param version current version of the config
+	 * @param plugin           the instance of the plugin
+	 * @param version          current version of the config
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
 	public Configuration(Plugin plugin, int version, int upgradeThreshold)
@@ -54,14 +54,14 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	}
 
 	/**
-	 * @param plugin the instance of the plugin
-	 * @param version current version of the config
+	 * @param plugin           the instance of the plugin
+	 * @param version          current version of the config
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
-	 * @param path the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	public Configuration(Plugin plugin, int version, int upgradeThreshold, String path)
 	{
-		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path);
+		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, "bungee_");
 		this.plugin = plugin;
 	}
 }

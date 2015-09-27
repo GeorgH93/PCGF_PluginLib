@@ -37,7 +37,7 @@ public class Language
 	private final int LANG_VERSION;
 
 	/**
-	 * @param logger The logger instance of the plugin
+	 * @param logger  The logger instance of the plugin
 	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
 	 * @param version the current version of the language file
 	 */
@@ -47,11 +47,11 @@ public class Language
 	}
 
 	/**
-	 * @param logger The logger instance of the plugin
+	 * @param logger  The logger instance of the plugin
 	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
 	 * @param version the current version of the language file
-	 * @param path the sub-folder for the language file
-	 * @param prefix the prefix for the language file
+	 * @param path    the sub-folder for the language file
+	 * @param prefix  the prefix for the language file
 	 */
 	public Language(Logger logger, File baseDir, int version, String path, String prefix)
 	{
@@ -59,11 +59,11 @@ public class Language
 	}
 
 	/**
-	 * @param logger The logger instance of the plugin
-	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version the current version of the language file
-	 * @param path the sub-folder for the language file
-	 * @param prefix the prefix for the language file
+	 * @param logger      The logger instance of the plugin
+	 * @param baseDir     The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param version     the current version of the language file
+	 * @param path        the sub-folder for the language file
+	 * @param prefix      the prefix for the language file
 	 * @param inJarPrefix the prefix for the language file within the jar (e.g.: bungee_)
 	 */
 	public Language(Logger logger, File baseDir, int version, String path, String prefix, String inJarPrefix)
@@ -105,7 +105,8 @@ public class Language
 
 	/**
 	 * Loads the language file
-	 * @param Language the language to load
+	 *
+	 * @param Language   the language to load
 	 * @param UpdateMode how the language file should be updated
 	 */
 	public void load(String Language, String UpdateMode)
@@ -117,7 +118,8 @@ public class Language
 
 	/**
 	 * Loads the language file
-	 * @param Language the language to load
+	 *
+	 * @param Language   the language to load
 	 * @param UpdateMode how the language file should be updated
 	 */
 	public void load(String Language, LanguageUpdateMethod UpdateMode)
@@ -126,7 +128,7 @@ public class Language
 		updateMode = UpdateMode;
 		loadLang();
 	}
-	
+
 	private void loadLang()
 	{
 		langFile = new File(BASE_DIR + PATH, PREFIX + language + ".yml");
@@ -138,13 +140,13 @@ public class Language
 		{
 			lang = new YAML(langFile);
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 		updateLang();
 	}
-	
+
 	private void extractLangFile()
 	{
 		try
@@ -152,30 +154,36 @@ public class Language
 			if(langFile.exists() && !langFile.delete())
 			{
 				log.info("Failed deleting old language file.");
-	        }
-            if(!langFile.createNewFile())
-            {
-	            log.info("Failed create new language file.");
-            }
-            try (InputStream is = getClass().getResourceAsStream("lang/" + IN_JAR_PREFIX + language + ".yml"); OutputStream os = new FileOutputStream(langFile))
-            {
-                ByteStreams.copy(is, os);
-            }
-            catch(Exception e)
-            {
-            	try (InputStream is = getClass().getResourceAsStream("lang/" + IN_JAR_PREFIX + "en.yml"); OutputStream os = new FileOutputStream(langFile))
-                {
-                    ByteStreams.copy(is, os);
-                }
-            }
-            log.info("Language file extracted successfully!");
-        }
-		catch (IOException e)
+			}
+			if(!langFile.createNewFile())
+			{
+				log.info("Failed create new language file.");
+			}
+			try(InputStream is = getClass().getResourceAsStream("/lang/" + IN_JAR_PREFIX + language + ".yml"); OutputStream os = new FileOutputStream(langFile))
+			{
+				ByteStreams.copy(is, os);
+				os.flush();
+				is.close();
+				os.close();
+			}
+			catch(Exception e)
+			{
+				try(InputStream is = getClass().getResourceAsStream("/lang/" + IN_JAR_PREFIX + "en.yml"); OutputStream os = new FileOutputStream(langFile))
+				{
+					ByteStreams.copy(is, os);
+					os.flush();
+					is.close();
+					os.close();
+				}
+			}
+			log.info("Language file extracted successfully!");
+		}
+		catch(IOException e)
 		{
-            e.printStackTrace();
-        }
+			e.printStackTrace();
+		}
 	}
-	
+
 	private boolean updateLang()
 	{
 		if(getVersion() < LANG_VERSION)
@@ -210,7 +218,7 @@ public class Language
 		}
 		return false;
 	}
-	
+
 	protected void doUpdate() {}
 
 	public void save() throws FileNotFoundException, YAMLNotInitializedException

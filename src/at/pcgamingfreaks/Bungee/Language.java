@@ -29,7 +29,7 @@ public class Language extends at.pcgamingfreaks.Language
 	protected Plugin plugin;
 
 	/**
-	 * @param plugin the instance of the plugin
+	 * @param plugin  the instance of the plugin
 	 * @param version the current version of the language file
 	 */
 	public Language(Plugin plugin, int version)
@@ -38,23 +38,23 @@ public class Language extends at.pcgamingfreaks.Language
 	}
 
 	/**
-	 * @param plugin the instance of the plugin
+	 * @param plugin  the instance of the plugin
 	 * @param version the current version of the language file
-	 * @param path the sub-folder for the language file
-	 * @param prefix the prefix for the language file
+	 * @param path    the sub-folder for the language file
+	 * @param prefix  the prefix for the language file
 	 */
 	public Language(Plugin plugin, int version, String path, String prefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, "bungee_");
 		this.plugin = plugin;
 	}
-	
+
 	// Getter
 	public String getString(String option)
 	{
 		return ChatColor.translateAlternateColorCodes('&', get(option));
 	}
-	
+
 	public BaseComponent[] getReady(String option)
 	{
 		return TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', get(option)));
