@@ -121,12 +121,14 @@ public class Language
 	 *
 	 * @param Language   the language to load
 	 * @param UpdateMode how the language file should be updated
+	 * @return True if it's loaded successfully. False if not.
 	 */
-	public void load(String Language, LanguageUpdateMethod UpdateMode)
+	public boolean load(String Language, LanguageUpdateMethod UpdateMode)
 	{
 		language = Language;
 		updateMode = UpdateMode;
 		loadLang();
+		return isLoaded();
 	}
 
 	private void loadLang()
