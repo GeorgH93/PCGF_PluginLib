@@ -32,7 +32,7 @@ public class Language
 
 	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
 	private final String PATH, PREFIX, IN_JAR_PREFIX;
-	private final File BASE_DIR;
+	private final File DIR;
 	private File langFile;
 	private final int LANG_VERSION;
 
@@ -69,7 +69,7 @@ public class Language
 	public Language(Logger logger, File baseDir, int version, String path, String prefix, String inJarPrefix)
 	{
 		log = logger;
-		BASE_DIR = baseDir;
+		DIR = new File(baseDir, path);
 		LANG_VERSION = version;
 		PATH = path;
 		PREFIX = prefix;
@@ -133,7 +133,7 @@ public class Language
 
 	private void loadLang()
 	{
-		langFile = new File(BASE_DIR + PATH, PREFIX + language + ".yml");
+		langFile = new File(DIR, PREFIX + language + ".yml");
 		if(!langFile.exists())
 		{
 			extractLangFile();
@@ -156,6 +156,10 @@ public class Language
 			if(langFile.exists() && !langFile.delete())
 			{
 				log.info("Failed deleting old language file.");
+			}
+			if(!DIR.exists() && !DIR.mkdirs())
+			{
+				log.info("Failed creating directory's!");
 			}
 			if(!langFile.createNewFile())
 			{
