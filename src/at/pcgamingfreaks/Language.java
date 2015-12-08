@@ -31,7 +31,7 @@ public class Language
 	protected String language = "en";
 
 	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
-	private final String PATH, PREFIX, IN_JAR_PREFIX;
+	private final String PREFIX, IN_JAR_PREFIX;
 	private final File DIR;
 	private File langFile;
 	private final int LANG_VERSION;
@@ -71,7 +71,6 @@ public class Language
 		log = logger;
 		DIR = new File(baseDir, path);
 		LANG_VERSION = version;
-		PATH = path;
 		PREFIX = prefix;
 		IN_JAR_PREFIX = inJarPrefix;
 	}
