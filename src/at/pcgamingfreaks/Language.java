@@ -168,8 +168,6 @@ public class Language
 			{
 				ByteStreams.copy(is, os);
 				os.flush();
-				is.close();
-				os.close();
 			}
 			catch(Exception e)
 			{
@@ -177,8 +175,6 @@ public class Language
 				{
 					ByteStreams.copy(is, os);
 					os.flush();
-					is.close();
-					os.close();
 				}
 			}
 			log.info("Language file extracted successfully!");

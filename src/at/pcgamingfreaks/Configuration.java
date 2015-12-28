@@ -190,8 +190,6 @@ public class Configuration
 				{
 					ByteStreams.copy(is, os);
 					os.flush();
-					is.close();
-					os.close();
 				}
 				log.info("Configuration extracted successfully!");
 				config = new YAML(configFile);
