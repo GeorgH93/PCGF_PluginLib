@@ -18,20 +18,13 @@
 package at.pcgamingfreaks.Bukkit.Effects;
 
 import at.pcgamingfreaks.Bukkit.Reflection;
+
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-public class Effect_1_8 extends EffectBase
+public class Effect_1_8 extends EffectBukkit
 {
-	private final static Class<?> EntityPlayer = Reflection.getNMSClass("EntityPlayer");
-	private final static Method sendPacket = Reflection.getMethod(Reflection.getNMSClass("PlayerConnection"), "sendPacket");
-	private final static Field playerConnection = Reflection.getField(EntityPlayer, "playerConnection");
 	private final Constructor packetConstructor;
 
 	public Effect_1_8() throws NoSuchMethodException, NullPointerException
@@ -66,22 +59,6 @@ public class Effect_1_8 extends EffectBase
 		{
 			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.8)");
 			e.printStackTrace();
-		}
-	}
-
-	private void spawnParticle(Location location, double visibleRange, Object particle) throws IllegalAccessException, InvocationTargetException
-	{
-		Object handle;
-		for(Entity entity : location.getWorld().getEntities())
-		{
-			if(entity instanceof Player && entity.getLocation().getWorld().equals(location.getWorld()) && entity.getLocation().distance(location) < visibleRange)
-			{
-				handle = Reflection.getHandle(entity);
-				if(handle != null && handle.getClass() == EntityPlayer)
-				{
-					sendPacket.invoke(playerConnection.get(handle), particle);
-				}
-			}
 		}
 	}
 }
