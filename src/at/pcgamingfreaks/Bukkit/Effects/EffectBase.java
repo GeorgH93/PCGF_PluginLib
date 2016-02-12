@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2015 GeorgH93
+ *   Copyright (C) 2014-2016 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -150,11 +150,11 @@ public abstract class EffectBase
 			{
 				if(version[1].equals("7"))
 				{
-					eb = new Effect_1_7();
+					eb = new EffectBukkit_1_7();
 				}
 				else if(version[1].equals("8"))
 				{
-					eb = new Effect_1_8();
+					eb = new EffectBukkit_1_8();
 				}
 			}
 		}

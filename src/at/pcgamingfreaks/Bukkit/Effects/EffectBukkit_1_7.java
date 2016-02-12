@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2015 GeorgH93
+ *   Copyright (C) 2014-2016 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,11 +23,11 @@ import org.bukkit.Location;
 
 import java.lang.reflect.Constructor;
 
-public class Effect_1_7 extends EffectBukkit
+public class EffectBukkit_1_7 extends EffectBukkit
 {
 	private final Constructor packetConstructor;
 
-	public Effect_1_7() throws NoSuchMethodException, NullPointerException
+	public EffectBukkit_1_7() throws NoSuchMethodException, NullPointerException
 	{
 		//noinspection ConstantConditions
 		packetConstructor = Reflection.getNMSClass("PacketPlayOutWorldParticles").getConstructor(String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
