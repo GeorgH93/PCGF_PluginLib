@@ -31,8 +31,10 @@ import java.util.logging.Logger;
  */
 public class Utils
 {
-	private static final Class<?> craftItemStackClazz = Reflection.getOBCClass("inventory.CraftItemStack"), nmsItemStackClazz = Reflection.getNMSClass("ItemStack"), nbtTagCompoundClazz = Reflection.getNMSClass("NBTTagCompound");
-	private static final Method asNMSCopyMethod = Reflection.getMethod(craftItemStackClazz, "asNMSCopy", ItemStack.class), saveNmsItemStackMethod = Reflection.getMethod(nmsItemStackClazz, "save", nbtTagCompoundClazz);
+	private static final Class<?> craftItemStackClazz = Reflection.getOBCClass("inventory.CraftItemStack"), nmsItemStackClazz = Reflection.getNMSClass("ItemStack"),
+								  nbtTagCompoundClazz = Reflection.getNMSClass("NBTTagCompound");
+	private static final Method asNMSCopyMethod = Reflection.getMethod(craftItemStackClazz, "asNMSCopy", ItemStack.class),
+								saveNmsItemStackMethod = Reflection.getMethod(nmsItemStackClazz, "save", nbtTagCompoundClazz);
 
 	/**
 	 * Converts an item stack into a json string used for chat messages.
@@ -45,11 +47,19 @@ public class Utils
 	{
 		try
 		{
-			return saveNmsItemStackMethod.invoke(asNMSCopyMethod.invoke(null, itemStack), nbtTagCompoundClazz.newInstance()).toString();
+			if(saveNmsItemStackMethod == null || asNMSCopyMethod == null || nbtTagCompoundClazz == null)
+			{
+				logger.log(Level.SEVERE, "Failed to serialize item stack to NMS item! Bukkit Version: " + Bukkit.getServer().getVersion() +
+						"\nIt one or more of the reflection variables is null! Looks like your bukkit version is not compatible. Please check for updates.");
+			}
+			else
+			{
+				return saveNmsItemStackMethod.invoke(asNMSCopyMethod.invoke(null, itemStack), nbtTagCompoundClazz.newInstance()).toString();
+			}
 		}
 		catch (Throwable t)
 		{
-			logger.log(Level.SEVERE, "Failed to serialize item stack to NMS item!\nBukkit Version: " + Bukkit.getServer().getVersion() + "\n", t);
+			logger.log(Level.SEVERE, "Failed to serialize item stack to NMS item! Bukkit Version: " + Bukkit.getServer().getVersion() + "\n", t);
 		}
 		return "";
 	}
