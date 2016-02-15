@@ -31,10 +31,11 @@ import java.util.logging.Logger;
  */
 public class Utils
 {
-	private static final Class<?> craftItemStackClazz = Reflection.getOBCClass("inventory.CraftItemStack"), nmsItemStackClazz = Reflection.getNMSClass("ItemStack"),
-								  nbtTagCompoundClazz = Reflection.getNMSClass("NBTTagCompound");
-	private static final Method asNMSCopyMethod = Reflection.getMethod(craftItemStackClazz, "asNMSCopy", ItemStack.class),
-								saveNmsItemStackMethod = Reflection.getMethod(nmsItemStackClazz, "save", nbtTagCompoundClazz);
+	private static final Class<?> craftItemStackClazz = Reflection.getOBCClass("inventory.CraftItemStack");
+	private static final Class<?> nmsItemStackClazz = Reflection.getNMSClass("ItemStack");
+	private static final Class<?> nbtTagCompoundClazz = Reflection.getNMSClass("NBTTagCompound");
+	private static final Method asNMSCopyMethod = Reflection.getMethod(craftItemStackClazz, "asNMSCopy", ItemStack.class);
+	private static final Method saveNmsItemStackMethod = Reflection.getMethod(nmsItemStackClazz, "save", nbtTagCompoundClazz);
 
 	/**
 	 * Converts an item stack into a json string used for chat messages.
