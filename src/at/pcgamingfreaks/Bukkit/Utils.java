@@ -105,8 +105,7 @@ public class Utils
 			logger.warning(ChatColor.RED + "There will be no support for bugs caused by \"PerWorldPlugins\"!");
 			logger.warning(ChatColor.YELLOW + "Waiting " + pauseTime + " seconds till loading will resume!");
 
-			// Pause the server startup for some seconds to give the admins the chance to read the message
-			if(pauseTime > 0)
+			if(pauseTime > 0) // If there is a valid time we pause the server startup for some seconds to give the admins the chance to read the message
 			{
 				try
 				{
