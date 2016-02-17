@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2014-2015 GeorgH93
+* Copyright (C) 2014-2016 GeorgH93
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.yaml.YAML;
+import at.pcgamingfreaks.yaml.YAMLKeyNotFoundException;
 import at.pcgamingfreaks.yaml.YAMLNotInitializedException;
 import com.google.common.io.ByteStreams;
 
@@ -27,8 +28,8 @@ import java.util.logging.Logger;
 
 public class Configuration
 {
-	protected Logger log;
-	protected YAML config = null;
+	protected final Logger logger; // The logger instance of the plugin
+	protected YAML config = null;  // The yaml config instance of the configuration
 
 	private final String CONFIG_PATH, IN_JAR_PREFIX;
 	private final int CONFIG_VERSION, UPGRADE_THRESHOLD;
@@ -53,7 +54,6 @@ public class Configuration
 	public Configuration(Logger logger, File baseDir, int version, String path)
 	{
 		this(logger, baseDir, version, -1, path);
-
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class Configuration
 
 	private Configuration(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String inJarPrefix, YAML oldConfig)
 	{
-		log = logger;
+		this.logger = logger;
 		configBaseDir = baseDir;
 		UPGRADE_THRESHOLD = upgradeThreshold;
 		CONFIG_VERSION = version;
@@ -135,7 +135,7 @@ public class Configuration
 	 */
 	protected void doUpgrade(Configuration oldConfiguration)
 	{
-		log.info("No custom config upgrade code implemented! Copying all data from old config to new one.");
+		logger.info("No custom config upgrade code implemented! Copying all data from old config to new one.");
 		try
 		{
 			Set<String> keys = oldConfiguration.getConfig().getKeys();
@@ -157,7 +157,7 @@ public class Configuration
 	 */
 	protected void doUpdate()
 	{
-		log.info("No config update code implemented! Just updating version!");
+		logger.info("No config update code implemented! Just updating version!");
 	}
 
 	/**
@@ -170,9 +170,21 @@ public class Configuration
 		return false;
 	}
 
-	public void saveConfig() throws FileNotFoundException, YAMLNotInitializedException
+	/**
+	 * Saves all changes in the configuration to the file.
+	 *
+	 * @throws FileNotFoundException       If the file the config should be saved to does not exist.
+	 */
+	public void saveConfig() throws FileNotFoundException
 	{
-		config.save(configFile);
+		try
+		{
+			config.save(configFile);
+		}
+		catch(YAMLNotInitializedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private void loadConfig()
@@ -181,17 +193,17 @@ public class Configuration
 		{
 			if(!configFile.exists())
 			{
-				log.info("No config found. Create new one ...");
+				logger.info("No config found. Create new one ...");
 				if(!configBaseDir.exists() && !configBaseDir.mkdir())
 				{
-					log.warning("Couldn't create directory. " + configBaseDir.toString());
+					logger.warning("Couldn't create directory. " + configBaseDir.toString());
 				}
 				try(InputStream is = getClass().getResourceAsStream("/" + IN_JAR_PREFIX + CONFIG_PATH); OutputStream os = new FileOutputStream(configFile))
 				{
 					ByteStreams.copy(is, os);
 					os.flush();
 				}
-				log.info("Configuration extracted successfully!");
+				logger.info("Configuration extracted successfully!");
 				config = new YAML(configFile);
 				if(newConfigCreated())
 				{
@@ -217,19 +229,19 @@ public class Configuration
 		{
 			if(UPGRADE_THRESHOLD > 0 && getVersion() < UPGRADE_THRESHOLD)
 			{
-				log.info("Configuration Version: " + getVersion() + " => Configuration outdated! Upgrading ...");
+				logger.info("Configuration Version: " + getVersion() + " => Configuration outdated! Upgrading ...");
 				upgradeConfig();
 			}
 			else
 			{
-				log.info("Configuration Version: " + getVersion() + " => Configuration outdated! Updating ...");
+				logger.info("Configuration Version: " + getVersion() + " => Configuration outdated! Updating ...");
 				doUpdate();
 				config.set("Version", CONFIG_VERSION);
 			}
 			try
 			{
 				saveConfig();
-				log.info("Configuration has been updated.");
+				logger.info("Configuration has been updated.");
 				return true;
 			}
 			catch(Exception e)
@@ -240,7 +252,7 @@ public class Configuration
 		}
 		if(CONFIG_VERSION < getVersion())
 		{
-			log.info("Configuration File Version newer than expected!");
+			logger.info("Configuration File Version newer than expected!");
 		}
 		return false;
 	}
@@ -253,18 +265,18 @@ public class Configuration
 			File oldConfig = new File(configFile + ".old_v" + oldVersion);
 			if(oldConfig.exists() && !oldConfig.delete())
 			{
-				log.warning("Failed to delete old config backup!");
+				logger.warning("Failed to delete old config backup!");
 			}
 			if(!configFile.renameTo(oldConfig))
 			{
-				log.warning("Failed to rename old config! Could not do upgrade!");
+				logger.warning("Failed to rename old config! Could not do upgrade!");
 				return;
 			}
 			YAML oldYAML = config;
 			loadConfig();
 			if(isLoaded())
 			{
-				doUpgrade(new Configuration(log, configBaseDir, oldVersion, -1, CONFIG_PATH + ".old_v" + oldVersion, IN_JAR_PREFIX, oldYAML));
+				doUpgrade(new Configuration(logger, configBaseDir, oldVersion, -1, CONFIG_PATH + ".old_v" + oldVersion, IN_JAR_PREFIX, oldYAML));
 			}
 		}
 		catch(Exception e)
@@ -274,66 +286,150 @@ public class Configuration
 		}
 	}
 
-	// General getter
+	//region General getter
+	/**
+	 * Gets the {@link YAML} configuration instance for direct read/write.
+	 *
+	 * @return The configuration instance
+	 */
 	public YAML getConfig()
 	{
 		return config;
 	}
 
-	public int getInt(String path) throws Exception
+	/**
+	 * Gets an {@link Integer} value from the configuration.
+	 *
+	 * @param path The path to the value in the configuration file.
+	 * @return The {@link Integer} value from the configuration file.
+	 * @throws YAMLKeyNotFoundException When the given path is not found in the configuration
+	 * @throws NumberFormatException When the value on the given position can't be converted to an {@link Integer}
+	 */
+	public int getInt(String path) throws YAMLKeyNotFoundException, NumberFormatException
 	{
 		return config.getInt(path);
 	}
 
-	public double getDouble(String path) throws Exception
+	/**
+	 * Gets an {@link Double} value from the configuration.
+	 *
+	 * @param path The path to the value in the configuration file.
+	 * @return The {@link Double} value from the configuration file.
+	 * @throws YAMLKeyNotFoundException When the given path is not found in the configuration
+	 * @throws NumberFormatException When the value on the given position can't be converted to an {@link Double}
+	 */
+	public double getDouble(String path) throws YAMLKeyNotFoundException, NumberFormatException
 	{
 		return config.getDouble(path);
 	}
 
-	public String getString(String path) throws Exception
+	/**
+	 * Gets an {@link String} value from the configuration.
+	 *
+	 * @param path The path to the value in the configuration file.
+	 * @return The {@link String} value from the configuration file.
+	 * @throws YAMLKeyNotFoundException When the given path is not found in the configuration
+	 */
+	public String getString(String path) throws YAMLKeyNotFoundException
 	{
 		return config.getString(path);
 	}
 
-	public boolean getBool(String path) throws Exception
+	/**
+	 * Gets an {@link Boolean} value from the configuration.
+	 *
+	 * @param path The path to the value in the configuration file.
+	 * @return The {@link Boolean} value from the configuration file.
+	 * @throws YAMLKeyNotFoundException When the given path is not found in the configuration
+	 */
+	public boolean getBool(String path) throws YAMLKeyNotFoundException
 	{
 		return config.getBoolean(path);
 	}
 
+	/**
+	 * Gets the version of the configuration.
+	 *
+	 * @return The version of the configuration. -1 if there is no or an invalid "Version" value in the configuration file.
+	 */
 	public int getVersion()
 	{
-		return config.getInt("Version", -1);
+		try
+		{
+			return config.getInt("Version");
+		}
+		catch(Exception ignored)
+		{
+			return -1;
+		}
 	}
+	//endregion
 
-	// Getter for language settings
+	//region Getter for language settings
+	/**
+	 * Gets the language to use, defined in the configuration.
+	 *
+	 * @return The language to use.
+	 */
 	public String getLanguage()
 	{
 		return config.getString("Language", "en");
 	}
 
+	/**
+	 * Gets how the language file should be updated, defined in the configuration.
+	 *
+	 * @return The update method for the language file.
+	 */
 	public LanguageUpdateMethod getLanguageUpdateMode()
 	{
 		return ((config.getString("LanguageUpdateMode", "overwrite").equalsIgnoreCase("overwrite")) ? LanguageUpdateMethod.OVERWRITE : LanguageUpdateMethod.UPDATE);
 	}
+	//endregion
 
-	// General setter
+	//region General setter
+	/**
+	 * Sets a option in the configuration.
+	 *
+	 * @param path  The path to the configuration option inside the configuration file.
+	 * @param value The value it should be set to.
+	 */
 	public void set(String path, String value)
 	{
 		config.set(path, value);
 	}
 
+	/**
+	 * Sets a option in the configuration.
+	 *
+	 * @param path  The path to the configuration option inside the configuration file.
+	 * @param value The value it should be set to.
+	 */
 	public void set(String path, int value)
 	{
 		config.set(path, value);
 	}
 
+	/**
+	 * Sets a option in the configuration.
+	 *
+	 * @param path  The path to the configuration option inside the configuration file.
+	 * @param value The value it should be set to.
+	 */
 	public void set(String path, double value)
 	{
 		config.set(path, value);
 	}
 
+	/**
+	 * Sets a option in the configuration.
+	 *
+	 * @param path  The path to the configuration option inside the configuration file.
+	 * @param value The value it should be set to.
+	 */
 	public void set(String path, boolean value)
 	{
 		config.set(path, value);
 	}
+	//endregion
 }
