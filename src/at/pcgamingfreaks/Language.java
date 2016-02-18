@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2015 GeorgH93
+ *   Copyright (C) 2014-2016 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 public class Language
 {
-	protected Logger log;
+	protected final Logger logger; // The logger instance of the using plugin
 	protected YAML lang = null;
 	protected String language = "en";
 
@@ -68,7 +68,7 @@ public class Language
 	 */
 	public Language(Logger logger, File baseDir, int version, String path, String prefix, String inJarPrefix)
 	{
-		log = logger;
+		this.logger = logger;
 		DIR = new File(baseDir, path);
 		LANG_VERSION = version;
 		PREFIX = prefix;
@@ -105,27 +105,26 @@ public class Language
 	/**
 	 * Loads the language file
 	 *
-	 * @param Language   the language to load
-	 * @param UpdateMode how the language file should be updated
+	 * @param language   the language to load
+	 * @param updateMode how the language file should be updated
+	 * @return True if it's loaded successfully. False if not.
 	 */
-	public void load(String Language, String UpdateMode)
+	public boolean load(String language, String updateMode)
 	{
-		language = Language;
-		updateMode = (UpdateMode.equalsIgnoreCase("overwrite")) ? LanguageUpdateMethod.OVERWRITE : LanguageUpdateMethod.UPDATE;
-		loadLang();
+		return load(language, (updateMode.equalsIgnoreCase("overwrite")) ? LanguageUpdateMethod.OVERWRITE : LanguageUpdateMethod.UPDATE);
 	}
 
 	/**
 	 * Loads the language file
 	 *
-	 * @param Language   the language to load
-	 * @param UpdateMode how the language file should be updated
+	 * @param language   the language to load
+	 * @param updateMode how the language file should be updated
 	 * @return True if it's loaded successfully. False if not.
 	 */
-	public boolean load(String Language, LanguageUpdateMethod UpdateMode)
+	public boolean load(String language, LanguageUpdateMethod updateMode)
 	{
-		language = Language;
-		updateMode = UpdateMode;
+		this.language = language;
+		this.updateMode = updateMode;
 		loadLang();
 		return isLoaded();
 	}
@@ -154,15 +153,15 @@ public class Language
 		{
 			if(langFile.exists() && !langFile.delete())
 			{
-				log.info("Failed deleting old language file.");
+				logger.info("Failed deleting old language file.");
 			}
 			if(!DIR.exists() && !DIR.mkdirs())
 			{
-				log.info("Failed creating directory's!");
+				logger.info("Failed creating directory's!");
 			}
 			if(!langFile.createNewFile())
 			{
-				log.info("Failed create new language file.");
+				logger.info("Failed create new language file.");
 			}
 			try(InputStream is = getClass().getResourceAsStream("/lang/" + IN_JAR_PREFIX + language + ".yml"); OutputStream os = new FileOutputStream(langFile))
 			{
@@ -177,7 +176,7 @@ public class Language
 					os.flush();
 				}
 			}
-			log.info("Language file extracted successfully!");
+			logger.info("Language file extracted successfully!");
 		}
 		catch(IOException e)
 		{
@@ -189,12 +188,12 @@ public class Language
 	{
 		if(getVersion() < LANG_VERSION)
 		{
-			log.info("Language version: " + getVersion() + " => Language outdated! Updating ...");
+			logger.info("Language version: " + getVersion() + " => Language outdated! Updating ...");
 			if(updateMode == LanguageUpdateMethod.OVERWRITE)
 			{
 				extractLangFile();
 				loadLang();
-				log.info("Language file has been updated.");
+				logger.info("Language file has been updated.");
 			}
 			else
 			{
@@ -203,7 +202,7 @@ public class Language
 				try
 				{
 					save();
-					log.info("Language file has been updated.");
+					logger.info("Language file has been updated.");
 				}
 				catch(Exception e)
 				{
@@ -215,15 +214,27 @@ public class Language
 		}
 		if(LANG_VERSION < getVersion())
 		{
-			log.warning("Language file version newer than expected!");
+			logger.warning("Language file version newer than expected!");
 		}
 		return false;
 	}
 
 	protected void doUpdate() {}
 
-	public void save() throws FileNotFoundException, YAMLNotInitializedException
+	/**
+	 * Saves all changes to the file.
+	 *
+	 * @throws FileNotFoundException If the file the should be saved to does not exist.
+	 */
+	public void save() throws FileNotFoundException
 	{
-		lang.save(langFile);
+		try
+		{
+			lang.save(langFile);
+		}
+		catch(YAMLNotInitializedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
