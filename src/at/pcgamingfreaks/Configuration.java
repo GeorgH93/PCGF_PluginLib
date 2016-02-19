@@ -48,8 +48,8 @@ public class Configuration
 	/**
 	 * @param logger  The logger instance of the plugin
 	 * @param baseDir The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version current version of the config
-	 * @param path    the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 * @param version The current version of the config
+	 * @param path    The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	public Configuration(Logger logger, File baseDir, int version, String path)
 	{
@@ -59,8 +59,8 @@ public class Configuration
 	/**
 	 * @param logger           The logger instance of the plugin
 	 * @param baseDir          The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          current version of the config
-	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
+	 * @param version          The current version of the config
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
 	public Configuration(Logger logger, File baseDir, int version, int upgradeThreshold)
 	{
@@ -70,9 +70,9 @@ public class Configuration
 	/**
 	 * @param logger           The logger instance of the plugin
 	 * @param baseDir          The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          current version of the config
-	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
-	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 * @param version          The current version of the config
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
+	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	public Configuration(Logger logger, File baseDir, int version, int upgradeThreshold, String path)
 	{
@@ -82,9 +82,9 @@ public class Configuration
 	/**
 	 * @param logger           The logger instance of the plugin
 	 * @param baseDir          The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          current version of the config
-	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
-	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 * @param version          The current version of the config
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
+	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 * @param inJarPrefix      The Prefix for the file in the jar (e.g. bungee_)
 	 */
 	public Configuration(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String inJarPrefix)
@@ -112,6 +112,8 @@ public class Configuration
 	}
 
 	/**
+	 * Checks if the config is loaded or not
+	 *
 	 * @return true if the config is loaded, false if not
 	 */
 	public boolean isLoaded()
@@ -173,7 +175,7 @@ public class Configuration
 	/**
 	 * Saves all changes in the configuration to the file.
 	 *
-	 * @throws FileNotFoundException       If the file the config should be saved to does not exist.
+	 * @throws FileNotFoundException If the file the config should be saved to does not exist.
 	 */
 	public void saveConfig() throws FileNotFoundException
 	{
@@ -181,7 +183,7 @@ public class Configuration
 		{
 			config.save(configFile);
 		}
-		catch(YAMLNotInitializedException e)
+		catch(YAMLNotInitializedException e) // It should not happen, but you never know
 		{
 			e.printStackTrace();
 		}
