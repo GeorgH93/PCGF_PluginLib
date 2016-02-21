@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2015 GeorgH93
+ *   Copyright (C) 2014-2016 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,9 @@
 package at.pcgamingfreaks;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Scanner;
@@ -56,19 +58,8 @@ public class UUIDConverter
 	 */
 	public static String getNameFromUUID(String uuid)
 	{
-		String name = null;
-		try
-		{
-			URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replaceAll("-", ""));
-			Scanner jsonScanner = new Scanner(url.openConnection().getInputStream(), "UTF-8");
-			name = (((JsonObject) new JsonParser().parse(jsonScanner.next())).get("name")).toString();
-			jsonScanner.close();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return name;
+		NameChange[] names = getNamesFromUUID(uuid);
+		return names[names.length - 1].name;
 	}
 
 	/**
@@ -121,10 +112,23 @@ public class UUIDConverter
 		NameChange[] names = null;
 		try
 		{
-			URL url = new URL("https://api.mojang.com/user/profiles/" + uuid.replaceAll("-", "") + "/names");
-			Scanner jsonScanner = new Scanner(url.openConnection().getInputStream(), "UTF-8");
+			Scanner jsonScanner = new Scanner((new URL("https://api.mojang.com/user/profiles/" + uuid.replaceAll("-", "") + "/names")).openConnection().getInputStream(), "UTF-8");
 			names = (new Gson()).fromJson(jsonScanner.next(), NameChange[].class);
 			jsonScanner.close();
+		}
+		catch(MalformedURLException e) // There is something going wrong!
+		{
+			System.out.print("\nFailed to get uuid cause of a malformed url!\n UUID: \"" + uuid + "\"\n");
+			e.printStackTrace();
+		}
+		catch(IOException e)
+		{
+			System.out.print("Looks like there is a problem with the connection with mojang. Please retry later.\n");
+			if(e.getMessage().contains("HTTP response code: 429")) //TODO: more reliable detection
+			{
+				System.out.print("You have reached the request limit of the mojang api! Please retry later!\n");
+			}
+			e.printStackTrace();
 		}
 		catch(Exception e)
 		{
@@ -213,7 +217,7 @@ public class UUIDConverter
 			{
 				if(offlineUUIDonFail)
 				{
-					System.out.println("Using offline uuid for '" + name + "'.");
+					System.out.println("Using offline uuid for '" + name + "'. + \n");
 					uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)).toString();
 				}
 				else
@@ -313,19 +317,38 @@ public class UUIDConverter
 		try
 		{
 			BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + at.getTime() : "")).openStream()));
-			uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).toString().replaceAll("\"", "");
+			uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).getAsString();
 			in.close();
+		}
+		catch(MalformedURLException e) // There is something going wrong!
+		{
+			System.out.print("\nFailed to get uuid cause of a malformed url!\n Name: \"" + name + "\" Date: " + ((at != null) ? "?at=" + at.getTime() : "null") + "\n");
+			e.printStackTrace();
+		}
+		catch(IOException e)
+		{
+			System.out.print("Looks like there is a problem with the connection with mojang. Please retry later.\n");
+			if(e.getMessage().contains("HTTP response code: 429")) //TODO: more reliable detection
+			{
+				System.out.print("You have reached the request limit of the mojang api! Please retry later!\n");
+			}
+			e.printStackTrace();
 		}
 		catch(Exception e)
 		{
-			if(at == null)
+			if(at == null) // We can't resolve the uuid for the player
 			{
-				System.out.println("Unable to get UUID for: " + name + "!");
+				System.out.println("Unable to get UUID for: " + name + "!\n");
 			}
-			else
+			else if(at.getTime() == 0) // If it's not his first name maybe it's his current name
 			{
-				System.out.println("Unable to get UUID for: " + name + " at " + at.getTime() + "! Trying without date!");
+				System.out.println("Unable to get UUID for: " + name + " at " + at.getTime() + "! Trying without date!\n");
 				uuid = getOnlineUUID(name, null);
+			}
+			else // If we cant get the player with the date he was here last time it's likely that it is his first name
+			{
+				System.out.println("Unable to get UUID for: " + name + " at " + at.getTime() + "! Trying at=0!\n");
+				uuid = getOnlineUUID(name, new Date(0));
 			}
 			//e.printStackTrace();
 		}
