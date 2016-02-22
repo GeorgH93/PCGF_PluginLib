@@ -57,6 +57,13 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>LATEST</version>
+			<scope>test</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>at.pcgamingfreaks</groupId>
 			<artifactId>YAML-Parser</artifactId>
 			<version>LATEST</version>
@@ -83,6 +90,12 @@
 	<build>
 		<defaultGoal>clean install</defaultGoal>
 		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test/src</testSourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>test/resources</directory>
+			</testResource>
+		</testResources>
 		<resources>
 			<resource>
 				<directory>resources</directory>
