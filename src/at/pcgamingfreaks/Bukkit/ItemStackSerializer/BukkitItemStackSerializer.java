@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2015 GeorgH93
+ *   Copyright (C) 2014-2016 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
 
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -63,19 +62,22 @@ public class BukkitItemStackSerializer implements ItemStackSerializer
 	public byte[] serialize(ItemStack[] itemStacks)
 	{
 		byte[] ba = null;
-		try
+		if(itemStacks != null)
 		{
-			ByteArrayOutputStream b = new ByteArrayOutputStream();
-			BukkitObjectOutputStream output = new BukkitObjectOutputStream(b);
-			output.writeObject(itemStacks);
-			output.close();
-			ba = b.toByteArray();
-			output.close();
-			return ba;
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
+			try
+			{
+				ByteArrayOutputStream b = new ByteArrayOutputStream();
+				BukkitObjectOutputStream output = new BukkitObjectOutputStream(b);
+				output.writeObject(itemStacks);
+				output.close();
+				ba = b.toByteArray();
+				output.close();
+				return ba;
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 		return ba;
 	}
