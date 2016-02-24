@@ -22,6 +22,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -137,5 +139,28 @@ public class Utils
 			return p1.getLocation().distance(p2.getLocation());
 		}
 		return Double.POSITIVE_INFINITY;
+	}
+
+
+	//region Reflection constants for the send packet method
+	private final static Class<?> ENTITY_PLAYER = Reflection.getNMSClass("EntityPlayer");
+	private final static Method SEND_PACKET = Reflection.getMethod(Reflection.getNMSClass("PlayerConnection"), "sendPacket");
+	private final static Field PLAYER_CONNECTION = Reflection.getField(ENTITY_PLAYER, "playerConnection");
+	//endregion
+
+	/**
+	 * Sends a nms packet to the client
+	 *
+	 * @param player The player that should receive the packet
+	 * @param packet The packet that should be sent to the client
+	 */
+	public static void sendPacket(Player player, Object packet) throws IllegalAccessException, InvocationTargetException
+	{
+		if(player == null || packet == null || SEND_PACKET == null || PLAYER_CONNECTION == null) return;
+		Object handle = Reflection.getHandle(player);
+		if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
+		{
+			SEND_PACKET.invoke(PLAYER_CONNECTION.get(handle), packet);
+		}
 	}
 }
