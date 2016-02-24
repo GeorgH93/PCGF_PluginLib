@@ -17,14 +17,11 @@
 
 package at.pcgamingfreaks;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
@@ -37,6 +34,8 @@ import com.google.gson.JsonObject;
  */
 public class UUIDConverter
 {
+	private final static Gson GSON = new Gson();
+
 	/**
 	 * Gets the current name of the player from the Mojang servers.
 	 * Only works for Mojang-UUIDs, not for Bukkit-Offline-UUIDs.
@@ -113,7 +112,7 @@ public class UUIDConverter
 		try
 		{
 			Scanner jsonScanner = new Scanner((new URL("https://api.mojang.com/user/profiles/" + uuid.replaceAll("-", "") + "/names")).openConnection().getInputStream(), "UTF-8");
-			names = (new Gson()).fromJson(jsonScanner.next(), NameChange[].class);
+			names = GSON.fromJson(jsonScanner.next(), NameChange[].class);
 			jsonScanner.close();
 		}
 		catch(MalformedURLException e) // There is something going wrong!
@@ -354,4 +353,97 @@ public class UUIDConverter
 		}
 		return uuid;
 	}
+
+	//region Multi querys
+	//TODO: JavaDoc Exception handling, more parameters, fallback
+	private final static int BATCH_SIZE = 100; // Limit from Mojang
+
+	private class Profile
+	{
+		public String id;
+		public String name;
+
+		public UUID getUUID()
+		{
+			return UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+		}
+	}
+
+	public static Map<String, String> getUUIDsFromNames(Collection<String> names, boolean onlineMode, boolean withSeparators)
+	{
+		Map<String, String> result = new HashMap<>();
+		for(Map.Entry<String, UUID> entry : getUUIDsFromNamesAsUUIDs(names, onlineMode).entrySet())
+		{
+			result.put(entry.getKey(), (withSeparators) ? entry.getValue().toString() : entry.getValue().toString().replaceAll("-", ""));
+		}
+		return result;
+	}
+
+	public static Map<String, UUID> getUUIDsFromNamesAsUUIDs(Collection<String> names, boolean onlineMode)
+	{
+		if(onlineMode)
+		{
+			return getUUIDsFromNamesAsUUIDs(names);
+		}
+		Map<String,UUID> result = new HashMap<>();
+		for(String name : names)
+		{
+			result.put(name, getUUIDFromNameAsUUID(name, false));
+		}
+		return result;
+	}
+
+	public static Map<String, UUID> getUUIDsFromNamesAsUUIDs(Collection<String> names)
+	{
+		List<String> batch = new ArrayList<>();
+		Iterator<String> players = names.iterator();
+		Map<String,UUID> result = new HashMap<>();
+		while (players.hasNext())
+		{
+			for (int i = 0; players.hasNext() && i < BATCH_SIZE; i++)
+			{
+				batch.add(players.next());
+			}
+			HttpURLConnection connection = null;
+			try
+			{
+				connection = (HttpURLConnection) new URL("https://api.mojang.com/profiles/minecraft").openConnection();
+				connection.setRequestMethod("POST");
+				connection.setRequestProperty("Content-Type", "application/json; encoding=UTF-8");
+				connection.setUseCaches(false);
+				connection.setDoInput(true);
+				connection.setDoOutput(true);
+				try(OutputStream out = connection.getOutputStream())
+				{
+					out.write(GSON.toJson(batch).getBytes(Charsets.UTF_8));
+				}
+				Profile[] profiles;
+				try(Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream())))
+				{
+					profiles = GSON.fromJson(in, Profile[].class);
+				}
+				for (Profile profile : profiles)
+				{
+					result.put(profile.name, profile.getUUID());
+				}
+			}
+			catch(IOException e)
+			{
+				try
+				{
+					if(connection != null && connection.getResponseCode() == 429)
+					{
+						System.out.print("You have reached the request limit of the mojang api! Please retry later!\n");
+						//TODO: retry or return list of not processed names
+					}
+				}
+				catch(IOException ignore) {}
+				e.printStackTrace();
+				return result;
+			}
+			batch.clear();
+		}
+		return result;
+	}
+	//endregion
 }
