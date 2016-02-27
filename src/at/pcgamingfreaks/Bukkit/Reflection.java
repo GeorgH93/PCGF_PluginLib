@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit;
 
 import org.bukkit.Bukkit;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -82,6 +83,11 @@ public class Reflection
 		return null;
 	}
 
+	public static Enum<?> getNMSEnum(String enumClassAndEnumName)
+	{
+		return getEnum("net.minecraft.server." + Reflection.getVersion() + "." + enumClassAndEnumName);
+	}
+
 	public static Object getHandle(Object obj)
 	{
 		try
@@ -120,6 +126,19 @@ public class Reflection
 				m.setAccessible(true);
 				return m;
 			}
+		}
+		return null;
+	}
+
+	public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... args)
+	{
+		try
+		{
+			return clazz.getConstructor(args);
+		}
+		catch(NoSuchMethodException e)
+		{
+			e.printStackTrace();
 		}
 		return null;
 	}
