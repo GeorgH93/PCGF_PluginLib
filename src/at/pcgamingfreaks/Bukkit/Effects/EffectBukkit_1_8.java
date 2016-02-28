@@ -25,20 +25,15 @@ import java.lang.reflect.Constructor;
 
 public class EffectBukkit_1_8 extends EffectBukkit
 {
-	private final Constructor packetConstructor;
-
-	public EffectBukkit_1_8() throws NoSuchMethodException, NullPointerException
-	{
-		//noinspection ConstantConditions
-		packetConstructor = Reflection.getNMSClass("PacketPlayOutWorldParticles").getConstructor(Reflection.getNMSClass("EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
-	}
+	private final static Constructor PACKET_CONSTRUCTOR = Reflection.getConstructor(Reflection.getNMSClass("PacketPlayOutWorldParticles"), Reflection.getNMSClass("EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
 
 	@Override
 	public void spawnParticle(Location location, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
 		try
 		{
-			spawnParticle(location, visibleRange, packetConstructor.newInstance(type.getEnum(), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, new int[]{}));
+			//noinspection ConstantConditions
+			spawnParticle(location, visibleRange, PACKET_CONSTRUCTOR.newInstance(type.getEnum(), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, new int[]{}));
 		}
 		catch(Exception e)
 		{
@@ -52,8 +47,8 @@ public class EffectBukkit_1_8 extends EffectBukkit
 	{
 		try
 		{
-			Object packet = packetConstructor.newInstance(type.getEnum(), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, data);
-			spawnParticle(location, visibleRange, packet);
+			//noinspection ConstantConditions
+			spawnParticle(location, visibleRange, PACKET_CONSTRUCTOR.newInstance(type.getEnum(), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, data));
 		}
 		catch(Exception e)
 		{

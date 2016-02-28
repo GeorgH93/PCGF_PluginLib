@@ -25,19 +25,14 @@ import java.lang.reflect.Constructor;
 
 public class EffectBukkit_1_7 extends EffectBukkit
 {
-	private final Constructor packetConstructor;
-
-	public EffectBukkit_1_7() throws NoSuchMethodException, NullPointerException
-	{
-		//noinspection ConstantConditions
-		packetConstructor = Reflection.getNMSClass("PacketPlayOutWorldParticles").getConstructor(String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
-	}
+	private final static Constructor PACKET_CONSTRUCTOR = Reflection.getConstructor(Reflection.getNMSClass("PacketPlayOutWorldParticles"), String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
 
 	public void spawnParticle(Location location, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
 		try
 		{
-			spawnParticle(location, visibleRange, packetConstructor.newInstance(type.getName(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count));
+			//noinspection ConstantConditions
+			spawnParticle(location, visibleRange, PACKET_CONSTRUCTOR.newInstance(type.getName(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count));
 		}
 		catch(Exception e)
 		{
