@@ -35,10 +35,19 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class RegisterablePluginCommand extends Command implements PluginIdentifiableCommand
 {
+	private final static Field FIELD_KNOWN_COMMANDS = Reflection.getField(SimpleCommandMap.class, "knownCommands");
+
 	private final Plugin owningPlugin;
 	private CommandExecutor executor;
 	private TabCompleter completer;
 
+	/**
+	 * Creates a new command that can be registered. Don't forget to register it!
+	 *
+	 * @param owner The plugin this command belongs to
+	 * @param name The name of the command will be used for bukkit's help
+	 * @param aliases The aliases of the command
+	 */
 	public RegisterablePluginCommand(Plugin owner, String name, String... aliases)
 	{
 		super(name);
@@ -79,14 +88,14 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 	{
 		try
 		{
-			Object result = Reflection.getField(owningPlugin.getServer().getPluginManager().getClass(), "commandMap");
-			SimpleCommandMap commandMap = (SimpleCommandMap) result;
-			Object map = Reflection.getField(commandMap.getClass(), "knownCommands");
-			HashMap<String, Command> knownCommands = (HashMap<String, Command>) map;
-			knownCommands.remove(this.getName());
-			for (String alias : this.getAliases())
+			Field result = owningPlugin.getServer().getPluginManager().getClass().getDeclaredField("commandMap");
+			result.setAccessible(true);
+			@SuppressWarnings("unchecked")
+			HashMap<String, Command> knownCommands = (HashMap<String, Command>) FIELD_KNOWN_COMMANDS.get(result.get(owningPlugin.getServer().getPluginManager()));
+			knownCommands.remove(getName());
+			for (String alias : getAliases())
 			{
-				if(knownCommands.containsKey(alias) && knownCommands.get(alias).toString().contains(this.getName()))
+				if(knownCommands.containsKey(alias) && knownCommands.get(alias).toString().contains(getName()))
 				{
 					knownCommands.remove(alias);
 				}
@@ -117,9 +126,10 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 			{
 				success = executor.onCommand(sender, this, commandLabel, args);
 			}
-			catch(Throwable ex)
+			catch(Throwable e)
 			{
-				throw new CommandException("Unhandled exception executing command '" + commandLabel + "' in plugin " + owningPlugin.getDescription().getFullName(), ex);
+				owningPlugin.getLogger().warning("Unhandled exception executing command '" + commandLabel + "' in plugin " + owningPlugin.getDescription().getFullName());
+				e.printStackTrace();
 			}
 			if(!success && usageMessage.length() > 0)
 			{
@@ -198,8 +208,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 	 * <p/>
 	 * This method does not consider permissions.
 	 *
-	 * @throws CommandException         if the completer or executor throw an
-	 *                                  exception during the process of tab-completing.
+	 * @throws CommandException         if the completer or executor throw an exception during the process of tab-completing.
 	 * @throws IllegalArgumentException if sender, alias, or args is null
 	 */
 	@Override
