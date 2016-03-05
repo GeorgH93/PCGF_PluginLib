@@ -64,6 +64,11 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>15.0</version>
+		</dependency>
+		<dependency>
 			<groupId>at.pcgamingfreaks</groupId>
 			<artifactId>YAML-Parser</artifactId>
 			<version>LATEST</version>
@@ -71,12 +76,12 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.3.1</version>
+			<version>LATEST</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<version>1.9-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -89,6 +94,11 @@
 
 	<build>
 		<defaultGoal>clean install</defaultGoal>
+		<resources>
+			<resource>
+				<directory>resources</directory>
+			</resource>
+		</resources>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test/src</testSourceDirectory>
 		<testResources>
@@ -96,15 +106,6 @@
 				<directory>test/resources</directory>
 			</testResource>
 		</testResources>
-		<resources>
-			<resource>
-				<directory>resources</directory>
-				<filtering>true</filtering>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
