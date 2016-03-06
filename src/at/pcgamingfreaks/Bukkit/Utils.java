@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -33,11 +34,11 @@ import java.util.logging.Logger;
  */
 public class Utils
 {
-	private static final Class<?> craftItemStackClazz = Reflection.getOBCClass("inventory.CraftItemStack");
-	private static final Class<?> nmsItemStackClazz = Reflection.getNMSClass("ItemStack");
-	private static final Class<?> nbtTagCompoundClazz = Reflection.getNMSClass("NBTTagCompound");
-	private static final Method asNMSCopyMethod = Reflection.getMethod(craftItemStackClazz, "asNMSCopy", ItemStack.class);
-	private static final Method saveNmsItemStackMethod = Reflection.getMethod(nmsItemStackClazz, "save", nbtTagCompoundClazz);
+	private static final Class<?> CRAFT_ITEM_STACK_CLASS = Reflection.getOBCClass("inventory.CraftItemStack");
+	private static final Class<?> NMS_ITEM_STACK_CLASS = Reflection.getNMSClass("ItemStack");
+	private static final Class<?> NBT_TAG_COMPOUND_CLASS = Reflection.getNMSClass("NBTTagCompound");
+	private static final Method AS_NMS_COPY_METHOD = Reflection.getMethod(CRAFT_ITEM_STACK_CLASS, "asNMSCopy", ItemStack.class);
+	private static final Method SAVE_NMS_ITEM_STACK_METHOD = Reflection.getMethod(NMS_ITEM_STACK_CLASS, "save", NBT_TAG_COMPOUND_CLASS);
 
 	/**
 	 * Converts an item stack into a json string used for chat messages.
@@ -50,14 +51,14 @@ public class Utils
 	{
 		try
 		{
-			if(saveNmsItemStackMethod == null || asNMSCopyMethod == null || nbtTagCompoundClazz == null)
+			if(SAVE_NMS_ITEM_STACK_METHOD == null || AS_NMS_COPY_METHOD == null || NBT_TAG_COMPOUND_CLASS == null)
 			{
 				logger.log(Level.SEVERE, "Failed to serialize item stack to NMS item! Bukkit Version: " + Bukkit.getServer().getVersion() +
 						"\nIt one or more of the reflection variables is null! Looks like your bukkit version is not compatible. Please check for updates.");
 			}
 			else
 			{
-				return saveNmsItemStackMethod.invoke(asNMSCopyMethod.invoke(null, itemStack), nbtTagCompoundClazz.newInstance()).toString();
+				return SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
 			}
 		}
 		catch (Throwable t)
@@ -97,14 +98,14 @@ public class Utils
 	{
 		if(isPerWorldPluginsInstalled())
 		{
-			logger.warning(ChatColor.RED + "   !!!!!!!!!!!!!!!!!!!!!!!!!");
-			logger.warning(ChatColor.RED + "   !!!!!! - WARNING - !!!!!!");
-			logger.warning(ChatColor.RED + "   !!!!!!!!!!!!!!!!!!!!!!!!!\n");
-			logger.warning(ChatColor.RED + "We have detected that you are using \"PerWorldPlugins\"!");
-			logger.warning(ChatColor.GOLD + "Please allow this plugin to run in " + ChatColor.BLUE + "ALL" + ChatColor.GOLD + " worlds.");
-			logger.warning(ChatColor.GOLD + "If you block it from running in all worlds there probably will be problems!");
-			logger.warning(ChatColor.GOLD + "If you don't want you players to use this plugin in certain worlds please use permissions and the plugins config!");
-			logger.warning(ChatColor.RED + "There will be no support for bugs caused by \"PerWorldPlugins\"!");
+			logger.warning(ChatColor.RED    + "   !!!!!!!!!!!!!!!!!!!!!!!!!");
+			logger.warning(ChatColor.RED    + "   !!!!!! - WARNING - !!!!!!");
+			logger.warning(ChatColor.RED    + "   !!!!!!!!!!!!!!!!!!!!!!!!!\n");
+			logger.warning(ChatColor.RED    + "We have detected that you are using \"PerWorldPlugins\"!");
+			logger.warning(ChatColor.GOLD   + "Please allow this plugin to run in " + ChatColor.BLUE + "ALL" + ChatColor.GOLD + " worlds.");
+			logger.warning(ChatColor.GOLD   + "If you block it from running in all worlds there probably will be problems!");
+			logger.warning(ChatColor.GOLD   + "If you don't want you players to use this plugin in certain worlds please use permissions and the plugins config!");
+			logger.warning(ChatColor.RED    + "There will be no support for bugs caused by \"PerWorldPlugins\"!");
 			logger.warning(ChatColor.YELLOW + "Waiting " + pauseTime + " seconds till loading will resume!");
 
 			if(pauseTime > 0) // If there is a valid time we pause the server startup for some seconds to give the admins the chance to read the message
@@ -154,9 +155,9 @@ public class Utils
 	 * @param player The player that should receive the packet
 	 * @param packet The packet that should be sent to the client
 	 */
-	public static void sendPacket(Player player, Object packet) throws IllegalAccessException, InvocationTargetException
+	public static void sendPacket(@NotNull Player player, @NotNull Object packet) throws IllegalAccessException, InvocationTargetException
 	{
-		if(player == null || packet == null || SEND_PACKET == null || PLAYER_CONNECTION == null) return;
+		if(SEND_PACKET == null || PLAYER_CONNECTION == null) return;
 		Object handle = Reflection.getHandle(player);
 		if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
 		{
