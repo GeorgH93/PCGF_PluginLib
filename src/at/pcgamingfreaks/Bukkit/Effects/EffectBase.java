@@ -152,9 +152,9 @@ public abstract class EffectBase
 				{
 					eb = new EffectBukkit_1_7();
 				}
-				else if(version[1].equals("8"))
+				else if(version[1].equals("8") || version[1].equals("9"))
 				{
-					eb = new EffectBukkit_1_8();
+					eb = new EffectBukkit_1_8_AND_1_9();
 				}
 			}
 		}

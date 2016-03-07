@@ -23,7 +23,7 @@ import org.bukkit.Location;
 
 import java.lang.reflect.Constructor;
 
-public class EffectBukkit_1_8 extends EffectBukkit
+public class EffectBukkit_1_8_AND_1_9 extends EffectBukkit
 {
 	private final static Constructor PACKET_CONSTRUCTOR = Reflection.getConstructor(Reflection.getNMSClass("PacketPlayOutWorldParticles"), Reflection.getNMSClass("EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
 
@@ -37,7 +37,7 @@ public class EffectBukkit_1_8 extends EffectBukkit
 		}
 		catch(Exception e)
 		{
-			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.8)");
+			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.8/1.9)");
 			e.printStackTrace();
 		}
 	}
@@ -52,7 +52,7 @@ public class EffectBukkit_1_8 extends EffectBukkit
 		}
 		catch(Exception e)
 		{
-			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.8)");
+			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.8/1.9)");
 			e.printStackTrace();
 		}
 	}
