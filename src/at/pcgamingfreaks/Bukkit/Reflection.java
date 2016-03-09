@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2015 GeorgH93
+ *   Copyright (C) 2014-2016 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,11 +25,13 @@ import java.lang.reflect.Method;
 
 public class Reflection
 {
-	private static final String bukkitVersion = Bukkit.getServer().getClass().getName().split("\\.")[3];
+	private static final String BUKKIT_VERSION = Bukkit.getServer().getClass().getName().split("\\.")[3];
+	private static final String NMS_CLASS_PATH = "net.minecraft.server." + BUKKIT_VERSION + ".";
+	private static final String OBC_CLASS_PATH = "org.bukkit.craftbukkit." + BUKKIT_VERSION + ".";
 
 	public static String getVersion()
 	{
-		return bukkitVersion;
+		return BUKKIT_VERSION;
 	}
 
 	public static void setValue(Object instance, String fieldName, Object value) throws Exception
@@ -43,7 +45,7 @@ public class Reflection
 	{
 		try
 		{
-			return Class.forName("net.minecraft.server." + getVersion() + "." + className);
+			return Class.forName(NMS_CLASS_PATH + className);
 		}
 		catch(Exception e)
 		{
@@ -56,7 +58,7 @@ public class Reflection
 	{
 		try
 		{
-			return Class.forName("org.bukkit.craftbukkit." + getVersion() + "." + className);
+			return Class.forName(OBC_CLASS_PATH + className);
 		}
 		catch(Exception e)
 		{
@@ -83,9 +85,22 @@ public class Reflection
 		return null;
 	}
 
+	public static Enum<?> getEnum(Class clazz, String enumName)
+	{
+		try
+		{
+			return Enum.valueOf(clazz, enumName);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static Enum<?> getNMSEnum(String enumClassAndEnumName)
 	{
-		return getEnum("net.minecraft.server." + Reflection.getVersion() + "." + enumClassAndEnumName);
+		return getEnum(NMS_CLASS_PATH + enumClassAndEnumName);
 	}
 
 	public static Object getHandle(Object obj)
@@ -109,6 +124,28 @@ public class Reflection
 			Field field = clazz.getDeclaredField(name);
 			field.setAccessible(true);
 			return field;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static Field getFieldIncludeParents(Class<?> clazz, String name)
+	{
+		try
+		{
+			Field field = clazz.getDeclaredField(name);
+			field.setAccessible(true);
+			return field;
+		}
+		catch(NoSuchFieldException ignored)
+		{
+			if(clazz.getSuperclass() != null)
+			{
+				getFieldIncludeParents(clazz.getSuperclass(), name);
+			}
 		}
 		catch(Exception e)
 		{
