@@ -56,6 +56,7 @@
 	</repositories>
 
 	<dependencies>
+		<!-- We have jUnit tests in this library -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -63,27 +64,32 @@
 			<scope>test</scope>
 			<optional>true</optional>
 		</dependency>
+		<!-- For better code documentation -->
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
 			<version>15.0</version>
 		</dependency>
+		<!-- The YAML-Parser, it doesn't lose the comments in the yml file when it gets changed and saved -->
 		<dependency>
 			<groupId>at.pcgamingfreaks</groupId>
 			<artifactId>YAML-Parser</artifactId>
 			<version>LATEST</version>
 		</dependency>
+		<!-- The JSON-Parser we use. It is included in BungeeCord, but we also want to use it on Bukkit -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>LATEST</version>
 		</dependency>
+		<!-- Bukkit API -->
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
 			<version>1.9-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- BungeeCord API -->
 		<dependency>
 			<groupId>net.md-5</groupId>
 			<artifactId>bungeecord-api</artifactId>
@@ -179,6 +185,7 @@
 						<id>attach-javadocs</id>
 						<goals>
 							<goal>jar</goal>
+							<goal>javadoc</goal>
 						</goals>
 					</execution>
 				</executions>
