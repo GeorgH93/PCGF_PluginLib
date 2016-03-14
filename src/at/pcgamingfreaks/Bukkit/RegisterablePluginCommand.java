@@ -84,7 +84,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 	/**
 	 * Un-Register command from Bukkit. Command will no longer get executed.
 	 */
-	public void unRegisterCommand()
+	public void unregisterCommand()
 	{
 		try
 		{
