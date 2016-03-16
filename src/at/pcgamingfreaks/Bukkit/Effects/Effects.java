@@ -61,33 +61,21 @@ public enum Effects
 	 */
 	BARRIER(35, "barrier"),
 	/**
-	 * Only for Minecraft 1.8!
+	 * Only for Minecraft 1.9 and newer!
 	 */
-	DROPLET(35, "droplet"),
-	/**
-	 * Only for Minecraft 1.8!
-	 */
-	TAKE(36, "take"),
-	/**
-	 * Only for Minecraft 1.8 and newer!
-	 */
-	MOB_APPEARANCE(36, "mobappearance"),
+	SWEEP_ATTACK(36, "sweepAttack", "SWEEP_ATTACK"),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	SWEEP_ATTACK(37, "sweepAttack", "SWEEP_ATTACK"),
+	DRAGON_BREATH(37, "dragonBreath", "DRAGON_BREATH"),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	DRAGON_BREATH(38, "dragonBreath", "DRAGON_BREATH"),
+	END_ROD(38, "endRod", "END_ROD"),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	END_ROD(39, "endRod", "END_ROD"),
-	/**
-	 * Only for Minecraft 1.9 and newer!
-	 */
-	DAMAGE_INDICATOR(40, "damageIndicator", "DAMAGE_INDICATOR");
+	DAMAGE_INDICATOR(39, "damageIndicator", "DAMAGE_INDICATOR");
 
 	private final int id;
 	private final String name, newName;
@@ -105,14 +93,7 @@ public enum Effects
 		this.newName = newName;
 		if(Reflection.getVersion().contains("1_8") || Reflection.getVersion().contains("1_9"))
 		{
-			if(Reflection.getVersion().contains("1_9") && (this.id == 35 || this.id == 36))
-			{
-				nmsEnumParticle = null;
-			}
-			else
-			{
-				nmsEnumParticle = (this.id <= 36 || (this.id > 36 && Reflection.getVersion().contains("1_9"))) ? Reflection.getNMSEnum("EnumParticle." + this.newName) : null;
-			}
+			nmsEnumParticle = (this.id < 36 || (this.id >= 36 && Reflection.getVersion().contains("1_9"))) ? Reflection.getNMSEnum("EnumParticle." + this.newName) : null;
 		}
 		else
 		{
