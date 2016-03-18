@@ -512,7 +512,7 @@ public class Bukkit_Updater
 	{
 		localVersion = localVersion.toLowerCase();
 		remoteVersion = remoteVersion.toLowerCase();
-		String[] lv = localVersion.split(Pattern.quote(".")), rv = remoteVersion.split(Pattern.quote("."));
+		String[] lv = localVersion.split("-")[0].split(Pattern.quote(".")), rv = remoteVersion.split("-")[0].split(Pattern.quote("."));
 		try
 		{
 			if(localVersion.contains("snapshot") || localVersion.contains("alpha") || localVersion.contains("beta"))
