@@ -66,7 +66,7 @@ public class Bukkit_Updater
 
 	private static final String USER_AGENT = "Updater (by Gravity)";
 	private static final String delimiter = "^V|[\\s_-]V"; // Used for locating version numbers in file names
-	private static final String[] NO_UPDATE_TAG = {"-DEV", "-PRE", "-SNAPSHOT"}; // If the version number contains one of these, don't update.
+	private static final String[] NO_UPDATE_TAG = {"-DEV", "-PRE"/*, "-SNAPSHOT"*/}; // If the version number contains one of these, don't update.
 	private static final int BYTE_SIZE = 1024; // Used for downloading files
 	private final YamlConfiguration config = new YamlConfiguration(); // Config file
 	private String updateFolder;// The folder that downloads will be placed in
@@ -510,7 +510,35 @@ public class Bukkit_Updater
 	 */
 	public boolean shouldUpdate(String localVersion, String remoteVersion)
 	{
+		localVersion = localVersion.toLowerCase();
+		remoteVersion = remoteVersion.toLowerCase();
 		String[] lv = localVersion.split(Pattern.quote(".")), rv = remoteVersion.split(Pattern.quote("."));
+		try
+		{
+			if(localVersion.contains("snapshot") || localVersion.contains("alpha") || localVersion.contains("beta"))
+			{
+				for(int i = lv.length - 1; i >= 0; i--)
+				{
+					if(Integer.parseInt(lv[i]) > 0)
+					{
+						lv[i] = (Integer.parseInt(lv[i]) - 1) + "";
+						break;
+					}
+				}
+			}
+			if(remoteVersion.contains("snapshot") || remoteVersion.contains("alpha") || remoteVersion.contains("beta"))
+			{
+				for(int i = rv.length - 1; i >= 0; i--)
+				{
+					if(Integer.parseInt(rv[i]) > 0)
+					{
+						rv[i] = (Integer.parseInt(rv[i]) - 1) + "";
+						break;
+					}
+				}
+			}
+		}
+		catch(Exception ignored){}
 		try
 		{
 			int i, c = 0;
