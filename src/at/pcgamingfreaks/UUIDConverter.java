@@ -398,50 +398,58 @@ public class UUIDConverter
 		List<String> batch = new ArrayList<>();
 		Iterator<String> players = names.iterator();
 		Map<String,UUID> result = new HashMap<>();
+		boolean success;
 		while (players.hasNext())
 		{
 			for (int i = 0; players.hasNext() && i < BATCH_SIZE; i++)
 			{
 				batch.add(players.next());
 			}
-			HttpURLConnection connection = null;
-			try
+			do
 			{
-				connection = (HttpURLConnection) new URL("https://api.mojang.com/profiles/minecraft").openConnection();
-				connection.setRequestMethod("POST");
-				connection.setRequestProperty("Content-Type", "application/json; encoding=UTF-8");
-				connection.setUseCaches(false);
-				connection.setDoInput(true);
-				connection.setDoOutput(true);
-				try(OutputStream out = connection.getOutputStream())
-				{
-					out.write(GSON.toJson(batch).getBytes(Charsets.UTF_8));
-				}
-				Profile[] profiles;
-				try(Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream())))
-				{
-					profiles = GSON.fromJson(in, Profile[].class);
-				}
-				for (Profile profile : profiles)
-				{
-					result.put(profile.name, profile.getUUID());
-				}
-			}
-			catch(IOException e)
-			{
+				HttpURLConnection connection = null;
 				try
 				{
-					if(connection != null && connection.getResponseCode() == 429)
+					connection = (HttpURLConnection) new URL("https://api.mojang.com/profiles/minecraft").openConnection();
+					connection.setRequestMethod("POST");
+					connection.setRequestProperty("Content-Type", "application/json; encoding=UTF-8");
+					connection.setUseCaches(false);
+					connection.setDoInput(true);
+					connection.setDoOutput(true);
+					try(OutputStream out = connection.getOutputStream())
 					{
-						System.out.print("You have reached the request limit of the mojang api! Please retry later!\n");
-						//TODO: retry or return list of not processed names
+						out.write(GSON.toJson(batch).getBytes(Charsets.UTF_8));
+					}
+					Profile[] profiles;
+					try(Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream())))
+					{
+						profiles = GSON.fromJson(in, Profile[].class);
+					}
+					for (Profile profile : profiles)
+					{
+						result.put(profile.name, profile.getUUID());
 					}
 				}
-				catch(IOException ignore) {}
-				e.printStackTrace();
-				return result;
-			}
-			batch.clear();
+				catch(IOException e)
+				{
+					try
+					{
+						if(connection != null && connection.getResponseCode() == 429)
+						{
+							System.out.println("Reached the request limit of the mojang api!\nConverting will be paused for 10 minutes and then continue!");
+							//TODO: better fail handling
+							Thread.sleep(10*60*1000L);
+							success = false;
+							continue;
+						}
+					}
+					catch(Exception ignore) {}
+					e.printStackTrace();
+					return result;
+				}
+				batch.clear();
+				success = true;
+			} while(!success);
 		}
 		return result;
 	}
