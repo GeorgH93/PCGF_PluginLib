@@ -37,12 +37,9 @@ public class BukkitItemStackSerializer implements ItemStackSerializer
 	{
 		if(data != null)
 		{
-			try
+			try(BukkitObjectInputStream bukkitObjectInputStream = new BukkitObjectInputStream(new ByteArrayInputStream(data)))
 			{
-				BukkitObjectInputStream bukkitObjectInputStream = new BukkitObjectInputStream(new ByteArrayInputStream(data));
-				ItemStack[] its = (ItemStack[]) bukkitObjectInputStream.readObject();
-				bukkitObjectInputStream.close();
-				return its;
+				return (ItemStack[]) bukkitObjectInputStream.readObject();
 			}
 			catch(Exception e)
 			{
@@ -64,15 +61,11 @@ public class BukkitItemStackSerializer implements ItemStackSerializer
 		byte[] ba = null;
 		if(itemStacks != null)
 		{
-			try
+			try(ByteArrayOutputStream b = new ByteArrayOutputStream(); BukkitObjectOutputStream output = new BukkitObjectOutputStream(b))
 			{
-				ByteArrayOutputStream b = new ByteArrayOutputStream();
-				BukkitObjectOutputStream output = new BukkitObjectOutputStream(b);
 				output.writeObject(itemStacks);
-				output.close();
+				output.flush();
 				ba = b.toByteArray();
-				output.close();
-				return ba;
 			}
 			catch(Exception e)
 			{

@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2014-2016 GeorgH93
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
@@ -28,22 +28,22 @@ import java.lang.reflect.Method;
 public class NBTItemStackSerializer implements ItemStackSerializer
 {
 	//region Reflection Variables
-	private final static Class<?> NBTTagCompound = Reflection.getNMSClass("NBTTagCompound");
-	private final static Class<?> NBTCompressedStreamTools = Reflection.getNMSClass("NBTCompressedStreamTools");
-	private final static Class<?> CraftItemStack = Reflection.getOBCClass("inventory.CraftItemStack");
-	private final static Class<?> NMSItemStack = Reflection.getNMSClass("ItemStack");
+	private final static Class<?> CLASS_NBT_TAG_COMPOUND            = Reflection.getNMSClass("NBTTagCompound");
+	private final static Class<?> CLASS_NBT_COMPRESSED_STREAM_TOOLS = Reflection.getNMSClass("NBTCompressedStreamTools");
+	private final static Class<?> CLASS_CRAFT_ITEM_STACK            = Reflection.getOBCClass("inventory.CraftItemStack");
+	private final static Class<?> CLASS_NMS_ITEM_STACK              = Reflection.getNMSClass("ItemStack");
 
-	private final static Method setInt = Reflection.getMethod(NBTTagCompound, "setInt", String.class, int.class);
-	private final static Method a = Reflection.getMethod(NBTCompressedStreamTools, "a", NBTTagCompound, OutputStream.class);
-	private final static Method set = Reflection.getMethod(NBTTagCompound, "set", String.class, Reflection.getNMSClass("NBTBase"));
-	private final static Method save = Reflection.getMethod(NMSItemStack, "save", NBTTagCompound);
-	private final static Method asNMSCopy = Reflection.getMethod(CraftItemStack, "asNMSCopy", ItemStack.class);
-	private final static Method getInt = Reflection.getMethod(NBTTagCompound, "getInt", String.class);
-	private final static Method hasKeyOfType = Reflection.getMethod(NBTTagCompound, "hasKeyOfType", String.class, int.class);
-	private final static Method getCompound = Reflection.getMethod(NBTTagCompound, "getCompound", String.class);
-	private final static Method createStack = Reflection.getMethod(NMSItemStack, "createStack", NBTTagCompound);
-	private final static Method asBukkitCopy = Reflection.getMethod(CraftItemStack, "asBukkitCopy", NMSItemStack);
-	private final static Method ain = Reflection.getMethod(NBTCompressedStreamTools, "a", InputStream.class);
+	private final static Method METHOD_NBT_TAG_C_SET_INT  = Reflection.getMethod(CLASS_NBT_TAG_COMPOUND, "setInt", String.class, int.class);
+	private final static Method METHOD_NBT_COMP_STEAM_A   = Reflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", CLASS_NBT_TAG_COMPOUND, OutputStream.class);
+	private final static Method METHOD_NBT_TAG_C_SET2     = Reflection.getMethod(CLASS_NBT_TAG_COMPOUND, "set", String.class, Reflection.getNMSClass("NBTBase"));
+	private final static Method METHOD_SAVE               = Reflection.getMethod(CLASS_NMS_ITEM_STACK, "save", CLASS_NBT_TAG_COMPOUND);
+	private final static Method METHOD_AS_NMS_COPY        = Reflection.getMethod(CLASS_CRAFT_ITEM_STACK, "asNMSCopy", ItemStack.class);
+	private final static Method METHOD_GET_INT            = Reflection.getMethod(CLASS_NBT_TAG_COMPOUND, "getInt", String.class);
+	private final static Method METHOD_HAS_KEY_OF_TYPE    = Reflection.getMethod(CLASS_NBT_TAG_COMPOUND, "hasKeyOfType", String.class, int.class);
+	private final static Method METHOD_GET_COMPOUND       = Reflection.getMethod(CLASS_NBT_TAG_COMPOUND, "getCompound", String.class);
+	private final static Method METHOD_CREATE_STACK       = Reflection.getMethod(CLASS_NMS_ITEM_STACK, "createStack", CLASS_NBT_TAG_COMPOUND);
+	private final static Method METHOD_AS_BUKKIT_COPY     = Reflection.getMethod(CLASS_CRAFT_ITEM_STACK, "asBukkitCopy", CLASS_NMS_ITEM_STACK);
+	private final static Method METHOD_NBT_COMP_STREAM_A2 = Reflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", InputStream.class);
 	//endregion
 
 	/**
@@ -55,24 +55,24 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 	@Override
 	public ItemStack[] deserialize(byte[] data)
 	{
-		if(ain == null || getInt == null || hasKeyOfType == null || asBukkitCopy == null || getCompound == null || createStack == null)
+		if(METHOD_NBT_COMP_STREAM_A2 == null || METHOD_GET_INT == null || METHOD_HAS_KEY_OF_TYPE == null || METHOD_AS_BUKKIT_COPY == null || METHOD_GET_COMPOUND == null || METHOD_CREATE_STACK == null)
 		{
-			System.out.print("\nIt seems like the system wasn't able to find the some of the Bukkit/Minecraft classes and functions.\n" +
+			System.out.println("It seems like the system wasn't able to find the some of the Bukkit/Minecraft classes and functions.\n" +
 					"Is the plugin up-to-date and compatible with the used server version?\n" +
-					"Bukkit Version: " + Bukkit.getVersion() + "\n");
+					"Bukkit Version: " + Bukkit.getVersion());
 		}
 		else if(data != null)
 		{
 			try
 			{
-				Object localNBTTagCompound = ain.invoke(null, new ByteArrayInputStream(data));
-				int size = (int) getInt.invoke(localNBTTagCompound, "size");
+				Object localNBTTagCompound = METHOD_NBT_COMP_STREAM_A2.invoke(null, new ByteArrayInputStream(data));
+				int size = (int) METHOD_GET_INT.invoke(localNBTTagCompound, "size");
 				ItemStack[] its = new ItemStack[size];
 				for(int i = 0; i < size; i++)
 				{
-					if((boolean) hasKeyOfType.invoke(localNBTTagCompound, String.valueOf(i), 10))
+					if((boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, String.valueOf(i), 10))
 					{
-						its[i] = (ItemStack) asBukkitCopy.invoke(null, createStack.invoke(null, getCompound.invoke(localNBTTagCompound, String.valueOf(i))));
+						its[i] = (ItemStack) METHOD_AS_BUKKIT_COPY.invoke(null, METHOD_CREATE_STACK.invoke(null, METHOD_GET_COMPOUND.invoke(localNBTTagCompound, String.valueOf(i))));
 					}
 				}
 				return its;
@@ -95,31 +95,28 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 	public byte[] serialize(ItemStack[] itemStacks)
 	{
 		byte[] ba = null;
-		if(NBTTagCompound == null || set == null || setInt == null || save == null || asNMSCopy == null || a == null)
+		if(CLASS_NBT_TAG_COMPOUND == null || METHOD_NBT_TAG_C_SET2 == null || METHOD_NBT_TAG_C_SET_INT == null || METHOD_SAVE == null || METHOD_AS_NMS_COPY == null || METHOD_NBT_COMP_STEAM_A == null)
 		{
-			System.out.print("\nIt seems like the system wasn't able to find the some of the Bukkit/Minecraft classes and functions.\n" +
+			System.out.println("It seems like the system wasn't able to find the some of the Bukkit/Minecraft classes and functions.\n" +
 					"Is the plugin up-to-date and compatible with the used server version?\n" +
-					"Bukkit Version: " + Bukkit.getVersion() + "\n");
+					"Bukkit Version: " + Bukkit.getVersion());
 		}
 		else if(itemStacks != null)
 		{
-			try
+			try(ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream))
 			{
-				Object localNBTTagCompound = NBTTagCompound.newInstance();
-				setInt.invoke(localNBTTagCompound, "size", itemStacks.length);
+				Object localNBTTagCompound = CLASS_NBT_TAG_COMPOUND.newInstance();
+				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, "size", itemStacks.length);
 				for(int i = 0; i < itemStacks.length; i++)
 				{
 					if(itemStacks[i] != null)
 					{
-						set.invoke(localNBTTagCompound, String.valueOf(i), save.invoke(asNMSCopy.invoke(null, itemStacks[i]), NBTTagCompound.newInstance()));
+						METHOD_NBT_TAG_C_SET2.invoke(localNBTTagCompound, String.valueOf(i), METHOD_SAVE.invoke(METHOD_AS_NMS_COPY.invoke(null, itemStacks[i]), CLASS_NBT_TAG_COMPOUND.newInstance()));
 					}
 				}
-				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
-				a.invoke(null, localNBTTagCompound, dataOutputStream);
+				METHOD_NBT_COMP_STEAM_A.invoke(null, localNBTTagCompound, dataOutputStream);
 				dataOutputStream.flush();
 				ba = byteArrayOutputStream.toByteArray();
-				dataOutputStream.close();
 			}
 			catch(Exception e)
 			{
