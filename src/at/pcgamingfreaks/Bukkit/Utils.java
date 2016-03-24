@@ -17,8 +17,10 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import at.pcgamingfreaks.ConsoleColor;
+
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -98,15 +100,15 @@ public class Utils
 	{
 		if(isPerWorldPluginsInstalled())
 		{
-			logger.warning(ChatColor.RED    + "   !!!!!!!!!!!!!!!!!!!!!!!!!");
-			logger.warning(ChatColor.RED    + "   !!!!!! - WARNING - !!!!!!");
-			logger.warning(ChatColor.RED    + "   !!!!!!!!!!!!!!!!!!!!!!!!!\n");
-			logger.warning(ChatColor.RED    + "We have detected that you are using \"PerWorldPlugins\"!");
-			logger.warning(ChatColor.GOLD   + "Please allow this plugin to run in " + ChatColor.BLUE + "ALL" + ChatColor.GOLD + " worlds.");
-			logger.warning(ChatColor.GOLD   + "If you block it from running in all worlds there probably will be problems!");
-			logger.warning(ChatColor.GOLD   + "If you don't want you players to use this plugin in certain worlds please use permissions and the plugins config!");
-			logger.warning(ChatColor.RED    + "There will be no support for bugs caused by \"PerWorldPlugins\"!");
-			logger.warning(ChatColor.YELLOW + "Waiting " + pauseTime + " seconds till loading will resume!");
+			logger.warning(ConsoleColor.RED    + "   !!!!!!!!!!!!!!!!!!!!!!!!!" + ConsoleColor.RESET);
+			logger.warning(ConsoleColor.RED    + "   !!!!!! - WARNING - !!!!!!" + ConsoleColor.RESET);
+			logger.warning(ConsoleColor.RED    + "   !!!!!!!!!!!!!!!!!!!!!!!!!" + ConsoleColor.RESET + "\n");
+			logger.warning(ConsoleColor.RED    + " We have detected that you are using \"PerWorldPlugins\"!" + ConsoleColor.RESET);
+			logger.warning(ConsoleColor.YELLOW + " Please allow this plugin to run in " + ConsoleColor.BLUE + " ALL " + ConsoleColor.YELLOW + " worlds." + ConsoleColor.RESET);
+			logger.warning(ConsoleColor.YELLOW + " If you block it from running in all worlds there probably will be problems!" + ConsoleColor.RESET);
+			logger.warning(ConsoleColor.YELLOW + " If you don't want you players to use this plugin in certain worlds please use permissions and the plugins config!" + ConsoleColor.RESET);
+			logger.warning(ConsoleColor.RED    + " There will be no support for bugs caused by \"PerWorldPlugins\"!" + ConsoleColor.RESET);
+			logger.warning(ConsoleColor.YELLOW + " Waiting " + pauseTime + " seconds till loading will resume!" + ConsoleColor.RESET);
 
 			if(pauseTime > 0) // If there is a valid time we pause the server startup for some seconds to give the admins the chance to read the message
 			{
@@ -163,5 +165,21 @@ public class Utils
 		{
 			SEND_PACKET.invoke(PLAYER_CONNECTION.get(handle), packet);
 		}
+	}
+
+	/**
+	 * Limits the length of a given string to a given amount of characters.
+	 *
+	 * @param text      The text that should be limited in it's length.
+	 * @param maxLength The max amount of characters the text should be limited to.
+	 * @return The text in it's limited length.
+	 */
+	public static String limitLength(@NotNull String text, int maxLength)
+	{
+		Validate.notNull(text, "The text can't be null.");
+		Validate.isTrue(maxLength >= 0, "The max length can't be negative!");
+		if(text.length() == 0 || maxLength == 0) return "";
+		if(text.length() <= maxLength) return text; // No need to create a new object if the string has not changed
+		return text.substring(0, Math.min(maxLength, text.length()));
 	}
 }
