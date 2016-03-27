@@ -65,17 +65,16 @@ public class UpdaterTest
 	@Test
 	public void testUpdateCheck()
 	{
-		final UpdateResult result = bukkitProvider.query(LOGGER);
-		assertEquals("The result of the query should be success.", UpdateResult.SUCCESS, result);
-		System.out.println(new File("plugins").getAbsolutePath());
 		Updater updater = new Updater(PLUGINS_FOLDER, true, false, LOGGER, bukkitProvider, "1.0", TARGET_FILE.getName())
 		{
+			// No async for testing purposes, so we don't need to sync it back
 			@Override
 			protected void runSync(Runnable runnable)
 			{
 				runnable.run();
 			}
 
+			// No async for testing purposes
 			@Override
 			protected void runAsync(Runnable runnable)
 			{

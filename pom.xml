@@ -96,6 +96,12 @@
 			<version>LATEST</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- We use some of their classes for Validation and other things -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -152,12 +158,12 @@
 						</goals>
 						<configuration>
 							<createDependencyReducedPom>false</createDependencyReducedPom>
-							<!-- We don't know what plugin authors will need so we can't minimize the jar. -->
-							<minimizeJar>false</minimizeJar>
+							<minimizeJar>false</minimizeJar> <!-- We don't know what plugin authors will need so we can't minimize the jar. -->
 							<artifactSet>
 								<includes>
-									<include>com.google.code.gson:gson</include>
 									<include>at.pcgamingfreaks:YAML-Parser</include>
+									<include>com.google.code.gson:gson</include> <!-- Not included in Bukkit, we need it (a lot)! -->
+									<include>org.apache.commons:commons-lang3</include> <!-- The old version is included in Bukkit, but not in BungeeCord, we just put in the new version for both -->
 								</includes>
 							</artifactSet>
 						</configuration>

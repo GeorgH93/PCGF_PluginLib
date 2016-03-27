@@ -19,7 +19,7 @@ package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.ConsoleColor;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 /**
  * Collection of static functions that are may be useful for plugins.
  */
-public class Utils
+public class Utils extends at.pcgamingfreaks.Utils
 {
 	private static final Class<?> CRAFT_ITEM_STACK_CLASS = Reflection.getOBCClass("inventory.CraftItemStack");
 	private static final Class<?> NMS_ITEM_STACK_CLASS = Reflection.getNMSClass("ItemStack");

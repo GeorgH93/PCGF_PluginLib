@@ -40,7 +40,6 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	public Configuration(Plugin plugin, int version, String path)
 	{
 		this(plugin, version, -1, path);
-
 	}
 
 	/**
