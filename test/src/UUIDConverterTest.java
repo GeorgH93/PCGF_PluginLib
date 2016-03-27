@@ -20,6 +20,9 @@ import at.pcgamingfreaks.UUIDConverter;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -44,6 +47,7 @@ public class UUIDConverterTest
 		assertEquals(TEST_USER_NAME, UUIDConverter.getNameFromUUID(TEST_USER_UUID_SEPARATORS));  // With separators
 	}
 
+	@SuppressWarnings("SpellCheckingInspection")
 	private final static String TEST_USER2_NAME_NEW = "Watchdog", TEST_USER2_NAME_OG = "rzrct_", TEST_USER2_UUID = "4ca6d49d8d80429fa7a4bcce9f9e4854";
 	private final static Date TEST_USER2_LAST_SEEN = new Date(1423214002000L), TODAY = new Date(1456071840000L);
 
@@ -63,5 +67,26 @@ public class UUIDConverterTest
 		assertTrue(nameChanges.length >= 2); // Maybe he changes his name again
 		assertEquals(TEST_USER2_NAME_OG, nameChanges[0].name); // His first name
 		assertEquals(TEST_USER2_NAME_NEW, nameChanges[1].name); // His current name when writing this tests
+	}
+
+	@SuppressWarnings("SpellCheckingInspection")
+	@Test
+	public void testNamesToUUIDs()
+	{
+		List<String> names = new LinkedList<>();
+		names.add(TEST_USER_NAME);
+		names.add("Phei");
+		names.add("AFKMaster");
+		names.add("CleoMalika");
+		names.add("DudeHunt3r");
+		names.add("Ghetto1996");
+		Map<String, String> namesUUIDs = UUIDConverter.getUUIDsFromNames(names, true, false);
+		assertEquals(names.size(), namesUUIDs.size());
+		assertEquals(TEST_USER_UUID, namesUUIDs.get(TEST_USER_NAME));
+		assertEquals("8abb0b91429b41e49be8bd659923acd6", namesUUIDs.get("Phei"));
+		assertEquals("175c57e4cd4b4fb3bfea1c28d094f5dc", namesUUIDs.get("AFKMaster"));
+		assertEquals("fc4b363ba4474ab98778d0ee353151ee", namesUUIDs.get("CleoMalika"));
+		assertEquals("c251edd7ec35441b888fd6794bd77dbb", namesUUIDs.get("DudeHunt3r"));
+		assertEquals("5d44a19304d94ebaaa3f630b8c95b48a", namesUUIDs.get("Ghetto1996"));
 	}
 }
