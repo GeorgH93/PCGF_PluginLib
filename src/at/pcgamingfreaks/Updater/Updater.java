@@ -87,11 +87,32 @@ public abstract class Updater
 		//endregion
 	}
 
+	/**
+	 * Used to sync back after async update or update check.
+	 *
+	 * @param runnable The runnable that will be synced.
+	 */
 	protected abstract void runSync(Runnable runnable);
 
+	/**
+	 * Used to run the update or check functions async.
+	 *
+	 * @param runnable The runnable that should run async.
+	 */
 	protected abstract void runAsync(Runnable runnable);
 
+	/**
+	 * Gets the plugin author for the info output.
+	 *
+	 * @return The plugin author.
+	 */
 	protected abstract @NotNull String getAuthor();
+
+	/**
+	 * Waits for the async worker to finish.
+	 * We need to prevent the server from closing while we still work.
+	 */
+	public abstract void waitForAsyncOperation();
 
 	//region version checking logic
 

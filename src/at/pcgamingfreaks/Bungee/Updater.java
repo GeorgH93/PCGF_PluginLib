@@ -56,4 +56,7 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 	{
 		return plugin.getDescription().getAuthor() != null ? plugin.getDescription().getAuthor() : "";
 	}
+
+	@Override
+	public void waitForAsyncOperation() {} // We can't wait for the async operation to finish, BungeeCord doesn't allow us to start threads
 }

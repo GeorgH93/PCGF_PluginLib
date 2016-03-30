@@ -24,10 +24,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.logging.Level;
 
 public class Updater extends at.pcgamingfreaks.Updater.Updater
 {
 	private final JavaPlugin plugin;
+	private Thread thread;
 
 	public Updater(JavaPlugin plugin, File file, boolean announce, UpdateProvider updateProvider)
 	{
@@ -49,12 +51,28 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 	@Override
 	protected void runAsync(Runnable runnable)
 	{
-		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);
+		thread = new Thread(runnable);
 	}
 
 	@Override
 	protected @NotNull String getAuthor()
 	{
 		return plugin.getDescription().getAuthors().size() > 0 ? plugin.getDescription().getAuthors().get(0) : "";
+	}
+
+	@Override
+	public void waitForAsyncOperation()
+	{
+		if (thread != null && thread.isAlive())
+		{
+			try
+			{
+				thread.join();
+			}
+			catch (InterruptedException e)
+			{
+				plugin.getLogger().log(Level.SEVERE, null, e);
+			}
+		}
 	}
 }

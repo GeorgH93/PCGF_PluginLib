@@ -86,6 +86,9 @@ public class UpdaterTest
 			{
 				return "GeorgH93";
 			}
+
+			@Override
+			public void waitForAsyncOperation() {} // We are aren't running async
 		};
 		updater.checkForUpdate(new Updater.UpdaterResponse()
 		{
