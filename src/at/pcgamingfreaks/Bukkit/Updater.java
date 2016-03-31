@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import at.pcgamingfreaks.Updater.UpdateProviders.BukkitUpdateProvider;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 
 import org.bukkit.Bukkit;
@@ -31,14 +32,19 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 	private final JavaPlugin plugin;
 	private Thread thread;
 
-	public Updater(JavaPlugin plugin, File file, boolean announce, UpdateProvider updateProvider)
+	public Updater(JavaPlugin plugin, File file, boolean announceDownloadProgress, int bukkitPluginID)
 	{
-		this(plugin, file, announce, false, updateProvider);
+		this(plugin, file, announceDownloadProgress, new BukkitUpdateProvider(bukkitPluginID));
 	}
 
-	public Updater(JavaPlugin plugin, File file, boolean announce, boolean downloadDependencies, UpdateProvider updateProvider)
+	public Updater(JavaPlugin plugin, File file, boolean announceDownloadProgress, UpdateProvider updateProvider)
 	{
-		super(plugin.getDataFolder().getParentFile(), Bukkit.getUpdateFolderFile(), announce, downloadDependencies, plugin.getLogger(), updateProvider, plugin.getDescription().getVersion(), file.getName());
+		this(plugin, file, announceDownloadProgress, false, updateProvider);
+	}
+
+	public Updater(JavaPlugin plugin, File file, boolean announceDownloadProgress, boolean downloadDependencies, UpdateProvider updateProvider)
+	{
+		super(plugin.getDataFolder().getParentFile(), Bukkit.getUpdateFolderFile(), announceDownloadProgress, downloadDependencies, plugin.getLogger(), updateProvider, plugin.getDescription().getVersion(), file.getName());
 		this.plugin = plugin;
 	}
 

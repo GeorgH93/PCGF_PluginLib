@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bungee;
 
+import at.pcgamingfreaks.Updater.UpdateProviders.BukkitUpdateProvider;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 
 import net.md_5.bungee.api.plugin.Plugin;
@@ -27,14 +28,19 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 {
 	private final Plugin plugin;
 
-	public Updater(Plugin plugin, boolean announce, UpdateProvider updateProvider)
+	public Updater(Plugin plugin, boolean announceDownloadProgress, int bukkitPluginID)
 	{
-		this(plugin, announce, false, updateProvider);
+		this(plugin, announceDownloadProgress, new BukkitUpdateProvider(bukkitPluginID));
 	}
 
-	public Updater(Plugin plugin, boolean announce, boolean downloadDependencies, UpdateProvider updateProvider)
+	public Updater(Plugin plugin, boolean announceDownloadProgress, UpdateProvider updateProvider)
 	{
-		super(plugin.getDataFolder().getParentFile(), announce, downloadDependencies, plugin.getLogger(), updateProvider, plugin.getDescription().getVersion(), plugin.getDescription().getFile().getName());
+		this(plugin, announceDownloadProgress, false, updateProvider);
+	}
+
+	public Updater(Plugin plugin, boolean announceDownloadProgress, boolean downloadDependencies, UpdateProvider updateProvider)
+	{
+		super(plugin.getDataFolder().getParentFile(), announceDownloadProgress, downloadDependencies, plugin.getLogger(), updateProvider, plugin.getDescription().getVersion(), plugin.getDescription().getFile().getName());
 		this.plugin = plugin;
 	}
 

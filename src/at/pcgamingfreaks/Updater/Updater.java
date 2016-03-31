@@ -47,23 +47,23 @@ public abstract class Updater
 
 	private final File pluginsFolder, updateFolder;
 	private final UpdateProvider updateProvider;
-	private final boolean announce, downloadDependencies;
+	private final boolean announceDownloadProgress, downloadDependencies;
 	private final Logger logger;
 	private final String localVersion, targetFileName;
 
 	private UpdateResult result;
 
-	protected Updater(File pluginsFolder, boolean announce, boolean downloadDependencies, Logger logger, UpdateProvider updateProvider, String localVersion, String targetFileName)
+	protected Updater(File pluginsFolder, boolean announceDownloadProgress, boolean downloadDependencies, Logger logger, UpdateProvider updateProvider, String localVersion, String targetFileName)
 	{
-		this(pluginsFolder, new File(pluginsFolder, "updates"), announce, downloadDependencies, logger, updateProvider, localVersion, targetFileName);
+		this(pluginsFolder, new File(pluginsFolder, "updates"), announceDownloadProgress, downloadDependencies, logger, updateProvider, localVersion, targetFileName);
 	}
 
-	protected Updater(File pluginsFolder, File updateFolder, boolean announce, boolean downloadDependencies, Logger logger, UpdateProvider updateProvider, String localVersion, String targetFileName)
+	protected Updater(File pluginsFolder, File updateFolder, boolean announceDownloadProgress, boolean downloadDependencies, Logger logger, UpdateProvider updateProvider, String localVersion, String targetFileName)
 	{
 		this.pluginsFolder = pluginsFolder;
 		this.updateFolder = updateFolder;
 		this.updateProvider = updateProvider;
-		this.announce = announce;
+		this.announceDownloadProgress = announceDownloadProgress;
 		this.downloadDependencies = downloadDependencies;
 		this.logger = logger;
 		this.localVersion = localVersion;
@@ -238,7 +238,7 @@ public abstract class Updater
 			    FileOutputStream outputStream = new FileOutputStream(downloadFile))
 			{
 				byte[] buffer = new byte[BUFFER_SIZE];
-				if(announce)
+				if(announceDownloadProgress)
 				{
 					logger.info("Start downloading update: " + updateProvider.getLatestVersion());
 				}
@@ -248,7 +248,7 @@ public abstract class Updater
 					downloaded += count;
 					outputStream.write(buffer, 0, count);
 					percent = (int) ((downloaded * 100) / fileLength);
-					if(announce && percent % 10 == 0 && percent / 10 > percentHelper)
+					if(announceDownloadProgress && percent % 10 == 0 && percent / 10 > percentHelper)
 					{
 						percentHelper++;
 						logger.info("Downloading update: " + percent + "% of " + fileLength + " bytes.");
@@ -273,7 +273,7 @@ public abstract class Updater
 			{
 				unzip(downloadFile);
 			}
-			if(result != UpdateResult.FAIL_DOWNLOAD && announce)
+			if(result != UpdateResult.FAIL_DOWNLOAD && announceDownloadProgress)
 			{
 				result = UpdateResult.SUCCESS;
 				logger.info("Finished updating.");
