@@ -348,6 +348,11 @@ public abstract class Updater
 		return null;
 	}
 
+	public void update()
+	{
+		update(null);
+	}
+
 	public void update(final UpdaterResponse response)
 	{
 		if(result == UpdateResult.DISABLED) return;
@@ -375,7 +380,7 @@ public abstract class Updater
 									}
 									result = (result == UpdateResult.SUCCESS) ? UpdateResult.SUCCESS : UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED;
 								}
-								runSync(new Runnable()
+								if(response != null) runSync(new Runnable()
 								{
 									@Override
 									public void run()
