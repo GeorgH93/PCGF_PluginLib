@@ -49,14 +49,16 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @param logger The logger that should display the error message in case of an problem
 	 * @return The item stack as a json string. empty string if the conversation failed
 	 */
-	public static String convertItemStackToJson(ItemStack itemStack, Logger logger)
+	public static String convertItemStackToJson(@NotNull ItemStack itemStack, @NotNull Logger logger)
 	{
+		Validate.notNull(logger, "The logger can't be null.");
+		Validate.notNull(itemStack, "The item stack can't be null.");
 		try
 		{
 			if(SAVE_NMS_ITEM_STACK_METHOD == null || AS_NMS_COPY_METHOD == null || NBT_TAG_COMPOUND_CLASS == null)
 			{
 				logger.log(Level.SEVERE, "Failed to serialize item stack to NMS item! Bukkit Version: " + Bukkit.getServer().getVersion() +
-						"\nIt one or more of the reflection variables is null! Looks like your bukkit version is not compatible. Please check for updates.");
+						"\nOne or more of the reflection variables is null! Looks like your bukkit version is not compatible. Please check for updates.");
 			}
 			else
 			{
@@ -85,7 +87,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 *
 	 * @param logger The logger to output the warning
 	 */
-	public static void warnIfPerWorldPluginsIsInstalled(Logger logger)
+	public static void warnIfPerWorldPluginsIsInstalled(@NotNull Logger logger)
 	{
 		warnIfPerWorldPluginsIsInstalled(logger, 5);
 	}
@@ -96,8 +98,9 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @param logger The logger to output the warning
 	 * @param pauseTime The time in seconds the function should be blocking if PerWorldPlugins is installed.
 	 */
-	public static void warnIfPerWorldPluginsIsInstalled(Logger logger, int pauseTime)
+	public static void warnIfPerWorldPluginsIsInstalled(@NotNull Logger logger, int pauseTime)
 	{
+		Validate.notNull(logger, "The logger can't be null.");
 		if(isPerWorldPluginsInstalled())
 		{
 			logger.warning(ConsoleColor.RED    + "   !!!!!!!!!!!!!!!!!!!!!!!!!" + ConsoleColor.RESET);
@@ -127,19 +130,21 @@ public class Utils extends at.pcgamingfreaks.Utils
 	/**
 	 * Calculates the distance between two players
 	 *
-	 * @param p1 The first player
-	 * @param p2 The second player
+	 * @param player1 The first player
+	 * @param player2 The second player
 	 * @return The distance between the two players in meter/blocks. Double.POSITIVE_INFINITY if they aren't in the same world.
 	 */
-	public static double getDistance(Player p1, Player p2)
+	public static double getDistance(@NotNull Player player1, @NotNull Player player2)
 	{
-		if(p1.equals(p2))
+		Validate.notNull(player1, "None of the players can be null!");
+		Validate.notNull(player2, "None of the players can be null!");
+		if(player1.equals(player2))
 		{
 			return 0;
 		}
-		if(p1.getWorld().equals(p2.getWorld()))
+		if(player1.getWorld().equals(player2.getWorld()))
 		{
-			return p1.getLocation().distance(p2.getLocation());
+			return player1.getLocation().distance(player2.getLocation());
 		}
 		return Double.POSITIVE_INFINITY;
 	}
@@ -159,27 +164,13 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 */
 	public static void sendPacket(@NotNull Player player, @NotNull Object packet) throws IllegalAccessException, InvocationTargetException
 	{
+		Validate.notNull(player, "The player that should receive this packet can't be null!");
+		Validate.notNull(packet, "The packet to send can't be null!");
 		if(SEND_PACKET == null || PLAYER_CONNECTION == null) return;
 		Object handle = Reflection.getHandle(player);
 		if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
 		{
 			SEND_PACKET.invoke(PLAYER_CONNECTION.get(handle), packet);
 		}
-	}
-
-	/**
-	 * Limits the length of a given string to a given amount of characters.
-	 *
-	 * @param text      The text that should be limited in it's length.
-	 * @param maxLength The max amount of characters the text should be limited to.
-	 * @return The text in it's limited length.
-	 */
-	public static String limitLength(@NotNull String text, int maxLength)
-	{
-		Validate.notNull(text, "The text can't be null.");
-		Validate.isTrue(maxLength >= 0, "The max length can't be negative!");
-		if(text.length() == 0 || maxLength == 0) return "";
-		if(text.length() <= maxLength) return text; // No need to create a new object if the string has not changed
-		return text.substring(0, Math.min(maxLength, text.length()));
 	}
 }

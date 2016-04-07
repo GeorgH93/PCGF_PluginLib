@@ -17,15 +17,81 @@
 
 package at.pcgamingfreaks;
 
+import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.logging.Logger;
+
 public class Utils
 {
-	public static String byteArrayToHex(byte[] bytes)
+	/**
+	 * Converts a byte array into a hex string.
+	 *
+	 * @param bytes The byte array to convert to hex.
+	 * @return The hex string matching the given byte array. The chars a-f will be lower case!
+	 */
+	public static String byteArrayToHex(@Nullable byte[] bytes)
 	{
+		if(bytes == null || bytes.length == 0) return "";
 		StringBuilder hexBuilder = new StringBuilder(bytes.length * 2);
 		for(byte b: bytes)
 		{
 			hexBuilder.append(String.format("%02x", b));
 		}
 		return hexBuilder.toString();
+	}
+
+	/**
+	 * Limits the length of a given string to a given amount of characters.
+	 *
+	 * @param text      The text that should be limited in it's length.
+	 * @param maxLength The max amount of characters the text should be limited to.
+	 * @return The text in it's limited length.
+	 */
+	public static String limitLength(@NotNull String text, int maxLength)
+	{
+		Validate.notNull(text, "The text can't be null.");
+		Validate.isTrue(maxLength >= 0, "The max length can't be negative!");
+		if(text.length() == 0 || maxLength == 0) return "";
+		if(text.length() <= maxLength) return text; // No need to create a new object if the string has not changed
+		return text.substring(0, maxLength -1);
+	}
+
+	/**
+	 * Shows a warning message if the Java version is still 1.7.
+	 *
+	 * @param logger The logger to output the warning
+	 */
+	public static void warnOnJava_1_7(@NotNull Logger logger)
+	{
+		warnOnJava_1_7(logger, 0);
+	}
+
+	/**
+	 * Shows a warning message if the Java version is still 1.7.
+	 *
+	 * @param logger The logger to output the warning
+	 * @param pauseTime The time in seconds the function should be blocking (in seconds) if Java is outdated. Values below 1 wont block.
+	 */
+	public static void warnOnJava_1_7(@NotNull Logger logger, int pauseTime)
+	{
+		Validate.notNull(logger, "The logger can't be null.");
+		if (System.getProperty("java.version").startsWith("1.7"))
+		{
+			logger.warning(ConsoleColor.RED + "You are still using Java 1.7. Java 1.7 ist EOL for over a year now! You should really update to Java 1.8!" + ConsoleColor.RESET);
+			logger.info(ConsoleColor.YELLOW + "For now I this plugin will still work fine with Java 1.7 but no warranty that this won't change in the future." + ConsoleColor.RESET);
+			if(pauseTime > 0) // If there is a valid time we pause the server startup for some seconds to give the admins the chance to read the message
+			{
+				try
+				{
+					Thread.sleep(pauseTime * 1000L);
+				}
+				catch(InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
