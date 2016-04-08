@@ -164,7 +164,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 
 	/**
 	 * Sets the {@link TabCompleter} to run when tab-completing this command.
-	 * <p/>
+	 *
 	 * If no TabCompleter is specified, and the command's executor implements
 	 * TabCompleter, then the executor will be used for tab completion.
 	 *
@@ -197,15 +197,15 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
+	 *
 	 * Delegates to the tab completer if present.
-	 * <p/>
+	 *
 	 * If it is not present or returns null, will delegate to the current
 	 * command executor if it implements {@link TabCompleter}. If a non-null
 	 * list has not been found, will default to standard player name
 	 * completion in {@link
 	 * Command#tabComplete(CommandSender, String, String[])}.
-	 * <p/>
+	 *
 	 * This method does not consider permissions.
 	 *
 	 * @throws CommandException         if the completer or executor throw an exception during the process of tab-completing.
