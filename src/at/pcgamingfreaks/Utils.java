@@ -81,16 +81,26 @@ public class Utils
 		{
 			logger.warning(ConsoleColor.RED + "You are still using Java 1.7. Java 1.7 ist EOL for over a year now! You should really update to Java 1.8!" + ConsoleColor.RESET);
 			logger.info(ConsoleColor.YELLOW + "For now I this plugin will still work fine with Java 1.7 but no warranty that this won't change in the future." + ConsoleColor.RESET);
-			if(pauseTime > 0) // If there is a valid time we pause the server startup for some seconds to give the admins the chance to read the message
+			blockThread(pauseTime);
+		}
+	}
+
+	/**
+	 * Blocks the thread for a given time
+	 *
+	 * @param pauseTime The time in seconds that the thread should be blocked
+	 */
+	public static void blockThread(int pauseTime)
+	{
+		if(pauseTime > 0) // If there is a valid time we pause the current thread for that time
+		{
+			try
 			{
-				try
-				{
-					Thread.sleep(pauseTime * 1000L);
-				}
-				catch(InterruptedException e)
-				{
-					e.printStackTrace();
-				}
+				Thread.sleep(pauseTime * 1000L);
+			}
+			catch(InterruptedException e)
+			{
+				e.printStackTrace();
 			}
 		}
 	}

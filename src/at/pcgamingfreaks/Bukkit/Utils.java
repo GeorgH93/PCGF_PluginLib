@@ -112,18 +112,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 			logger.warning(ConsoleColor.YELLOW + " If you don't want you players to use this plugin in certain worlds please use permissions and the plugins config!" + ConsoleColor.RESET);
 			logger.warning(ConsoleColor.RED    + " There will be no support for bugs caused by \"PerWorldPlugins\"!" + ConsoleColor.RESET);
 			logger.warning(ConsoleColor.YELLOW + " Waiting " + pauseTime + " seconds till loading will resume!" + ConsoleColor.RESET);
-
-			if(pauseTime > 0) // If there is a valid time we pause the server startup for some seconds to give the admins the chance to read the message
-			{
-				try
-				{
-					Thread.sleep(pauseTime * 1000L);
-				}
-				catch(InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-			}
+			blockThread(pauseTime);
 		}
 	}
 
