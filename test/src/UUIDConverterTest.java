@@ -78,7 +78,6 @@ public class UUIDConverterTest
 		names.add("Phei");
 		names.add("AFKMaster");
 		names.add("CleoMalika");
-		names.add("DudeHunt3r");
 		names.add("Ghetto1996");
 		Map<String, String> namesUUIDs = UUIDConverter.getUUIDsFromNames(names, true, false);
 		assertEquals(names.size(), namesUUIDs.size());
@@ -86,7 +85,6 @@ public class UUIDConverterTest
 		assertEquals("8abb0b91429b41e49be8bd659923acd6", namesUUIDs.get("Phei"));
 		assertEquals("175c57e4cd4b4fb3bfea1c28d094f5dc", namesUUIDs.get("AFKMaster"));
 		assertEquals("fc4b363ba4474ab98778d0ee353151ee", namesUUIDs.get("CleoMalika"));
-		assertEquals("c251edd7ec35441b888fd6794bd77dbb", namesUUIDs.get("DudeHunt3r"));
 		assertEquals("5d44a19304d94ebaaa3f630b8c95b48a", namesUUIDs.get("Ghetto1996"));
 	}
 }
