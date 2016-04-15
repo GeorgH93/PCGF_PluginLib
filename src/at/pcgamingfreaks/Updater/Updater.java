@@ -197,6 +197,7 @@ public abstract class Updater
 	/**
 	 * Check to see if the program should continue by evaluating whether the plugin is already updated, or shouldn't be updated.
 	 *
+	 * @param remoteVersion The version to compare against
 	 * @return true if the version was located and is newer then the local version
 	 */
 	protected boolean versionCheck(String remoteVersion)
