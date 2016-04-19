@@ -20,6 +20,7 @@ import at.pcgamingfreaks.Utils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UtilsTest
 {
@@ -46,5 +47,24 @@ public class UtilsTest
 		assertEquals(longTextFinal, outLongText);
 		assertEquals(shortTextFinal, outShortText);
 		assertEquals(exactTextFinal, outExactText);
+	}
+
+	@Test
+	public void testBlockThread()
+	{
+		//region no blocking
+		long startTime = System.currentTimeMillis();
+		Utils.blockThread(0);
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
+		assertTrue(elapsedTime < 10);
+		//endregion
+		//region with blocking
+		startTime = System.currentTimeMillis();
+		Utils.blockThread(1);
+		stopTime = System.currentTimeMillis();
+		elapsedTime = stopTime - startTime;
+		assertTrue(elapsedTime > 900 && elapsedTime < 1100); // Give it some tolerance
+		//endregion
 	}
 }
