@@ -19,6 +19,7 @@ package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YAMLNotInitializedException;
+
 import com.google.common.io.ByteStreams;
 
 import java.io.*;
@@ -31,11 +32,12 @@ public class Language
 	protected String language = "en";
 
 	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
-	private final String PREFIX, IN_JAR_PREFIX;
-	private final File DIR;
+	private final String prefix, inJarPrefix, path;
+	private final File baseDir;
 	private File langFile;
-	private final int LANG_VERSION;
+	private final int expectedVersion, upgradeThreshold;
 
+	//region constructors
 	/**
 	 * @param logger  The logger instance of the plugin
 	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
@@ -47,15 +49,39 @@ public class Language
 	}
 
 	/**
+	 * @param logger           The logger instance of the plugin
+	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 */
+	public Language(Logger logger, File baseDir, int version, int upgradeThreshold)
+	{
+		this(logger, baseDir, version, upgradeThreshold, File.separator + "lang", "");
+	}
+
+	/**
 	 * @param logger  The logger instance of the plugin
 	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version the current version of the language file
-	 * @param path    the sub-folder for the language file
-	 * @param prefix  the prefix for the language file
+	 * @param version The current version of the language file
+	 * @param path    The sub-folder for the language file
+	 * @param prefix  The prefix for the language file
 	 */
 	public Language(Logger logger, File baseDir, int version, String path, String prefix)
 	{
 		this(logger, baseDir, version, path, prefix, "");
+	}
+
+	/**
+	 * @param logger           The logger instance of the plugin
+	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 * @param path             The sub-folder for the language file
+	 * @param prefix           The prefix for the language file
+	 */
+	public Language(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String prefix)
+	{
+		this(logger, baseDir, version, upgradeThreshold, path, prefix, "");
 	}
 
 	/**
@@ -68,12 +94,35 @@ public class Language
 	 */
 	public Language(Logger logger, File baseDir, int version, String path, String prefix, String inJarPrefix)
 	{
-		this.logger = logger;
-		DIR = new File(baseDir, path);
-		LANG_VERSION = version;
-		PREFIX = prefix;
-		IN_JAR_PREFIX = inJarPrefix;
+		this(logger, baseDir, version, -1, path, prefix, inJarPrefix);
 	}
+
+	/**
+	 * @param logger           The logger instance of the plugin
+	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 * @param path             The sub-folder for the language file
+	 * @param prefix           The prefix for the language file
+	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bungee_)
+	 */
+	public Language(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String prefix, String inJarPrefix)
+	{
+		this.logger = logger;
+		this.baseDir = new File(baseDir, path);
+		this.path = path;
+		expectedVersion = version;
+		this.upgradeThreshold = upgradeThreshold;
+		this.prefix = prefix;
+		this.inJarPrefix = inJarPrefix;
+	}
+
+	private Language(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String prefix, String inJarPrefix, YAML yaml)
+	{
+		this(logger, baseDir, version, upgradeThreshold, path, prefix, inJarPrefix);
+		lang = yaml;
+	}
+	//endregion
 
 	/**
 	 * @return true if a language file is loaded, false if not
@@ -131,7 +180,7 @@ public class Language
 
 	private void loadLang()
 	{
-		langFile = new File(DIR, PREFIX + language + ".yml");
+		langFile = new File(baseDir, prefix + language + ".yml");
 		if(!langFile.exists())
 		{
 			extractLangFile();
@@ -155,7 +204,7 @@ public class Language
 			{
 				logger.info("Failed deleting old language file.");
 			}
-			if(!DIR.exists() && !DIR.mkdirs())
+			if(!baseDir.exists() && !baseDir.mkdirs())
 			{
 				logger.info("Failed creating directory's!");
 			}
@@ -163,14 +212,14 @@ public class Language
 			{
 				logger.info("Failed create new language file.");
 			}
-			try(InputStream is = getClass().getResourceAsStream("/lang/" + IN_JAR_PREFIX + language + ".yml"); OutputStream os = new FileOutputStream(langFile))
+			try(InputStream is = getClass().getResourceAsStream("/lang/" + inJarPrefix + language + ".yml"); OutputStream os = new FileOutputStream(langFile))
 			{
 				ByteStreams.copy(is, os);
 				os.flush();
 			}
 			catch(Exception e)
 			{
-				try(InputStream is = getClass().getResourceAsStream("/lang/" + IN_JAR_PREFIX + "en.yml"); OutputStream os = new FileOutputStream(langFile))
+				try(InputStream is = getClass().getResourceAsStream("/lang/" + inJarPrefix + "en.yml"); OutputStream os = new FileOutputStream(langFile))
 				{
 					ByteStreams.copy(is, os);
 					os.flush();
@@ -186,40 +235,99 @@ public class Language
 
 	private boolean updateLang()
 	{
-		if(getVersion() < LANG_VERSION)
+		if(getVersion() < expectedVersion)
 		{
-			logger.info("Language version: " + getVersion() + " => Language outdated! Updating ...");
-			if(updateMode == LanguageUpdateMethod.OVERWRITE)
+			if(getVersion() < upgradeThreshold || updateMode == LanguageUpdateMethod.UPGRADE)
 			{
-				extractLangFile();
-				loadLang();
-				logger.info("Language file has been updated.");
-			}
-			else
-			{
-				doUpdate();
-				lang.set("Version", LANG_VERSION);
+				logger.info("Language version: " + getVersion() + " => Language outdated! Upgrading ...");
 				try
 				{
-					save();
-					logger.info("Language file has been updated.");
+					int oldVersion = getVersion();
+					File oldLang = new File(langFile + ".old_v" + oldVersion);
+					if(oldLang.exists() && !oldLang.delete())
+					{
+						logger.warning("Failed to delete old language file backup!");
+						return false;
+					}
+					if(!langFile.renameTo(oldLang))
+					{
+						logger.warning("Failed to rename old language file! Could not do upgrade!");
+						return false;
+					}
+					YAML oldYAML = lang;
+					loadLang();
+					if(isLoaded())
+					{
+						doUpgrade(new Language(logger, baseDir, oldVersion, -1, path + ".old_v" + oldVersion, prefix, inJarPrefix, oldYAML));
+					}
 				}
 				catch(Exception e)
 				{
 					e.printStackTrace();
-					return false;
+					lang = null;
+				}
+			}
+			else
+			{
+				logger.info("Language version: " + getVersion() + " => Language outdated! Updating ...");
+				if(updateMode == LanguageUpdateMethod.OVERWRITE)
+				{
+					extractLangFile();
+					loadLang();
+					logger.info("Language file has been updated.");
+				}
+				else
+				{
+					doUpdate();
+					lang.set("Version", expectedVersion);
+					try
+					{
+						save();
+						logger.info("Language file has been updated.");
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+						return false;
+					}
 				}
 			}
 			return true;
 		}
-		if(LANG_VERSION < getVersion())
+		if(expectedVersion < getVersion())
 		{
 			logger.warning("Language file version newer than expected!");
 		}
 		return false;
 	}
 
-	protected void doUpdate() {}
+	/**
+	 * Allows inheriting classes to implement own code for the language upgrade
+	 * If no special code is implemented all keys will be copied 1:1 into the new language file
+	 *
+	 * @param oldLang the old language file
+	 */
+	protected void doUpgrade(Language oldLang)
+	{
+		logger.info("No custom language upgrade code implemented! Copying all data from old config to new one.");
+		for(String key : lang.getKeys())
+		{
+			if(oldLang.lang.isSet(key))
+			{
+				if(key.equals("Version"))
+					continue;
+				lang.set(key, oldLang.lang.getString(key, null));
+			}
+		}
+	}
+
+	/**
+	 * Allows inheriting classes to implement code for the config update
+	 */
+	protected void doUpdate()
+	{
+		logger.info("No language update code implemented! Just updating version!");
+	}
 
 	/**
 	 * Saves all changes to the file.
@@ -236,5 +344,10 @@ public class Language
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public YAML getLang()
+	{
+		return lang;
 	}
 }
