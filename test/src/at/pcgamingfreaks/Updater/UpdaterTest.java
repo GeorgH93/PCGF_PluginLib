@@ -15,10 +15,10 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+package at.pcgamingfreaks.Updater;
+
 import at.pcgamingfreaks.Updater.UpdateProviders.BukkitUpdateProvider;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
-import at.pcgamingfreaks.Updater.UpdateResult;
-import at.pcgamingfreaks.Updater.Updater;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;

@@ -15,7 +15,7 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import at.pcgamingfreaks.Utils;
+package at.pcgamingfreaks;
 
 import org.junit.Test;
 
