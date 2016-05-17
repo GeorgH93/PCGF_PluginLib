@@ -21,92 +21,95 @@ package at.pcgamingfreaks;
  * This class allows to change the color of console outputs.
  * It's recommended that you reset the color at the end of your output.
  */
-@SuppressWarnings("unused")
 public enum ConsoleColor
 {
 	/**
 	 * Resets all the formats of the console.
 	 */
-	RESET  ("\u001B[0m"),
-	BOLD   ("\u001B[1m"),
+	RESET  (0),
+	/**
+	 * Changes the font of the console to bold.
+	 */
+	BOLD   (1),
 	/**
 	 * Changes the font color of the console to black.
 	 */
-	BLACK  ("\u001B[30m"),
+	BLACK  (30),
 	/**
 	 * Changes the font color of the console to red.
 	 */
-	RED    ("\u001B[31m"),
+	RED    (31),
 	/**
 	 * Changes the font color of the console to green.
 	 */
-	GREEN  ("\u001B[32m"),
+	GREEN  (32),
 	/**
 	 * Changes the font color of the console to yellow.
 	 */
-	YELLOW ("\u001B[33m"),
+	YELLOW (33),
 	/**
 	 * Changes the font color of the console to blue.
 	 */
-	BLUE   ("\u001B[34m"),
+	BLUE   (34),
 	/**
 	 * Changes the font color of the console to purple.
 	 */
-	PURPLE ("\u001B[35m"),
+	PURPLE (35),
 	/**
 	 * Changes the font color of the console to cyan.
 	 */
-	CYAN   ("\u001B[36m"),
+	CYAN   (36),
 	/**
 	 * Changes the font color of the console to white.
 	 */
-	WHITE  ("\u001B[37m"),
+	WHITE  (37),
 	/**
 	 * Resets the font color of the console.
 	 */
-	DEFAULT("\u001B[39m"),
+	DEFAULT(39),
 	/**
 	 * Changes the background color of the console to black.
 	 */
-	BACKGROUND_BLACK  ("\u001B[40m"),
+	BACKGROUND_BLACK  (40),
 	/**
 	 * Changes the background color of the console to red.
 	 */
-	BACKGROUND_RED    ("\u001B[41m"),
+	BACKGROUND_RED    (41),
 	/**
 	 * Changes the background color of the console to green.
 	 */
-	BACKGROUND_GREEN  ("\u001B[42m"),
+	BACKGROUND_GREEN  (42),
 	/**
 	 * Changes the background color of the console to yellow.
 	 */
-	BACKGROUND_YELLOW ("\u001B[43m"),
+	BACKGROUND_YELLOW (43),
 	/**
 	 * Changes the background color of the console to blue.
 	 */
-	BACKGROUND_BLUE   ("\u001B[44m"),
+	BACKGROUND_BLUE   (44),
 	/**
 	 * Changes the background color of the console to purple.
 	 */
-	BACKGROUND_PURPLE ("\u001B[45m"),
+	BACKGROUND_PURPLE (45),
 	/**
 	 * Changes the background color of the console to cyan.
 	 */
-	BACKGROUND_CYAN   ("\u001B[46m"),
+	BACKGROUND_CYAN   (46),
 	/**
 	 * Changes the background color of the console to white.
 	 */
-	BACKGROUND_WHITE  ("\u001B[47m"),
+	BACKGROUND_WHITE  (47),
 	/**
 	 * Resets the background color of the console.
 	 */
-	BACKGROUND_DEFAULT("\u001B[49m");
+	BACKGROUND_DEFAULT(49);
 	
 	private final String code;
+	public static final char ESC_SEQUENCE = '\u001B';
 
-	ConsoleColor(String code)
+	ConsoleColor(int code)
 	{
-		this.code = code;
+		this.code = String.valueOf(ESC_SEQUENCE) + '[' + code + 'm';
 	}
 
 	@Override
