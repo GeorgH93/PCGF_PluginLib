@@ -51,8 +51,8 @@ public class Utils
 	 */
 	public static String limitLength(@NotNull String text, int maxLength)
 	{
-		Validate.notNull(text, "The text can't be null.");
-		Validate.isTrue(maxLength >= 0, "The max length can't be negative!");
+		Validate.notNull(text, "The text must not be null.");
+		Validate.isTrue(maxLength >= 0, "The max length must not be negative!");
 		if(text.length() == 0 || maxLength == 0) return "";
 		if(text.length() <= maxLength) return text; // No need to create a new object if the string has not changed
 		return text.substring(0, maxLength -1);
@@ -76,11 +76,11 @@ public class Utils
 	 */
 	public static void warnOnJava_1_7(@NotNull Logger logger, int pauseTime)
 	{
-		Validate.notNull(logger, "The logger can't be null.");
+		Validate.notNull(logger, "The logger must not be null.");
 		if (System.getProperty("java.version").startsWith("1.7"))
 		{
 			logger.warning(ConsoleColor.RED + "You are still using Java 1.7. Java 1.7 ist EOL for over a year now! You should really update to Java 1.8!" + ConsoleColor.RESET);
-			logger.info(ConsoleColor.YELLOW + "For now I this plugin will still work fine with Java 1.7 but no warranty that this won't change in the future." + ConsoleColor.RESET);
+			logger.info(ConsoleColor.YELLOW + "For now this plugin will still work fine with Java 1.7 but no warranty that this won't change in the future." + ConsoleColor.RESET);
 			blockThread(pauseTime);
 		}
 	}
@@ -98,10 +98,7 @@ public class Utils
 			{
 				Thread.sleep(pauseTime * 1000L);
 			}
-			catch(InterruptedException e)
-			{
-				e.printStackTrace();
-			}
+			catch(InterruptedException ignored) {}
 		}
 	}
 }
