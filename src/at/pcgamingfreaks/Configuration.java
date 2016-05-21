@@ -138,7 +138,7 @@ public class Configuration
 	protected void doUpgrade(Configuration oldConfiguration)
 	{
 		logger.info("No custom config upgrade code implemented! Copying all data from old config to new one.");
-		for(String key : config.getKeys())
+		for(String key : config.getKeys(true))
 		{
 			if(oldConfiguration.config.isSet(key))
 			{
@@ -380,7 +380,15 @@ public class Configuration
 	 */
 	public LanguageUpdateMethod getLanguageUpdateMode()
 	{
-		return ((config.getString("LanguageUpdateMode", "overwrite").equalsIgnoreCase("overwrite")) ? LanguageUpdateMethod.OVERWRITE : LanguageUpdateMethod.UPDATE);
+		try
+		{
+			return LanguageUpdateMethod.valueOf(config.getString("LanguageUpdateMode", "upgrade").toUpperCase());
+		}
+		catch(Exception ignored)
+		{
+			logger.warning("Failed to read \"LanguageUpdateMode\" config option. Using default value (\"upgrade\").");
+		}
+		return LanguageUpdateMethod.UPGRADE;
 	}
 	//endregion
 
