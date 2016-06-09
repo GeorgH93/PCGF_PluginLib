@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Effects;
 
-import at.pcgamingfreaks.Bukkit.Reflection;
+import at.pcgamingfreaks.Bukkit.NMSReflection;
 
 /**
  * Only available for Minecraft 1.8 and newer!
@@ -42,7 +42,7 @@ public enum MaterialEffects
 		name = NAME;
 		nameUpperCase = name.toUpperCase();
 		newName = NEWNAME;
-		nmsEnumParticle = (Reflection.getVersion().contains("1_8")) ? Reflection.getEnum("net.minecraft.server." + Reflection.getVersion() + ".EnumParticle." + newName) : null;
+		nmsEnumParticle = (NMSReflection.getVersion().contains("1_8") || NMSReflection.getVersion().contains("1_9") || NMSReflection.getVersion().contains("1_10")) ? NMSReflection.getEnum("net.minecraft.server." + NMSReflection.getVersion() + ".EnumParticle." + newName) : null;
 	}
 
 	public String getName()

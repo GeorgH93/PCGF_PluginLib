@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Effects;
 
-import at.pcgamingfreaks.Bukkit.Reflection;
+import at.pcgamingfreaks.Bukkit.NMSReflection;
 
 @SuppressWarnings("unused")
 public enum Effects
@@ -91,9 +91,9 @@ public enum Effects
 		this.id = id;
 		this.name = name;
 		this.newName = newName;
-		if(Reflection.getVersion().contains("1_8") || Reflection.getVersion().contains("1_9"))
+		if(NMSReflection.getVersion().contains("1_8") || NMSReflection.getVersion().contains("1_9") || NMSReflection.getVersion().contains("1_10"))
 		{
-			nmsEnumParticle = (this.id < 36 || (this.id >= 36 && Reflection.getVersion().contains("1_9"))) ? Reflection.getNMSEnum("EnumParticle." + this.newName) : null;
+			nmsEnumParticle = (this.id < 36 || (this.id >= 36 && this.id < 40 && NMSReflection.getVersion().contains("1_9")) || (this.id >= 36 && NMSReflection.getVersion().contains("1_10"))) ? NMSReflection.getNMSEnum("EnumParticle." + this.newName) : null;
 		}
 		else
 		{

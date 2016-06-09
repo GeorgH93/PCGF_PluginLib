@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2016 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,9 +15,7 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit;
-
-import org.bukkit.Bukkit;
+package at.pcgamingfreaks;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -25,46 +23,11 @@ import java.lang.reflect.Method;
 
 public class Reflection
 {
-	private static final String BUKKIT_VERSION = Bukkit.getServer().getClass().getName().split("\\.")[3];
-	private static final String NMS_CLASS_PATH = "net.minecraft.server." + BUKKIT_VERSION + ".";
-	private static final String OBC_CLASS_PATH = "org.bukkit.craftbukkit." + BUKKIT_VERSION + ".";
-
-	public static String getVersion()
-	{
-		return BUKKIT_VERSION;
-	}
-
 	public static void setValue(Object instance, String fieldName, Object value) throws Exception
 	{
 		Field field = instance.getClass().getDeclaredField(fieldName);
 		field.setAccessible(true);
 		field.set(instance, value);
-	}
-
-	public static Class<?> getNMSClass(String className)
-	{
-		try
-		{
-			return Class.forName(NMS_CLASS_PATH + className);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static Class<?> getOBCClass(String className)
-	{
-		try
-		{
-			return Class.forName(OBC_CLASS_PATH + className);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
@@ -90,25 +53,6 @@ public class Reflection
 		try
 		{
 			return Enum.valueOf(clazz, enumName);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static Enum<?> getNMSEnum(String enumClassAndEnumName)
-	{
-		return getEnum(NMS_CLASS_PATH + enumClassAndEnumName);
-	}
-
-	public static Object getHandle(Object obj)
-	{
-		try
-		{
-			//noinspection ConstantConditions
-			return getMethod(obj.getClass(), "getHandle", new Class[0]).invoke(obj);
 		}
 		catch(Exception e)
 		{

@@ -36,11 +36,11 @@ import java.util.logging.Logger;
  */
 public class Utils extends at.pcgamingfreaks.Utils
 {
-	private static final Class<?> CRAFT_ITEM_STACK_CLASS = Reflection.getOBCClass("inventory.CraftItemStack");
-	private static final Class<?> NMS_ITEM_STACK_CLASS = Reflection.getNMSClass("ItemStack");
-	private static final Class<?> NBT_TAG_COMPOUND_CLASS = Reflection.getNMSClass("NBTTagCompound");
-	private static final Method AS_NMS_COPY_METHOD = Reflection.getMethod(CRAFT_ITEM_STACK_CLASS, "asNMSCopy", ItemStack.class);
-	private static final Method SAVE_NMS_ITEM_STACK_METHOD = Reflection.getMethod(NMS_ITEM_STACK_CLASS, "save", NBT_TAG_COMPOUND_CLASS);
+	private static final Class<?> CRAFT_ITEM_STACK_CLASS = NMSReflection.getOBCClass("inventory.CraftItemStack");
+	private static final Class<?> NMS_ITEM_STACK_CLASS = NMSReflection.getNMSClass("ItemStack");
+	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NMSReflection.getNMSClass("NBTTagCompound");
+	private static final Method AS_NMS_COPY_METHOD = NMSReflection.getMethod(CRAFT_ITEM_STACK_CLASS, "asNMSCopy", ItemStack.class);
+	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NMSReflection.getMethod(NMS_ITEM_STACK_CLASS, "save", NBT_TAG_COMPOUND_CLASS);
 
 	/**
 	 * Converts an item stack into a json string used for chat messages.
@@ -140,9 +140,9 @@ public class Utils extends at.pcgamingfreaks.Utils
 
 
 	//region Reflection constants for the send packet method
-	private final static Class<?> ENTITY_PLAYER = Reflection.getNMSClass("EntityPlayer");
-	private final static Method SEND_PACKET = Reflection.getMethod(Reflection.getNMSClass("PlayerConnection"), "sendPacket");
-	private final static Field PLAYER_CONNECTION = Reflection.getField(ENTITY_PLAYER, "playerConnection");
+	private final static Class<?> ENTITY_PLAYER = NMSReflection.getNMSClass("EntityPlayer");
+	private final static Method SEND_PACKET = NMSReflection.getMethod(NMSReflection.getNMSClass("PlayerConnection"), "sendPacket");
+	private final static Field PLAYER_CONNECTION = NMSReflection.getField(ENTITY_PLAYER, "playerConnection");
 	//endregion
 
 	/**
@@ -156,7 +156,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 		Validate.notNull(player, "The player that should receive this packet can't be null!");
 		Validate.notNull(packet, "The packet to send can't be null!");
 		if(SEND_PACKET == null || PLAYER_CONNECTION == null) return;
-		Object handle = Reflection.getHandle(player);
+		Object handle = NMSReflection.getHandle(player);
 		if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
 		{
 			SEND_PACKET.invoke(PLAYER_CONNECTION.get(handle), packet);

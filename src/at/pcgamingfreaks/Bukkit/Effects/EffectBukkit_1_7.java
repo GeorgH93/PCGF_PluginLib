@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Effects;
 
-import at.pcgamingfreaks.Bukkit.Reflection;
+import at.pcgamingfreaks.Bukkit.NMSReflection;
 
 import org.bukkit.Location;
 
@@ -25,7 +25,7 @@ import java.lang.reflect.Constructor;
 
 public class EffectBukkit_1_7 extends EffectBukkit
 {
-	private final static Constructor PACKET_CONSTRUCTOR = Reflection.getConstructor(Reflection.getNMSClass("PacketPlayOutWorldParticles"), String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
+	private final static Constructor PACKET_CONSTRUCTOR = NMSReflection.getConstructor(NMSReflection.getNMSClass("PacketPlayOutWorldParticles"), String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
 
 	public void spawnParticle(Location location, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
