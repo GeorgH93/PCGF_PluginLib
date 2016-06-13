@@ -76,7 +76,7 @@ public class NMSReflection extends Reflection
 	{
 		try
 		{
-			Class.forName(OBC_CLASS_PATH + className);
+			return Class.forName(OBC_CLASS_PATH + className);
 		}
 		catch(Exception e)
 		{
