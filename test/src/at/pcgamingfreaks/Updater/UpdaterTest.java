@@ -105,6 +105,8 @@ public class UpdaterTest
 			{
 				assertEquals(UpdateResult.SUCCESS, result2);
 				assertTrue(TARGET_FILE.exists());
+				//noinspection ResultOfMethodCallIgnored
+				TARGET_FILE.delete(); // Cleanup, we don't need the file any longer
 			}
 		});
 	}
