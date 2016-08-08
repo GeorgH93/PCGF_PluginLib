@@ -17,19 +17,24 @@
 
 package at.pcgamingfreaks;
 
+import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YAMLNotInitializedException;
 
 import com.google.common.io.ByteStreams;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 public class Language
 {
+	private static final String PATH_ADDITION_SEND_METHOD = "_SendMethod", PATH_ADDITION_PARAMETERS = "_Parameters";
 	protected final Logger logger; // The logger instance of the using plugin
 	protected YAML lang = null;
 	protected String language = "en";
+	protected static MessageClassesReflectionDataHolder messageClasses;
 
 	private LanguageUpdateMethod updateMode = LanguageUpdateMethod.OVERWRITE;
 	private final String prefix, inJarPrefix, path;
@@ -350,4 +355,64 @@ public class Language
 	{
 		return lang;
 	}
+
+	public String getTranslated(String path)
+	{
+		return get(path);
+	}
+
+	protected <T extends Message> T getMessage(boolean escapeStringFormatCharacters, String path)
+	{
+		if(messageClasses == null)
+		{
+			logger.warning("Message reflection data object not set!");
+			return null;
+		}
+		T msg = null;
+		try
+		{
+			//noinspection unchecked
+			msg = (T) messageClasses.messageConstructor.newInstance((escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path));
+			String pathSendMethod = path + PATH_ADDITION_SEND_METHOD, pathParameter = path + PATH_ADDITION_PARAMETERS;
+			if(lang.isSet(pathSendMethod))
+			{
+				Object sendMethod = Enum.valueOf(messageClasses.enumType, lang.getString(pathSendMethod, "CHAT").toUpperCase());
+				messageClasses.setSendMethod.invoke(msg, sendMethod);
+				if(lang.isSet(pathParameter))
+				{
+					Object metaFromJsonMethod = messageClasses.getMetadataFromJsonMethod.invoke(sendMethod);
+					if(metaFromJsonMethod != null)
+					{
+						msg.setOptionalParameters(((Method) metaFromJsonMethod).invoke(null, lang.getString(pathParameter)));
+					}
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			logger.warning("Failed generate metadata for: " + path);
+			e.printStackTrace();
+		}
+		return msg;
+	}
+
+	//region helper class
+	/**
+	 * Ignore this class, it's just a helper class for some internal stuff
+	 */
+	public static class MessageClassesReflectionDataHolder
+	{
+		public MessageClassesReflectionDataHolder(Constructor messageConstructor, Method setSendMethod, Method getMetadataFromJsonMethod, Class enumType)
+		{
+			this.enumType = enumType;
+			this.setSendMethod = setSendMethod;
+			this.messageConstructor = messageConstructor;
+			this.getMetadataFromJsonMethod = getMetadataFromJsonMethod;
+		}
+
+		public Class enumType;
+		public Constructor messageConstructor;
+		public Method setSendMethod, getMetadataFromJsonMethod;
+	}
+	//endregion
 }

@@ -17,16 +17,26 @@
 
 package at.pcgamingfreaks.Bungee;
 
-import java.io.File;
+import at.pcgamingfreaks.Bungee.Message.Message;
+import at.pcgamingfreaks.Bungee.Message.Sender.SendMethod;
+import at.pcgamingfreaks.Reflection;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
 
+import java.io.File;
+
 public class Language extends at.pcgamingfreaks.Language
 {
 	protected Plugin plugin;
+
+	static
+	{
+		messageClasses = new MessageClassesReflectionDataHolder(Reflection.getConstructor(Message.class, String.class), Reflection.getMethod(Message.class, "setSendMethod", SendMethod.class),
+		                                                        Reflection.getMethod(SendMethod.class, "getMetadataFromJsonMethod"), SendMethod.class);
+	}
 
 	/**
 	 * @param plugin  the instance of the plugin
@@ -58,5 +68,49 @@ public class Language extends at.pcgamingfreaks.Language
 	public BaseComponent[] getReady(String option)
 	{
 		return TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', get(option)));
+	}
+
+	/**
+	 * Gets the message from the language file and replaces bukkit color codes (&) to minecraft color codes (§)
+	 *
+	 * @param path the path to the searched language value
+	 * @return returns the language data
+	 */
+	@Override
+	public String getTranslated(String path)
+	{
+		return ChatColor.translateAlternateColorCodes('&', get(path));
+	}
+
+	public Message getMessage(String path)
+	{
+		return getMessage(path, true);
+	}
+
+	public Message getMessage(String path, boolean escapeStringFormatCharacters)
+	{
+		/*Message msg = new Message((escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path));
+		String pathSendMethod = path + PATH_ADDITION_SEND_METHOD, pathParameter = path + PATH_ADDITION_PARAMETERS;
+		if(lang.isSet(pathSendMethod))
+		{
+			msg.setSendMethod(SendMethod.valueOf(lang.getString(pathSendMethod, "CHAT").toUpperCase()));
+			if(lang.isSet(pathParameter) && msg.getSendMethod().getMetadataFromJsonMethod() != null)
+			{
+				try
+				{
+					msg.setOptionalParameters(msg.getSendMethod().getMetadataFromJsonMethod().invoke(null, lang.getString(pathParameter)));
+				}
+				catch(YAMLKeyNotFoundException ignored)
+				{
+				} // It should not occur cause we have already tested if it's there
+				catch(Exception e)
+				{
+					logger.warning("Failed generate metadata for: " + pathParameter);
+					e.printStackTrace();
+				}
+			}
+		}
+		return msg;*/
+		return super.getMessage(escapeStringFormatCharacters, path);
 	}
 }

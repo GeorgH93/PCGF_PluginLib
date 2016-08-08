@@ -17,42 +17,96 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import java.io.File;
+import at.pcgamingfreaks.Bukkit.Message.Message;
+import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
+import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class Language extends at.pcgamingfreaks.Language
 {
 	protected final JavaPlugin plugin;
 
-	/**
-	 * @param plugin  the instance of the plugin
-	 * @param version the current version of the language file
-	 */
-	public Language(JavaPlugin plugin, int version)
+	static
 	{
-		this(plugin, version, File.separator + "lang", "");
+		messageClasses = new MessageClassesReflectionDataHolder(Reflection.getConstructor(Message.class, String.class), Reflection.getMethod(Message.class, "setSendMethod", SendMethod.class),
+		                                                        Reflection.getMethod(SendMethod.class, "getMetadataFromJsonMethod"), SendMethod.class);
 	}
 
 	/**
-	 * @param plugin  the instance of the plugin
-	 * @param version the current version of the language file
-	 * @param path    the sub-folder for the language file
-	 * @param prefix  the prefix for the language file
+	 * @param plugin  The instance of the plugin
+	 * @param version The current version of the language file
+	 */
+	public Language(JavaPlugin plugin, int version)
+	{
+		this(plugin, version, -1);
+	}
+
+	/**
+	 * @param plugin  The instance of the plugin
+	 * @param version The current version of the language file
+	 * @param path    The sub-folder for the language file
+	 * @param prefix  The prefix for the language file
 	 */
 	public Language(JavaPlugin plugin, int version, String path, String prefix)
 	{
-		super(plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, "");
+		this(plugin, version, -1, path, prefix);
+	}
+
+	/**
+	 * @param plugin           The instance of the plugin
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 */
+	public Language(JavaPlugin plugin, int version, int upgradeThreshold)
+	{
+		this(plugin, version, upgradeThreshold, File.separator + "lang", "");
+	}
+
+	/**
+	 * @param plugin           The instance of the plugin
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 * @param path             The sub-folder for the language file
+	 * @param prefix           The prefix for the language file
+	 */
+	public Language(JavaPlugin plugin, int version, int upgradeThreshold, String path, String prefix)
+	{
+		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, "");
 		this.plugin = plugin;
 	}
 
 	/**
+	 * Gets the message from the language file and replaces bukkit color codes (&) to minecraft color codes (§)
+	 *
 	 * @param path the path to the searched language value
 	 * @return returns the language data
 	 */
+	@Override
 	public String getTranslated(String path)
 	{
 		return ChatColor.translateAlternateColorCodes('&', get(path));
+	}
+
+	public Message getMessage(String path)
+	{
+		return getMessage(path, true);
+	}
+
+	public Message getMessage(String path, boolean escapeStringFormatCharacters)
+	{
+		if(NMSReflection.getVersion().contains("1_7"))
+		{
+			Message msg = new Message((escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path));
+			msg.setSendMethod(SendMethod.CHAT_CLASSIC);
+			return msg;
+		}
+		else
+		{
+			return super.getMessage(escapeStringFormatCharacters, path);
+		}
 	}
 }
