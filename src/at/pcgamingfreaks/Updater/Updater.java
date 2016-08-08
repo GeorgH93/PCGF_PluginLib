@@ -247,7 +247,7 @@ public abstract class Updater
 			{
 				case HttpURLConnection.HTTP_MOVED_PERM:
 				case HttpURLConnection.HTTP_MOVED_TEMP:
-					if(movedCount == 5)
+					if(movedCount == 5) // Prevents endless loops
 					{
 						logger.warning("Target url moved more than 5 times. Abort.");
 						result = UpdateResult.FAIL_DOWNLOAD;
@@ -283,6 +283,7 @@ public abstract class Updater
 				}
 				outputStream.flush();
 			}
+			connection.disconnect();
 			if(md5HashGenerator != null)
 			{
 				String MD5Download = Utils.byteArrayToHex(md5HashGenerator.digest()).toLowerCase(), MD5Target = updateProvider.getLatestChecksum().toLowerCase();
