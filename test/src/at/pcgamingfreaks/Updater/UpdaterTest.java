@@ -62,10 +62,9 @@ public class UpdaterTest
 	}
 	//endregion
 
-	@Test
-	public void testUpdateCheck()
+	private Updater getUpdater(String version)
 	{
-		Updater updater = new Updater(PLUGINS_FOLDER, true, false, LOGGER, bukkitProvider, "1.0", TARGET_FILE.getName())
+		return new Updater(PLUGINS_FOLDER, true, false, LOGGER, bukkitProvider, version, TARGET_FILE.getName())
 		{
 			// No async for testing purposes, so we don't need to sync it back
 			@Override
@@ -90,6 +89,12 @@ public class UpdaterTest
 			@Override
 			public void waitForAsyncOperation() {} // We are aren't running async
 		};
+	}
+
+	@Test
+	public void testUpdateCheck()
+	{
+		Updater updater = getUpdater("1.0");
 		updater.checkForUpdate(new Updater.UpdaterResponse()
 		{
 			@Override
@@ -98,6 +103,26 @@ public class UpdaterTest
 				assertEquals(UpdateResult.UPDATE_AVAILABLE, result2);
 			}
 		});
+	}
+
+	@Test
+	public void testUpdateCheckNoUpdateAvailable()
+	{
+		Updater updater = getUpdater("99.0");
+		updater.checkForUpdate(new Updater.UpdaterResponse()
+		{
+			@Override
+			public void onDone(UpdateResult result2)
+			{
+				assertEquals(UpdateResult.NO_UPDATE, result2);
+			}
+		});
+	}
+
+	@Test
+	public void testUpdateDownload()
+	{
+		Updater updater = getUpdater("1.0");
 		updater.update(new Updater.UpdaterResponse()
 		{
 			@Override
@@ -107,6 +132,21 @@ public class UpdaterTest
 				assertTrue(TARGET_FILE.exists());
 				//noinspection ResultOfMethodCallIgnored
 				TARGET_FILE.delete(); // Cleanup, we don't need the file any longer
+			}
+		});
+	}
+
+	@Test
+	public void testUpdateDownloadNoUpdateAvailable()
+	{
+		Updater updater = getUpdater("99.0");
+		updater.update(new Updater.UpdaterResponse()
+		{
+			@Override
+			public void onDone(UpdateResult result2)
+			{
+				assertEquals(UpdateResult.NO_UPDATE, result2);
+				assertFalse(TARGET_FILE.exists());
 			}
 		});
 	}
