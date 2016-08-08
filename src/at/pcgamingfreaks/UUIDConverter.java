@@ -17,24 +17,59 @@
 
 package at.pcgamingfreaks;
 
+import com.google.common.base.Charsets;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
-
-import com.google.common.base.Charsets;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonObject;
 
 /**
  * Functions to get UUIDs to player names. This library doesn't cache the results! You will have to do this on your own!
  * Works with Bukkit and BungeeCord!
  */
-public class UUIDConverter
+public final class UUIDConverter
 {
 	private final static Gson GSON = new Gson();
+	private final static UUIDCacheMap UUID_CACHE = new UUIDCacheMap(); // Cache object for resolved UUIDs
+
+	static
+	{
+		System.out.println("Loading local uuid cache.");
+		int loaded = 0;
+		//noinspection SpellCheckingInspection
+		File uuidCache = new File("usercache.json");
+		System.out.println(uuidCache.getAbsolutePath());
+		if(uuidCache.exists())
+		{
+			try(JsonReader reader = new JsonReader(new FileReader(uuidCache)))
+			{
+				CacheData[] dat = new Gson().fromJson(reader, CacheData[].class);
+				Date now = new Date();
+				for(CacheData d : dat)
+				{
+					if(now.before(d.getExpiresDate()))
+					{
+						loaded++;
+						UUID_CACHE.put(d.name, d.uuid);
+					}
+				}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Loaded " + loaded + " UUIDs from local cache.");
+	}
 
 	/**
 	 * Gets the current name of the player from the Mojang servers.
@@ -59,32 +94,6 @@ public class UUIDConverter
 	{
 		NameChange[] names = getNamesFromUUID(uuid);
 		return names[names.length - 1].name;
-	}
-
-	/**
-	 * A helper class to store the name changes and dates
-	 */
-	public class NameChange
-	{
-		/**
-		 * The name to witch the name was changed
-		 */
-		public String name;
-
-		/**
-		 * Datetime of the name change in UNIX time (without milliseconds)
-		 */
-		public long changedToAt;
-
-		/**
-		 * Gets the date of a name change
-		 *
-		 * @return Date of the name change
-		 */
-		public Date getChangeDate()
-		{
-			return new Date(changedToAt);
-		}
 	}
 
 	/**
@@ -115,22 +124,18 @@ public class UUIDConverter
 			names = GSON.fromJson(jsonScanner.next(), NameChange[].class);
 			jsonScanner.close();
 		}
-		catch(MalformedURLException e) // There is something going wrong!
-		{
-			System.out.print("\nFailed to get uuid cause of a malformed url!\n UUID: \"" + uuid + "\"\n");
-			e.printStackTrace();
-		}
 		catch(IOException e)
 		{
-			System.out.print("Looks like there is a problem with the connection with mojang. Please retry later.\n");
-			if(e.getMessage().contains("HTTP response code: 429")) //TODO: more reliable detection
+			System.out.println("Looks like there is a problem with the connection with mojang. Please retry later.");
+			if(e.getMessage().contains("HTTP response code: 429"))
 			{
-				System.out.print("You have reached the request limit of the mojang api! Please retry later!\n");
+				System.out.println("You have reached the request limit of the mojang api! Please retry later!");
 			}
 			e.printStackTrace();
 		}
 		catch(Exception e)
 		{
+			System.out.println("Looks like there is no player with this uuid!\n UUID: \"" + uuid + "\"");
 			e.printStackTrace();
 		}
 		return names;
@@ -216,7 +221,7 @@ public class UUIDConverter
 			{
 				if(offlineUUIDonFail)
 				{
-					System.out.println("Using offline uuid for '" + name + "'. + \n");
+					System.out.println("Using offline uuid for '" + name + "'.");
 					uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)).toString();
 				}
 				else
@@ -312,24 +317,30 @@ public class UUIDConverter
 
 	private static String getOnlineUUID(String name, Date at)
 	{
-		String uuid = null;
-		try
+		if((at == null || at.after(new Date(new Date().getTime() - 1000L*24*3600* 30))) && UUID_CACHE.containsKey(name))
 		{
-			BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + at.getTime() : "")).openStream()));
+			return UUID_CACHE.get(name);
+		}
+		String uuid = null;
+		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + at.getTime() : "")).openStream())))
+		{
 			uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).getAsString();
-			in.close();
+			if(uuid != null && (at == null || at.after(new Date(new Date().getTime() - 1000L*24*3600* 30))))
+			{
+				UUID_CACHE.put(name, uuid);
+			}
 		}
 		catch(MalformedURLException e) // There is something going wrong!
 		{
-			System.out.print("\nFailed to get uuid cause of a malformed url!\n Name: \"" + name + "\" Date: " + ((at != null) ? "?at=" + at.getTime() : "null") + "\n");
+			System.out.println("Failed to get uuid cause of a malformed url!\n Name: \"" + name + "\" Date: " + ((at != null) ? "?at=" + at.getTime() : "null"));
 			e.printStackTrace();
 		}
 		catch(IOException e)
 		{
-			System.out.print("Looks like there is a problem with the connection with mojang. Please retry later.\n");
+			System.out.println("Looks like there is a problem with the connection with mojang. Please retry later.");
 			if(e.getMessage().contains("HTTP response code: 429")) //TODO: more reliable detection
 			{
-				System.out.print("You have reached the request limit of the mojang api! Please retry later!\n");
+				System.out.println("You have reached the request limit of the mojang api! Please retry later!");
 			}
 			e.printStackTrace();
 		}
@@ -337,16 +348,16 @@ public class UUIDConverter
 		{
 			if(at == null) // We can't resolve the uuid for the player
 			{
-				System.out.println("Unable to get UUID for: " + name + "!\n");
+				System.out.println("Unable to get UUID for: " + name + "!");
 			}
 			else if(at.getTime() == 0) // If it's not his first name maybe it's his current name
 			{
-				System.out.println("Unable to get UUID for: " + name + " at " + at.getTime() + "! Trying without date!\n");
+				System.out.println("Unable to get UUID for: " + name + " at " + at.getTime() + "! Trying without date!");
 				uuid = getOnlineUUID(name, null);
 			}
 			else // If we cant get the player with the date he was here last time it's likely that it is his first name
 			{
-				System.out.println("Unable to get UUID for: " + name + " at " + at.getTime() + "! Trying at=0!\n");
+				System.out.println("Unable to get UUID for: " + name + " at " + at.getTime() + "! Trying at=0!");
 				uuid = getOnlineUUID(name, new Date(0));
 			}
 			//e.printStackTrace();
@@ -358,20 +369,9 @@ public class UUIDConverter
 	//TODO: JavaDoc Exception handling, more parameters, fallback
 	private final static int BATCH_SIZE = 100; // Limit from Mojang
 
-	private class Profile
-	{
-		public String id;
-		public String name;
-
-		public UUID getUUID()
-		{
-			return UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
-		}
-	}
-
 	public static Map<String, String> getUUIDsFromNames(Collection<String> names, boolean onlineMode, boolean withSeparators)
 	{
-		Map<String, String> result = new HashMap<>();
+		Map<String, String> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		for(Map.Entry<String, UUID> entry : getUUIDsFromNamesAsUUIDs(names, onlineMode).entrySet())
 		{
 			result.put(entry.getKey(), (withSeparators) ? entry.getValue().toString() : entry.getValue().toString().replaceAll("-", ""));
@@ -385,7 +385,7 @@ public class UUIDConverter
 		{
 			return getUUIDsFromNamesAsUUIDs(names);
 		}
-		Map<String,UUID> result = new HashMap<>();
+		Map<String, UUID> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		for(String name : names)
 		{
 			result.put(name, getUUIDFromNameAsUUID(name, false));
@@ -395,15 +395,25 @@ public class UUIDConverter
 
 	public static Map<String, UUID> getUUIDsFromNamesAsUUIDs(Collection<String> names)
 	{
-		List<String> batch = new ArrayList<>();
+		List<String> batch = new LinkedList<>();
 		Iterator<String> players = names.iterator();
-		Map<String,UUID> result = new HashMap<>();
+		Map<String, UUID> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		boolean success;
+		int fromCache = 0, fromWeb = 0;
 		while (players.hasNext())
 		{
-			for (int i = 0; players.hasNext() && i < BATCH_SIZE; i++)
+			while (players.hasNext() && batch.size() < BATCH_SIZE)
 			{
-				batch.add(players.next());
+				String name = players.next();
+				if(UUID_CACHE.containsKey(name))
+				{
+					result.put(name, UUID.fromString(UUID_CACHE.get(name).replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5")));
+					fromCache++;
+				}
+				else
+				{
+					batch.add(name);
+				}
 			}
 			do
 			{
@@ -428,6 +438,8 @@ public class UUIDConverter
 					for (Profile profile : profiles)
 					{
 						result.put(profile.name, profile.getUUID());
+						UUID_CACHE.put(profile.name, profile.getUUID().toString());
+						fromWeb++;
 					}
 				}
 				catch(IOException e)
@@ -451,7 +463,67 @@ public class UUIDConverter
 				success = true;
 			} while(!success);
 		}
+		System.out.println("Converted " + (fromCache + fromWeb) + "/" + names.size() + " UUIDs (" + fromCache + " of them from the cache and " + fromWeb + " from Mojang).");
 		return result;
+	}
+	//endregion
+
+	//region Helper Classes
+	/**
+	 * A helper class to store the name changes and dates
+	 */
+	public class NameChange
+	{
+		/**
+		 * The name to witch the name was changed
+		 */
+		public String name;
+
+		/**
+		 * Datetime of the name change in UNIX time (without milliseconds)
+		 */
+		public long changedToAt;
+
+		/**
+		 * Gets the date of a name change
+		 *
+		 * @return Date of the name change
+		 */
+		public Date getChangeDate()
+		{
+			return new Date(changedToAt);
+		}
+	}
+
+	private class Profile
+	{
+		public String id;
+		public String name;
+
+		public UUID getUUID()
+		{
+			return UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+		}
+	}
+
+	private class CacheData
+	{
+		public String name, uuid, expiresOn;
+
+		public Date getExpiresDate()
+		{
+			//noinspection SpellCheckingInspection
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+			try
+			{
+				return format.parse(expiresOn);
+			}
+			catch(ParseException e)
+			{
+				e.printStackTrace();
+			}
+			return new Date(); // When we failed to parse the date we return the current time stamp
+		}
 	}
 	//endregion
 }
