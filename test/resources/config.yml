@@ -1,0 +1,12 @@
+Version: 1
+Language: de
+LanguageUpdateMethod: upgrade
+TestConfig:
+  List:
+    - 1
+    - 2
+    - 3
+  Value1: Test
+  Value2: "Another Test"
+TestDouble: 2.6
+TestBoolean: false

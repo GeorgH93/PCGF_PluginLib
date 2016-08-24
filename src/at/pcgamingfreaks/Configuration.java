@@ -85,7 +85,7 @@ public class Configuration
 	 * @param version          The current version of the config
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
-	 * @param inJarPrefix      The Prefix for the file in the jar (e.g. bungee_)
+	 * @param inJarPrefix      The prefix for the file in the jar (e.g. bungee_)
 	 */
 	public Configuration(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String inJarPrefix)
 	{
@@ -299,7 +299,7 @@ public class Configuration
 	 *
 	 * @param path The path to the value in the configuration file.
 	 * @return The {@link Integer} value from the configuration file.
-	 * @throws YAMLKeyNotFoundException When the given path is not found in the configuration
+	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
 	 * @throws NumberFormatException When the value on the given position can't be converted to an {@link Integer}
 	 */
 	public int getInt(String path) throws YAMLKeyNotFoundException, NumberFormatException
@@ -312,7 +312,7 @@ public class Configuration
 	 *
 	 * @param path The path to the value in the configuration file.
 	 * @return The {@link Double} value from the configuration file.
-	 * @throws YAMLKeyNotFoundException When the given path is not found in the configuration
+	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
 	 * @throws NumberFormatException When the value on the given position can't be converted to an {@link Double}
 	 */
 	public double getDouble(String path) throws YAMLKeyNotFoundException, NumberFormatException
@@ -321,11 +321,11 @@ public class Configuration
 	}
 
 	/**
-	 * Gets an {@link String} value from the configuration.
+	 * Gets a {@link String} value from the configuration.
 	 *
 	 * @param path The path to the value in the configuration file.
 	 * @return The {@link String} value from the configuration file.
-	 * @throws YAMLKeyNotFoundException When the given path is not found in the configuration
+	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
 	 */
 	public String getString(String path) throws YAMLKeyNotFoundException
 	{
@@ -337,7 +337,7 @@ public class Configuration
 	 *
 	 * @param path The path to the value in the configuration file.
 	 * @return The {@link Boolean} value from the configuration file.
-	 * @throws YAMLKeyNotFoundException When the given path is not found in the configuration
+	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
 	 */
 	public boolean getBool(String path) throws YAMLKeyNotFoundException
 	{

@@ -28,34 +28,37 @@ public class UUIDCacheMapTest
 	private final static String TEST_USER_NAME = "GeorgH93", TEST_USER_UUID = "6c99e2b55c9e4663b4db7ad3bc52d28d", TEST_USER_UUID_SEPARATORS = "6c99e2b5-5c9e-4663-b4db-7ad3bc52d28d";
 	@SuppressWarnings("SpellCheckingInspection")
 	private final static String TEST_USER2_NAME = "Watchdog", TEST_USER2_UUID = "4ca6d49d8d80429fa7a4bcce9f9e4854", TEST_USER2_UUID_SEPARATORS = "4ca6d49d-8d80-429f-a7a4-bcce9f9e4854";
+	@SuppressWarnings("SpellCheckingInspection")
 	private final static String TEST_USER3_NAME = "CleoMalika", TEST_USER3_UUID = "fc4b363ba4474ab98778d0ee353151ee", TEST_USER3_UUID_SEPARATORS = "fc4b363b-a447-4ab9-8778-d0ee353151ee";
 	@SuppressWarnings("SpellCheckingInspection")
-	private final static String TEST_USER4_NAME = "AFKMaster", TEST_USER4_UUID = "175c57e4cd4b4fb3bfea1c28d094f5dc";
+	private final static String TEST_USER4_NAME = "AFKMaster", TEST_USER4_UUID = "175c57e4cd4b4fb3bfea1c28d094f5dc", TEST_USER4_UUID_SEPARATORS = "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc";
 
 	@Test
 	public void testStandard()
 	{
-		final UUIDCacheMap map = new UUIDCacheMap();
+		UUIDCacheMap map = new UUIDCacheMap();
 		map.put(TEST_USER_NAME, TEST_USER_UUID);
 		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
 		map.put(TEST_USER3_NAME, TEST_USER3_UUID);
-		assertEquals(null, map.get(TEST_USER4_NAME));
-		assertEquals(TEST_USER_UUID, map.get(TEST_USER_NAME));
-		assertEquals(TEST_USER2_UUID, map.get(TEST_USER2_NAME));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME));
+		assertEquals("The UUID of a not inserted name should be null", null, map.get(TEST_USER4_NAME));
+		assertEquals("The UUID should match the correct one", TEST_USER_UUID, map.get(TEST_USER_NAME));
+		assertEquals("The UUID should match the correct one", TEST_USER2_UUID, map.get(TEST_USER2_NAME));
+		assertEquals("The UUID should match the correct one", TEST_USER3_UUID, map.get(TEST_USER3_NAME));
 	}
 
 	@Test
 	public void testGetMixedCase()
 	{
-		final UUIDCacheMap map = new UUIDCacheMap();
+		UUIDCacheMap map = new UUIDCacheMap();
 		map.put(TEST_USER_NAME, TEST_USER_UUID);
 		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
 		map.put(TEST_USER3_NAME, TEST_USER3_UUID);
-		assertEquals(null, map.get(TEST_USER4_NAME.toUpperCase()));
-		assertEquals(TEST_USER_UUID, map.get(TEST_USER_NAME.toUpperCase()));
-		assertEquals(TEST_USER2_UUID, map.get(TEST_USER2_NAME.toUpperCase()));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME.toUpperCase()));
+		assertEquals("The UUID of a not inserted name should be null", null, map.get(TEST_USER4_NAME.toUpperCase()));
+		assertEquals("The UUID should match the correct one", TEST_USER_UUID, map.get(TEST_USER_NAME.toUpperCase()));
+		assertEquals("The UUID should match the correct one", TEST_USER2_UUID, map.get(TEST_USER2_NAME.toUpperCase()));
+		assertEquals("The UUID should match the correct one", TEST_USER3_UUID, map.get(TEST_USER3_NAME.toUpperCase()));
+		//noinspection SuspiciousMethodCalls
+		assertEquals("The UUID of an invalid key should return null", null, map.get(3));
 	}
 
 	@Test
@@ -65,94 +68,55 @@ public class UUIDCacheMapTest
 		map.put(TEST_USER_NAME, TEST_USER_UUID);
 		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
 		map.put(TEST_USER3_NAME, TEST_USER3_UUID);
-		assertEquals(null, map.get(TEST_USER4_NAME));
-		assertEquals(TEST_USER_UUID, map.get(TEST_USER_NAME));
-		assertEquals(TEST_USER2_UUID, map.get(TEST_USER2_NAME));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME));
+		assertEquals("The UUID of a not inserted name should be null", null, map.get(TEST_USER4_NAME));
+		assertEquals("The UUID should match the correct one", TEST_USER_UUID, map.get(TEST_USER_NAME));
+		assertEquals("The UUID should match the correct one", TEST_USER2_UUID, map.get(TEST_USER2_NAME));
+		assertEquals("The UUID should match the correct one", TEST_USER3_UUID, map.get(TEST_USER3_NAME));
 		map.remove(TEST_USER2_NAME);
-		assertEquals(null, map.get(TEST_USER4_NAME));
-		assertEquals(TEST_USER_UUID, map.get(TEST_USER_NAME));
-		assertEquals(null, map.get(TEST_USER2_NAME));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME));
-		assertEquals(TEST_USER_UUID, map.remove(TEST_USER_NAME));
-		assertEquals(null, map.remove(TEST_USER_NAME));
-		assertEquals(null, map.get(TEST_USER4_NAME));
-		assertEquals(null, map.get(TEST_USER_NAME));
-		assertEquals(null, map.get(TEST_USER2_NAME));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME));
-	}
-
-	@Test
-	public void testDoublePut()
-	{
-		final UUIDCacheMap map = new UUIDCacheMap();
-		map.put(TEST_USER_NAME, TEST_USER_UUID);
-		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
-		map.put(TEST_USER3_NAME, TEST_USER3_UUID);
-		assertEquals(null, map.get(TEST_USER4_NAME));
-		assertEquals(TEST_USER_UUID, map.get(TEST_USER_NAME));
-		assertEquals(TEST_USER2_UUID, map.get(TEST_USER2_NAME));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME));
-		map.put(TEST_USER_NAME, TEST_USER_UUID);
-		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
-		map.put(TEST_USER3_NAME, TEST_USER3_UUID);
-		assertEquals(null, map.get(TEST_USER4_NAME));
-		assertEquals(TEST_USER_UUID, map.get(TEST_USER_NAME));
-		assertEquals(TEST_USER2_UUID, map.get(TEST_USER2_NAME));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME));
-	}
-
-	@Test
-	public void testMixedCasePut()
-	{
-		final UUIDCacheMap map = new UUIDCacheMap();
-		map.put(TEST_USER_NAME, TEST_USER_UUID);
-		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
-		map.put(TEST_USER3_NAME, TEST_USER3_UUID);
-		assertEquals(null, map.get(TEST_USER4_NAME));
-		assertEquals(TEST_USER_UUID, map.get(TEST_USER_NAME));
-		assertEquals(TEST_USER2_UUID, map.get(TEST_USER2_NAME));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME));
-		map.put(TEST_USER_NAME.toUpperCase(), TEST_USER_UUID);
-		map.put(TEST_USER2_NAME.toUpperCase(), TEST_USER2_UUID);
-		map.put(TEST_USER3_NAME.toLowerCase(), TEST_USER3_UUID);
-		assertEquals(null, map.get(TEST_USER4_NAME));
-		assertEquals(TEST_USER_UUID, map.get(TEST_USER_NAME));
-		assertEquals(TEST_USER2_UUID, map.get(TEST_USER2_NAME));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME));
+		assertEquals("The UUID of a not inserted name should be null", null, map.get(TEST_USER4_NAME));
+		assertEquals("The UUID should match the correct one", TEST_USER_UUID, map.get(TEST_USER_NAME));
+		assertEquals("The UUID of the removed user should be null", null, map.get(TEST_USER2_NAME));
+		assertEquals("The UUID should match the correct one", TEST_USER3_UUID, map.get(TEST_USER3_NAME));
+		assertEquals("The removed UUID should be returned", TEST_USER_UUID, map.remove(TEST_USER_NAME));
+		assertEquals("The UUID of the not inserted element that should be remove should be null", null, map.remove(TEST_USER_NAME));
+		assertEquals("The UUID of a not inserted name should be null", null, map.get(TEST_USER4_NAME));
+		assertEquals("The UUID of a not inserted name should be null", null, map.get(TEST_USER_NAME));
+		assertEquals("The UUID of a not inserted name should be null", null, map.get(TEST_USER2_NAME));
+		assertEquals("The UUID should match the correct one", TEST_USER3_UUID, map.get(TEST_USER3_NAME));
+		//noinspection SuspiciousMethodCalls
+		assertEquals("The removal of an integer element should return null", null, map.remove(5));
 	}
 
 	@Test
 	public void testPutAll()
 	{
-		final UUIDCacheMap map = new UUIDCacheMap();
+		UUIDCacheMap map = new UUIDCacheMap();
 		map.put(TEST_USER_NAME, TEST_USER_UUID);
 		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
-		final UUIDCacheMap map2 = new UUIDCacheMap();
+		UUIDCacheMap map2 = new UUIDCacheMap();
 		map2.put(TEST_USER2_NAME.toUpperCase(), TEST_USER2_UUID);
 		map2.put(TEST_USER3_NAME, TEST_USER3_UUID);
 		map.putAll(map2);
-		assertEquals(null, map.get(TEST_USER4_NAME));
-		assertEquals(TEST_USER_UUID, map.get(TEST_USER_NAME));
-		assertEquals(TEST_USER2_UUID, map.get(TEST_USER2_NAME));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME));
+		assertEquals("A not inserted user should return null as UUID", null, map.get(TEST_USER4_NAME));
+		assertEquals("The UUID of the inserted players should be returned correctly", TEST_USER_UUID, map.get(TEST_USER_NAME));
+		assertEquals("The UUID of the inserted players should be returned correctly", TEST_USER2_UUID, map.get(TEST_USER2_NAME));
+		assertEquals("The UUID of the inserted players should be returned correctly", TEST_USER3_UUID, map.get(TEST_USER3_NAME));
 	}
 
 	@Test
 	public void testContains()
 	{
-		final UUIDCacheMap map = new UUIDCacheMap();
+		UUIDCacheMap map = new UUIDCacheMap();
 		map.put(TEST_USER_NAME, TEST_USER_UUID);
 		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
 		map.put(TEST_USER3_NAME, TEST_USER3_UUID);
-		assertFalse(map.contains(TEST_USER4_UUID));
-		assertTrue(map.contains(TEST_USER_UUID));
-		assertTrue(map.contains(TEST_USER2_UUID));
-		assertTrue(map.contains(TEST_USER3_UUID));
-		assertTrue(map.contains(TEST_USER_UUID_SEPARATORS));
-		assertTrue(map.contains(TEST_USER2_UUID_SEPARATORS));
-		assertTrue(map.contains(TEST_USER3_UUID_SEPARATORS));
-
+		assertFalse("A not contained UUID should return false", map.contains(TEST_USER4_UUID));
+		assertTrue("A contained UUID should return true", map.contains(TEST_USER_UUID));
+		assertTrue("A contained UUID should return true", map.contains(TEST_USER2_UUID));
+		assertTrue("A contained UUID should return true", map.contains(TEST_USER3_UUID));
+		assertTrue("A contained UUID with separators should return true", map.contains(TEST_USER_UUID_SEPARATORS));
+		assertTrue("A contained UUID with separators should return true", map.contains(TEST_USER2_UUID_SEPARATORS));
+		assertTrue("A contained UUID with separators should return true", map.contains(TEST_USER3_UUID_SEPARATORS));
 		//noinspection SuspiciousMethodCalls
 		assertFalse(map.contains(12));
 		//noinspection SuspiciousMethodCalls
@@ -162,18 +126,17 @@ public class UUIDCacheMapTest
 	@Test
 	public void testContainsKey()
 	{
-		final UUIDCacheMap map = new UUIDCacheMap();
+		UUIDCacheMap map = new UUIDCacheMap();
 		map.put(TEST_USER_NAME, TEST_USER_UUID);
 		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
 		map.put(TEST_USER3_NAME, TEST_USER3_UUID);
-		assertFalse(map.containsKey(TEST_USER4_NAME));
-		assertTrue(map.containsKey(TEST_USER_NAME));
-		assertTrue(map.containsKey(TEST_USER2_NAME));
-		assertTrue(map.containsKey(TEST_USER3_NAME));
-		assertTrue(map.containsKey(TEST_USER_NAME.toUpperCase()));
-		assertTrue(map.containsKey(TEST_USER2_NAME.toUpperCase()));
-		assertTrue(map.containsKey(TEST_USER3_NAME.toUpperCase()));
-
+		assertFalse("A not contained name should return false", map.containsKey(TEST_USER4_NAME));
+		assertTrue("A contained name should return true", map.containsKey(TEST_USER_NAME));
+		assertTrue("A contained name should return true", map.containsKey(TEST_USER2_NAME));
+		assertTrue("A contained name should return true", map.containsKey(TEST_USER3_NAME));
+		assertTrue("A contained upper case name should return true", map.containsKey(TEST_USER_NAME.toUpperCase()));
+		assertTrue("A contained upper case name should return true", map.containsKey(TEST_USER2_NAME.toUpperCase()));
+		assertTrue("A contained upper case name should return true", map.containsKey(TEST_USER3_NAME.toUpperCase()));
 		//noinspection SuspiciousMethodCalls
 		assertFalse(map.containsKey(12));
 		//noinspection SuspiciousMethodCalls
@@ -183,12 +146,12 @@ public class UUIDCacheMapTest
 	@Test
 	public void testUUIDsWithSeparators()
 	{
-		final UUIDCacheMap map = new UUIDCacheMap();
+		UUIDCacheMap map = new UUIDCacheMap();
 		map.put(TEST_USER_NAME, TEST_USER_UUID_SEPARATORS);
 		map.put(TEST_USER2_NAME, TEST_USER2_UUID_SEPARATORS);
-		map.put(TEST_USER3_NAME, TEST_USER3_UUID_SEPARATORS);
-		assertEquals(TEST_USER_UUID, map.get(TEST_USER_NAME));
-		assertEquals(TEST_USER2_UUID, map.get(TEST_USER2_NAME));
-		assertEquals(TEST_USER3_UUID, map.get(TEST_USER3_NAME));
+		map.put(TEST_USER4_NAME, TEST_USER4_UUID_SEPARATORS);
+		assertEquals("The UUID should be returned correctly", TEST_USER_UUID, map.get(TEST_USER_NAME));
+		assertEquals("The UUID should be returned correctly", TEST_USER2_UUID, map.get(TEST_USER2_NAME));
+		assertEquals("The UUID should be returned correctly", TEST_USER4_UUID, map.get(TEST_USER4_NAME));
 	}
 }

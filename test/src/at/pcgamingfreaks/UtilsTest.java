@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -25,43 +26,62 @@ import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 public class UtilsTest
 {
-	@SuppressWarnings("unused")
-	private Utils JUST_TO_SILENCE_COVERAGE_REPORT = new Utils();
-	private final static byte[] byteArray1 = new byte[] { 0x01, 0x02, 0x03 }, byteArray2 = new byte[] { (byte) 0xfd, (byte) 0xda, 0x11 };
+	private final static byte[] byteArray1 = new byte[] { 0x01, 0x02, 0x03 }, byteArray2 = new byte[] { (byte) 0xFD, (byte) 0xDA, 0x11 };
 	@SuppressWarnings("SpellCheckingInspection")
 	private final static String final1 = "010203", final2 = "fdda11";
-
-	@Test
-	public void testByteArrayToHex()
-	{
-		assertEquals(final1, Utils.byteArrayToHex(byteArray1));
-		assertEquals(final2, Utils.byteArrayToHex(byteArray2));
-		assertEquals("", Utils.byteArrayToHex(null));
-		assertEquals("", Utils.byteArrayToHex(new byte[0]));
-	}
-
 	private final static String longText = "This is a long text, without any meaningful content.", shortText = "Just a text.", exactText = "This text should not change.";
 	private final static int maxLength = exactText.length();
 	private final static String longTextFinal = longText.substring(0, maxLength - 1), shortTextFinal = shortText, exactTextFinal = exactText;
 
+	@BeforeClass
+	public static void prepareTestData()
+	{
+		new Utils();
+	}
+
+	@Test
+	public void testByteArrayToHex()
+	{
+		assertEquals("The hex string should match the given byte array", final1, Utils.byteArrayToHex(byteArray1));
+		assertEquals("The hex string should match the given byte array", final2, Utils.byteArrayToHex(byteArray2));
+		assertEquals("The hex string should match the given byte array", "", Utils.byteArrayToHex(null));
+		assertEquals("The hex string should match the given byte array", "", Utils.byteArrayToHex(new byte[0]));
+	}
+
+	@Test
+	public void testBlockThread()
+	{
+		long startTime = System.currentTimeMillis();
+		Utils.blockThread(0);
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
+		assertTrue("The execution should need minimal time", elapsedTime < 10);
+		startTime = System.currentTimeMillis();
+		Utils.blockThread(1);
+		stopTime = System.currentTimeMillis();
+		elapsedTime = stopTime - startTime;
+		assertTrue("The execution should take the given amount of seconds", elapsedTime > 900 && elapsedTime < 1100);
+	}
+
 	@Test
 	public void testLimitStringLength()
 	{
-		assertEquals(longTextFinal, Utils.limitLength(longText, maxLength));
-		assertEquals(shortTextFinal, Utils.limitLength(shortText, maxLength));
-		assertEquals(exactTextFinal, Utils.limitLength(exactText, maxLength));
+		assertEquals("The limited string should be correct", longTextFinal, Utils.limitLength(longText, maxLength));
+		assertEquals("The limited string should be correct", shortTextFinal, Utils.limitLength(shortText, maxLength));
+		assertEquals("The limited string should be correct", exactTextFinal, Utils.limitLength(exactText, maxLength));
 		try
 		{
 			Utils.limitLength(longText, -1);
 		}
 		catch(IllegalArgumentException e)
 		{
-			assertEquals(e.getMessage(), "The max length must not be negative!");
+			assertEquals("A negative limit length should throw an error", e.getMessage(), "The max length must not be negative!");
 		}
 		try
 		{
@@ -70,62 +90,46 @@ public class UtilsTest
 		}
 		catch(IllegalArgumentException | NullPointerException e)
 		{
-			assertTrue(e.getMessage().equals("Argument for @NotNull parameter 'text' of at/pcgamingfreaks/Utils.limitLength must not be null") // JUnit is throwing this text cause of the @NotNull Annotation
-					           || e.getMessage().equals("The text must not be null.")); // The message we are expecting
+			//noinspection SpellCheckingInspection
+			assertTrue("A null string should throw an error", e.getMessage().equals("Argument for @NotNull parameter 'text' of at/pcgamingfreaks/Utils.limitLength must not be null") || e.getMessage().equals("The text must not be null."));
 		}
-		assertEquals("", Utils.limitLength(longText, 0));
-		assertEquals("", Utils.limitLength("", 10));
-	}
-
-	@Test
-	public void testBlockThread()
-	{
-		//region no blocking
-		long startTime = System.currentTimeMillis();
-		Utils.blockThread(0);
-		long stopTime = System.currentTimeMillis(), elapsedTime = stopTime - startTime;
-		assertTrue(elapsedTime < 10);
-		//endregion
-		//region with blocking
-		startTime = System.currentTimeMillis();
-		Utils.blockThread(1);
-		stopTime = System.currentTimeMillis();
-		elapsedTime = stopTime - startTime;
-		assertTrue(elapsedTime > 900 && elapsedTime < 1100); // Give it some tolerance
-		//endregion
+		assertEquals("A limit of 0 characters should lead to an empty string", "", Utils.limitLength(longText, 0));
+		assertEquals("An empty string should lead to an empty output string", "", Utils.limitLength("", 10));
 	}
 
 	@Test
 	public void testWarnOnJava7()
 	{
-		final int[] logCount = new int[]{0,0};
+		final int[] logCount = new int[] { 0, 0 };
 		Logger mockLogger = mock(Logger.class);
-		doAnswer(new Answer<Void>() {
+		doAnswer(new Answer<Void>()
+		{
 			@Override
 			public Void answer(InvocationOnMock invocationOnMock) throws Throwable
 			{
 				logCount[0]++;
 				return null;
 			}
-		}).when(mockLogger).warning(ConsoleColor.RED + "You are still using Java 1.7. Java 1.7 ist EOL for over a year now! You should really update to Java 1.8!" + ConsoleColor.RESET);
-		doAnswer(new Answer<Void>() {
+		}).when(mockLogger).warning(anyString());
+		doAnswer(new Answer<Void>()
+		{
 			@Override
 			public Void answer(InvocationOnMock invocationOnMock) throws Throwable
 			{
 				logCount[1]++;
 				return null;
 			}
-		}).when(mockLogger).info(ConsoleColor.YELLOW + "For now this plugin will still work fine with Java 1.7 but no warranty that this won't change in the future." + ConsoleColor.RESET);
-		final String javaVersion = System.getProperty("java.version"); // Backup the java version property so that it can be restored after the tests
+		}).when(mockLogger).info(anyString());
+		String javaVersion = System.getProperty("java.version");
 		System.setProperty("java.version", "1.7");
 		long startTime = System.currentTimeMillis();
 		Utils.warnOnJava_1_7(mockLogger, 1);
 		long stopTime = System.currentTimeMillis(), elapsedTime = stopTime - startTime;
-		assertTrue(elapsedTime > 900 && elapsedTime < 1100); // Give it some tolerance
+		assertTrue("The elapsed time should match the given second", elapsedTime > 900 && elapsedTime < 1100);
 		System.setProperty("java.version", "1.8");
 		Utils.warnOnJava_1_7(mockLogger);
-		System.setProperty("java.version", javaVersion); // Restore the java version property
-		assertEquals(1, logCount[0]);
-		assertEquals(1, logCount[1]);
+		System.setProperty("java.version", javaVersion);
+		assertEquals("There should be one message in the warning log", 1, logCount[0]);
+		assertEquals("There should be one message in the info log", 1, logCount[1]);
 	}
 }

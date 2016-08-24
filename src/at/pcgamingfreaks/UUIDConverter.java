@@ -126,10 +126,10 @@ public final class UUIDConverter
 		}
 		catch(IOException e)
 		{
-			System.out.println("Looks like there is a problem with the connection with mojang. Please retry later.");
+			System.out.println("Looks like there is a problem with the connection with Mojang. Please retry later.");
 			if(e.getMessage().contains("HTTP response code: 429"))
 			{
-				System.out.println("You have reached the request limit of the mojang api! Please retry later!");
+				System.out.println("You have reached the request limit of the Mojang api! Please retry later!");
 			}
 			e.printStackTrace();
 		}
@@ -142,9 +142,9 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * @param name       The name of the player you want the uuid from.
+	 * @param name       The name of the player you want the UUID from.
 	 * @param onlineMode True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
-	 * @return The requested UUID.
+	 * @return The requested UUID (without separators).
 	 */
 	public static String getUUIDFromName(String name, boolean onlineMode)
 	{
@@ -152,10 +152,10 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * @param name          The name of the player you want the uuid from.
+	 * @param name          The name of the player you want the UUID from.
 	 * @param onlineMode    True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @param lastKnownDate The last time you know that the player had this name.
-	 * @return The requested UUID.
+	 * @return The requested UUID (without separators).
 	 */
 	public static String getUUIDFromName(String name, boolean onlineMode, Date lastKnownDate)
 	{
@@ -163,7 +163,7 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * @param name           The name of the player you want the uuid from.
+	 * @param name           The name of the player you want the UUID from.
 	 * @param onlineMode     True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @param withSeparators True will return the UUID with '-' separators (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).
 	 *                       False will return the UUID without the '-' separator (format: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx).
@@ -175,7 +175,7 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * @param name           The name of the player you want the uuid from.
+	 * @param name           The name of the player you want the UUID from.
 	 * @param onlineMode     True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @param withSeparators True will return the UUID with '-' separators (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).
 	 *                       False will return the UUID without the '-' separator (format: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx).
@@ -188,7 +188,7 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * @param name              The name of the player you want the uuid from.
+	 * @param name              The name of the player you want the UUID from.
 	 * @param onlineMode        True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @param withSeparators    True will return the UUID with '-' separators (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).
 	 *                          False will return the UUID without the '-' separator (format: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx).
@@ -202,7 +202,7 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * @param name              The name of the player you want the uuid from.
+	 * @param name              The name of the player you want the UUID from.
 	 * @param onlineMode        True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @param withSeparators    True will return the UUID with '-' separators (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).
 	 *                          False will return the UUID without the '-' separator (format: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx).
@@ -253,9 +253,9 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * @param name       The name of the player you want the uuid from.
-	 * @param onlineMode True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
-	 * @return The requested UUID.
+	 * @param name       The name of the player you want to retrieve the UUID from.
+	 * @param onlineMode True if the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
+	 * @return The requested UUID object.
 	 */
 	public static UUID getUUIDFromNameAsUUID(String name, boolean onlineMode)
 	{
@@ -263,10 +263,10 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * @param name          The name of the player you want the uuid from.
-	 * @param onlineMode    True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
+	 * @param name          The name of the player you want to retrieve the UUID from.
+	 * @param onlineMode    True if the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @param lastKnownDate The last time you know that the player had this name.
-	 * @return The requested UUID.
+	 * @return The requested UUID object.
 	 */
 	public static UUID getUUIDFromNameAsUUID(String name, boolean onlineMode, Date lastKnownDate)
 	{
@@ -274,11 +274,11 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * @param name              The name of the player you want the uuid from.
+	 * @param name              The name of the player you want to retrieve the UUID from.
 	 * @param onlineMode        True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @param offlineUUIDonFail True if an offline UUID should be returned if the Mojang server can't resolve the name.
 	 *                          False if null should be returned if the Mojang server doesn't return an UUID.
-	 * @return The requested UUID.
+	 * @return The requested UUID object.
 	 */
 	public static UUID getUUIDFromNameAsUUID(String name, boolean onlineMode, boolean offlineUUIDonFail)
 	{
@@ -286,12 +286,12 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * @param name              The name of the player you want the uuid from.
+	 * @param name              The name of the player you want to retrieve the UUID from.
 	 * @param onlineMode        True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @param offlineUUIDonFail True if an offline UUID should be returned if the Mojang server can't resolve the name.
 	 *                          False if null should be returned if the Mojang server doesn't return an UUID.
 	 * @param lastKnownDate     The last time you know that the player had this name.
-	 * @return The requested UUID.
+	 * @return The requested UUID object.
 	 */
 	public static UUID getUUIDFromNameAsUUID(String name, boolean onlineMode, boolean offlineUUIDonFail, Date lastKnownDate)
 	{
@@ -475,12 +475,12 @@ public final class UUIDConverter
 	public class NameChange
 	{
 		/**
-		 * The name to witch the name was changed
+		 * The name to which the name was changed
 		 */
 		public String name;
 
 		/**
-		 * Datetime of the name change in UNIX time (without milliseconds)
+		 * DateTime of the name change in UNIX time (without milliseconds)
 		 */
 		public long changedToAt;
 
