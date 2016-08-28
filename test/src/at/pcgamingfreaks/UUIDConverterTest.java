@@ -19,11 +19,10 @@ package at.pcgamingfreaks;
 
 import org.junit.*;
 import org.junit.rules.Timeout;
-import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -43,10 +42,12 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@RunWith(PowerMockRunner.class)
 @PrepareForTest({ Thread.class, URL.class, UUIDConverter.class })
 public class UUIDConverterTest
 {
+	@Rule
+	public PowerMockRule powerMock = new PowerMockRule();
+
 	@Rule
 	public Timeout globalTimeout = Timeout.seconds(10);
 

@@ -21,18 +21,12 @@ import at.pcgamingfreaks.Message.MessageColor;
 
 import net.md_5.bungee.api.ChatColor;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class BungeeMessageTest
+public class MessageTest
 {
-	@Before
-	public void init()
-	{
-	}
-
 	@Test
 	public void testToClassicMessage()
 	{

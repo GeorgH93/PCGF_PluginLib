@@ -1,6 +1,6 @@
 Version: 1
 Language: de
-LanguageUpdateMethod: upgrade
+LanguageUpdateMode: update
 TestConfig:
   List:
     - 1

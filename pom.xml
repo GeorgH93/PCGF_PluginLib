@@ -92,6 +92,18 @@
 			<version>RELEASE</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4-rule</artifactId>
+			<version>RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-classloading-xstream</artifactId>
+			<version>RELEASE</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- For better code documentation -->
 		<dependency>
 			<groupId>org.jetbrains</groupId>
@@ -239,7 +251,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.5.201505241946</version>
+				<version>0.7.7.201606060606</version>
 				<executions>
 					<execution>
 						<goals>

@@ -24,7 +24,7 @@ import at.pcgamingfreaks.Bungee.Message.MessageComponent;
 import com.google.gson.JsonObject;
 
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -33,12 +33,13 @@ import static org.junit.Assert.assertEquals;
 
 public class MessageHoverEventTest
 {
-	JsonObject testObject;
-	Message testMessage;
-	MessageComponent[] testComponentArray;
-	List<MessageComponent> testComponents;
-	@Before
-	public void testInit()
+	private static JsonObject testObject;
+	private static Message testMessage;
+	private static MessageComponent[] testComponentArray;
+	private static List<MessageComponent> testComponents;
+
+	@BeforeClass
+	public static void prepareTestData()
 	{
 		testObject = new JsonObject();
 		testObject.addProperty("test", "test");

@@ -15,19 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks;
+package at.pcgamingfreaks.Bukkit.Effects;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
-
-public class LanguageUpdateMethodTest
+public class EffectBaseTest
 {
-	@Test
-	public void testLanguageUpdateMethods()
-	{
-		assertNotNull("The update method should be found", LanguageUpdateMethod.UPDATE);
-		assertNotNull("The upgrade method should be found", LanguageUpdateMethod.UPGRADE);
-		assertNotNull("The overwrite method should be found", LanguageUpdateMethod.OVERWRITE);
-	}
+
 }

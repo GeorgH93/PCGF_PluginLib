@@ -15,19 +15,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks;
+package at.pcgamingfreaks.Bukkit.Effects;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class LanguageUpdateMethodTest
+public class MaterialEffectsTest
 {
 	@Test
-	public void testLanguageUpdateMethods()
+	public void testMaterialEffects()
 	{
-		assertNotNull("The update method should be found", LanguageUpdateMethod.UPDATE);
-		assertNotNull("The upgrade method should be found", LanguageUpdateMethod.UPGRADE);
-		assertNotNull("The overwrite method should be found", LanguageUpdateMethod.OVERWRITE);
+		MaterialEffects itemCrack = MaterialEffects.ITEM_CRACK;
+		//noinspection SpellCheckingInspection
+		assertEquals("The name of item crack should match", "iconcrack", itemCrack.getName());
+		//noinspection SpellCheckingInspection
+		assertEquals("The uppercase name of item crack should match", "ICONCRACK", itemCrack.getNameUpperCase());
+		assertEquals("The new name of item crack should match", "ITEM_CRACK", itemCrack.getNewName());
+		assertNotNull("The enum of item crack should not be null", itemCrack.getEnum());
 	}
 }
