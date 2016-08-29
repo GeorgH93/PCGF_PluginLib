@@ -17,14 +17,12 @@
 
 package at.pcgamingfreaks.Bukkit.Effects;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class MaterialEffectsTest
 {
-	@Test
+	//@Test
 	public void testMaterialEffects()
 	{
 		MaterialEffects itemCrack = MaterialEffects.ITEM_CRACK;
