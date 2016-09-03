@@ -30,7 +30,8 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 	//region JSON Variables
 	protected MessageClickEvent clickEvent = null;
 	protected MessageHoverEvent hoverEvent = null;
-	protected String text, color, insertion;
+	protected String text, insertion;
+	protected MessageColor color;
 	protected Boolean bold, italic, underlined, strikethrough, obfuscated;
 	protected List<T> extra = null;
 
@@ -132,7 +133,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 		if (isObfuscated()) stringBuilder.append(MessageColor.MAGIC);
 		if (isUnderlined()) stringBuilder.append(MessageColor.UNDERLINE);
 		if (isStrikethrough()) stringBuilder.append(MessageColor.STRIKETHROUGH);
-		if (color != null) stringBuilder.append(getMessageColor().toString().toLowerCase());
+		if (color != null) stringBuilder.append(getColor().toString().toLowerCase());
 		return stringBuilder.toString();
 	}
 	//endregion
@@ -211,7 +212,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 	 *
 	 * @return The color of the component as a {@link String}, null if no color is defined.
 	 */
-	public String getColor()
+	public MessageColor getColor()
 	{
 		return color;
 	}
@@ -221,9 +222,9 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 	 *
 	 * @return The color of the component as a {@link MessageColor}, null if no color is defined.
 	 */
-	public MessageColor getMessageColor()
+	public String getColorString()
 	{
-		return MessageColor.valueOf(color.toUpperCase());
+		return getColor().name().toLowerCase();
 	}
 
 	/**
@@ -234,8 +235,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 	 */
 	public T setColor(String color)
 	{
-		this.color = color;
-		return (T)this;
+		return setColor(MessageColor.valueOf(color.toUpperCase()));
 	}
 
 	/**
@@ -251,7 +251,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 		{
 			throw new IllegalArgumentException(color.name() + " is not a color");
 		}
-		this.color = color.name().toLowerCase();
+		this.color = color;
 		return (T)this;
 	}
 
@@ -883,7 +883,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 		}
 		//Strings
 		if(componentAsJsonObject.get("text") != null) component.text = componentAsJsonObject.get("text").getAsString();
-		if(componentAsJsonObject.get("color") != null) component.color = componentAsJsonObject.get("color").getAsString();
+		if(componentAsJsonObject.get("color") != null)  component.color = MessageColor.valueOf(componentAsJsonObject.get("color").getAsString());
 		if(componentAsJsonObject.get("insertion") != null) component.insertion = componentAsJsonObject.get("insertion").getAsString();
 		//Booleans
 		if(componentAsJsonObject.get("bold") != null) component.bold = componentAsJsonObject.get("bold").getAsBoolean();

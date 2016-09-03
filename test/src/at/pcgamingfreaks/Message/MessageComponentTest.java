@@ -92,8 +92,8 @@ public class MessageComponentTest
 		TestMessageComponent messageComponent = new TestMessageComponent("This is a text");
 		messageComponent.bold().italic().obfuscated().strikethrough().underlined().color(MessageColor.BLACK).insert("Insertion");
 		assertTrue("The message should be bold", messageComponent.isBold());
-		assertEquals("The message should be black", MessageColor.BLACK, messageComponent.getMessageColor());
-		assertEquals("The color of the message should be black", "black", messageComponent.getColor());
+		assertEquals("The message should be black", MessageColor.BLACK, messageComponent.getColor());
+		assertEquals("The color of the message should be black", "black", messageComponent.getColorString());
 		assertTrue("The message should be italic", messageComponent.isItalic());
 		assertTrue("The message should be obfuscated", messageComponent.isObfuscated());
 		assertTrue("The message should be strikethrough", messageComponent.isStrikethrough());
@@ -104,7 +104,7 @@ public class MessageComponentTest
 		assertFalse("The message should not be obfuscated", messageComponent.isObfuscated());
 		assertFalse("The message should not be strikethrough", messageComponent.isStrikethrough());
 		messageComponent.color("Aqua");
-		assertEquals("The message color should be aqua", MessageColor.AQUA, messageComponent.getMessageColor());
+		assertEquals("The message color should be aqua", MessageColor.AQUA, messageComponent.getColor());
 	}
 
 	@Test
@@ -168,7 +168,7 @@ public class MessageComponentTest
 		assertFalse("The magic flag should not be set", messageComponent.isObfuscated());
 		messageComponent.style(MessageColor.MAGIC, MessageColor.GREEN);
 		assertTrue("The magic flag should now be set", messageComponent.isObfuscated());
-		assertEquals("The color of the message should be green", "green", messageComponent.getColor());
+		assertEquals("The color of the message should be green", "green", messageComponent.getColorString());
 	}
 
 	@Test

@@ -17,71 +17,89 @@
 
 package at.pcgamingfreaks.Message;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum  MessageColor
 {
 	/**
 	 * Represents black.
 	 */
+	@SerializedName("black")
 	BLACK('0'),
 	/**
 	 * Represents dark blue.
 	 */
+	@SerializedName("dark_blue")
 	DARK_BLUE('1'),
 	/**
 	 * Represents dark green.
 	 */
+	@SerializedName("dark_green")
 	DARK_GREEN('2'),
 	/**
 	 * Represents dark blue (aqua).
 	 */
+	@SerializedName("dark_aqua")
 	DARK_AQUA('3'),
 	/**
 	 * Represents dark red.
 	 */
+	@SerializedName("dark_red")
 	DARK_RED('4'),
 	/**
 	 * Represents dark purple.
 	 */
+	@SerializedName("dark_purple")
 	DARK_PURPLE('5'),
 	/**
 	 * Represents gold.
 	 */
+	@SerializedName("gold")
 	GOLD('6'),
 	/**
 	 * Represents gray.
 	 */
+	@SerializedName("gray")
 	GRAY('7'),
 	/**
 	 * Represents dark gray.
 	 */
+	@SerializedName("dark_gray")
 	DARK_GRAY('8'),
 	/**
 	 * Represents blue.
 	 */
+	@SerializedName("blue")
 	BLUE('9'),
 	/**
 	 * Represents green.
 	 */
+	@SerializedName("green")
 	GREEN('a'),
 	/**
 	 * Represents aqua.
 	 */
+	@SerializedName("aqua")
 	AQUA('b'),
 	/**
 	 * Represents red.
 	 */
+	@SerializedName("red")
 	RED('c'),
 	/**
 	 * Represents light purple.
 	 */
+	@SerializedName("light_purple")
 	LIGHT_PURPLE('d'),
 	/**
 	 * Represents yellow.
 	 */
+	@SerializedName("yellow")
 	YELLOW('e'),
 	/**
 	 * Represents white.
 	 */
+	@SerializedName("white")
 	WHITE('f'),
 	/**
 	 * Represents magical characters that change around randomly.

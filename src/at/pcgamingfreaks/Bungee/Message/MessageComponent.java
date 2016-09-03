@@ -118,7 +118,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 */
 	public ChatColor getChatColor()
 	{
-		return ChatColor.valueOf(color.toUpperCase());
+		return ChatColor.valueOf(getColorString().toUpperCase());
 	}
 
 	/**
@@ -130,11 +130,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 */
 	public MessageComponent setColor(ChatColor color) throws IllegalArgumentException
 	{
-		if(!COLOR_LIST.contains(color))
-		{
-			throw new IllegalArgumentException(color.name() + " is not a color");
-		}
-		this.color = color.name().toLowerCase();
+		setColor(color.name().toUpperCase());
 		return this;
 	}
 
