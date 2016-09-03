@@ -31,6 +31,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -127,26 +128,26 @@ public abstract class Updater
 	 */
 	protected String[] prepareVersion(String version)
 	{
-		String[] v = version.toLowerCase().split("-")[0].split(Pattern.quote("."));
+		String[] v = version.toLowerCase().split("-")[0].replaceAll("(\\.0)*$", "").split(Pattern.quote("."));
 		try
 		{
-			if(version.contains("snapshot") || version.contains("alpha") || version.contains("beta"))
+			if(version.contains("snapshot") || version.contains("alpha") || version.contains("beta") || version.contains("pre") || version.contains("rc"))
 			{
-				if(v.length == 1)
+				v = Arrays.copyOf(v, v.length + 1);
+				for(int i = v.length - 2; i >= 0; i--)
 				{
-					v = new String[] { Integer.toString(Integer.parseInt(v[0]) - 1), Integer.toString(Integer.MAX_VALUE) };
-				}
-				else
-				{
-					for(int i = v.length - 1; i > 0; i--)
+					if(Integer.parseInt(v[i]) > 0)
 					{
-						if(Integer.parseInt(v[i]) > 0)
-						{
-							v[i] = Integer.toString(Integer.parseInt(v[i]) - 1);
-							break;
-						}
+						v[i] = Integer.toString(Integer.parseInt(v[i]) - 1);
+						break;
 					}
 				}
+				int lv = Integer.MAX_VALUE;
+				if(version.contains("alpha")) lv -= 10000;
+				if(version.contains("beta"))  lv -= 1000;
+				if(version.contains("pre"))   lv -= 100;
+				if(version.contains("rc"))    lv -= 10;
+				v[v.length - 1] = Integer.toString(lv);
 			}
 		}
 		catch(Exception ignored) {}
