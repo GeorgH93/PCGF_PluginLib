@@ -120,7 +120,7 @@ public abstract class Updater
 	/**
 	 * This function prepares a given version string to be interpreted by the updater.
 	 * The version therefor will be split on each "." to get the individual parts of the version string.
-	 * If it's a snapshot/alpha/beta build we reduce her last digit by 1 so that the updater will kick in as soon as the final of the version is released.
+	 * If it's a snapshot/alpha/beta build we reduce the last digit by 1 so that the updater will kick in as soon as the final of the version is released.
 	 *
 	 * @param version The version to prepare for interpretation
 	 * @return The prepared version
@@ -154,12 +154,12 @@ public abstract class Updater
 	}
 
 	/**
-	 * This method provides a basic version comparison. If you don't like it's behavior please Override it in!
+	 * This method provides a basic version comparison. If you don't like it's behavior please Override it!
 	 * <p> With default behavior, the Updater only supports this format: <b>\d(.\d)*(-SOMETHING)*</b>
 	 * If the version string doesn't match this scheme the fallback of comparing local and remote version will be used.</p>
 	 *
 	 * @param remoteVersion the remote version
-	 * @return true if the updater should consider the remote version an update, false if not.
+	 * @return true if the updater should consider the remote version and update, false if not.
 	 */
 	protected boolean shouldUpdate(String remoteVersion)
 	{

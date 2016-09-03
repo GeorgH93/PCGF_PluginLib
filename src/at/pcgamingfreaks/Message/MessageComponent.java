@@ -274,7 +274,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 	 */
 	public T setInsertion(String insertionText)
 	{
-		insertion = (insertionText.length() > 100) ? insertionText.substring(0, 99) : insertionText;
+		insertion = (insertionText.length() > 100) ? insertionText.substring(0, 100) : insertionText;
 		return (T)this;
 	}
 

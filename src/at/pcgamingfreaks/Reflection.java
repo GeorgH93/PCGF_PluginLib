@@ -88,7 +88,7 @@ public class Reflection
 		{
 			if(clazz.getSuperclass() != null)
 			{
-				getFieldIncludeParents(clazz.getSuperclass(), name);
+				return getFieldIncludeParents(clazz.getSuperclass(), name);
 			}
 		}
 		catch(Exception e)
