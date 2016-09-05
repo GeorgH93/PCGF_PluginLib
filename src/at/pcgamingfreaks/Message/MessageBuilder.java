@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 import java.util.Collection;
 
 @SuppressWarnings("unchecked")
-public abstract class MessageBuilder<T extends MessageBuilder>
+public abstract class MessageBuilder<T extends MessageBuilder, STYLE extends Enum>
 {
 	protected final static Gson GSON = new Gson();
 
@@ -32,6 +32,10 @@ public abstract class MessageBuilder<T extends MessageBuilder>
 	 * Creates a new MessageBuilder with an empty {@link MessageComponent}.
 	 */
 	public MessageBuilder() {}
+
+	//region append functions
+	public abstract T appendNewLine();
+	//endregion
 
 	//region Modifier for the current component
 	/**
@@ -55,6 +59,80 @@ public abstract class MessageBuilder<T extends MessageBuilder>
 	public T color(String color)
 	{
 		getCurrentComponent().setColor(color);
+		return (T) this;
+	}
+
+	/**
+	 * Sets the color of the current component.
+	 *
+	 * @param color The new color of the current component.
+	 * @return The message builder instance (for chaining).
+	 */
+	public T color(MessageColor color)
+	{
+		getCurrentComponent().setColor(color);
+		return (T) this;
+	}
+
+	/**
+	 * Sets the color of the current component.
+	 *
+	 * @param color The new color of the current component.
+	 * @return The message builder instance (for chaining).
+	 */
+	public T color(STYLE color)
+	{
+		getCurrentComponent().setColor(color);
+		return (T) this;
+	}
+
+	/**
+	 * Sets the format of the current component
+	 *
+	 * @param formats The array of formats to apply to the current component.
+	 * @return The message builder instance (for chaining).
+	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 */
+	public T format(STYLE... formats) throws IllegalArgumentException
+	{
+		getCurrentComponent().setFormats(formats);
+		return (T) this;
+	}
+
+	/**
+	 * Sets the format of the current component
+	 *
+	 * @param formats The array of formats to apply to the current component.
+	 * @return The message builder instance (for chaining).
+	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 */
+	public T format(MessageColor... formats) throws IllegalArgumentException
+	{
+		getCurrentComponent().setFormats(formats);
+		return (T) this;
+	}
+
+	/**
+	 * Sets the style of the current component.
+	 *
+	 * @param styles The array of styles to apply to the current component.
+	 * @return The message builder instance (for chaining).
+	 */
+	public T style(STYLE... styles)
+	{
+		getCurrentComponent().setStyles(styles);
+		return (T) this;
+	}
+
+	/**
+	 * Sets the style of the current component.
+	 *
+	 * @param styles The array of styles to apply to the current component.
+	 * @return The message builder instance (for chaining).
+	 */
+	public T style(MessageColor... styles)
+	{
+		getCurrentComponent().setStyles(styles);
 		return (T) this;
 	}
 

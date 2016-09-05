@@ -21,7 +21,7 @@ import net.md_5.bungee.api.ChatColor;
 
 import java.util.*;
 
-public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder>
+public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, ChatColor>
 {
 	private List<MessageComponent> messageList = new LinkedList<>();
 	private MessageComponent current;
@@ -167,6 +167,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 		return this;
 	}
 
+	@Override
 	public MessageBuilder appendNewLine()
 	{
 		return append(NEW_LINE_HELPER);
@@ -242,46 +243,6 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	public String getJson()
 	{
 		return GSON.toJson(getJsonMessage());
-	}
-	//endregion
-
-	//region Modifier for the current component
-	/**
-	 * Sets the color of the current component.
-	 *
-	 * @param color The new color of the current component.
-	 * @return The message builder instance (for chaining).
-	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
-	 */
-	public MessageBuilder color(ChatColor color) throws IllegalArgumentException
-	{
-		((MessageComponent) getCurrentComponent()).setColor(color);
-		return this;
-	}
-
-	/**
-	 * Sets the format of the current component
-	 *
-	 * @param formats The array of formats to apply to the current component.
-	 * @return The message builder instance (for chaining).
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
-	 */
-	public MessageBuilder format(ChatColor... formats) throws IllegalArgumentException
-	{
-		((MessageComponent) getCurrentComponent()).setFormats(formats);
-		return this;
-	}
-
-	/**
-	 * Sets the style of the current component.
-	 *
-	 * @param styles The array of styles to apply to the current component.
-	 * @return The message builder instance (for chaining).
-	 */
-	public MessageBuilder style(ChatColor... styles)
-	{
-		((MessageComponent) getCurrentComponent()).setStyles(styles);
-		return this;
 	}
 	//endregion
 }

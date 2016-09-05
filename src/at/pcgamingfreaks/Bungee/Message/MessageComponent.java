@@ -17,38 +17,23 @@
 
 package at.pcgamingfreaks.Bungee.Message;
 
+import at.pcgamingfreaks.Message.MessageColor;
+
 import com.google.gson.*;
 
 import net.md_5.bungee.api.ChatColor;
 
-import java.util.HashSet;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
-public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent> implements JsonDeserializer<MessageComponent>
+public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent, ChatColor> implements JsonDeserializer<MessageComponent>
 {
 	private transient final static at.pcgamingfreaks.Message.MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
-	private transient final static HashSet<ChatColor> COLOR_LIST = new HashSet<>();
 	private transient final static MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 
 	static
 	{
-		COLOR_LIST.add(ChatColor.BLACK);
-		COLOR_LIST.add(ChatColor.DARK_BLUE);
-		COLOR_LIST.add(ChatColor.DARK_GREEN);
-		COLOR_LIST.add(ChatColor.DARK_AQUA);
-		COLOR_LIST.add(ChatColor.DARK_RED);
-		COLOR_LIST.add(ChatColor.DARK_PURPLE);
-		COLOR_LIST.add(ChatColor.GOLD);
-		COLOR_LIST.add(ChatColor.GRAY);
-		COLOR_LIST.add(ChatColor.DARK_GRAY);
-		COLOR_LIST.add(ChatColor.BLUE);
-		COLOR_LIST.add(ChatColor.GREEN);
-		COLOR_LIST.add(ChatColor.AQUA);
-		COLOR_LIST.add(ChatColor.RED);
-		COLOR_LIST.add(ChatColor.LIGHT_PURPLE);
-		COLOR_LIST.add(ChatColor.YELLOW);
-		COLOR_LIST.add(ChatColor.WHITE);
-
 		GSON = new GsonBuilder().registerTypeAdapter(MessageComponent.class, MESSAGE_COMPONENT_INSTANCE).create();
 		try
 		{
@@ -76,13 +61,23 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	/**
 	 * Creates a new empty MessageComponent instance.
 	 *
-	 * @param text   The text for the MessageComponent.
-	 * @param styles The style for the MessageComponent.
+	 * @param text   The text for the {@link MessageComponent}.
+	 * @param styles The style for the {@link MessageComponent}.
 	 */
-	public MessageComponent(String text, ChatColor... styles)
+	public MessageComponent(String text, MessageColor... styles)
 	{
-		super(text);
-		setStyles(styles);
+		super(text, styles);
+	}
+
+	/**
+	 * Creates a new empty MessageComponent instance.
+	 *
+	 * @param text   The text for the {@link MessageComponent}.
+	 * @param styles The style for the {@link MessageComponent}.
+	 */
+	public MessageComponent(String text, @Nullable ChatColor[] styles)
+	{
+		super(text, styles);
 	}
 	//endregion
 
@@ -119,104 +114,6 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	public ChatColor getChatColor()
 	{
 		return ChatColor.valueOf(getColorString().toUpperCase());
-	}
-
-	/**
-	 * Sets the color of the component.
-	 *
-	 * @param color The new color of the component.
-	 * @return This message component instance.
-	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
-	 */
-	public MessageComponent setColor(ChatColor color) throws IllegalArgumentException
-	{
-		setColor(color.name().toUpperCase());
-		return this;
-	}
-
-	/**
-	 * Sets the formats of the component.
-	 *
-	 * @param formats The array of formats to apply to the component.
-	 * @return This message component instance.
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
-	 */
-	@SuppressWarnings("Duplicates")
-	public MessageComponent setFormats(ChatColor... formats) throws IllegalArgumentException
-	{
-		if(formats != null)
-		{
-			for(ChatColor style : formats)
-			{
-				//noinspection SuspiciousMethodCalls
-				if(COLOR_LIST.contains(formats))
-				{
-					throw new IllegalArgumentException(style.name() + " is not a formatter");
-				}
-			}
-			for(ChatColor format : formats)
-			{
-				switch(format)
-				{
-					case ITALIC: setItalic(); break;
-					case BOLD: setBold(); break;
-					case UNDERLINE: setUnderlined(); break;
-					case STRIKETHROUGH: setStrikethrough(); break;
-					case MAGIC: setObfuscated(); break;
-				}
-			}
-		}
-		return this;
-	}
-
-	/**
-	 * Sets the style of the component.
-	 *
-	 * @param styles The array of styles to apply to the component.
-	 * @return This message component instance.
-	 */
-	public MessageComponent setStyles(ChatColor... styles)
-	{
-		if(styles != null)
-		{
-			for(ChatColor style : styles)
-			{
-				if(COLOR_LIST.contains(style))
-				{
-					setColor(style);
-				}
-				else
-				{
-					setFormats(style);
-				}
-			}
-		}
-		return this;
-	}
-	//endregion
-
-	//region Short message modifier (setter)
-	/**
-	 * Sets the format of the component.
-	 *
-	 * @param formats The array of format to apply to the component.
-	 * @return This message component instance.
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
-	 */
-	public MessageComponent format(ChatColor... formats) throws IllegalArgumentException
-	{
-		return setFormats(formats);
-	}
-
-	/**
-	 * Sets the style of the component.
-	 *
-	 * @param styles The array of styles to apply to the component.
-	 * @return This message component instance.
-	 */
-	public MessageComponent style(ChatColor... styles)
-	{
-		return setStyles(styles);
 	}
 	//endregion
 }

@@ -19,13 +19,17 @@ package at.pcgamingfreaks.Message;
 
 import com.google.gson.*;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class MessageComponent<T extends MessageComponent> implements JsonDeserializer<T>
+public abstract class MessageComponent<T extends MessageComponent, STYLES extends Enum> implements JsonDeserializer<T>
 {
 	//region JSON Variables
 	protected MessageClickEvent clickEvent = null;
@@ -61,10 +65,22 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 	/**
 	 * Creates a new empty MessageComponent instance.
 	 *
-	 * @param text   The text for the MessageComponent.
-	 * @param styles The style for the MessageComponent.
+	 * @param text   The text for the {@link MessageComponent}.
+	 * @param styles The style for the {@link MessageComponent}.
 	 */
 	protected MessageComponent(String text, MessageColor... styles)
+	{
+		setText(text);
+		if(styles != null) setStyles(styles);
+	}
+
+	/**
+	 * Creates a new empty MessageComponent instance.
+	 *
+	 * @param text   The text for the {@link MessageComponent}.
+	 * @param styles The style for the {@link MessageComponent}.
+	 */
+	protected MessageComponent(String text, @Nullable STYLES[] styles)
 	{
 		setText(text);
 		if(styles != null) setStyles(styles);
@@ -253,6 +269,19 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 		}
 		this.color = color;
 		return (T)this;
+	}
+
+	/**
+	 * Sets the color of the component.
+	 * Use {@link MessageColor} for better performance!
+	 *
+	 * @param color The new color of the component.
+	 * @return This message component instance.
+	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
+	 */
+	public T setColor(STYLES color) throws IllegalArgumentException
+	{
+		return setColor(messageColorFromStyle(color));
 	}
 
 	/**
@@ -488,7 +517,6 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
-	@SuppressWarnings("Duplicates")
 	public T setFormats(MessageColor... formats) throws IllegalArgumentException
 	{
 		if(formats != null)
@@ -516,6 +544,19 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 	}
 
 	/**
+	 * Sets the formats of the component.
+	 * Use {@link MessageColor} for better performance!
+	 *
+	 * @param formats The array of formats to apply to the component.
+	 * @return This message component instance.
+	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 */
+	public T setFormats(@Nullable STYLES... formats) throws IllegalArgumentException
+	{
+		return setFormats(messageColorArrayFromStylesArray(formats));
+	}
+
+	/**
 	 * Sets the style of the component.
 	 *
 	 * @param styles The array of styles to apply to the component.
@@ -538,6 +579,18 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 			}
 		}
 		return (T)this;
+	}
+
+	/**
+	 * Sets the style of the component.
+	 * Use {@link MessageColor} for better performance!
+	 *
+	 * @param styles The array of styles to apply to the component.
+	 * @return This message component instance.
+	 */
+	public T setStyles(@Nullable STYLES... styles)
+	{
+		return setStyles(messageColorArrayFromStylesArray(styles));
 	}
 	//endregion
 
@@ -577,6 +630,18 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 	}
 
 	/**
+	 * Sets the color of the component.
+	 * Use {@link MessageColor} for better performance!
+	 *
+	 * @param color The new color of the component.
+	 * @return This message component instance.
+	 */
+	public T color(STYLES color) throws IllegalArgumentException
+	{
+		return setColor(color);
+	}
+
+	/**
 	 * Sets the format of the component.
 	 *
 	 * @param formats The array of format to apply to the component.
@@ -586,6 +651,31 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 	public T format(MessageColor... formats) throws IllegalArgumentException
 	{
 		return setFormats(formats);
+	}
+
+	/**
+	 * Sets the format of the component.
+	 * Use {@link MessageColor} for better performance!
+	 *
+	 * @param formats The array of format to apply to the component.
+	 * @return This message component instance.
+	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 */
+	public T format(STYLES... formats) throws IllegalArgumentException
+	{
+		return setFormats(formats);
+	}
+
+	/**
+	 * Sets the style of the component.
+	 * Use {@link MessageColor} for better performance!
+	 *
+	 * @param styles The array of styles to apply to the component.
+	 * @return This message component instance.
+	 */
+	public T style(STYLES... styles)
+	{
+		return setStyles(styles);
 	}
 
 	/**
@@ -951,4 +1041,31 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 		return components;
 	}
 	//endregion
+
+	private static  @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum ... styles)
+	{
+		if(styles != null && styles.length > 0)
+		{
+			MessageColor[] msgStyles = new MessageColor[styles.length];
+			int i = 0;
+			for(Enum style : styles)
+			{
+				if(style != null)
+				{
+					msgStyles[i++] = MessageColor.valueOf(style.name().toUpperCase());
+				}
+			}
+			if(msgStyles.length > i)
+			{
+				return Arrays.copyOf(msgStyles, i);
+			}
+			return msgStyles;
+		}
+		return null;
+	}
+
+	private static @Nullable MessageColor messageColorFromStyle(@NotNull Enum style)
+	{
+		return MessageColor.valueOf(style.name().toUpperCase());
+	}
 }

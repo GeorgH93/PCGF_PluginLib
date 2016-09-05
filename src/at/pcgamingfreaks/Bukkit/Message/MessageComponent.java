@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit.Message;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageHoverEvent;
 
 import com.google.gson.*;
@@ -27,12 +28,13 @@ import org.bukkit.*;
 import org.bukkit.Statistic.Type;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
-public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent> implements JsonDeserializer<MessageComponent>
+public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent, ChatColor> implements JsonDeserializer<MessageComponent>
 {
 	//region Reflection Variables
 	private transient final static Class<?> CRAFT_STATISTIC = NMSReflection.getOBCClass("CraftStatistic");
@@ -75,13 +77,23 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	/**
 	 * Creates a new empty MessageComponent instance.
 	 *
-	 * @param text   The text for the MessageComponent.
-	 * @param styles The style for the MessageComponent.
+	 * @param text   The text for the {@link MessageComponent}.
+	 * @param styles The style for the {@link MessageComponent}.
 	 */
-	public MessageComponent(String text, ChatColor... styles)
+	public MessageComponent(String text, MessageColor... styles)
 	{
-		super(text);
-		setStyles(styles);
+		super(text, styles);
+	}
+
+	/**
+	 * Creates a new empty MessageComponent instance.
+	 *
+	 * @param text   The text for the {@link MessageComponent}.
+	 * @param styles The style for the {@link MessageComponent}.
+	 */
+	public MessageComponent(String text, @Nullable ChatColor[] styles)
+	{
+		super(text, styles);
 	}
 	//endregion
 
@@ -119,104 +131,9 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	{
 		return ChatColor.valueOf(getColorString().toUpperCase());
 	}
-
-	/**
-	 * Sets the color of the component.
-	 *
-	 * @param color The new color of the component.
-	 * @return This message component instance.
-	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
-	 */
-	public MessageComponent setColor(ChatColor color) throws IllegalArgumentException
-	{
-		setColor(color.name().toUpperCase());
-		return this;
-	}
-
-	/**
-	 * Sets the formats of the component.
-	 *
-	 * @param formats The array of formats to apply to the component.
-	 * @return This message component instance.
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
-	 */
-	@SuppressWarnings("Duplicates")
-	public MessageComponent setFormats(ChatColor... formats) throws IllegalArgumentException
-	{
-		if(formats != null)
-		{
-			for(ChatColor style : formats)
-			{
-				if(!style.isFormat())
-				{
-					throw new IllegalArgumentException(style.name() + " is not a formatter");
-				}
-			}
-			for(ChatColor format : formats)
-			{
-				switch(format)
-				{
-					case ITALIC: setItalic(); break;
-					case BOLD: setBold(); break;
-					case UNDERLINE: setUnderlined(); break;
-					case STRIKETHROUGH: setStrikethrough(); break;
-					case MAGIC: setObfuscated(); break;
-				}
-			}
-		}
-		return this;
-	}
-
-	/**
-	 * Sets the style of the component.
-	 *
-	 * @param styles The array of styles to apply to the component.
-	 * @return This message component instance.
-	 */
-	public MessageComponent setStyles(ChatColor... styles)
-	{
-		if(styles != null)
-		{
-			for(ChatColor style : styles)
-			{
-				if(style.isFormat())
-				{
-					setFormats(style);
-				}
-				if(style.isColor())
-				{
-					setColor(style);
-				}
-			}
-		}
-		return this;
-	}
 	//endregion
 
 	//region Short message modifier (setter)
-	/**
-	 * Sets the format of the component
-	 *
-	 * @param formats The array of format to apply to the component
-	 * @return This message component instance
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters
-	 */
-	public MessageComponent format(ChatColor... formats) throws IllegalArgumentException
-	{
-		return setFormats(formats);
-	}
-
-	/**
-	 * Sets the style of the component.
-	 *
-	 * @param styles The array of styles to apply to the component.
-	 * @return This message component instance.
-	 */
-	public MessageComponent style(ChatColor... styles)
-	{
-		return setStyles(styles);
-	}
-
 	/**
 	 * Set the behavior of the component to display information about an achievement when the client hovers over the text.
 	 *
