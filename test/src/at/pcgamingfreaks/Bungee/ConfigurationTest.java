@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 GeorgH93
+ * Copyright (C) 2016 MarkusWME
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,16 +15,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bungee.Message;
+package at.pcgamingfreaks.Bungee;
 
-public class MessageTest
+public class ConfigurationTest
 {
 	/*@Test
-	public void testToClassicMessage()
+	public void testConfiguration()
 	{
-		assertEquals(new Message("Test Message").getClassicMessage(), "Test Message");
-		assertEquals(new Message(new MessageComponent[] { new MessageComponent("Test Message 2", ChatColor.RED) }).getClassicMessage(), MessageColor.RED + "Test Message 2" + MessageColor.RESET);
-		assertEquals(new Message(new MessageComponent[] { new MessageComponent("Test Message 3", ChatColor.BLUE, ChatColor.ITALIC) }).getClassicMessage(),
-		             MessageColor.ITALIC + MessageColor.BLUE.toString() + "Test Message 3" + MessageColor.RESET);
+		Plugin mockedPlugin = mock(Plugin.class);
+		doReturn(new File(System.getProperty("user.dir"))).when(mockedPlugin).getDataFolder();
+		Configuration configuration = new Configuration(mockedPlugin, 1);
 	}*/
 }

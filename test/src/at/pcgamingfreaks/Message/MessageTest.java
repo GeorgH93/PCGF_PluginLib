@@ -17,94 +17,45 @@
 
 package at.pcgamingfreaks.Message;
 
-import com.google.gson.GsonBuilder;
+import at.pcgamingfreaks.TestClasses.TestMessage;
+import at.pcgamingfreaks.TestClasses.TestMessageComponent;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MessageTest
 {
-	private static class TestMessageComponent extends MessageComponent<MessageComponent>
-	{
-		private static final MessageComponent MESSAGE_COMPONENT_INSTANCE = new TestMessageComponent();
-
-		static
-		{
-			GSON = new GsonBuilder().registerTypeAdapter(TestMessageComponent.class, new TestMessageComponent()).create();
-			messageComponentClass = TestMessageComponent.class;
-			try
-			{
-				messageComponentConstructor = TestMessageComponent.class.getConstructor();
-			}
-			catch(NoSuchMethodException e)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		public TestMessageComponent() {}
-
-		public TestMessageComponent(String text)
-		{
-			super(text);
-		}
-
-		@Override
-		protected MessageComponent getNewLineComponent()
-		{
-			return new TestMessageComponent("\n");
-		}
-
-		public static List<MessageComponent> fromJson(String jsonString)
-		{
-			//noinspection unchecked
-			return MESSAGE_COMPONENT_INSTANCE.fromJsonWorker(jsonString);
-		}
-	}
-
-	private static class TestMessage extends Message<Message>
-	{
-		public TestMessage()
-		{
-			super("", MessageComponent.class);
-		}
-
-		public TestMessage(String message)
-		{
-			super(message, TestMessageComponent.class);
-		}
-
-		protected TestMessage(Collection<? extends MessageComponent> message)
-		{
-			super(message);
-		}
-	}
-
 	@Test
 	public void testMessage()
 	{
 		List<TestMessageComponent> messageComponents = new ArrayList<>();
 		messageComponents.add(new TestMessageComponent("Message text"));
-		TestMessage message1 = new TestMessage("[{\"text\":\"Message text\"}]");
-		TestMessage message2 = new TestMessage("Message text§r");
+		TestMessage message1 = new TestMessage("A message text");
+		TestMessage message2 = new TestMessage("Message text");
 		TestMessage message3 = new TestMessage(messageComponents);
 		message2.setOptionalParameters(5);
-		assertEquals("The message texts should match", message1.getClassicMessage(), message2.getClassicMessage());
-		assertTrue("The messages should be equal", message1.equals(message3));
-		assertEquals("The message hash code should match", message1.hashCode(), message3.hashCode());
+		assertEquals("The message texts should match", "Message text", message2.getClassicMessage());
+		assertEquals("The other message texts should match", "Message text§r", message3.getClassicMessage());
+		assertTrue("The messages should be equal", message2.equals(message3));
+		assertEquals("The message hash code should match", message2.hashCode(), message3.hashCode());
 		assertEquals("The message text should be correct", "[{\"text\":\"Message text\"}]", message3.toString());
 		//noinspection deprecation
 		assertEquals("The message components should be equal", messageComponents.toArray(), message3.getMessageComponents());
 		assertEquals("The optional parameter of the message should match", 5, message2.optionalParameters);
+		message1.replaceAll("A m", "M");
 		message1.replaceAll("ext", "est");
 		message2.replaceAll("ext", "est");
 		assertEquals("The message texts should match", message1.getClassicMessage(), message2.getClassicMessage());
+		//noinspection EqualsBetweenInconvertibleTypes
+		assertFalse("A string should not equal a message object", message1.equals("False"));
+		//noinspection EqualsBetweenInconvertibleTypes
+		assertFalse("The messages should not be equal", message1.equals(message3));
 	}
 
 	@Test

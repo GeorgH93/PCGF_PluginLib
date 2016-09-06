@@ -18,7 +18,6 @@
 package at.pcgamingfreaks;
 
 import org.junit.*;
-import org.junit.rules.Timeout;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.io.*;
@@ -33,9 +32,6 @@ public class UUIDConverterTest
 {
 	@Rule
 	public PowerMockRule powerMock = new PowerMockRule();
-
-	@Rule
-	public Timeout globalTimeout = Timeout.seconds(10);
 
 	private final static String TEST_USER_NAME = "GeorgH93", TEST_USER_UUID = "6c99e2b55c9e4663b4db7ad3bc52d28d", TEST_USER_UUID_SEPARATORS = "6c99e2b5-5c9e-4663-b4db-7ad3bc52d28d";
 	private final static String TEST_USER_OFFLINE_UUID = "05015780f9dc3a409e1dfd4c4f9e20f1", TEST_USER_OFFLINE_UUID_SEPARATORS = "05015780-f9dc-3a40-9e1d-fd4c4f9e20f1";

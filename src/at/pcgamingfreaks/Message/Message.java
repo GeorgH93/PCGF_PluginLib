@@ -19,14 +19,14 @@ package at.pcgamingfreaks.Message;
 
 import com.google.gson.Gson;
 
-import net.md_5.bungee.api.ChatColor;
-
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class Message<T extends Message>
 {
@@ -51,7 +51,7 @@ public abstract class Message<T extends Message>
 		catch(Exception ignored) {} // If there was an exception it's very likely that the given message isn't a JSON, that's all we need to know.
 		if(messageComponents != null) // The json was successfully deserialized
 		{
-			json = message; // The given message string was a valid JSON so we are free to send him to the clients
+			json = message; // The given message string was a valid JSON so we are free to send it to the clients
 			fallback = getClassicMessage(); // We need a fallback for the console an everything else that isn't a player
 		}
 		else

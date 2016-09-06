@@ -55,7 +55,7 @@ public class UtilsTest
 	}
 
 	@Test
-	public void testBlockThread()
+	public void testBlockThread() throws InterruptedException
 	{
 		long startTime = System.currentTimeMillis();
 		Utils.blockThread(0);
@@ -67,6 +67,8 @@ public class UtilsTest
 		stopTime = System.currentTimeMillis();
 		elapsedTime = stopTime - startTime;
 		assertTrue("The execution should take the given amount of seconds", elapsedTime > 900 && elapsedTime < 1100);
+		Thread.currentThread().interrupt();
+		Utils.blockThread(10);
 	}
 
 	@Test

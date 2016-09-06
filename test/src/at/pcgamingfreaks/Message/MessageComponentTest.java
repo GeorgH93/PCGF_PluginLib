@@ -17,8 +17,10 @@
 
 package at.pcgamingfreaks.Message;
 
+import at.pcgamingfreaks.TestClasses.TestMessage;
+import at.pcgamingfreaks.TestClasses.TestMessageComponent;
+
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import org.junit.Test;
@@ -33,57 +35,21 @@ import static org.junit.Assert.*;
 
 public class MessageComponentTest
 {
-	static class TestMessageComponent extends MessageComponent<MessageComponent>
-	{
-		static
-		{
-			GSON = new GsonBuilder().registerTypeAdapter(TestMessageComponent.class, new TestMessageComponent()).create();
-			messageComponentClass = TestMessageComponent.class;
-			try
-			{
-				messageComponentConstructor = TestMessageComponent.class.getConstructor();
-			}
-			catch(NoSuchMethodException e)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		public TestMessageComponent() {}
-
-		public TestMessageComponent(String text, MessageColor... styles)
-		{
-			super(text, styles);
-		}
-
-		@Override
-		protected MessageComponent getNewLineComponent()
-		{
-			return new TestMessageComponent("\n");
-		}
-	}
-
-	private static class TestMessage extends Message<Message>
-	{
-		protected TestMessage(Collection<? extends MessageComponent> message)
-		{
-			super(message);
-		}
-	}
-
 	@Test
 	public void testGetClassicMessage()
 	{
 		List<MessageComponent> messageComponents = new ArrayList<>();
 		messageComponents.add(new TestMessageComponent("test message "));
-		messageComponents.add(new TestMessageComponent("with extras"));
+		messageComponents.add(new TestMessageComponent("with extras", MessageColor.AQUA));
 		TestMessageComponent messageComponent = new TestMessageComponent("This is a ");
 		messageComponent.setExtras(messageComponents);
 		//noinspection SpellCheckingInspection
-		assertEquals("The text should match", "This is a test message §rwith extras§r§r", messageComponent.getClassicMessage());
+		assertEquals("The text should match", "This is a test message §r§bwith extras§r§r", messageComponent.getClassicMessage());
+		assertEquals("An empty message component should return an empty string", "§r", new TestMessageComponent().getClassicMessage());
 		//noinspection SpellCheckingInspection
-		assertEquals("The text of the static function should match", "test message §rwith extras§r", MessageComponent.getClassicMessage(messageComponents));
+		assertEquals("The text of the static function should match", "test message §r§bwith extras§r", MessageComponent.getClassicMessage(messageComponents));
 		assertEquals("The extras should be found", messageComponents, messageComponent.getExtras());
+		assertEquals("An non existent message list should return an empty string", "", MessageComponent.getClassicMessage(null));
 	}
 
 	@Test
@@ -98,7 +64,9 @@ public class MessageComponentTest
 		assertTrue("The message should be obfuscated", messageComponent.isObfuscated());
 		assertTrue("The message should be strikethrough", messageComponent.isStrikethrough());
 		assertTrue("The message should be underlined", messageComponent.isUnderlined());
-		assertEquals("The insertion should be correct", "Insertion", messageComponent.getInsertion());
+		assertEquals("The insertion should be trimmed", "Insertion", messageComponent.getInsertion());
+		messageComponent.insert("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
+		assertEquals("The insertion should be correct", "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789", messageComponent.getInsertion());
 		messageComponent.setObfuscated(false);
 		messageComponent.setStrikethrough(false);
 		assertFalse("The message should not be obfuscated", messageComponent.isObfuscated());
@@ -175,10 +143,31 @@ public class MessageComponentTest
 	public void testDeserialize()
 	{
 		Gson gson = new Gson();
-		JsonElement json = gson.fromJson("{\"text\":\"JSON text\"}", JsonElement.class);
+		JsonElement json = gson.fromJson("{\"text\":\"JSON text\", \"color\":\"AQUA\", \"insertion\":\"insert\", \"bold\":\"true\", \"italic\":\"true\", \"underlined\":\"true\", \"obfuscated\":\"true\", \"strikethrough\":\"true\", \"extra\":[{\"text\":\"extra\"}], \"clickEvent\":{\"action\":\"run_command\", \"value\":\"cmd run\"}, \"hoverEvent\":{\"action\":\"show_text\", \"value\":\"Text 1\"}}", JsonElement.class);
 		TestMessageComponent messageComponent = new TestMessageComponent();
 		MessageComponent component = messageComponent.deserialize(json, null, null);
 		assertEquals("The text should match", "JSON text", component.getText());
+		JsonElement emptyJson = gson.fromJson("{}", JsonElement.class);
+		MessageComponent emptyComponent = messageComponent.deserialize(emptyJson, null, null);
+		assertNull("The text should match", emptyComponent.getText());
+	}
+
+	@Test
+	public void testSpecialCases()
+	{
+		TestMessageComponent messageComponent = new TestMessageComponent("Text", null);
+		messageComponent.setFormats();
+		Gson gson = new Gson();
+		JsonElement json = gson.fromJson("{\"text\":\"Text\", \"bold\":\"null\", \"italic\":\"false\", \"underlined\":\"null\", \"obfuscated\":\"null\", \"strikethrough\":\"null\"}", JsonElement.class);
+		messageComponent.deserialize(json, null, null);
+		assertFalse("The message should not be italic", messageComponent.isItalic());
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testSetFormatWithError()
+	{
+		TestMessageComponent messageComponent = new TestMessageComponent("Text", null);
+		messageComponent.setFormats((MessageColor) null);
 	}
 
 	@Test
@@ -199,7 +188,7 @@ public class MessageComponentTest
 		Method fromJsonWorker = MessageComponent.class.getDeclaredMethod("fromJsonWorker", String.class);
 		fromJsonWorker.setAccessible(true);
 		//noinspection unchecked
-		TestMessage message = new TestMessage((Collection<? extends MessageComponent>) fromJsonWorker.invoke(messageComponent, "[[\"St\", \"ring \"], {\"text\":\"from JSON worker\"}]"));
+		TestMessage message = new TestMessage((Collection<TestMessageComponent>) fromJsonWorker.invoke(messageComponent, "[[\"St\", \"ring \"], {\"text\":\"from JSON worker\"}]"));
 		fromJsonWorker.setAccessible(false);
 		//noinspection SpellCheckingInspection
 		assertEquals("The message text should match", "St§rring §rfrom JSON worker§r", message.getClassicMessage());

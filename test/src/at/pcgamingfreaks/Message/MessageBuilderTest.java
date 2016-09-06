@@ -17,67 +17,19 @@
 
 package at.pcgamingfreaks.Message;
 
-import com.google.gson.GsonBuilder;
+import at.pcgamingfreaks.TestClasses.TestMessage;
+import at.pcgamingfreaks.TestClasses.TestMessageBuilder;
+import at.pcgamingfreaks.TestClasses.TestMessageComponent;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class MessageBuilderTest
 {
-	static class TestMessageComponent extends MessageComponent<MessageComponent>
-	{
-		static
-		{
-			GSON = new GsonBuilder().registerTypeAdapter(TestMessageComponent.class, new TestMessageComponent()).create();
-			messageComponentClass = TestMessageComponent.class;
-			try
-			{
-				messageComponentConstructor = TestMessageComponent.class.getConstructor();
-			}
-			catch(NoSuchMethodException e)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		public TestMessageComponent() {}
-
-		public TestMessageComponent(String text)
-		{
-			super(text);
-		}
-
-		@Override
-		protected MessageComponent getNewLineComponent()
-		{
-			return new TestMessageComponent("\n");
-		}
-	}
-
-	private static class TestMessage extends Message<Message>
-	{
-		protected TestMessage(Collection<? extends MessageComponent> message)
-		{
-			super(message);
-		}
-	}
-
-	private static class TestMessageBuilder extends MessageBuilder<MessageBuilder>
-	{
-		TestMessageComponent messageComponent = new TestMessageComponent();
-
-		@Override
-		protected MessageComponent getCurrentComponent()
-		{
-			return messageComponent;
-		}
-	}
-
 	@Test
 	public void testMessageBuilder()
 	{

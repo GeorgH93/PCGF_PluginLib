@@ -47,5 +47,6 @@ public class ConsoleColorTest
 		assertEquals("The format string should match", start + 46 + end, ConsoleColor.BACKGROUND_CYAN.toString());
 		assertEquals("The format string should match", start + 47 + end, ConsoleColor.BACKGROUND_WHITE.toString());
 		assertEquals("The format string should match", start + 49 + end, ConsoleColor.BACKGROUND_DEFAULT.toString());
+		assertEquals("The format string should match", start + 36 + end, ConsoleColor.valueOf("CYAN").toString());
 	}
 }
