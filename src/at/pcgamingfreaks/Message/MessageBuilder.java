@@ -19,23 +19,81 @@ package at.pcgamingfreaks.Message;
 
 import com.google.gson.Gson;
 
-import java.util.Collection;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
-public abstract class MessageBuilder<T extends MessageBuilder, STYLE extends Enum>
+public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, STYLE extends Enum>
 {
+	protected List<COMPONENT> messageList = new LinkedList<>();
+	protected COMPONENT current;
+	private static MessageComponent NEW_LINE_HELPER = null;
 	protected final static Gson GSON = new Gson();
-
-	protected abstract MessageComponent getCurrentComponent();
 
 	/**
 	 * Creates a new MessageBuilder with an empty {@link MessageComponent}.
 	 */
 	public MessageBuilder() {}
 
-	//region append functions
-	public abstract T appendNewLine();
+	//region Append functions
+	public T appendNewLine()
+	{
+		return append((COMPONENT) NEW_LINE_HELPER);
+	}
+
+	/**
+	 * Adds an array of {@link MessageComponent}'s to the builder.
+	 *
+	 * @param components The array of {@link MessageComponent}'s that should be added to the builder.
+	 * @return The message builder instance (for chaining).
+	 */
+	public T append(COMPONENT... components)
+	{
+		if(components != null && components.length > 0)
+		{
+			current = components[components.length - 1];
+			Collections.addAll(messageList, components);
+		}
+		return (T)this;
+	}
+
+	/**
+	 * Adds a collection of {@link MessageComponent}'s to the builder.
+	 *
+	 * @param components The collection of {@link MessageComponent}'s that should be added to the builder.
+	 * @return The message builder instance (for chaining).
+	 */
+	public T append(Collection<COMPONENT> components)
+	{
+		messageList.addAll(components);
+		current = messageList.get(messageList.size() - 1);
+		return (T)this;
+	}
 	//endregion
+
+	protected COMPONENT getCurrentComponent()
+	{
+		return current;
+	}
+
+	/**
+	 * Gets the size (amount of {@link MessageComponent}'s) of the builder.
+	 *
+	 * @return The size of the builder.
+	 */
+	public int size()
+	{
+		return messageList.size();
+	}
+
+	/**
+	 * Gets an iterator of the builder. This makes it possible to change {@link MessageComponent}'s on every position within the message.
+	 *
+	 * @return The iterator of the builder.
+	 */
+	public Iterator<COMPONENT> iterator()
+	{
+		return messageList.iterator();
+	}
 
 	//region Modifier for the current component
 	/**

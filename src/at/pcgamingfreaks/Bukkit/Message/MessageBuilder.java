@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Bukkit.Message;
 
+import at.pcgamingfreaks.Reflection;
+
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -26,16 +28,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, ChatColor>
+public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, MessageComponent, ChatColor>
 {
-	private List<MessageComponent> messageList = new LinkedList<>();
-	private MessageComponent current;
-	private final static MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
-
-	@Override
-	protected at.pcgamingfreaks.Message.MessageComponent getCurrentComponent()
+	static
 	{
-		return current;
+		Reflection.setStaticValue(at.pcgamingfreaks.Message.MessageBuilder.class, "NEW_LINE_HELPER", new MessageComponent("\n"));
 	}
 
 	//region Constructors
@@ -142,62 +139,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 		catch(Exception ignored) {}
 		return (components == null) ? append(json) : append(components);
 	}
-
-	/**
-	 * Adds an array of {@link MessageComponent}'s to the builder.
-	 *
-	 * @param components The array of {@link MessageComponent}'s that should be added to the builder.
-	 * @return The message builder instance (for chaining).
-	 */
-	public MessageBuilder append(MessageComponent... components)
-	{
-		if(components != null && components.length > 0)
-		{
-			current = components[components.length - 1];
-			Collections.addAll(messageList, components);
-		}
-		return this;
-	}
-
-	/**
-	 * Adds a collection of {@link MessageComponent}'s to the builder.
-	 *
-	 * @param components The collection of {@link MessageComponent}'s that should be added to the builder.
-	 * @return The message builder instance (for chaining).
-	 */
-	public MessageBuilder append(Collection<MessageComponent> components)
-	{
-		messageList.addAll(components);
-		current = messageList.get(messageList.size() - 1);
-		return this;
-	}
-
-	@Override
-	public MessageBuilder appendNewLine()
-	{
-		return append(NEW_LINE_HELPER);
-	}
 	//endregion
-
-	/**
-	 * Gets the size (amount of {@link MessageComponent}'s) of the builder.
-	 *
-	 * @return The size of the builder.
-	 */
-	public int size()
-	{
-		return messageList.size();
-	}
-
-	/**
-	 * Gets an iterator of the builder. This makes it possible to change {@link MessageComponent}'s on every position within the message.
-	 *
-	 * @return The iterator of the builder.
-	 */
-	public Iterator<MessageComponent> iterator()
-	{
-		return messageList.iterator();
-	}
 
 	//region Getter for the final message
 	/**
@@ -260,7 +202,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder achievementTooltip(Achievement achievement)
 	{
-		((MessageComponent) getCurrentComponent()).achievementTooltip(achievement);
+		getCurrentComponent().achievementTooltip(achievement);
 		return this;
 	}
 
@@ -273,7 +215,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder statisticTooltip(Statistic statistic) throws IllegalArgumentException
 	{
-		((MessageComponent) getCurrentComponent()).statisticTooltip(statistic);
+		getCurrentComponent().statisticTooltip(statistic);
 		return this;
 	}
 
@@ -287,7 +229,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder statisticTooltip(Statistic statistic, Material material) throws IllegalArgumentException
 	{
-		((MessageComponent) getCurrentComponent()).statisticTooltip(statistic, material);
+		getCurrentComponent().statisticTooltip(statistic, material);
 		return this;
 	}
 
@@ -301,7 +243,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder statisticTooltip(Statistic statistic, EntityType entity) throws IllegalArgumentException
 	{
-		((MessageComponent) getCurrentComponent()).statisticTooltip(statistic, entity);
+		getCurrentComponent().statisticTooltip(statistic, entity);
 		return this;
 	}
 
@@ -313,7 +255,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder itemTooltip(ItemStack itemStack)
 	{
-		((MessageComponent) getCurrentComponent()).itemTooltip(itemStack);
+		getCurrentComponent().itemTooltip(itemStack);
 		return this;
 	}
 	//endregion

@@ -20,15 +20,9 @@ package at.pcgamingfreaks.TestClasses;
 import at.pcgamingfreaks.Message.MessageBuilder;
 import at.pcgamingfreaks.Message.MessageComponent;
 
-public class TestMessageBuilder extends MessageBuilder<MessageBuilder, Enum>
+public class TestMessageBuilder extends MessageBuilder<MessageBuilder, TestMessageComponent, Enum>
 {
 	TestMessageComponent messageComponent = new TestMessageComponent();
-
-	@Override
-	public MessageComponent getCurrentComponent()
-	{
-		return messageComponent;
-	}
 
 	@Override
 	public MessageBuilder appendNewLine()

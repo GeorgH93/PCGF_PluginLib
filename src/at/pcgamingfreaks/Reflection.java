@@ -23,6 +23,30 @@ import java.lang.reflect.Method;
 
 public class Reflection
 {
+	public static void setStaticValue(Class clazz, String field, Object value)
+	{
+		setValue(getField(clazz, field), (Object) null, value);
+	}
+
+	public static void setStaticValue(Field field, Object value)
+	{
+		setValue(field, (Object) null, value);
+	}
+
+	public static void setValue(Field field, Object instance, Object value)
+	{
+		try
+		{
+			field.setAccessible(true);
+			field.set(instance, value);
+			field.setAccessible(false);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	public static void setValue(Object instance, String fieldName, Object value) throws Exception
 	{
 		Field field = instance.getClass().getDeclaredField(fieldName);
@@ -33,7 +57,7 @@ public class Reflection
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static Enum<?> getEnum(String enumFullName)
 	{
-		String[] x = enumFullName.split("\\.(?=[^\\.]+$)");
+		String[] x = enumFullName.split("\\.(?=[^.]+$)");
 		if(x.length == 2)
 		{
 			try

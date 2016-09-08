@@ -553,7 +553,8 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	 */
 	public T setFormats(@Nullable STYLES... formats) throws IllegalArgumentException
 	{
-		return setFormats(messageColorArrayFromStylesArray(formats));
+		if(formats == null || formats.length == 0) return (T)this;
+		return setFormats(messageColorArrayFromStylesArray((Enum[]) formats));
 	}
 
 	/**
@@ -590,7 +591,8 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	 */
 	public T setStyles(@Nullable STYLES... styles)
 	{
-		return setStyles(messageColorArrayFromStylesArray(styles));
+		if(styles == null || styles.length == 0) return (T)this;
+		return setStyles(messageColorArrayFromStylesArray((Enum[]) styles));
 	}
 	//endregion
 
@@ -1042,7 +1044,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	}
 	//endregion
 
-	private static  @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum ... styles)
+	private static  @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum... styles)
 	{
 		if(styles != null && styles.length > 0)
 		{
