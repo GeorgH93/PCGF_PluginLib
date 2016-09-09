@@ -94,8 +94,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public static MessageBuilder fromJson(String json)
 	{
-		MessageBuilder builder = new MessageBuilder();
-		builder.messageList.clear();
+		MessageBuilder builder = new MessageBuilder((MessageComponent) null);
 		builder.appendJson(json);
 		return builder;
 	}

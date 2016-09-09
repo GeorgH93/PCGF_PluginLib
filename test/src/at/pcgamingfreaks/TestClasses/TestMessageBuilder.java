@@ -19,7 +19,6 @@ package at.pcgamingfreaks.TestClasses;
 
 import at.pcgamingfreaks.Message.MessageBuilder;
 import at.pcgamingfreaks.Message.MessageColor;
-import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Reflection;
 
 import java.util.Collection;
@@ -33,7 +32,12 @@ public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestM
 		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "NEW_LINE_HELPER", new TestMessageComponent("\n"));
 		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "EMPTY_COMPONENT_CONSTRUCTOR", Reflection.getConstructor(TestMessageComponent.class));
 		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "INIT_COMPONENT_CONSTRUCTOR", Reflection.getConstructor(TestMessageComponent.class, String.class, MessageColor[].class));
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "MESSAGE_CONSTRUCTOR", Reflection.getConstructor(TestMessage.class, Collection.class)); //TODO: test this!!!
+		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "MESSAGE_CONSTRUCTOR", Reflection.getConstructor(TestMessage.class, Collection.class));
+	}
+
+	public TestMessageBuilder()
+	{
+		super(new TestMessageComponent());
 	}
 
 	public TestMessageBuilder(TestMessageComponent initComponent)

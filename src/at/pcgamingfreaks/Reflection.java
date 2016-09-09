@@ -20,6 +20,7 @@ package at.pcgamingfreaks;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class Reflection
 {
@@ -31,6 +32,28 @@ public class Reflection
 	public static void setStaticField(Field field, Object value)
 	{
 		setValue(field, (Object) null, value);
+	}
+
+	public static void setStaticFinalField(Class clazz, String field, Object value)
+	{
+		setStaticFinalField(getField(clazz, field), value);
+	}
+
+	public static void setStaticFinalField(Field field, Object value)
+	{
+		try
+		{
+			field.setAccessible(true);
+			Field modifiersField = Field.class.getDeclaredField("modifiers");
+			modifiersField.setAccessible(true);
+			modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+			field.set(null, value);
+			modifiersField.setInt(field, field.getModifiers() | Modifier.FINAL);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public static void setValue(Field field, Object instance, Object value)

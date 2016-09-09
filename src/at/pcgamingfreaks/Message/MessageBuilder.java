@@ -27,10 +27,10 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message, STYLE extends Enum>
 {
-	protected List<COMPONENT> messageList = new LinkedList<>();
-	protected COMPONENT current;
-	private static final Constructor EMPTY_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR = null, MESSAGE_CONSTRUCTOR = null;
-	private static final MessageComponent NEW_LINE_HELPER = null;
+	private List<COMPONENT> messageList = new LinkedList<>();
+	private COMPONENT current;
+	private static Constructor EMPTY_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR = null, MESSAGE_CONSTRUCTOR = null;
+	private static MessageComponent NEW_LINE_HELPER = null;
 	protected final static Gson GSON = new Gson();
 
 	/**
@@ -41,7 +41,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	public MessageBuilder(COMPONENT initComponent)
 	{
 		current = initComponent;
-		messageList.add(initComponent);
+		if(initComponent != null) messageList.add(initComponent);
 	}
 
 	/**
