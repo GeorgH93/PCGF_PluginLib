@@ -17,17 +17,21 @@
 
 package at.pcgamingfreaks.Bungee.Message;
 
+import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Reflection;
 
 import net.md_5.bungee.api.ChatColor;
 
 import java.util.*;
 
-public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, MessageComponent, ChatColor>
+public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, MessageComponent, Message, ChatColor>
 {
 	static
 	{
-		Reflection.setStaticValue(at.pcgamingfreaks.Message.MessageBuilder.class, "NEW_LINE_HELPER", new MessageComponent("\n"));
+		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "NEW_LINE_HELPER", new MessageComponent("\n"));
+		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "EMPTY_COMPONENT_CONSTRUCTOR", Reflection.getConstructor(MessageComponent.class));
+		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "INIT_COMPONENT_CONSTRUCTOR", Reflection.getConstructor(MessageComponent.class, String.class, MessageColor[].class));
+		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "MESSAGE_CONSTRUCTOR", Reflection.getConstructor(Message.class, Collection.class)); //TODO: test this!!!
 	}
 
 	//region Constructors
@@ -36,7 +40,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder()
 	{
-		this(new MessageComponent());
+		super(new MessageComponent());
 	}
 
 	/**
@@ -46,8 +50,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder(MessageComponent initComponent)
 	{
-		current = initComponent;
-		messageList.add(current);
+		super(initComponent);
 	}
 
 	/**
@@ -57,8 +60,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder(Collection<MessageComponent> initCollection)
 	{
-		messageList = new LinkedList<>(initCollection);
-		current = messageList.get(messageList.size() - 1);
+		super(initCollection);
 	}
 
 	/**
@@ -67,7 +69,18 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @param text   The text that should be used to initialize the first {@link MessageComponent} of the message.
 	 * @param styles The style the should be used to initialize the first {@link MessageComponent} of the message.
 	 */
-	public MessageBuilder(String text, ChatColor... styles)
+	public MessageBuilder(String text, MessageColor... styles)
+	{
+		this(new MessageComponent(text, styles));
+	}
+
+	/**
+	 * Creates a new MessageBuilder from a given text and format information.
+	 *
+	 * @param text   The text that should be used to initialize the first {@link MessageComponent} of the message.
+	 * @param styles The style the should be used to initialize the first {@link MessageComponent} of the message.
+	 */
+	public MessageBuilder(String text, ChatColor[] styles)
 	{
 		this(new MessageComponent(text, styles));
 	}
@@ -81,49 +94,20 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public static MessageBuilder fromJson(String json)
 	{
-		List<MessageComponent> components = null;
-		try
-		{
-			components = MessageComponent.fromJson(json);
-		}
-		catch(Exception ignored) {}
-		if(components == null)
-		{
-			components = new LinkedList<>();
-			components.add(new MessageComponent(json));
-		}
-		return new MessageBuilder(components);
+		MessageBuilder builder = new MessageBuilder();
+		builder.messageList.clear();
+		builder.appendJson(json);
+		return builder;
 	}
 
-	//region append functions
-	/**
-	 * Adds a new {@link MessageComponent} to the builder.
-	 *
-	 * @return The message builder instance (for chaining).
-	 */
-	public MessageBuilder append()
-	{
-		return append(new MessageComponent());
-	}
-
-	/**
-	 * Adds a new {@link MessageComponent} to the builder, generated from a text and optional style data.
-	 *
-	 * @param text   The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
-	 * @param styles The style information for the new {@link MessageComponent} that will be added to the builder.
-	 * @return The message builder instance (for chaining).
-	 */
-	public MessageBuilder append(String text, ChatColor... styles)
-	{
-		return append(new MessageComponent(text, styles));
-	}
-
+	//region Append functions
 	/**
 	 * Adds a new {@link MessageComponent} to the builder, deserialized from a JSON string.
 	 *
 	 * @param json The JSON string that should be deserialized in oder to add it to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
+	@Override
 	public MessageBuilder appendJson(String json)
 	{
 		List<MessageComponent> components = null;
@@ -133,58 +117,6 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 		}
 		catch(Exception ignored) {}
 		return (components == null) ? append(json) : append(components);
-	}
-	//endregion
-
-	//region Getter for the final message
-	/**
-	 * Gets the {@link Message} object of the message build with the builder.
-	 *
-	 * @return The {@link Message} object.
-	 */
-	public Message getMessage()
-	{
-		return new Message(getJsonMessageAsList());
-	}
-
-	/**
-	 * Gets the build message as a list of {@link MessageComponent}'s.
-	 *
-	 * @return The list of {@link MessageComponent}'s.
-	 */
-	public List<MessageComponent> getJsonMessageAsList()
-	{
-		return new ArrayList<>(messageList);
-	}
-
-	/**
-	 * Gets the build message as an array of {@link MessageComponent}'s.
-	 *
-	 * @return The array of {@link MessageComponent}'s.
-	 */
-	public MessageComponent[] getJsonMessage()
-	{
-		return messageList.toArray(new MessageComponent[messageList.size()]);
-	}
-
-	/**
-	 * Gets the message in the classic minecraft chat format used in minecraft version prior than 1.7.
-	 *
-	 * @return The classic message string of the build message.
-	 */
-	public String getClassicMessage()
-	{
-		return MessageComponent.getClassicMessage(messageList);
-	}
-
-	/**
-	 * Gets the build message as a JSON string.
-	 *
-	 * @return The JSON string of the build message.
-	 */
-	public String getJson()
-	{
-		return GSON.toJson(getJsonMessage());
 	}
 	//endregion
 }

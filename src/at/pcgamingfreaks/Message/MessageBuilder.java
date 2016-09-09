@@ -17,27 +17,106 @@
 
 package at.pcgamingfreaks.Message;
 
+import at.pcgamingfreaks.Utils;
+
 import com.google.gson.Gson;
 
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 @SuppressWarnings("unchecked")
-public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, STYLE extends Enum>
+public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message, STYLE extends Enum>
 {
 	protected List<COMPONENT> messageList = new LinkedList<>();
 	protected COMPONENT current;
-	private static MessageComponent NEW_LINE_HELPER = null;
+	private static final Constructor EMPTY_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR = null, MESSAGE_CONSTRUCTOR = null;
+	private static final MessageComponent NEW_LINE_HELPER = null;
 	protected final static Gson GSON = new Gson();
 
 	/**
-	 * Creates a new MessageBuilder with an empty {@link MessageComponent}.
+	 * Creates a new MessageBuilder with a given {@link MessageComponent}.
+	 *
+	 * @param initComponent The {@link MessageComponent} that should be on the first position of the message.
 	 */
-	public MessageBuilder() {}
+	public MessageBuilder(COMPONENT initComponent)
+	{
+		current = initComponent;
+		messageList.add(initComponent);
+	}
+
+	/**
+	 * Creates a new MessageBuilder with a given {@link Collection} of {@link MessageComponent}'s.
+	 *
+	 * @param initCollection The {@link Collection} of {@link MessageComponent} that should be used to initiate the MessageBuilder.
+	 */
+	public MessageBuilder(Collection<COMPONENT> initCollection)
+	{
+		append(initCollection);
+	}
 
 	//region Append functions
+	/**
+	 * Adds a new line to the message.
+	 *
+	 * @return The message builder instance (for chaining)
+	 */
 	public T appendNewLine()
 	{
 		return append((COMPONENT) NEW_LINE_HELPER);
+	}
+
+	/**
+	 * Adds a new {@link MessageComponent} to the builder.
+	 *
+	 * @return The message builder instance (for chaining).
+	 */
+	public T append()
+	{
+		try
+		{
+			//noinspection ConstantConditions
+			return append((COMPONENT) EMPTY_COMPONENT_CONSTRUCTOR.newInstance());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return (T) this;
+	}
+
+	/**
+	 * Adds a new {@link MessageComponent} to the builder, generated from a text and optional style data.
+	 *
+	 * @param text   The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
+	 * @param styles The style information for the new {@link MessageComponent} that will be added to the builder.
+	 * @return The message builder instance (for chaining).
+	 */
+	public T append(String text, STYLE[] styles)
+	{
+
+		if(styles == null || styles.length == 0) return (T)this;
+		return append(text, Utils.messageColorArrayFromStylesArray((Enum[]) styles));
+	}
+
+	/**
+	 * Adds a new {@link MessageComponent} to the builder, generated from a text and optional style data.
+	 *
+	 * @param text   The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
+	 * @param styles The style information for the new {@link MessageComponent} that will be added to the builder.
+	 * @return The message builder instance (for chaining).
+	 */
+	public T append(String text, MessageColor... styles)
+	{
+		try
+		{
+			//noinspection ConstantConditions
+			return append((COMPONENT) INIT_COMPONENT_CONSTRUCTOR.newInstance(text, styles));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return (T) this;
 	}
 
 	/**
@@ -68,6 +147,14 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 		current = messageList.get(messageList.size() - 1);
 		return (T)this;
 	}
+
+	/**
+	 * Adds a new {@link MessageComponent} to the builder, deserialized from a JSON string.
+	 *
+	 * @param json The JSON string that should be deserialized in oder to add it to the builder.
+	 * @return The message builder instance (for chaining).
+	 */
+	public abstract T appendJson(String json);
 	//endregion
 
 	protected COMPONENT getCurrentComponent()
@@ -433,6 +520,67 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	{
 		getCurrentComponent().extra(extras);
 		return (T) this;
+	}
+	//endregion
+
+	//region Getter for the final message
+	/**
+	 * Gets the {@link Message} object of the message build with the builder.
+	 *
+	 * @return The {@link Message} object.
+	 */
+	public MESSAGE getMessage()
+	{
+		try
+		{
+			//noinspection ConstantConditions
+			return (MESSAGE) MESSAGE_CONSTRUCTOR.newInstance(getJsonMessageAsList());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the build message as a list of {@link MessageComponent}'s.
+	 *
+	 * @return The list of {@link MessageComponent}'s.
+	 */
+	public List<COMPONENT> getJsonMessageAsList()
+	{
+		return new ArrayList<>(messageList);
+	}
+
+	/**
+	 * Gets the build message as an array of {@link MessageComponent}'s.
+	 *
+	 * @return The array of {@link MessageComponent}'s.
+	 */
+	public COMPONENT[] getJsonMessage()
+	{
+		return (COMPONENT[]) messageList.toArray();
+	}
+
+	/**
+	 * Gets the message in the classic minecraft chat format used in minecraft version prior than 1.7.
+	 *
+	 * @return The classic message string of the build message.
+	 */
+	public String getClassicMessage()
+	{
+		return COMPONENT.getClassicMessage(messageList);
+	}
+
+	/**
+	 * Gets the build message as a JSON string.
+	 *
+	 * @return The JSON string of the build message.
+	 */
+	public String getJson()
+	{
+		return GSON.toJson(getJsonMessage());
 	}
 	//endregion
 }

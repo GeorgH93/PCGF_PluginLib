@@ -17,10 +17,13 @@
 
 package at.pcgamingfreaks;
 
+import at.pcgamingfreaks.Message.MessageColor;
+
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class Utils
@@ -100,5 +103,32 @@ public class Utils
 			}
 			catch(InterruptedException ignored) {}
 		}
+	}
+
+	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum... styles)
+	{
+		if(styles != null && styles.length > 0)
+		{
+			MessageColor[] msgStyles = new MessageColor[styles.length];
+			int i = 0;
+			for(Enum style : styles)
+			{
+				if(style != null)
+				{
+					msgStyles[i++] = MessageColor.valueOf(style.name().toUpperCase());
+				}
+			}
+			if(msgStyles.length > i)
+			{
+				return Arrays.copyOf(msgStyles, i);
+			}
+			return msgStyles;
+		}
+		return null;
+	}
+
+	public static @Nullable MessageColor messageColorFromStyle(@NotNull Enum style)
+	{
+		return MessageColor.valueOf(style.name().toUpperCase());
 	}
 }

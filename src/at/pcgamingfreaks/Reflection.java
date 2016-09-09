@@ -23,12 +23,12 @@ import java.lang.reflect.Method;
 
 public class Reflection
 {
-	public static void setStaticValue(Class clazz, String field, Object value)
+	public static void setStaticField(Class clazz, String field, Object value)
 	{
 		setValue(getField(clazz, field), (Object) null, value);
 	}
 
-	public static void setStaticValue(Field field, Object value)
+	public static void setStaticField(Field field, Object value)
 	{
 		setValue(field, (Object) null, value);
 	}

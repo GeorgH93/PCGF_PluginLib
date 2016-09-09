@@ -17,13 +17,13 @@
 
 package at.pcgamingfreaks.Message;
 
+import at.pcgamingfreaks.Utils;
+
 import com.google.gson.*;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -281,7 +281,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	 */
 	public T setColor(STYLES color) throws IllegalArgumentException
 	{
-		return setColor(messageColorFromStyle(color));
+		return setColor(Utils.messageColorFromStyle(color));
 	}
 
 	/**
@@ -554,7 +554,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	public T setFormats(@Nullable STYLES... formats) throws IllegalArgumentException
 	{
 		if(formats == null || formats.length == 0) return (T)this;
-		return setFormats(messageColorArrayFromStylesArray((Enum[]) formats));
+		return setFormats(Utils.messageColorArrayFromStylesArray((Enum[]) formats));
 	}
 
 	/**
@@ -592,7 +592,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	public T setStyles(@Nullable STYLES... styles)
 	{
 		if(styles == null || styles.length == 0) return (T)this;
-		return setStyles(messageColorArrayFromStylesArray((Enum[]) styles));
+		return setStyles(Utils.messageColorArrayFromStylesArray((Enum[]) styles));
 	}
 	//endregion
 
@@ -1043,31 +1043,4 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 		return components;
 	}
 	//endregion
-
-	private static  @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum... styles)
-	{
-		if(styles != null && styles.length > 0)
-		{
-			MessageColor[] msgStyles = new MessageColor[styles.length];
-			int i = 0;
-			for(Enum style : styles)
-			{
-				if(style != null)
-				{
-					msgStyles[i++] = MessageColor.valueOf(style.name().toUpperCase());
-				}
-			}
-			if(msgStyles.length > i)
-			{
-				return Arrays.copyOf(msgStyles, i);
-			}
-			return msgStyles;
-		}
-		return null;
-	}
-
-	private static @Nullable MessageColor messageColorFromStyle(@NotNull Enum style)
-	{
-		return MessageColor.valueOf(style.name().toUpperCase());
-	}
 }
