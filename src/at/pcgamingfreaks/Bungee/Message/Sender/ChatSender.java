@@ -60,7 +60,7 @@ public class ChatSender extends BaseSender
 	 * @param players The players that should receive the message.
 	 * @param json    The message in JSON format to be sent.
 	 */
-	public static void send(@NotNull Collection<ProxiedPlayer> players, @NotNull String json)
+	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
 		send(players, json, CHAT_ACTION);
 	}
@@ -71,7 +71,7 @@ public class ChatSender extends BaseSender
 	 * @param players The players that should receive the message.
 	 * @param message The message to be sent.
 	 */
-	public static void send(@NotNull Collection<ProxiedPlayer> players, @NotNull Message message)
+	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull Message message)
 	{
 		send(players, message.toString());
 	}
@@ -121,13 +121,13 @@ public class ChatSender extends BaseSender
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<ProxiedPlayer> players, @NotNull String json)
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
 		send(players, json);
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<ProxiedPlayer> players, @NotNull String json, @Nullable Object optional)
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional)
 	{
 		send(players, json);
 	}
@@ -137,7 +137,7 @@ public class ChatSender extends BaseSender
 		player.unsafe().sendPacket(new Chat(json, action));
 	}
 
-	protected static void send(@NotNull Collection<ProxiedPlayer> players, @NotNull String json, byte action)
+	protected static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, byte action)
 	{
 		Chat chatPacket = new Chat(json, action);
 		for(ProxiedPlayer player : players)

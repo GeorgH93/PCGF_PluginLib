@@ -20,9 +20,14 @@ package at.pcgamingfreaks.TestClasses;
 import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.Message.MessageComponent;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 
-public class TestMessage extends Message
+public class TestMessage extends Message<TestMessage, Player, CommandSender>
 {
 	public TestMessage()
 	{
@@ -37,5 +42,23 @@ public class TestMessage extends Message
 	public TestMessage(Collection<? extends MessageComponent> message)
 	{
 		super(message);
+	}
+
+	@Override
+	public void send(@NotNull CommandSender target, @Nullable Object... args)
+	{
+
+	}
+
+	@Override
+	public void send(@NotNull Collection targets, @Nullable Object... args)
+	{
+
+	}
+
+	@Override
+	public void broadcast(@Nullable Object... args)
+	{
+
 	}
 }

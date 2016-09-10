@@ -33,6 +33,7 @@ public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestM
 		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "EMPTY_COMPONENT_CONSTRUCTOR", Reflection.getConstructor(TestMessageComponent.class));
 		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "INIT_COMPONENT_CONSTRUCTOR", Reflection.getConstructor(TestMessageComponent.class, String.class, MessageColor[].class));
 		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "MESSAGE_CONSTRUCTOR", Reflection.getConstructor(TestMessage.class, Collection.class));
+		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "COMPONENT_CLASS", TestMessageComponent.class);
 	}
 
 	public TestMessageBuilder()

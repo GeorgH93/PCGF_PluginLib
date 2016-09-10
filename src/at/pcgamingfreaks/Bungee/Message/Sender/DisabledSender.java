@@ -33,10 +33,10 @@ public final class DisabledSender extends BaseSender
 	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable Object optional) {}
 
 	@Override
-	public void doSend(@NotNull Collection<ProxiedPlayer> players, @NotNull String json) {}
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json) {}
 
 	@Override
-	public void doSend(@NotNull Collection<ProxiedPlayer> players, @NotNull String json, @Nullable Object optional) {}
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional) {}
 
 	@Override
 	public void doBroadcast(@NotNull String json) {}

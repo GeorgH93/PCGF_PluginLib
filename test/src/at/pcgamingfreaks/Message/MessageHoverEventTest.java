@@ -17,9 +17,9 @@
 
 package at.pcgamingfreaks.Message;
 
-import at.pcgamingfreaks.Bungee.Message.Message;
-import at.pcgamingfreaks.Bungee.Message.MessageBuilder;
-import at.pcgamingfreaks.Bungee.Message.MessageComponent;
+import at.pcgamingfreaks.TestClasses.TestMessage;
+import at.pcgamingfreaks.TestClasses.TestMessageBuilder;
+import at.pcgamingfreaks.TestClasses.TestMessageComponent;
 
 import com.google.gson.JsonObject;
 
@@ -34,19 +34,19 @@ import static org.junit.Assert.assertEquals;
 public class MessageHoverEventTest
 {
 	private static JsonObject testObject;
-	private static Message testMessage;
-	private static MessageComponent[] testComponentArray;
-	private static List<MessageComponent> testComponents;
+	private static TestMessage testMessage;
+	private static TestMessageComponent[] testComponentArray;
+	private static List<? extends TestMessageComponent> testComponents;
 
 	@BeforeClass
 	public static void prepareTestData()
 	{
 		testObject = new JsonObject();
 		testObject.addProperty("test", "test");
-		MessageBuilder messageBuilder = new MessageBuilder("hi").append(" tester");
+		TestMessageBuilder messageBuilder = new TestMessageBuilder().text("hi").append(" tester");
 		testComponentArray = messageBuilder.getJsonMessage();
 		testComponents = messageBuilder.getJsonMessageAsList();
-		testMessage = messageBuilder.getMessage();
+		testMessage = new TestMessage(testComponents);
 	}
 
 	@Test

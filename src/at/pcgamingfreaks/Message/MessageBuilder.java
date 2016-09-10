@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Utils;
 
 import com.google.gson.Gson;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
@@ -30,6 +31,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	private List<COMPONENT> messageList = new LinkedList<>();
 	private COMPONENT current;
 	private static Constructor EMPTY_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR = null, MESSAGE_CONSTRUCTOR = null;
+	private static Class<? extends MessageComponent> COMPONENT_CLASS;
 	private static MessageComponent NEW_LINE_HELPER = null;
 	protected final static Gson GSON = new Gson();
 
@@ -560,7 +562,8 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 */
 	public COMPONENT[] getJsonMessage()
 	{
-		return (COMPONENT[]) messageList.toArray();
+		COMPONENT[] array = (COMPONENT[]) Array.newInstance(COMPONENT_CLASS, messageList.size());
+		return messageList.toArray(array);
 	}
 
 	/**

@@ -23,12 +23,9 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.Title;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Constructor;
 import java.util.Collection;
 
 public class TitleSender extends BaseSender
@@ -75,7 +72,7 @@ public class TitleSender extends BaseSender
 	 * @param players The players that should receive the message
 	 * @param json    The message in JSON format to be sent
 	 */
-	public static void send(@NotNull Collection<ProxiedPlayer> players, @NotNull String json)
+	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
 		send(players, json, METADATA);
 	}
@@ -86,7 +83,7 @@ public class TitleSender extends BaseSender
 	 * @param players The players that should receive the message
 	 * @param message The message to be sent
 	 */
-	public static void send(@NotNull Collection<ProxiedPlayer> players, @NotNull Message message)
+	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull Message message)
 	{
 		send(players, message.toString());
 	}
@@ -98,7 +95,7 @@ public class TitleSender extends BaseSender
 	 * @param message  The message to be sent
 	 * @param metadata The metadata object giving more details on how the message should be displayed
 	 */
-	public static void send(@NotNull Collection<ProxiedPlayer> players, @NotNull Message message, @NotNull TitleMetadata metadata)
+	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull Message message, @NotNull TitleMetadata metadata)
 	{
 		send(players, message.toString(), metadata);
 	}
@@ -147,13 +144,13 @@ public class TitleSender extends BaseSender
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<ProxiedPlayer> players, @NotNull String json)
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
 		send(players, json);
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<ProxiedPlayer> players, @NotNull String json, @Nullable Object optional)
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional)
 	{
 		send(players, json, (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA);
 	}
@@ -197,7 +194,7 @@ public class TitleSender extends BaseSender
 	 * @param json     The message in JSON format to be sent
 	 * @param metadata The metadata object giving more details on how the message should be displayed
 	 */
-	public static void send(@NotNull Collection<ProxiedPlayer> players, @NotNull String json, @NotNull TitleMetadata metadata)
+	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @NotNull TitleMetadata metadata)
 	{
 		Title titleTimes = new Title(), titleSend = new Title();
 		titleTimes.setAction(Title.Action.TIMES);

@@ -21,7 +21,6 @@ import at.pcgamingfreaks.Bungee.Message.Message;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,13 +57,13 @@ public class BossBarSender extends BaseSender
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<ProxiedPlayer> players, @NotNull String json)
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
 
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<ProxiedPlayer> players, @NotNull String json, @Nullable Object optional)
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional)
 	{
 
 	}

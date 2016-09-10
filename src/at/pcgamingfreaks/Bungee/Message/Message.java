@@ -32,11 +32,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 
-public final class Message extends at.pcgamingfreaks.Message.Message<Message>
+public final class Message extends at.pcgamingfreaks.Message.Message<Message, ProxiedPlayer, CommandSender>
 {
 	//region Variables
 	private SendMethod method = SendMethod.CHAT;
-	private Object optionalParameters = null;
 	//endregion
 
 	//region Constructors
@@ -169,6 +168,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message>
 	 *                  If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
 	 *                  This can be used to add variable data into the message.
 	 */
+	@Override
 	public void send(@NotNull CommandSender target, @Nullable Object... args)
 	{
 		Validate.notNull(target, "The target that should receive the message should not be null!");
@@ -192,7 +192,8 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message>
 	 *                   If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
 	 *                   This can be used to add variable data into the message.
 	 */
-	public void send(@NotNull Collection<ProxiedPlayer> targets, @Nullable Object... args)
+	@Override
+	public void send(@NotNull Collection<? extends ProxiedPlayer> targets, @Nullable Object... args)
 	{
 		Validate.notNull(targets, "The targets that should receive the message should not be null!");
 		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
@@ -207,6 +208,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message>
 	 *                   This can be used to add variable data into the message.
 	 */
 	@SuppressWarnings("deprecation")
+	@Override
 	public void broadcast(@Nullable Object... args)
 	{
 		if(getSendMethod() == SendMethod.DISABLED) return;

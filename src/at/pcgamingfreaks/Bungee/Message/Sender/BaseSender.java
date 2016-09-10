@@ -36,9 +36,9 @@ public abstract class BaseSender
 
 	public abstract void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable Object optional);
 
-	public abstract void doSend(@NotNull Collection<ProxiedPlayer> players, @NotNull String json);
+	public abstract void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json);
 
-	public abstract void doSend(@NotNull Collection<ProxiedPlayer> players, @NotNull String json, @Nullable Object optional);
+	public abstract void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional);
 
 	public abstract void doBroadcast(@NotNull String json);
 
