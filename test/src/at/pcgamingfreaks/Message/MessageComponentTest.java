@@ -73,6 +73,8 @@ public class MessageComponentTest
 		assertFalse("The message should not be strikethrough", messageComponent.isStrikethrough());
 		messageComponent.color("Aqua");
 		assertEquals("The message color should be aqua", MessageColor.AQUA, messageComponent.getColor());
+		/*messageComponent.setColor(TestMessageStyle.TEST_COLOR);
+		messageComponent.setStyles(TestMessageStyle.TEST_FORMAT);*/
 	}
 
 	@Test

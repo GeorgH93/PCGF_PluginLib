@@ -43,7 +43,7 @@ public class MessageHoverEventTest
 	{
 		testObject = new JsonObject();
 		testObject.addProperty("test", "test");
-		TestMessageBuilder messageBuilder = new TestMessageBuilder().text("hi").append(" tester");
+		TestMessageBuilder messageBuilder = new TestMessageBuilder(new TestMessageComponent("hi")).append(" tester");
 		testComponentArray = messageBuilder.getJsonMessage();
 		testComponents = messageBuilder.getJsonMessageAsList();
 		testMessage = new TestMessage(testComponents);

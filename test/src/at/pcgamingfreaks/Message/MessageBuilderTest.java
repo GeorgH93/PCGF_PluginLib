@@ -33,7 +33,7 @@ public class MessageBuilderTest
 	@Test
 	public void testMessageBuilder()
 	{
-		TestMessageBuilder messageBuilder = new TestMessageBuilder();
+		TestMessageBuilder messageBuilder = new TestMessageBuilder(new TestMessageComponent());
 		messageBuilder.text("MessageBuilder text");
 		messageBuilder.color("green");
 		messageBuilder.bold().italic().underlined().obfuscated().strikethrough();

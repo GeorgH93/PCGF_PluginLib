@@ -25,7 +25,7 @@ import java.util.Collection;
 
 public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestMessageComponent, TestMessage, Enum>
 {
-	TestMessageComponent messageComponent = new TestMessageComponent();
+	TestMessageComponent messageComponent;
 
 	static
 	{
@@ -36,14 +36,10 @@ public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestM
 		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "COMPONENT_CLASS", TestMessageComponent.class);
 	}
 
-	public TestMessageBuilder()
-	{
-		super(new TestMessageComponent());
-	}
-
 	public TestMessageBuilder(TestMessageComponent initComponent)
 	{
 		super(initComponent);
+		messageComponent = initComponent;
 	}
 
 	@Override
@@ -56,7 +52,6 @@ public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestM
 	@Override
 	public TestMessageBuilder appendJson(String json)
 	{
-		//TODO
 		return this;
 	}
 }
