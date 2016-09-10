@@ -195,7 +195,7 @@ public class UpdaterTest
 		if (config != null)
 		{
 			//noinspection deprecation
-			Files.copy(new File(URLDecoder.decode(config.getPath())), new File("plugins/updater/config.yml"));
+			Files.copy(new File(URLDecoder.decode(config.getPath())), new File("plugins/Updater/config.yml"));
 		}
 		Updater updater = getUpdater("1.0");
 		Field result = Updater.class.getDeclaredField("result");
