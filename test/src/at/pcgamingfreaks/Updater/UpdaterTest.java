@@ -79,7 +79,7 @@ public class UpdaterTest
 		//noinspection ResultOfMethodCallIgnored
 		new File("plugins/updates").mkdirs();
 		//noinspection ResultOfMethodCallIgnored
-		new File("plugins/updater").mkdirs();
+		new File("plugins/Updater").mkdirs();
 	}
 
 	@SuppressWarnings("SpellCheckingInspection")
