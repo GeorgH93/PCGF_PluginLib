@@ -127,7 +127,7 @@ public class Reflection
 	{
 		try
 		{
-			Field field = clazz.getDeclaredField(name);
+			Field field = clazz.getField(name);
 			field.setAccessible(true);
 			return field;
 		}
@@ -147,15 +147,17 @@ public class Reflection
 
 	public static Method getMethod(Class<?> clazz, String name, Class<?>... args)
 	{
-		for(Method m : clazz.getMethods())
+		Method method = null;
+		try
 		{
-			if(m.getName().equals(name) && (args.length == 0 || ClassListEqual(args, m.getParameterTypes())))
-			{
-				m.setAccessible(true);
-				return m;
-			}
+			method = clazz.getMethod(name, args);
+			method.setAccessible(true);
 		}
-		return null;
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return method;
 	}
 
 	public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... args)
