@@ -127,7 +127,7 @@ public class Reflection
 	{
 		try
 		{
-			Field field = clazz.getField(name);
+			Field field = clazz.getDeclaredField(name);
 			field.setAccessible(true);
 			return field;
 		}
@@ -150,8 +150,30 @@ public class Reflection
 		Method method = null;
 		try
 		{
-			method = clazz.getMethod(name, args);
+			method = clazz.getDeclaredMethod(name, args);
 			method.setAccessible(true);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return method;
+	}
+
+	public static Method getMethodIncludeParents(Class<?> clazz, String name, Class<?>... args)
+	{
+		Method method = null;
+		try
+		{
+			method = clazz.getDeclaredMethod(name, args);
+			method.setAccessible(true);
+		}
+		catch(NoSuchMethodException ignored)
+		{
+			if(clazz.getSuperclass() != null)
+			{
+				return getMethodIncludeParents(clazz.getSuperclass(), name);
+			}
 		}
 		catch(Exception e)
 		{
