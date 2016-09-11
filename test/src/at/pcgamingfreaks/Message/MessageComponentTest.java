@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.bukkit.ChatColor.BLUE;
+import static org.bukkit.ChatColor.GREEN;
 import static org.junit.Assert.*;
 
 public class MessageComponentTest
@@ -73,8 +75,47 @@ public class MessageComponentTest
 		assertFalse("The message should not be strikethrough", messageComponent.isStrikethrough());
 		messageComponent.color("Aqua");
 		assertEquals("The message color should be aqua", MessageColor.AQUA, messageComponent.getColor());
-		/*messageComponent.setColor(TestMessageStyle.TEST_COLOR);
-		messageComponent.setStyles(TestMessageStyle.TEST_FORMAT);*/
+		assertEquals("The message text should be equal", "Test text§r", new TestMessageComponent("Test text", (Enum[]) null).getClassicMessage());
+		assertEquals("The message text should be equal", "§aTest text§r", new TestMessageComponent("Test text", new Enum[] { GREEN }).getClassicMessage());
+		messageComponent.color(BLUE);
+		assertEquals("The color should match the ChatColor", BLUE.toString(), messageComponent.getColor().toString());
+		messageComponent.setBold(false);
+		assertFalse("The message should not be bold", messageComponent.isBold());
+		messageComponent.setItalic(false);
+		assertFalse("The message should not be italic", messageComponent.isItalic());
+		messageComponent.setUnderlined(false);
+		assertFalse("The message should not be underlined", messageComponent.isUnderlined());
+		String currentMessage = messageComponent.getClassicMessage();
+		messageComponent.addExtra((TestMessageComponent[]) null);
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.addExtra((TestMessageComponent) null);
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.setFormats((MessageColor[]) null);
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.setFormats((Enum) null);
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.setFormats((Enum[]) null);
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.format();
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.setStyles((MessageColor[]) null);
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.setStyles((MessageColor) null);
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.setStyles((Enum[]) null);
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.setStyles((Enum) null);
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.style();
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.style(new Enum[] {});
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.format(new Enum[] {});
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		messageComponent.format(new Enum[] { MessageColor.BOLD });
+		assertTrue("The message should now be bold", messageComponent.isBold());
+		messageComponent.style(new Enum[] { MessageColor.ITALIC });
+		assertTrue("The message should now be italic", messageComponent.isItalic());
 	}
 
 	@Test
@@ -124,6 +165,36 @@ public class MessageComponentTest
 		assertEquals("The hover message text should match the formatted tooltip text", "[{\"text\":\"Another text\"}, {\"text\":\"\\n\"}, {\"text\":\"Another text\"}]", messageComponent.getHoverEvent().getValue().toString());
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testFormattedTooltipMessageComponentClick()
+	{
+		new TestMessageComponent().formattedTooltip(new TestMessageComponent().setClickEvent(new MessageClickEvent(MessageClickEvent.ClickEventAction.OPEN_URL, "URL")));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testFormattedTooltipMessageComponentHover()
+	{
+		new TestMessageComponent().formattedTooltip(new TestMessageComponent().setHoverEvent(new MessageHoverEvent(MessageHoverEvent.HoverEventAction.SHOW_TEXT, "Text")));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testFormattedTooltipMessageClick()
+	{
+		List<TestMessageComponent> messageComponents = new ArrayList<>();
+		messageComponents.add(new TestMessageComponent());
+		messageComponents.get(0).setClickEvent(new MessageClickEvent(MessageClickEvent.ClickEventAction.OPEN_URL, "URL"));
+		new TestMessageComponent().formattedTooltip(new TestMessage(messageComponents));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testFormattedTooltipMessageHover()
+	{
+		List<TestMessageComponent> messageComponents = new ArrayList<>();
+		messageComponents.add(new TestMessageComponent());
+		messageComponents.get(0).setHoverEvent(new MessageHoverEvent(MessageHoverEvent.HoverEventAction.SHOW_TEXT, "Text"));
+		new TestMessageComponent().formattedTooltip(new TestMessage(messageComponents));
+	}
+
 	@Test
 	public void testExtraAndFormat()
 	{
@@ -133,6 +204,8 @@ public class MessageComponentTest
 		messageComponent.extra(new TestMessageComponent("another extra"));
 		//noinspection SpellCheckingInspection
 		assertEquals("The text should match", "Textanother extra§r§r", messageComponent.getClassicMessage());
+		messageComponent.addExtra(new TestMessageComponent("Another extra"));
+		assertEquals("The message text should equal", "Textanother extra§rAnother extra§r§r", messageComponent.getClassicMessage());
 		messageComponent.format(MessageColor.UNDERLINE, MessageColor.ITALIC, MessageColor.BOLD, MessageColor.STRIKETHROUGH);
 		assertTrue("The message should be underlined", messageComponent.isUnderlined());
 		assertFalse("The magic flag should not be set", messageComponent.isObfuscated());
@@ -190,7 +263,7 @@ public class MessageComponentTest
 		Method fromJsonWorker = MessageComponent.class.getDeclaredMethod("fromJsonWorker", String.class);
 		fromJsonWorker.setAccessible(true);
 		//noinspection unchecked
-		TestMessage message = new TestMessage((Collection<TestMessageComponent>) fromJsonWorker.invoke(messageComponent, "[[\"St\", \"ring \"], {\"text\":\"from JSON worker\"}]"));
+		TestMessage message = new TestMessage((Collection<TestMessageComponent>) fromJsonWorker.invoke(messageComponent, "[[\"St\", \"ring \"], {\"text\":\"from JSON worker\"}, null]"));
 		fromJsonWorker.setAccessible(false);
 		//noinspection SpellCheckingInspection
 		assertEquals("The message text should match", "St§rring §rfrom JSON worker§r", message.getClassicMessage());

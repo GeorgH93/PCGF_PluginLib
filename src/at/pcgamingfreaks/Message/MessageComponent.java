@@ -500,6 +500,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 		{
 			for(T extra : extras)
 			{
+				if (extra == null) continue;
 				if(this.extra == null)
 				{
 					this.extra = new LinkedList<>();
@@ -569,6 +570,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 		{
 			for(MessageColor style : styles)
 			{
+				if (style == null) continue;
 				if(style.isFormat())
 				{
 					setFormats(style);

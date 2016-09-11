@@ -22,6 +22,8 @@ import at.pcgamingfreaks.Message.MessageComponent;
 
 import com.google.gson.GsonBuilder;
 
+import org.jetbrains.annotations.Nullable;
+
 public class TestMessageComponent extends MessageComponent<MessageComponent, Enum>
 {
 	static
@@ -49,6 +51,8 @@ public class TestMessageComponent extends MessageComponent<MessageComponent, Enu
 	{
 		super(text, styles);
 	}
+
+	public TestMessageComponent(String text, @Nullable Enum[] styles) { super(text, styles); }
 
 	@Override
 	public MessageComponent getNewLineComponent()
