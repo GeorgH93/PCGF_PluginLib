@@ -62,4 +62,15 @@ public class MessageBuilderTest
 		messageBuilder.extra(messageComponents.get(0));
 		assertEquals("The message text should match", "§l§o§k§n§m§aMessageBuilder textAnother hover text§r§r", messageBuilder.getCurrentComponent().getClassicMessage());
 	}
+
+	@Test
+	public void testMessageBuilderSpecialCases()
+	{
+		TestMessageBuilder messageBuilder = new TestMessageBuilder(new TestMessageComponent("MessageComponent"));
+		assertEquals("The message string should match", "MessageComponent§r", messageBuilder.getClassicMessage());
+		messageBuilder.appendNewLine();
+		assertEquals("The message string should match", "MessageComponent\n§r§r", messageBuilder.getClassicMessage());
+		messageBuilder.append(new TestMessageComponent("New component"));
+		assertEquals("The message component count should match", 2, messageBuilder.size());
+	}
 }

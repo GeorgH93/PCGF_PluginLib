@@ -29,11 +29,6 @@ import java.util.Collection;
 
 public class TestMessage extends Message<TestMessage, Player, CommandSender>
 {
-	public TestMessage()
-	{
-		super("", TestMessageComponent.class);
-	}
-
 	public TestMessage(String message)
 	{
 		super(message, TestMessageComponent.class);

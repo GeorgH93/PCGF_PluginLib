@@ -21,8 +21,12 @@ import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageComponent;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestMessageComponent extends MessageComponent<MessageComponent, Enum>
 {
@@ -58,5 +62,18 @@ public class TestMessageComponent extends MessageComponent<MessageComponent, Enu
 	public MessageComponent getNewLineComponent()
 	{
 		return new TestMessageComponent("\n");
+	}
+
+	@SuppressWarnings("unused")
+	public static List<MessageComponent> fromJson(String json)
+	{
+		if(json.length() > 0)
+		{
+			TestMessageComponent messageComponent = new TestMessageComponent();
+			List<MessageComponent> messageComponents = new ArrayList<>();
+			messageComponents.add(messageComponent.deserialize(GSON.fromJson(json, JsonElement.class), null, null));
+			return messageComponents;
+		}
+		throw new IllegalArgumentException();
 	}
 }

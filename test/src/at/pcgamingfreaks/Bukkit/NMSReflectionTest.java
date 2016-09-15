@@ -17,32 +17,101 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import at.pcgamingfreaks.TestClasses.TestBukkitServer;
+import at.pcgamingfreaks.TestClasses.TestEnum;
+
+import org.bukkit.Bukkit;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+
 public class NMSReflectionTest
 {
-	/*@Rule
-	public PowerMockRule powerMock = new PowerMockRule();
-
-	private static Server server;
-	private static Class serverClass;
-
-	//@PrepareForTest({ Bukkit.class, NMSReflection.class })
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		server = mock(Server.class);
-		//noinspection unchecked
-		when(server.getClass()).thenReturn(null);
-		//noinspection SpellCheckingInspection
-		//when(serverClass.getName()).thenReturn("Bukkit 1.8");
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+		modifiersField.setAccessible(true);
 		Field serverField = Bukkit.class.getDeclaredField("server");
 		serverField.setAccessible(true);
-		serverField.set(null, server);
+		serverField.set(null, new TestBukkitServer());
 		serverField.setAccessible(false);
+		Field nmsClassPathField = NMSReflection.class.getDeclaredField("NMS_CLASS_PATH");
+		nmsClassPathField.setAccessible(true);
+		modifiersField.setInt(nmsClassPathField, nmsClassPathField.getModifiers() & ~Modifier.FINAL);
+		//noinspection SpellCheckingInspection
+		nmsClassPathField.set(null, "at.pcgamingfreaks.TestClasses.");
+		nmsClassPathField.setAccessible(false);
+		Field obcClassPathField = NMSReflection.class.getDeclaredField("OBC_CLASS_PATH");
+		obcClassPathField.setAccessible(true);
+		modifiersField.setInt(obcClassPathField, obcClassPathField.getModifiers() & ~Modifier.FINAL);
+		//noinspection SpellCheckingInspection
+		obcClassPathField.set(null, "at.pcgamingfreaks.TestClasses.");
+		obcClassPathField.setAccessible(false);
+		modifiersField.setAccessible(false);
+		new NMSReflection();
 	}
 
 	@Test
 	public void testGetVersion()
 	{
-		assertEquals("The version should match", "", NMSReflection.getVersion());
-	}*/
+		//noinspection SpellCheckingInspection
+		assertEquals("The version should match", "TestBukkitServer", NMSReflection.getVersion());
+	}
+
+	@Test
+	public void testGetClass()
+	{
+		//noinspection SpellCheckingInspection
+		assertEquals("The NMS class should be correct", TestBukkitServer.class, NMSReflection.getNMSClass("TestBukkitServer"));
+		assertNull("The NMS class should not be found", NMSReflection.getNMSClass(""));
+		//noinspection SpellCheckingInspection
+		assertEquals("The OBC class should be correct", TestBukkitServer.class, NMSReflection.getOBCClass("TestBukkitServer"));
+		assertNull("The OBC class should not be found", NMSReflection.getOBCClass(""));
+	}
+
+	@Test
+	public void testGetMethod() throws NoSuchMethodException
+	{
+		//noinspection SpellCheckingInspection
+		assertEquals("The version method of the server should be found", TestBukkitServer.class.getDeclaredMethod("getVersion"), NMSReflection.getNMSMethod("TestBukkitServer", "getVersion"));
+		assertNull("The version method of the server should not be found in an invalid class", NMSReflection.getNMSMethod("", "getVersion"));
+		//noinspection SpellCheckingInspection
+		assertEquals("The version method of the server should be found", TestBukkitServer.class.getDeclaredMethod("getVersion"), NMSReflection.getOBCMethod("TestBukkitServer", "getVersion"));
+		assertNull("The version method of the server should not be found in an invalid class", NMSReflection.getOBCMethod("", "getVersion"));
+	}
+
+	@Test
+	public void testGetField() throws NoSuchFieldException
+	{
+		//noinspection SpellCheckingInspection
+		assertEquals("The server field should be found", TestBukkitServer.class.getDeclaredField("serverField"), NMSReflection.getNMSField("TestBukkitServer", "serverField"));
+		assertNull("The server field should not be found in an invalid class", NMSReflection.getNMSField("", "serverField"));
+		//noinspection SpellCheckingInspection
+		assertEquals("The server field should be found", TestBukkitServer.class.getDeclaredField("serverField"), NMSReflection.getOBCField("TestBukkitServer", "serverField"));
+		assertNull("The server field should not be found in an invalid class", NMSReflection.getOBCField("", "serverField"));
+	}
+
+	@Test
+	public void testGetEnum()
+	{
+		//noinspection SpellCheckingInspection
+		assertEquals("The enum should be found", TestEnum.Value1, NMSReflection.getNMSEnum("TestEnum.Value1"));
+		//noinspection SpellCheckingInspection
+		assertEquals("The enum should be found", TestEnum.Value2, NMSReflection.getNMSEnum("TestEnum", "Value2"));
+	}
+
+	@Test
+	public void testGetHandle()
+	{
+		//noinspection deprecation
+		assertFalse("The handle should be get correctly", (boolean) NMSReflection.getHandle(Bukkit.getPlayer("")));
+		assertNull("The handle should not be found", NMSReflection.getHandle(Bukkit.getServer()));
+	}
 }

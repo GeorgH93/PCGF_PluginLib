@@ -25,9 +25,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MessageTest
 {
@@ -59,8 +57,15 @@ public class MessageTest
 	}
 
 	@Test
-	public void testMessageWithError()
+	public void testMessageJSON()
 	{
-		assertEquals("The test message should be empty", "", new TestMessage().getClassicMessage());
+		TestMessage message = new TestMessage("{\"text\":\"Test\"}");
+		assertEquals("The message text should match", "Test§r", message.getClassicMessage());
+	}
+
+	@Test
+	public void testMessageWithError() throws Exception
+	{
+		assertEquals("The test message should be empty", "", new TestMessage("").getClassicMessage());
 	}
 }
