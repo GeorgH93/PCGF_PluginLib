@@ -15,28 +15,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bungee;
+package at.pcgamingfreaks.Bukkit;
 
-import at.pcgamingfreaks.TestClasses.TestObjects;
+import org.junit.BeforeClass;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 public class ConfigurationTest
 {
-	@Before
-	public void prepareTestObjects() throws Exception
+	@BeforeClass
+	public static void prepareTestData() throws Exception
 	{
-		TestObjects.initMockedPlugin();
+		whenNew(at.pcgamingfreaks.Configuration.class).withAnyArguments().thenAnswer(new Answer<Object>() {
+			@Override
+			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
+			{
+				return null;
+			}
+		});
 	}
 
-	@Test
+	/*@Test
 	public void testConfiguration()
 	{
-		assertNotNull("The configuration should not be null", new Configuration(TestObjects.getPlugin(), 1));
-		assertNotNull("The configuration should not be null", new Configuration(TestObjects.getPlugin(), 1, "config.yml"));
-		assertNotNull("The configuration should not be null", new Configuration(TestObjects.getPlugin(), 1, 2));
-	}
+		TestJavaPlugin plugin = new TestJavaPlugin();
+		Configuration configuration = new Configuration(plugin, 3);
+		assertEquals("The class of the configuration should match", Configuration.class, configuration.getClass());
+	}*/
 }

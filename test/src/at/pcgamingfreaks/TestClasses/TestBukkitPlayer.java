@@ -45,7 +45,7 @@ import java.util.*;
 public class TestBukkitPlayer implements Player
 {
 	@SuppressWarnings("unused")
-	public Object getHandle()
+	private Object getHandle()
 	{
 		return false;
 	}
