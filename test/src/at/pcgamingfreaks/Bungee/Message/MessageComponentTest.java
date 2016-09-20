@@ -32,22 +32,6 @@ import static org.junit.Assert.assertEquals;
 
 public class MessageComponentTest
 {
-	/*@Test
-	public void testStaticConstructor() throws NoSuchFieldException, IllegalAccessException, InstantiationException, ClassNotFoundException, MalformedURLException, NoSuchMethodException
-	{
-		MessageComponent messageComponent = new MessageComponent();
-		Field messageComponentClassField = at.pcgamingfreaks.Message.MessageComponent.class.getDeclaredField("messageComponentClass");
-		messageComponentClassField.setAccessible(true);
-		Class messageComponentClass = (Class) PowerMockito.spy(messageComponentClassField.get(messageComponent));
-		//noinspection unchecked
-		PowerMockito.when(messageComponentClass.getConstructor()).thenThrow(new IllegalAccessException());
-		ClassLoader classLoader = new URLClassLoader(new URL[] { new URL("file://" + MessageComponent.class.getProtectionDomain().getCodeSource().getLocation().getPath()) });
-		//noinspection SpellCheckingInspection
-		classLoader.loadClass("at.pcgamingfreaks.Bungee.Message.MessageComponent");
-		messageComponentClassField.set(messageComponent, MessageComponent.class);
-		messageComponentClassField.setAccessible(false);
-	}*/
-
 	@Test
 	public void testMessageComponent()
 	{

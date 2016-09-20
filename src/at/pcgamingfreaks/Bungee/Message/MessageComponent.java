@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bungee.Message;
 
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Reflection;
 
 import com.google.gson.*;
 
@@ -35,15 +36,8 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	static
 	{
 		GSON = new GsonBuilder().registerTypeAdapter(MessageComponent.class, MESSAGE_COMPONENT_INSTANCE).create();
-		try
-		{
-			messageComponentClass = MessageComponent.class;
-			messageComponentConstructor = MessageComponent.class.getConstructor();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+		messageComponentClass = MessageComponent.class;
+		messageComponentConstructor = Reflection.getConstructor(MessageComponent.class);
 	}
 
 	@Override
