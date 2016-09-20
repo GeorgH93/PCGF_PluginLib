@@ -17,22 +17,31 @@
 
 package at.pcgamingfreaks;
 
-import org.junit.*;
-import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 public class UUIDConverterTest
 {
-	@Rule
-	public PowerMockRule powerMock = new PowerMockRule();
-
 	private final static String TEST_USER_NAME = "GeorgH93", TEST_USER_UUID = "6c99e2b55c9e4663b4db7ad3bc52d28d", TEST_USER_UUID_SEPARATORS = "6c99e2b5-5c9e-4663-b4db-7ad3bc52d28d";
 	private final static String TEST_USER_OFFLINE_UUID = "05015780f9dc3a409e1dfd4c4f9e20f1", TEST_USER_OFFLINE_UUID_SEPARATORS = "05015780-f9dc-3a40-9e1d-fd4c4f9e20f1";
 	private final static UUID TEST_USER_UUID_AS_UUID = UUID.fromString(TEST_USER_UUID_SEPARATORS), TEST_USER_OFFLINE_UUID_AS_UUID = UUID.fromString(TEST_USER_OFFLINE_UUID_SEPARATORS);
@@ -86,7 +95,6 @@ public class UUIDConverterTest
 		assertEquals("Username from UUID object should be converted correctly", TEST_USER_NAME, UUIDConverter.getNameFromUUID(UUID.fromString(TEST_USER_UUID_SEPARATORS)));
 	}
 
-	/*@PrepareForTest({ HttpURLConnection.class, URL.class, UUIDCacheMap.class, UUIDConverter.class })
 	@Test
 	public void testGetOnlineUUID() throws Exception
 	{
@@ -106,12 +114,11 @@ public class UUIDConverterTest
 		assertEquals("Username with no time given and available cache should match the current username", TEST_USER_UUID, UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, null));
 		assertEquals("Username at the current time and available cache should match the current username", TEST_USER_UUID, UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, TODAY));
 		reset(mockedUUIDCacheMap);
-		whenNew(URL.class).withParameterTypes(String.class).withArguments(anyString()).thenThrow(new MalformedURLException());
+		/*URL mockedURL = PowerMockito.mock(URL.class);
+		whenNew(URL.class).withArguments(anyString()).thenThrow(new MalformedURLException());
 		UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, null);
 		assertTrue("An error should be printed when a malformed URL occurs", errorStream.toString().contains("MalformedURLException"));
-		URL mockedURL = mock(URL.class);
-		whenNew(URL.class).withAnyArguments().thenReturn(mockedURL);
-		when(mockedURL.openStream()).thenThrow(new IOException("HTTP response code: 429"));
+		PowerMockito.when(mockedURL.openStream()).thenThrow(new IOException("HTTP response code: 429"));
 		UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, null);
 		assertTrue("An error should be printed when the URL can't open the stream", errorStream.toString().contains("IOException"));
 		doAnswer(new Answer<Object>()
@@ -123,10 +130,10 @@ public class UUIDConverterTest
 			}
 		}).when(mockedURL).openStream();
 		UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, TEST_USER2_LAST_SEEN);
-		assertTrue("A message should be printed when there doesn't exist a user at the given time", outputStream.size() > 0);
+		assertTrue("A message should be printed when there doesn't exist a user at the given time", outputStream.size() > 0);*/
 		uuidCache.set(this, currentCacheMap);
 		uuidCache.setAccessible(false);
-	}*/
+	}
 
 	@Test
 	public void testGetUUIDFromName()
@@ -153,7 +160,7 @@ public class UUIDConverterTest
 		assertEquals("The UUID of the user should match the online UUID when using the given date", TEST_USER2_UUID_AS_UUID, UUIDConverter.getUUIDFromNameAsUUID(TEST_USER2_NAME_NEW, true, TEST_USER2_LAST_SEEN));
 	}
 
-	/*@PrepareForTest({ URL.class, UUIDCacheMap.class, UUIDConverter.class })
+	@PrepareForTest({ URL.class, UUIDCacheMap.class, UUIDConverter.class, Thread.class })
 	@SuppressWarnings("SpellCheckingInspection")
 	@Test
 	public void testGetUUIDsFromNames() throws Exception
@@ -200,22 +207,22 @@ public class UUIDConverterTest
 		namesUUIDs = UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
 		assertEquals("The user count of online mode users should match the given amount of users", testNames.size(), namesUUIDs.size());
 		assertTrue("All user names should exist in the map when using no cache", namesUUIDs.keySet().containsAll(testNames.keySet()));
-		URL mockedURL = mock(URL.class);
-		whenNew(URL.class).withAnyArguments().thenReturn(mockedURL);
+		/*URL mockedURL = PowerMockito.mock(URL.class);
+		whenNew(URL.class).withArguments(anyString()).thenReturn(mockedURL);
 		HttpURLConnection mockedHttpURLConnection = mock(HttpURLConnection.class);
-		when(mockedURL.openConnection()).thenReturn(mockedHttpURLConnection);
 		when(mockedHttpURLConnection.getResponseCode()).thenReturn(429);
 		when(mockedHttpURLConnection.getOutputStream()).thenThrow(new IOException());
-		spy(Thread.class);
-		doThrow(new InterruptedException()).when(Thread.class);
-		Thread.sleep(anyLong());
+		PowerMockito.when(mockedURL.openConnection()).thenReturn(mockedHttpURLConnection);
+		Thread mockedThread = spy(Thread.class);
+		PowerMockito.doThrow(new InterruptedException()).when(mockedThread, Thread.class.getDeclaredMethod("sleep", long.class)).withArguments(anyLong());
 		UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
 		assertTrue("A message should be written to System.out when an error occurs", outputStream.size() > 0);
 		assertTrue("An exception should be handled when it occurs", errorStream.size() > 0);
-		uuidCache.setAccessible(false);
-	}*/
+		uuidCache.setAccessible(false);*/
+	}
 
-	/*@Test
+	@PrepareForTest({ URL.class, UUIDCacheMap.class, UUIDConverter.class })
+	@Test
 	public void testNameHistory() throws Exception
 	{
 		UUIDConverter.NameChange[] nameChanges = UUIDConverter.getNamesFromUUID(TEST_USER2_UUID);
@@ -227,13 +234,13 @@ public class UUIDConverterTest
 		assertEquals("The first name of the user should match", TEST_USER2_NAME_OG, nameChanges[0].name);
 		assertEquals("The username after the first name change should match", TEST_USER2_NAME_NEW, nameChanges[1].name);
 		assertNull("The invalid UUID should return null", UUIDConverter.getNamesFromUUID("123456"));
-		URL mockedURL = mock(URL.class);
+		/*URL mockedURL = PowerMockito.mock(URL.class);
 		whenNew(URL.class).withAnyArguments().thenReturn(mockedURL);
-		when(mockedURL.openConnection()).thenThrow(new IOException("HTTP response code: 429"));
+		PowerMockito.doThrow(new IOException("HTTP response code: 429")).when(mockedURL).openConnection();
 		UUIDConverter.getNamesFromUUID(TEST_USER2_UUID_AS_UUID);
 		assertTrue("A message should be written to the console if an error occurs", outputStream.size() > 0);
-		assertTrue("An exception should be thrown if an error occurs", errorStream.size() > 0);
-	}*/
+		assertTrue("An exception should be thrown if an error occurs", errorStream.size() > 0);*/
+	}
 
 	@AfterClass
 	public static void cleanupTestData()

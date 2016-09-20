@@ -18,23 +18,33 @@
 package at.pcgamingfreaks.TestClasses;
 
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.Connection;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginDescription;
 import net.md_5.bungee.api.scheduler.TaskScheduler;
+import net.md_5.bungee.protocol.packet.Chat;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
 public class TestObjects
 {
 	private static Plugin mockedPlugin;
+	private static ProxiedPlayer mockedPlayer;
+
+	private static List<ProxiedPlayer> players;
 
 	public static void initMockedPlugin()
 	{
@@ -64,8 +74,39 @@ public class TestObjects
 		when(mockedPlugin.getLogger()).thenReturn(Logger.getLogger("TestLogger"));
 	}
 
+	public static void initMockedPlayer()
+	{
+		Connection.Unsafe mockedUnsafe = mock(Connection.Unsafe.class);
+		doNothing().when(mockedUnsafe).sendPacket(any(Chat.class));
+		mockedPlayer = mock(ProxiedPlayer.class);
+		when(mockedPlayer.unsafe()).thenReturn(mockedUnsafe);
+	}
+
+	public static void initPlayers()
+	{
+		players = new ArrayList<>();
+		players.add(mockedPlayer);
+		players.add(mockedPlayer);
+		players.add(mockedPlayer);
+	}
+
+	public static void initProxyServer() throws NoSuchFieldException, IllegalAccessException
+	{
+		initPlayers();
+		ProxyServer mockedProxyServer = mock(ProxyServer.class);
+		when(mockedProxyServer.getPlayers()).thenReturn(getPlayers());
+		Field instance = ProxyServer.class.getDeclaredField("instance");
+		instance.setAccessible(true);
+		instance.set(mockedProxyServer, mockedProxyServer);
+		instance.setAccessible(false);
+	}
+
 	public static Plugin getPlugin()
 	{
 		return mockedPlugin;
 	}
+
+	public static ProxiedPlayer getPlayer() { return mockedPlayer; }
+
+	public static List<ProxiedPlayer> getPlayers() { return players; }
 }

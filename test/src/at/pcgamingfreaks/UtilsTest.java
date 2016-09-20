@@ -25,6 +25,7 @@ import org.mockito.stubbing.Answer;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -133,5 +134,12 @@ public class UtilsTest
 		System.setProperty("java.version", javaVersion);
 		assertEquals("There should be one message in the warning log", 1, logCount[0]);
 		assertEquals("There should be one message in the info log", 1, logCount[1]);
+	}
+
+	@Test
+	public void testMessageColorArrayFromStylesArray()
+	{
+		assertNull("No styles should return null", Utils.messageColorArrayFromStylesArray((Enum[]) null));
+		assertNull("No styles should return null", Utils.messageColorArrayFromStylesArray());
 	}
 }
