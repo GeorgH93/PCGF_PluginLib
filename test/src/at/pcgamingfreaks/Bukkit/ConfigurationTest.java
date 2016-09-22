@@ -17,31 +17,83 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import org.junit.BeforeClass;
+import at.pcgamingfreaks.TestClasses.TestBukkitServer;
+import at.pcgamingfreaks.TestClasses.TestObjects;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import static org.junit.Assert.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.powermock.api.support.membermodification.MemberModifier.suppress;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Bukkit.class, JavaPlugin.class })
 public class ConfigurationTest
 {
-	@BeforeClass
-	public static void prepareTestData() throws Exception
+	@Before
+	public void prepareTestData() throws Exception
 	{
-		whenNew(at.pcgamingfreaks.Configuration.class).withAnyArguments().thenAnswer(new Answer<Object>() {
+		TestObjects.initMockedJavaPlugin();
+		whenNew(at.pcgamingfreaks.Configuration.class).withAnyArguments().thenAnswer(new Answer<Object>()
+		{
 			@Override
 			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
 			{
 				return null;
 			}
 		});
+		suppress(at.pcgamingfreaks.Configuration.class.getDeclaredMethods());
 	}
 
-	/*@Test
+	@Test
 	public void testConfiguration()
 	{
-		TestJavaPlugin plugin = new TestJavaPlugin();
-		Configuration configuration = new Configuration(plugin, 3);
-		assertEquals("The class of the configuration should match", Configuration.class, configuration.getClass());
-	}*/
+		assertNotNull("The configuration object should not be null", new Configuration(TestObjects.getJavaPlugin(), 1));
+		assertNotNull("The configuration object should not be null", new Configuration(TestObjects.getJavaPlugin(), 1, "config.yml"));
+		assertNotNull("The configuration object should not be null", new Configuration(TestObjects.getJavaPlugin(), 1, 2));
+	}
+
+	@Test
+	@SuppressWarnings("SpellCheckingInspection")
+	public void testIsBukkitVersionUUIDCompatible() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
+	{
+		Method isBukkitVersionUUIDCompatible = Configuration.class.getDeclaredMethod("isBukkitVersionUUIDCompatible");
+		isBukkitVersionUUIDCompatible.setAccessible(true);
+		Configuration configuration = new Configuration(TestObjects.getJavaPlugin(), 1);
+		assertFalse("If the method fails false should be returned", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
+		TestBukkitServer server = new TestBukkitServer();
+		Bukkit.setServer(server);
+		assertFalse("The version should not be UUID compatible", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
+		server.serverVersion = "1.7.4";
+		assertFalse("The version should not be UUID compatible", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
+		server.serverVersion = "1.7.8";
+		assertTrue("The version should be UUID compatible", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
+		server.serverVersion = "1.8.8";
+		assertTrue("The version should be UUID compatible", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
+		server.serverVersion = "2.9.0";
+		assertTrue("The version should be UUID compatible", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
+		isBukkitVersionUUIDCompatible.setAccessible(false);
+	}
+
+	@AfterClass
+	public static void cleanupTestData()
+	{
+		//noinspection ResultOfMethodCallIgnored
+		new File("\\config.yml").delete();
+		//noinspection ResultOfMethodCallIgnored
+		new File("config.yml").delete();
+	}
 }

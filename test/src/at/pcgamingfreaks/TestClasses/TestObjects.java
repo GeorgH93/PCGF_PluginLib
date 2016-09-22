@@ -25,8 +25,13 @@ import net.md_5.bungee.api.plugin.PluginDescription;
 import net.md_5.bungee.api.scheduler.TaskScheduler;
 import net.md_5.bungee.protocol.packet.Chat;
 
+import org.bukkit.Server;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.api.mockito.PowerMockito;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -41,10 +46,42 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 public class TestObjects
 {
+	private static JavaPlugin mockedJavaPlugin;
+	@SuppressWarnings("SpellCheckingInspection")
+	private static org.bukkit.plugin.Plugin mockedBukkitPlugin;
 	private static Plugin mockedPlugin;
 	private static ProxiedPlayer mockedPlayer;
 
 	private static List<ProxiedPlayer> players;
+
+	public static void initMockedJavaPlugin() throws Exception
+	{
+		BukkitScheduler mockedScheduler = mock(BukkitScheduler.class);
+		when(mockedScheduler.runTask(any(org.bukkit.plugin.Plugin.class), any(Runnable.class))).thenAnswer(new Answer<Object>() {
+			@Override
+			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
+			{
+				((Runnable) invocationOnMock.getArguments()[1]).run();
+				return null;
+			}
+		});
+		Server mockedServer = mock(Server.class);
+		when(mockedServer.getScheduler()).thenReturn(mockedScheduler);
+		mockedJavaPlugin = PowerMockito.mock(JavaPlugin.class);
+		when(mockedJavaPlugin.getLogger()).thenReturn(Logger.getLogger("TestLogger"));
+		when(mockedJavaPlugin.getDataFolder()).thenReturn(new File(""));
+		when(mockedJavaPlugin.getServer()).thenReturn(mockedServer);
+	}
+
+	@SuppressWarnings("SpellCheckingInspection")
+	public static void initMockedBukkitPlugin()
+	{
+		PluginDescriptionFile mockedPluginDescription = PowerMockito.mock(PluginDescriptionFile.class);
+		PowerMockito.when(mockedPluginDescription.getFullName()).thenReturn("TestPlugin");
+		mockedBukkitPlugin = mock(org.bukkit.plugin.Plugin.class);
+		when(mockedBukkitPlugin.getLogger()).thenReturn(Logger.getLogger("BukkitTestLogger"));
+		when(mockedBukkitPlugin.getDescription()).thenReturn(mockedPluginDescription);
+	}
 
 	public static void initMockedPlugin()
 	{
@@ -100,6 +137,11 @@ public class TestObjects
 		instance.set(mockedProxyServer, mockedProxyServer);
 		instance.setAccessible(false);
 	}
+
+	public static JavaPlugin getJavaPlugin() { return mockedJavaPlugin; }
+
+	@SuppressWarnings("SpellCheckingInspection")
+	public static org.bukkit.plugin.Plugin getBukkitPlugin() { return mockedBukkitPlugin; }
 
 	public static Plugin getPlugin()
 	{

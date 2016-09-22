@@ -24,19 +24,19 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.command.CommandException;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.help.HelpMap;
 import org.bukkit.inventory.*;
 import org.bukkit.map.MapView;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.ServicesManager;
+import org.bukkit.permissions.Permissible;
+import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.*;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.ScoreboardManager;
@@ -51,6 +51,202 @@ import java.util.logging.Logger;
 public class TestBukkitServer implements Server
 {
 	public String serverField;
+	public String serverVersion;
+	public boolean allowPluginManager = false;
+	public boolean perWorldPlugins = false;
+
+	@SuppressWarnings("unused")
+	public static CommandMap commandMap;
+
+	public PluginManager pluginManager = new PluginManager()
+	{
+		public CommandMap commandMap;
+
+		@SuppressWarnings("unused")
+		public void setCommandMap(CommandMap map)
+		{
+			commandMap = map;
+		}
+
+		@Override
+		public void registerInterface(Class<? extends PluginLoader> aClass) throws IllegalArgumentException
+		{
+
+		}
+
+		@Override
+		public Plugin getPlugin(String s)
+		{
+			if (perWorldPlugins && s.equals("PerWorldPlugins"))
+			{
+				TestObjects.initMockedBukkitPlugin();
+				return TestObjects.getBukkitPlugin();
+			}
+			return null;
+		}
+
+		@Override
+		public Plugin[] getPlugins()
+		{
+			return new Plugin[0];
+		}
+
+		@Override
+		public boolean isPluginEnabled(String s)
+		{
+			return false;
+		}
+
+		@Override
+		public boolean isPluginEnabled(Plugin plugin)
+		{
+			return false;
+		}
+
+		@Override
+		public Plugin loadPlugin(File file) throws InvalidPluginException, InvalidDescriptionException, UnknownDependencyException
+		{
+			return null;
+		}
+
+		@Override
+		public Plugin[] loadPlugins(File file)
+		{
+			return new Plugin[0];
+		}
+
+		@Override
+		public void disablePlugins()
+		{
+
+		}
+
+		@Override
+		public void clearPlugins()
+		{
+
+		}
+
+		@Override
+		public void callEvent(Event event) throws IllegalStateException
+		{
+
+		}
+
+		@Override
+		public void registerEvents(Listener listener, Plugin plugin)
+		{
+
+		}
+
+		@Override
+		public void registerEvent(Class<? extends Event> aClass, Listener listener, EventPriority eventPriority, EventExecutor eventExecutor, Plugin plugin)
+		{
+
+		}
+
+		@Override
+		public void registerEvent(Class<? extends Event> aClass, Listener listener, EventPriority eventPriority, EventExecutor eventExecutor, Plugin plugin, boolean b)
+		{
+
+		}
+
+		@Override
+		public void enablePlugin(Plugin plugin)
+		{
+
+		}
+
+		@Override
+		public void disablePlugin(Plugin plugin)
+		{
+
+		}
+
+		@Override
+		public Permission getPermission(String s)
+		{
+			return null;
+		}
+
+		@Override
+		public void addPermission(Permission permission)
+		{
+
+		}
+
+		@Override
+		public void removePermission(Permission permission)
+		{
+
+		}
+
+		@Override
+		public void removePermission(String s)
+		{
+
+		}
+
+		@Override
+		public Set<Permission> getDefaultPermissions(boolean b)
+		{
+			return null;
+		}
+
+		@Override
+		public void recalculatePermissionDefaults(Permission permission)
+		{
+
+		}
+
+		@Override
+		public void subscribeToPermission(String s, Permissible permissible)
+		{
+
+		}
+
+		@Override
+		public void unsubscribeFromPermission(String s, Permissible permissible)
+		{
+
+		}
+
+		@Override
+		public Set<Permissible> getPermissionSubscriptions(String s)
+		{
+			return null;
+		}
+
+		@Override
+		public void subscribeToDefaultPerms(boolean b, Permissible permissible)
+		{
+
+		}
+
+		@Override
+		public void unsubscribeFromDefaultPerms(boolean b, Permissible permissible)
+		{
+
+		}
+
+		@Override
+		public Set<Permissible> getDefaultPermSubscriptions(boolean b)
+		{
+			return null;
+		}
+
+		@Override
+		public Set<Permission> getPermissions()
+		{
+			return null;
+		}
+
+		@Override
+		public boolean useTimings()
+		{
+			return false;
+		}
+	};
 
 	@Override
 	public String getName()
@@ -61,13 +257,21 @@ public class TestBukkitServer implements Server
 	@Override
 	public String getVersion()
 	{
+		if(serverVersion != null && serverVersion.length() > 0)
+		{
+			return serverVersion;
+		}
 		return "1.2.3";
 	}
 
 	@Override
 	public String getBukkitVersion()
 	{
-		return null;
+		if(serverVersion != null && serverVersion.length() > 0)
+		{
+			return serverVersion;
+		}
+		return "1.2.3-TestBukkit";
 	}
 
 	@Override
@@ -79,7 +283,7 @@ public class TestBukkitServer implements Server
 	@Override
 	public Collection<? extends Player> getOnlinePlayers()
 	{
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -227,10 +431,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public PluginManager getPluginManager()
-	{
-		return null;
-	}
+	public PluginManager getPluginManager() { return allowPluginManager ? pluginManager : null; }
 
 	@Override
 	public BukkitScheduler getScheduler()
@@ -301,7 +502,7 @@ public class TestBukkitServer implements Server
 	@Override
 	public Logger getLogger()
 	{
-		return null;
+		return Logger.getLogger("TestBukkitServerLogger");
 	}
 
 	@Override
