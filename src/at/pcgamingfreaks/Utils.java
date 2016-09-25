@@ -105,6 +105,36 @@ public class Utils
 		}
 	}
 
+	public static boolean stringArrayContains(String str, String[] strings)
+	{
+		if(str != null && !str.isEmpty())
+		{
+			for(String s : strings)
+			{
+				if(s.equals(str))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean stringArrayContainsIgnoreCase(String str, String[] strings)
+	{
+		if(str != null && !str.isEmpty())
+		{
+			for(String s : strings)
+			{
+				if(s.equalsIgnoreCase(str))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum... styles)
 	{
 		if(styles != null && styles.length > 0)

@@ -24,9 +24,7 @@ import org.mockito.stubbing.Answer;
 
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -141,5 +139,32 @@ public class UtilsTest
 	{
 		assertNull("No styles should return null", Utils.messageColorArrayFromStylesArray((Enum[]) null));
 		assertNull("No styles should return null", Utils.messageColorArrayFromStylesArray());
+	}
+
+	@Test
+	public void testStringArrayContains()
+	{
+		String[] array = new String[] { "Junk", "tree", "Hello" };
+		assertTrue("The array should contain the string", Utils.stringArrayContains("tree", array));
+		assertTrue("The array should contain the string", Utils.stringArrayContains("Hello", array));
+		assertTrue("The array should contain the string", Utils.stringArrayContains("Junk", array));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains("junk", array));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains("Tree", array));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains("hello", array));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains("just a string", array));
+	}
+
+	@Test
+	public void testStringArrayContainsIgnoreCase()
+	{
+		String[] array = new String[] { "Junk", "tree", "Hello" };
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("tree", array));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("Tree", array));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("Junk", array));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("juNk", array));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("junk", array));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("Hello", array));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("hello", array));
+		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase("just a string", array));
 	}
 }
