@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import at.pcgamingfreaks.TestClasses.NMS.EntityPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestEnum;
 
@@ -28,7 +29,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 public class NMSReflectionTest
@@ -110,8 +110,8 @@ public class NMSReflectionTest
 	@Test
 	public void testGetHandle()
 	{
-		//noinspection deprecation
-		assertFalse("The handle should be get correctly", (boolean) NMSReflection.getHandle(Bukkit.getPlayer("")));
+		//noinspection deprecation,ConstantConditions
+		assertEquals("The handle should be get correctly", EntityPlayer.class, NMSReflection.getHandle(Bukkit.getPlayer("")).getClass());
 		assertNull("The handle should not be found", NMSReflection.getHandle(Bukkit.getServer()));
 	}
 }

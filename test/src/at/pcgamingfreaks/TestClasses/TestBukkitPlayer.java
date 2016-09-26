@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.TestClasses;
 
+import at.pcgamingfreaks.TestClasses.NMS.EntityPlayer;
+
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -44,10 +46,12 @@ import java.util.*;
 @SuppressWarnings("SpellCheckingInspection")
 public class TestBukkitPlayer implements Player
 {
+	public int sendCalls = 0;
+
 	@SuppressWarnings("unused")
 	private Object getHandle()
 	{
-		return false;
+		return new EntityPlayer();
 	}
 
 	@Override
@@ -57,10 +61,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setDisplayName(String s)
-	{
-
-	}
+	public void setDisplayName(String s) {}
 
 	@Override
 	public String getPlayerListName()
@@ -69,16 +70,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setPlayerListName(String s)
-	{
-
-	}
+	public void setPlayerListName(String s) {}
 
 	@Override
-	public void setCompassTarget(Location location)
-	{
-
-	}
+	public void setCompassTarget(Location location) {}
 
 	@Override
 	public Location getCompassTarget()
@@ -99,10 +94,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void acceptConversationInput(String s)
-	{
-
-	}
+	public void acceptConversationInput(String s) {}
 
 	@Override
 	public boolean beginConversation(Conversation conversation)
@@ -111,34 +103,19 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void abandonConversation(Conversation conversation)
-	{
-
-	}
+	public void abandonConversation(Conversation conversation) {}
 
 	@Override
-	public void abandonConversation(Conversation conversation, ConversationAbandonedEvent conversationAbandonedEvent)
-	{
-
-	}
+	public void abandonConversation(Conversation conversation, ConversationAbandonedEvent conversationAbandonedEvent) {}
 
 	@Override
-	public void sendRawMessage(String s)
-	{
-
-	}
+	public void sendRawMessage(String s) {}
 
 	@Override
-	public void kickPlayer(String s)
-	{
-
-	}
+	public void kickPlayer(String s) {}
 
 	@Override
-	public void chat(String s)
-	{
-
-	}
+	public void chat(String s) {}
 
 	@Override
 	public boolean performCommand(String s)
@@ -153,10 +130,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setSneaking(boolean b)
-	{
-
-	}
+	public void setSneaking(boolean b) {}
 
 	@Override
 	public boolean isSprinting()
@@ -165,28 +139,16 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setSprinting(boolean b)
-	{
-
-	}
+	public void setSprinting(boolean b) {}
 
 	@Override
-	public void saveData()
-	{
-
-	}
+	public void saveData() {}
 
 	@Override
-	public void loadData()
-	{
-
-	}
+	public void loadData() {}
 
 	@Override
-	public void setSleepingIgnored(boolean b)
-	{
-
-	}
+	public void setSleepingIgnored(boolean b) {}
 
 	@Override
 	public boolean isSleepingIgnored()
@@ -195,46 +157,25 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void playNote(Location location, byte b, byte b1)
-	{
-
-	}
+	public void playNote(Location location, byte b, byte b1) {}
 
 	@Override
-	public void playNote(Location location, Instrument instrument, Note note)
-	{
-
-	}
+	public void playNote(Location location, Instrument instrument, Note note) {}
 
 	@Override
-	public void playSound(Location location, Sound sound, float v, float v1)
-	{
-
-	}
+	public void playSound(Location location, Sound sound, float v, float v1) {}
 
 	@Override
-	public void playSound(Location location, String s, float v, float v1)
-	{
-
-	}
+	public void playSound(Location location, String s, float v, float v1) {}
 
 	@Override
-	public void playEffect(Location location, Effect effect, int i)
-	{
-
-	}
+	public void playEffect(Location location, Effect effect, int i) {}
 
 	@Override
-	public <T> void playEffect(Location location, Effect effect, T t)
-	{
-
-	}
+	public <T> void playEffect(Location location, Effect effect, T t) {}
 
 	@Override
-	public void sendBlockChange(Location location, Material material, byte b)
-	{
-
-	}
+	public void sendBlockChange(Location location, Material material, byte b) {}
 
 	@Override
 	public boolean sendChunkChange(Location location, int i, int i1, int i2, byte[] bytes)
@@ -243,10 +184,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void sendBlockChange(Location location, int i, byte b)
-	{
-
-	}
+	public void sendBlockChange(Location location, int i, byte b) {}
 
 	@Override
 	public void sendSignChange(Location location, String[] strings) throws IllegalArgumentException
@@ -255,28 +193,16 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void sendMap(MapView mapView)
-	{
-
-	}
+	public void sendMap(MapView mapView) {}
 
 	@Override
-	public void updateInventory()
-	{
-
-	}
+	public void updateInventory() {}
 
 	@Override
-	public void awardAchievement(Achievement achievement)
-	{
-
-	}
+	public void awardAchievement(Achievement achievement) {}
 
 	@Override
-	public void removeAchievement(Achievement achievement)
-	{
-
-	}
+	public void removeAchievement(Achievement achievement) {}
 
 	@Override
 	public boolean hasAchievement(Achievement achievement)
@@ -381,22 +307,13 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void decrementStatistic(Statistic statistic, EntityType entityType, int i)
-	{
-
-	}
+	public void decrementStatistic(Statistic statistic, EntityType entityType, int i) {}
 
 	@Override
-	public void setStatistic(Statistic statistic, EntityType entityType, int i)
-	{
-
-	}
+	public void setStatistic(Statistic statistic, EntityType entityType, int i) {}
 
 	@Override
-	public void setPlayerTime(long l, boolean b)
-	{
-
-	}
+	public void setPlayerTime(long l, boolean b) {}
 
 	@Override
 	public long getPlayerTime()
@@ -417,16 +334,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void resetPlayerTime()
-	{
-
-	}
+	public void resetPlayerTime() {}
 
 	@Override
-	public void setPlayerWeather(WeatherType weatherType)
-	{
-
-	}
+	public void setPlayerWeather(WeatherType weatherType) {}
 
 	@Override
 	public WeatherType getPlayerWeather()
@@ -435,22 +346,13 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void resetPlayerWeather()
-	{
-
-	}
+	public void resetPlayerWeather() {}
 
 	@Override
-	public void giveExp(int i)
-	{
-
-	}
+	public void giveExp(int i) {}
 
 	@Override
-	public void giveExpLevels(int i)
-	{
-
-	}
+	public void giveExpLevels(int i) {}
 
 	@Override
 	public float getExp()
@@ -459,10 +361,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setExp(float v)
-	{
-
-	}
+	public void setExp(float v) {}
 
 	@Override
 	public int getLevel()
@@ -471,10 +370,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setLevel(int i)
-	{
-
-	}
+	public void setLevel(int i) {}
 
 	@Override
 	public int getTotalExperience()
@@ -483,10 +379,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setTotalExperience(int i)
-	{
-
-	}
+	public void setTotalExperience(int i) {}
 
 	@Override
 	public float getExhaustion()
@@ -495,10 +388,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setExhaustion(float v)
-	{
-
-	}
+	public void setExhaustion(float v) {}
 
 	@Override
 	public float getSaturation()
@@ -507,10 +397,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setSaturation(float v)
-	{
-
-	}
+	public void setSaturation(float v) {}
 
 	@Override
 	public int getFoodLevel()
@@ -519,10 +406,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setFoodLevel(int i)
-	{
-
-	}
+	public void setFoodLevel(int i) {}
 
 	@Override
 	public boolean isOnline()
@@ -537,10 +421,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setBanned(boolean b)
-	{
-
-	}
+	public void setBanned(boolean b) {}
 
 	@Override
 	public boolean isWhitelisted()
@@ -549,10 +430,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setWhitelisted(boolean b)
-	{
-
-	}
+	public void setWhitelisted(boolean b) {}
 
 	@Override
 	public Player getPlayer()
@@ -585,16 +463,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setBedSpawnLocation(Location location)
-	{
-
-	}
+	public void setBedSpawnLocation(Location location) {}
 
 	@Override
-	public void setBedSpawnLocation(Location location, boolean b)
-	{
-
-	}
+	public void setBedSpawnLocation(Location location, boolean b) {}
 
 	@Override
 	public boolean getAllowFlight()
@@ -603,22 +475,13 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setAllowFlight(boolean b)
-	{
-
-	}
+	public void setAllowFlight(boolean b) {}
 
 	@Override
-	public void hidePlayer(Player player)
-	{
-
-	}
+	public void hidePlayer(Player player) {}
 
 	@Override
-	public void showPlayer(Player player)
-	{
-
-	}
+	public void showPlayer(Player player) {}
 
 	@Override
 	public boolean canSee(Player player)
@@ -639,10 +502,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setVelocity(Vector vector)
-	{
-
-	}
+	public void setVelocity(Vector vector) {}
 
 	@Override
 	public Vector getVelocity()
@@ -711,16 +571,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setFireTicks(int i)
-	{
-
-	}
+	public void setFireTicks(int i) {}
 
 	@Override
-	public void remove()
-	{
-
-	}
+	public void remove() {}
 
 	@Override
 	public boolean isDead()
@@ -737,14 +591,11 @@ public class TestBukkitPlayer implements Player
 	@Override
 	public void sendMessage(String s)
 	{
-
+		sendCalls++;
 	}
 
 	@Override
-	public void sendMessage(String[] strings)
-	{
-
-	}
+	public void sendMessage(String[] strings) { sendCalls++; }
 
 	@Override
 	public Server getServer()
@@ -783,16 +634,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setFallDistance(float v)
-	{
-
-	}
+	public void setFallDistance(float v) {}
 
 	@Override
-	public void setLastDamageCause(EntityDamageEvent entityDamageEvent)
-	{
-
-	}
+	public void setLastDamageCause(EntityDamageEvent entityDamageEvent) {}
 
 	@Override
 	public EntityDamageEvent getLastDamageCause()
@@ -813,16 +658,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setTicksLived(int i)
-	{
-
-	}
+	public void setTicksLived(int i) {}
 
 	@Override
-	public void playEffect(EntityEffect entityEffect)
-	{
-
-	}
+	public void playEffect(EntityEffect entityEffect) {}
 
 	@Override
 	public EntityType getType()
@@ -849,10 +688,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setCustomName(String s)
-	{
-
-	}
+	public void setCustomName(String s) {}
 
 	@Override
 	public String getCustomName()
@@ -861,10 +697,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setCustomNameVisible(boolean b)
-	{
-
-	}
+	public void setCustomNameVisible(boolean b) {}
 
 	@Override
 	public boolean isCustomNameVisible()
@@ -873,10 +706,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setGlowing(boolean b)
-	{
-
-	}
+	public void setGlowing(boolean b) {}
 
 	@Override
 	public boolean isGlowing()
@@ -885,10 +715,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setInvulnerable(boolean b)
-	{
-
-	}
+	public void setInvulnerable(boolean b) {}
 
 	@Override
 	public boolean isInvulnerable()
@@ -903,10 +730,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setFlying(boolean b)
-	{
-
-	}
+	public void setFlying(boolean b) {}
 
 	@Override
 	public void setFlySpeed(float v) throws IllegalArgumentException
@@ -933,16 +757,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setTexturePack(String s)
-	{
-
-	}
+	public void setTexturePack(String s) {}
 
 	@Override
-	public void setResourcePack(String s)
-	{
-
-	}
+	public void setResourcePack(String s) {}
 
 	@Override
 	public Scoreboard getScoreboard()
@@ -963,10 +781,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setHealthScaled(boolean b)
-	{
-
-	}
+	public void setHealthScaled(boolean b) {}
 
 	@Override
 	public void setHealthScale(double v) throws IllegalArgumentException
@@ -987,94 +802,49 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setSpectatorTarget(Entity entity)
-	{
-
-	}
+	public void setSpectatorTarget(Entity entity) {}
 
 	@Override
-	public void sendTitle(String s, String s1)
-	{
-
-	}
+	public void sendTitle(String s, String s1) {}
 
 	@Override
-	public void resetTitle()
-	{
-
-	}
+	public void resetTitle() {}
 
 	@Override
-	public void spawnParticle(Particle particle, Location location, int i)
-	{
-
-	}
+	public void spawnParticle(Particle particle, Location location, int i) {}
 
 	@Override
-	public void spawnParticle(Particle particle, double v, double v1, double v2, int i)
-	{
-
-	}
+	public void spawnParticle(Particle particle, double v, double v1, double v2, int i) {}
 
 	@Override
-	public <T> void spawnParticle(Particle particle, Location location, int i, T t)
-	{
-
-	}
+	public <T> void spawnParticle(Particle particle, Location location, int i, T t) {}
 
 	@Override
-	public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, T t)
-	{
-
-	}
+	public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, T t) {}
 
 	@Override
-	public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2)
-	{
-
-	}
+	public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2) {}
 
 	@Override
-	public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5)
-	{
-
-	}
+	public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5) {}
 
 	@Override
-	public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, T t)
-	{
-
-	}
+	public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, T t) {}
 
 	@Override
-	public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, T t)
-	{
-
-	}
+	public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, T t) {}
 
 	@Override
-	public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3)
-	{
-
-	}
+	public void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3) {}
 
 	@Override
-	public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6)
-	{
-
-	}
+	public void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6) {}
 
 	@Override
-	public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3, T t)
-	{
-
-	}
+	public <T> void spawnParticle(Particle particle, Location location, int i, double v, double v1, double v2, double v3, T t) {}
 
 	@Override
-	public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t)
-	{
-
-	}
+	public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t) {}
 
 	@Override
 	public Map<String, Object> serialize()
@@ -1137,10 +907,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void openInventory(InventoryView inventoryView)
-	{
-
-	}
+	public void openInventory(InventoryView inventoryView) {}
 
 	@Override
 	public InventoryView openMerchant(Villager villager, boolean b)
@@ -1149,10 +916,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void closeInventory()
-	{
-
-	}
+	public void closeInventory() {}
 
 	@Override
 	public ItemStack getItemInHand()
@@ -1161,10 +925,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setItemInHand(ItemStack itemStack)
-	{
-
-	}
+	public void setItemInHand(ItemStack itemStack) {}
 
 	@Override
 	public ItemStack getItemOnCursor()
@@ -1173,10 +934,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setItemOnCursor(ItemStack itemStack)
-	{
-
-	}
+	public void setItemOnCursor(ItemStack itemStack) {}
 
 	@Override
 	public boolean isSleeping()
@@ -1197,10 +955,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setGameMode(GameMode gameMode)
-	{
-
-	}
+	public void setGameMode(GameMode gameMode) {}
 
 	@Override
 	public boolean isBlocking()
@@ -1275,10 +1030,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setRemainingAir(int i)
-	{
-
-	}
+	public void setRemainingAir(int i) {}
 
 	@Override
 	public int getMaximumAir()
@@ -1287,10 +1039,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setMaximumAir(int i)
-	{
-
-	}
+	public void setMaximumAir(int i) {}
 
 	@Override
 	public int getMaximumNoDamageTicks()
@@ -1299,10 +1048,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setMaximumNoDamageTicks(int i)
-	{
-
-	}
+	public void setMaximumNoDamageTicks(int i) {}
 
 	@Override
 	public double getLastDamage()
@@ -1317,16 +1063,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setLastDamage(double v)
-	{
-
-	}
+	public void setLastDamage(double v) {}
 
 	@Override
-	public void _INVALID_setLastDamage(int i)
-	{
-
-	}
+	public void _INVALID_setLastDamage(int i) {}
 
 	@Override
 	public int getNoDamageTicks()
@@ -1335,10 +1075,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setNoDamageTicks(int i)
-	{
-
-	}
+	public void setNoDamageTicks(int i) {}
 
 	@Override
 	public Player getKiller()
@@ -1371,10 +1108,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void removePotionEffect(PotionEffectType potionEffectType)
-	{
-
-	}
+	public void removePotionEffect(PotionEffectType potionEffectType) {}
 
 	@Override
 	public Collection<PotionEffect> getActivePotionEffects()
@@ -1395,10 +1129,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setRemoveWhenFarAway(boolean b)
-	{
-
-	}
+	public void setRemoveWhenFarAway(boolean b) {}
 
 	@Override
 	public EntityEquipment getEquipment()
@@ -1407,10 +1138,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setCanPickupItems(boolean b)
-	{
-
-	}
+	public void setCanPickupItems(boolean b) {}
 
 	@Override
 	public boolean getCanPickupItems()
@@ -1443,16 +1171,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setGliding(boolean b)
-	{
-
-	}
+	public void setGliding(boolean b) {}
 
 	@Override
-	public void setAI(boolean b)
-	{
-
-	}
+	public void setAI(boolean b) {}
 
 	@Override
 	public boolean hasAI()
@@ -1461,10 +1183,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setCollidable(boolean b)
-	{
-
-	}
+	public void setCollidable(boolean b) {}
 
 	@Override
 	public boolean isCollidable()
@@ -1479,28 +1198,16 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void damage(double v)
-	{
-
-	}
+	public void damage(double v) {}
 
 	@Override
-	public void _INVALID_damage(int i)
-	{
-
-	}
+	public void _INVALID_damage(int i) {}
 
 	@Override
-	public void damage(double v, Entity entity)
-	{
-
-	}
+	public void damage(double v, Entity entity) {}
 
 	@Override
-	public void _INVALID_damage(int i, Entity entity)
-	{
-
-	}
+	public void _INVALID_damage(int i, Entity entity) {}
 
 	@Override
 	public double getHealth()
@@ -1515,16 +1222,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setHealth(double v)
-	{
-
-	}
+	public void setHealth(double v) {}
 
 	@Override
-	public void _INVALID_setHealth(int i)
-	{
-
-	}
+	public void _INVALID_setHealth(int i) {}
 
 	@Override
 	public double getMaxHealth()
@@ -1539,28 +1240,16 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setMaxHealth(double v)
-	{
-
-	}
+	public void setMaxHealth(double v) {}
 
 	@Override
-	public void _INVALID_setMaxHealth(int i)
-	{
-
-	}
+	public void _INVALID_setMaxHealth(int i) {}
 
 	@Override
-	public void resetMaxHealth()
-	{
-
-	}
+	public void resetMaxHealth() {}
 
 	@Override
-	public void setMetadata(String s, MetadataValue metadataValue)
-	{
-
-	}
+	public void setMetadata(String s, MetadataValue metadataValue) {}
 
 	@Override
 	public List<MetadataValue> getMetadata(String s)
@@ -1575,10 +1264,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void removeMetadata(String s, Plugin plugin)
-	{
-
-	}
+	public void removeMetadata(String s, Plugin plugin) {}
 
 	@Override
 	public boolean isPermissionSet(String s)
@@ -1629,16 +1315,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void removeAttachment(PermissionAttachment permissionAttachment)
-	{
-
-	}
+	public void removeAttachment(PermissionAttachment permissionAttachment) {}
 
 	@Override
-	public void recalculatePermissions()
-	{
-
-	}
+	public void recalculatePermissions() {}
 
 	@Override
 	public Set<PermissionAttachmentInfo> getEffectivePermissions()
@@ -1653,16 +1333,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setOp(boolean b)
-	{
-
-	}
+	public void setOp(boolean b) {}
 
 	@Override
-	public void sendPluginMessage(Plugin plugin, String s, byte[] bytes)
-	{
-
-	}
+	public void sendPluginMessage(Plugin plugin, String s, byte[] bytes) {}
 
 	@Override
 	public Set<String> getListeningPluginChannels()

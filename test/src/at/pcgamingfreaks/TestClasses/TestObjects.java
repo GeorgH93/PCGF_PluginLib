@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.TestClasses;
 
+import at.pcgamingfreaks.Bukkit.NMSReflection;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -117,6 +119,29 @@ public class TestObjects
 		doNothing().when(mockedUnsafe).sendPacket(any(Chat.class));
 		mockedPlayer = mock(ProxiedPlayer.class);
 		when(mockedPlayer.unsafe()).thenReturn(mockedUnsafe);
+	}
+
+	@SuppressWarnings("SpellCheckingInspection")
+	public static void initNMSReflection() throws NoSuchFieldException, IllegalAccessException
+	{
+		setBukkitVersion("1_7");
+		Field nmsClassPath = NMSReflection.class.getDeclaredField("NMS_CLASS_PATH");
+		nmsClassPath.setAccessible(true);
+		nmsClassPath.set(null, "at.pcgamingfreaks.TestClasses.NMS.");
+		nmsClassPath.setAccessible(false);
+		Field obcClassPath = NMSReflection.class.getDeclaredField("OBC_CLASS_PATH");
+		obcClassPath.setAccessible(true);
+		obcClassPath.set(null, "at.pcgamingfreaks.TestClasses.OBC.");
+		obcClassPath.setAccessible(false);
+	}
+
+	@SuppressWarnings("SpellCheckingInspection")
+	public static void setBukkitVersion(String version) throws NoSuchFieldException, IllegalAccessException
+	{
+		Field bukkitVersion = NMSReflection.class.getDeclaredField("BUKKIT_VERSION");
+		bukkitVersion.setAccessible(true);
+		bukkitVersion.set(null, version);
+		bukkitVersion.setAccessible(false);
 	}
 
 	public static void initPlayers()
