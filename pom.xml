@@ -253,6 +253,7 @@
 				<version>2.7.2</version>
 				<configuration>
 					<workingDirectory>${java.io.tmpdir}</workingDirectory>
+					<argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
 				</configuration>
 			</plugin>
 			<!-- Creates the coverage report -->
