@@ -62,6 +62,9 @@ public class Utils extends at.pcgamingfreaks.Utils
 			}
 			else
 			{
+				Object y = AS_NMS_COPY_METHOD.invoke(null, itemStack);
+				Object z = NBT_TAG_COMPOUND_CLASS.newInstance();
+				Object x = SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
 				return SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
 			}
 		}

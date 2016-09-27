@@ -22,5 +22,8 @@ import org.bukkit.inventory.ItemStack;
 @SuppressWarnings("unused")
 public class CraftItemStack
 {
-	public static at.pcgamingfreaks.TestClasses.NMS.ItemStack asNMSCopy(ItemStack itemStack) { return null; }
+	public static at.pcgamingfreaks.TestClasses.NMS.ItemStack asNMSCopy(ItemStack itemStack)
+	{
+		return new at.pcgamingfreaks.TestClasses.NMS.ItemStack(itemStack);
+	}
 }

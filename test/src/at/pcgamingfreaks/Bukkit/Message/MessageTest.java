@@ -64,7 +64,9 @@ public class MessageTest
 		setVersion("1_7");
 		Message message = new Message("");
 		assertEquals("The send method should be correct", SendMethod.CHAT_CLASSIC, message.getSendMethod());
+		setVersion("");
 		message = new Message("");
+		assertEquals("The send method should be correct", SendMethod.CHAT, message.getSendMethod());
 		Message.class.getDeclaredMethod("send", Object.class, Object[].class).invoke(message, new Object(), new Object[] {});
 	}
 

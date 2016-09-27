@@ -17,5 +17,35 @@
 
 package at.pcgamingfreaks.TestClasses.NMS;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 @SuppressWarnings("unused")
-public class NBTTagCompound {}
+public class NBTTagCompound
+{
+	Map<String, Object> elements = new HashMap<>();
+
+	public void add(String name, Object value)
+	{
+		elements.put(name, value);
+	}
+
+	@Override
+	public String toString()
+	{
+		if (elements.size() > 0)
+		{
+			Iterator<String> keys = elements.keySet().iterator();
+			String key = keys.next();
+			String json = "\"" + key + "\":\"" + elements.get(key) + "\"";
+			while (keys.hasNext())
+			{
+				key = keys.next();
+				json += ",\"" + key + "\":\"" + elements.get(key) + "\"";
+			}
+			return "{" + json + "}";
+		}
+		return "";
+	}
+}

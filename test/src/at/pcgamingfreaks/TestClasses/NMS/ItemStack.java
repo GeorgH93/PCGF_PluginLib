@@ -20,5 +20,17 @@ package at.pcgamingfreaks.TestClasses.NMS;
 @SuppressWarnings("unused")
 public class ItemStack
 {
-	public NBTTagCompound save(NBTTagCompound nbtTagCompound) { return nbtTagCompound; }
+	org.bukkit.inventory.ItemStack itemStack;
+
+	public ItemStack(org.bukkit.inventory.ItemStack itemStack)
+	{
+		this.itemStack = itemStack;
+	}
+
+	public NBTTagCompound save(NBTTagCompound nbtTagCompound)
+	{
+		nbtTagCompound.add("id", itemStack.getType());
+		nbtTagCompound.add("Count", itemStack.getAmount());
+		return nbtTagCompound;
+	}
 }
