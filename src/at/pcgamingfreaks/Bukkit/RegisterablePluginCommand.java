@@ -20,6 +20,8 @@ package at.pcgamingfreaks.Bukkit;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.command.*;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -48,17 +50,20 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 	 * @param name The name of the command will be used for bukkit's help
 	 * @param aliases The aliases of the command
 	 */
-	public RegisterablePluginCommand(Plugin owner, String name, String... aliases)
+	public RegisterablePluginCommand(@NotNull Plugin owner, @NotNull String name, @Nullable String... aliases)
 	{
 		super(name);
 		this.executor = owner;
 		this.owningPlugin = owner;
 		this.usageMessage = "/<command>";
 		List<String> aliasesList = new ArrayList<>();
-		for(String alias : aliases)
+		if(aliases != null)
 		{
-			if(alias.equalsIgnoreCase(name)) continue;
-			aliasesList.add(alias);
+			for(String alias : aliases)
+			{
+				if(alias == null || name.equalsIgnoreCase(alias)) continue;
+				aliasesList.add(alias);
+			}
 		}
 		this.setAliases(aliasesList);
 	}
