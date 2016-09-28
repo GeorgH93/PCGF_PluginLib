@@ -253,7 +253,7 @@
 				<version>2.7.2</version>
 				<configuration>
 					<workingDirectory>${java.io.tmpdir}</workingDirectory>
-					<argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+					<argLine>${permgen.args}</argLine>
 				</configuration>
 			</plugin>
 			<!-- Creates the coverage report -->
@@ -312,6 +312,15 @@
 			</activation>
 			<properties>
 				<javadoc.opts>-Xdoclint:none</javadoc.opts>
+			</properties>
+		</profile>
+		<profile>
+			<id>use-permgen-java7</id>
+			<activation>
+				<jdk>1.7</jdk>
+			</activation>
+			<properties>
+				<permgen.args>-XX:MaxPermSize=256m</permgen.args>
 			</properties>
 		</profile>
 	</profiles>

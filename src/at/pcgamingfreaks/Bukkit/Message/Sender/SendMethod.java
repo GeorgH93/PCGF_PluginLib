@@ -19,7 +19,6 @@ package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
@@ -37,7 +36,7 @@ public enum SendMethod
 	private final Class<?> metadataClass;
 	private final Method fromJsonMethod;
 
-	SendMethod(@NotNull BaseSender defaultSender, @Nullable Class<?> metadataClass)
+	SendMethod(BaseSender defaultSender, @Nullable Class<?> metadataClass)
 	{
 		this.defaultSender = defaultSender;
 		this.metadataClass = metadataClass;
@@ -49,7 +48,7 @@ public enum SendMethod
 	 *
 	 * @return The default sender instance.
 	 */
-	public @NotNull BaseSender getSender()
+	public BaseSender getSender()
 	{
 		return this.defaultSender;
 	}

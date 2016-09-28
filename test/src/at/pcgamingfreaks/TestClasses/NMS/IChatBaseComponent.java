@@ -18,4 +18,10 @@
 package at.pcgamingfreaks.TestClasses.NMS;
 
 @SuppressWarnings("unused")
-public interface IChatBaseComponent {}
+public interface IChatBaseComponent
+{
+	class ChatSerializer
+	{
+		public static IChatBaseComponent a(String s) { return null;	}
+	}
+}
