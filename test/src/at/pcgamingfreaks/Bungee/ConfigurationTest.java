@@ -19,8 +19,11 @@ package at.pcgamingfreaks.Bungee;
 
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -38,5 +41,12 @@ public class ConfigurationTest
 		assertNotNull("The configuration should not be null", new Configuration(TestObjects.getPlugin(), 1));
 		assertNotNull("The configuration should not be null", new Configuration(TestObjects.getPlugin(), 1, "config.yml"));
 		assertNotNull("The configuration should not be null", new Configuration(TestObjects.getPlugin(), 1, 2));
+	}
+
+	@AfterClass
+	public static void cleanupTestData()
+	{
+		//noinspection ResultOfMethodCallIgnored
+		new File("\\config.yml").delete();
 	}
 }

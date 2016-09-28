@@ -17,14 +17,50 @@
 
 package at.pcgamingfreaks.Bukkit.Effects;
 
+import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.TestClasses.TestBukkitServer;
+import at.pcgamingfreaks.TestClasses.TestObjects;
+
+import org.bukkit.Bukkit;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ NMSReflection.class })
 public class MaterialEffectsTest
 {
-	//@Test
-	public void testMaterialEffects()
+	@BeforeClass
+	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
+		Bukkit.setServer(new TestBukkitServer());
+		TestObjects.initNMSReflection();
+	}
+
+	@Before
+	public void prepareTestObjects()
+	{
+		/*mockStatic(NMSReflection.class);
+		doAnswer(new Answer<Enum<?>>() {
+			@Override
+			public Enum<?> answer(InvocationOnMock invocationOnMock) throws Throwable
+			{
+				String name = (String) invocationOnMock.getArguments()[0];
+				//noinspection SpellCheckingInspection
+				return NMSReflection.getNMSEnum(name.replace("net.minecraft.server", "at.pcgamingfreaks.TestClasses.NMS"));
+			}
+		}).when(NMSReflection.getEnum(anyString()));*/
+	}
+
+	//@Test
+	public void testMaterialEffects() throws NoSuchFieldException, IllegalAccessException
+	{
+		TestObjects.setBukkitVersion("1_8");
 		MaterialEffects itemCrack = MaterialEffects.ITEM_CRACK;
 		//noinspection SpellCheckingInspection
 		assertEquals("The name of item crack should match", "iconcrack", itemCrack.getName());

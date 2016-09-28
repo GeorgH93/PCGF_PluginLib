@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.TestClasses;
 
+import at.pcgamingfreaks.Bukkit.NMSReflection;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -25,7 +27,9 @@ import net.md_5.bungee.api.plugin.PluginDescription;
 import net.md_5.bungee.api.scheduler.TaskScheduler;
 import net.md_5.bungee.protocol.packet.Chat;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -43,6 +47,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 public class TestObjects
 {
@@ -53,6 +58,7 @@ public class TestObjects
 	private static ProxiedPlayer mockedPlayer;
 
 	private static List<ProxiedPlayer> players;
+	private static List<Player> bukkitPlayers;
 
 	public static void initMockedJavaPlugin() throws Exception
 	{
@@ -119,12 +125,45 @@ public class TestObjects
 		when(mockedPlayer.unsafe()).thenReturn(mockedUnsafe);
 	}
 
+	@SuppressWarnings("SpellCheckingInspection")
+	public static void initNMSReflection() throws NoSuchFieldException, IllegalAccessException
+	{
+		setBukkitVersion("1_7");
+		Field nmsClassPath = NMSReflection.class.getDeclaredField("NMS_CLASS_PATH");
+		nmsClassPath.setAccessible(true);
+		nmsClassPath.set(null, "at.pcgamingfreaks.TestClasses.NMS.");
+		nmsClassPath.setAccessible(false);
+		Field obcClassPath = NMSReflection.class.getDeclaredField("OBC_CLASS_PATH");
+		obcClassPath.setAccessible(true);
+		obcClassPath.set(null, "at.pcgamingfreaks.TestClasses.OBC.");
+		obcClassPath.setAccessible(false);
+	}
+
+	@SuppressWarnings("SpellCheckingInspection")
+	public static void setBukkitVersion(String version) throws NoSuchFieldException, IllegalAccessException
+	{
+		Field bukkitVersion = NMSReflection.class.getDeclaredField("BUKKIT_VERSION");
+		bukkitVersion.setAccessible(true);
+		bukkitVersion.set(null, version);
+		bukkitVersion.setAccessible(false);
+	}
+
 	public static void initPlayers()
 	{
 		players = new ArrayList<>();
 		players.add(mockedPlayer);
 		players.add(mockedPlayer);
 		players.add(mockedPlayer);
+	}
+
+	@SuppressWarnings("SpellCheckingInspection")
+	public static void initBukkitOnlinePlayers() throws Exception
+	{
+		bukkitPlayers = new ArrayList<>();
+		bukkitPlayers.add(new TestBukkitPlayer());
+		bukkitPlayers.add(new TestBukkitPlayer());
+		mockStatic(Bukkit.class);
+		PowerMockito.doReturn(bukkitPlayers).when(Bukkit.class, "getOnlinePlayers");
 	}
 
 	public static void initProxyServer() throws NoSuchFieldException, IllegalAccessException

@@ -62,6 +62,9 @@ public class Utils extends at.pcgamingfreaks.Utils
 			}
 			else
 			{
+				Object y = AS_NMS_COPY_METHOD.invoke(null, itemStack);
+				Object z = NBT_TAG_COMPOUND_CLASS.newInstance();
+				Object x = SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
 				return SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
 			}
 		}
@@ -141,7 +144,8 @@ public class Utils extends at.pcgamingfreaks.Utils
 
 	//region Reflection constants for the send packet method
 	private final static Class<?> ENTITY_PLAYER = NMSReflection.getNMSClass("EntityPlayer");
-	private final static Method SEND_PACKET = NMSReflection.getMethod(NMSReflection.getNMSClass("PlayerConnection"), "sendPacket");
+	private final static Class<?> PACKET = NMSReflection.getNMSClass("Packet");
+	private final static Method SEND_PACKET = NMSReflection.getMethod(NMSReflection.getNMSClass("PlayerConnection"), "sendPacket", PACKET);
 	private final static Field PLAYER_CONNECTION = NMSReflection.getField(ENTITY_PLAYER, "playerConnection");
 	//endregion
 

@@ -17,13 +17,13 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
@@ -33,20 +33,27 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 import static org.powermock.api.support.membermodification.MemberModifier.suppress;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ JavaPlugin.class, NMSReflection.class, Reflection.class })
+@PrepareForTest({ JavaPlugin.class, NMSReflection.class })
 public class LanguageTest
 {
+	@BeforeClass
+	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
+	{
+		//noinspection SpellCheckingInspection
+		TestBukkitServer server = new TestBukkitServer();
+		server.serverVersion = "TestServer-1_7";
+		Bukkit.setServer(server);
+		TestObjects.initNMSReflection();
+	}
+
 	@Before
-	public void prepareTestData() throws Exception
+	public void prepareTestObjects() throws Exception
 	{
 		TestObjects.initMockedJavaPlugin();
 		whenNew(at.pcgamingfreaks.Language.class).withAnyArguments().thenAnswer(new Answer<Object>()
@@ -71,34 +78,12 @@ public class LanguageTest
 	@Test
 	public void testGetMessage() throws Exception
 	{
-		//noinspection SpellCheckingInspection
-		TestBukkitServer server = new TestBukkitServer();
-		server.serverVersion = "TestServer-1_7";
-		Bukkit.setServer(server);
-		mockStatic(NMSReflection.class);
-		given(NMSReflection.getOBCClass(anyString())).willAnswer(new Answer<Object>()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				return null;
-			}
-		});
-		given(NMSReflection.getVersion()).willReturn("TestServer-1_7");
-		mockStatic(Reflection.class);
-		given(Reflection.getMethod(any(Class.class), anyString())).willAnswer(new Answer<Object>()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				return null;
-			}
-		});
+		TestObjects.setBukkitVersion("TestServer-1_7");
 		Language mockedLanguage = spy(new Language(TestObjects.getJavaPlugin(), 1));
 		doReturn("TestText").when(mockedLanguage).get("test");
 		assertEquals("The language text should match", "TestText", mockedLanguage.getMessage("test").getClassicMessage());
 		assertEquals("The language text should match", "TestText", mockedLanguage.getMessage("test", false).getClassicMessage());
-		given(NMSReflection.getVersion()).willReturn("TestServer-1_1");
+		TestObjects.setBukkitVersion("TestServer-1_1");
 		assertEquals("The language text should match", "TestText", mockedLanguage.getMessage("test").getClassicMessage());
 	}
 }

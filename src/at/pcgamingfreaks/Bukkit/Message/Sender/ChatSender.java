@@ -140,7 +140,7 @@ public class ChatSender extends BaseSender
 
 	protected static void send(@NotNull Player player, @NotNull String json, byte action)
 	{
-		if(CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_CHAT_CONSTRUCTOR == null) return; // The class isn't initialised correctly! My it's not running on a bukkit/spigot server.
+		if(CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_CHAT_CONSTRUCTOR == null) return; // The class isn't initialized correctly! May it's not running on a bukkit/spigot server.
 		try
 		{
 			Utils.sendPacket(player, PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(finalizeJson(json), action));
@@ -153,7 +153,7 @@ public class ChatSender extends BaseSender
 
 	protected static void send(@NotNull Collection<? extends Player> players, @NotNull String json, byte action)
 	{
-		if(CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_CHAT_CONSTRUCTOR == null) return; // The class isn't initialised correctly! My it's not running on a bukkit/spigot server.
+		if(CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_CHAT_CONSTRUCTOR == null) return; // The class isn't initialized correctly! May it's not running on a bukkit/spigot server.
 		try
 		{
 			Object packet = PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(finalizeJson(json), action);

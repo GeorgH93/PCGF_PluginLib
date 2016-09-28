@@ -93,7 +93,5 @@ public class ConfigurationTest
 	{
 		//noinspection ResultOfMethodCallIgnored
 		new File("\\config.yml").delete();
-		//noinspection ResultOfMethodCallIgnored
-		new File("config.yml").delete();
 	}
 }
