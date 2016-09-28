@@ -35,7 +35,7 @@ import java.util.Collection;
 public abstract class BaseSender
 {
 	//region Reflection stuff
-	protected final static Class<?> CHAT_SERIALIZER = NMSReflection.getNMSClass((NMSReflection.getVersion().equalsIgnoreCase("v1_8_R2") || NMSReflection.getVersion().equalsIgnoreCase("v1_8_R3")) ? "IChatBaseComponent$ChatSerializer" : "ChatSerializer");
+	protected final static Class<?> CHAT_SERIALIZER = NMSReflection.getNMSClass((NMSReflection.getVersion().equalsIgnoreCase("v1_8_R1")) ? "ChatSerializer" : "IChatBaseComponent$ChatSerializer");
 	protected final static Class<?> I_CHAT_BASE_COMPONENT = NMSReflection.getNMSClass("IChatBaseComponent");
 	protected final static Method CHAT_SERIALIZER_METHOD_A = NMSReflection.getMethod(CHAT_SERIALIZER, "a", String.class);
 	//endregion
