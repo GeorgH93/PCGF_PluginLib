@@ -32,17 +32,17 @@ public enum MaterialEffects
 	private final String name, nameUpperCase, newName;
 	private final Enum<?> nmsEnumParticle;
 
-	MaterialEffects(String NAME)
-	{
-		this(NAME, NAME.toUpperCase());
-	}
-
 	MaterialEffects(String NAME, String NEWNAME)
 	{
 		name = NAME;
 		nameUpperCase = name.toUpperCase();
 		newName = NEWNAME;
-		nmsEnumParticle = (NMSReflection.getVersion().contains("1_8") || NMSReflection.getVersion().contains("1_9") || NMSReflection.getVersion().contains("1_10")) ? NMSReflection.getEnum("net.minecraft.server." + NMSReflection.getVersion() + ".EnumParticle." + newName) : null;
+		nmsEnumParticle = getNMSEnumParticle(NEWNAME);
+	}
+
+	private static Enum<?> getNMSEnumParticle(String newName)
+	{
+		return (NMSReflection.getVersion().contains("1_8") || NMSReflection.getVersion().contains("1_9") || NMSReflection.getVersion().contains("1_10")) ? NMSReflection.getNMSEnum("EnumParticle." + newName) : null;
 	}
 
 	public String getName()

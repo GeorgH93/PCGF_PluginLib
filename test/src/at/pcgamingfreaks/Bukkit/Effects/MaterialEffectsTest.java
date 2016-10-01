@@ -18,21 +18,25 @@
 package at.pcgamingfreaks.Bukkit.Effects;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.TestClasses.NMS.EnumParticle;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
 import org.bukkit.Bukkit;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class })
+@PrepareForTest({ NMSReflection.class, Reflection.class })
 public class MaterialEffectsTest
 {
 	@BeforeClass
@@ -42,23 +46,8 @@ public class MaterialEffectsTest
 		TestObjects.initNMSReflection();
 	}
 
-	@Before
-	public void prepareTestObjects()
-	{
-		/*mockStatic(NMSReflection.class);
-		doAnswer(new Answer<Enum<?>>() {
-			@Override
-			public Enum<?> answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				String name = (String) invocationOnMock.getArguments()[0];
-				//noinspection SpellCheckingInspection
-				return NMSReflection.getNMSEnum(name.replace("net.minecraft.server", "at.pcgamingfreaks.TestClasses.NMS"));
-			}
-		}).when(NMSReflection.getEnum(anyString()));*/
-	}
-
-	//@Test
-	public void testMaterialEffects() throws NoSuchFieldException, IllegalAccessException
+	@Test
+	public void testMaterialEffects() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException
 	{
 		TestObjects.setBukkitVersion("1_8");
 		MaterialEffects itemCrack = MaterialEffects.ITEM_CRACK;
@@ -68,5 +57,15 @@ public class MaterialEffectsTest
 		assertEquals("The uppercase name of item crack should match", "ICONCRACK", itemCrack.getNameUpperCase());
 		assertEquals("The new name of item crack should match", "ITEM_CRACK", itemCrack.getNewName());
 		assertNotNull("The enum of item crack should not be null", itemCrack.getEnum());
+		assertEquals("The enum value should match", EnumParticle.ITEM_CRACK, itemCrack.getEnum());
+		Method materialEffectsInitializer = MaterialEffects.class.getDeclaredMethod("getNMSEnumParticle", String.class);
+		materialEffectsInitializer.setAccessible(true);
+		TestObjects.setBukkitVersion("1_9");
+		assertEquals("The enum value should match", EnumParticle.BLOCK_CRACK, materialEffectsInitializer.invoke(null, "BLOCK_CRACK"));
+		TestObjects.setBukkitVersion("1_10");
+		assertEquals("The enum value should match", EnumParticle.BLOCK_DUST, materialEffectsInitializer.invoke(null, "BLOCK_DUST"));
+		TestObjects.setBukkitVersion("1_7");
+		assertNull("The enum of item crack should now be null", materialEffectsInitializer.invoke(null, "SOMETHING"));
+		materialEffectsInitializer.setAccessible(false);
 	}
 }

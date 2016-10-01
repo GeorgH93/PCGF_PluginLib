@@ -91,14 +91,23 @@ public enum Effects
 		this.id = id;
 		this.name = name;
 		this.newName = newName;
-		if(NMSReflection.getVersion().contains("1_8") || NMSReflection.getVersion().contains("1_9") || NMSReflection.getVersion().contains("1_10"))
+		nmsEnumParticle = getNMSEnumParticle(id, newName);
+	}
+
+	private static Enum<?> getNMSEnumParticle(int id, String newName)
+	{
+		if (NMSReflection.getVersion().contains("1_8") || NMSReflection.getVersion().contains("1_9") || NMSReflection.getVersion().contains("1_10"))
 		{
-			nmsEnumParticle = (this.id < 36 || (this.id >= 36 && this.id < 40 && NMSReflection.getVersion().contains("1_9")) || (this.id >= 36 && NMSReflection.getVersion().contains("1_10"))) ? NMSReflection.getNMSEnum("EnumParticle." + this.newName) : null;
+			if (id < 36)
+			{
+				return NMSReflection.getNMSEnum("EnumParticle." + newName);
+			}
+			else if (id < 40 && (NMSReflection.getVersion().contains("1_9") || NMSReflection.getVersion().contains("1_10")))
+			{
+				return NMSReflection.getNMSEnum("EnumParticle." + newName);
+			}
 		}
-		else
-		{
-			nmsEnumParticle = null;
-		}
+		return null;
 	}
 
 	public String getName()
