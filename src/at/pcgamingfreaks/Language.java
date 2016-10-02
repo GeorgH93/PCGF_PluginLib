@@ -373,7 +373,7 @@ public class Language
 		{
 			//noinspection unchecked
 			msg = (T) messageClasses.messageConstructor.newInstance((escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path));
-			String pathSendMethod = path + PATH_ADDITION_SEND_METHOD, pathParameter = path + PATH_ADDITION_PARAMETERS;
+			String pathSendMethod = "Language." + path + PATH_ADDITION_SEND_METHOD, pathParameter = "Language." + path + PATH_ADDITION_PARAMETERS;
 			if(lang.isSet(pathSendMethod))
 			{
 				Object sendMethod = Enum.valueOf(messageClasses.enumType, lang.getString(pathSendMethod, "CHAT").toUpperCase());

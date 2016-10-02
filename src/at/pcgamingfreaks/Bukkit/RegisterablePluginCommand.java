@@ -64,8 +64,8 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 				if(alias == null || name.equalsIgnoreCase(alias)) continue;
 				aliasesList.add(alias);
 			}
+			this.setAliases(aliasesList);
 		}
-		this.setAliases(aliasesList);
 	}
 
 	/**

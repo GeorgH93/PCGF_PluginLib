@@ -17,10 +17,11 @@
 
 package at.pcgamingfreaks.Bukkit.Effects;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 
-@SuppressWarnings("unused")
-public enum Effects
+@SuppressWarnings({ "unused", "SpellCheckingInspection" })
+public enum Effects implements IEffects
 {
 	EXPLODE(0, "explode", "EXPLOSION_NORMAL"),
 	LARGE_EXPLOSION(1, "largeexplosion", "EXPLOSION_LARGE"),
@@ -59,27 +60,32 @@ public enum Effects
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	BARRIER(35, "barrier"),
+	BARRIER(35, "barrier", MCVersion.MC_1_8),
+	/**
+	 * Only for Minecraft 1.8 and newer!
+	 */
+	DROPLET(36, "droplet", MCVersion.MC_1_8),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	SWEEP_ATTACK(36, "sweepAttack", "SWEEP_ATTACK"),
+	SWEEP_ATTACK(37, "sweepAttack", "SWEEP_ATTACK", MCVersion.MC_1_9),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	DRAGON_BREATH(37, "dragonBreath", "DRAGON_BREATH"),
+	DRAGON_BREATH(38, "dragonBreath", "DRAGON_BREATH", MCVersion.MC_1_9),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	END_ROD(38, "endRod", "END_ROD"),
+	END_ROD(39, "endRod", "END_ROD", MCVersion.MC_1_9),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	DAMAGE_INDICATOR(39, "damageIndicator", "DAMAGE_INDICATOR");
+	DAMAGE_INDICATOR(40, "damageIndicator", "DAMAGE_INDICATOR", MCVersion.MC_1_9);
 
 	private final int id;
 	private final String name, newName;
 	private final Enum<?> nmsEnumParticle;
+	private final MCVersion minVersion;
 
 	Effects(int id, String name)
 	{
@@ -88,33 +94,30 @@ public enum Effects
 
 	Effects(int id, String name, String newName)
 	{
+		this(id, name, newName, MCVersion.MC_1_7);
+	}
+
+	Effects(int id, String name, MCVersion minVersion)
+	{
+		this(id, name, name.toUpperCase(), minVersion);
+	}
+
+	Effects(int id, String name, String newName, MCVersion minVersion)
+	{
 		this.id = id;
 		this.name = name;
 		this.newName = newName;
-		nmsEnumParticle = getNMSEnumParticle(id, newName);
+		this.minVersion = minVersion;
+		nmsEnumParticle = (MCVersion.isNewerOrEqualThan(minVersion)) ? NMSReflection.getNMSEnum("EnumParticle." + newName) : null;
 	}
 
-	private static Enum<?> getNMSEnumParticle(int id, String newName)
-	{
-		if (NMSReflection.getVersion().contains("1_8") || NMSReflection.getVersion().contains("1_9") || NMSReflection.getVersion().contains("1_10"))
-		{
-			if (id < 36)
-			{
-				return NMSReflection.getNMSEnum("EnumParticle." + newName);
-			}
-			else if (id < 40 && (NMSReflection.getVersion().contains("1_9") || NMSReflection.getVersion().contains("1_10")))
-			{
-				return NMSReflection.getNMSEnum("EnumParticle." + newName);
-			}
-		}
-		return null;
-	}
-
+	@Override
 	public String getName()
 	{
 		return name;
 	}
 
+	@Override
 	public String getNewName()
 	{
 		return newName;
@@ -125,8 +128,21 @@ public enum Effects
 		return id;
 	}
 
+	@Override
 	public Enum<?> getEnum()
 	{
 		return nmsEnumParticle;
+	}
+
+	@Override
+	public String getNameUpperCase()
+	{
+		return getName().toUpperCase();
+	}
+
+	@Override
+	public MCVersion getMinVersion()
+	{
+		return minVersion;
 	}
 }

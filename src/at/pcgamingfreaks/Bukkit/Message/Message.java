@@ -17,10 +17,10 @@
 
 package at.pcgamingfreaks.Bukkit.Message;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Sender.BossBarMetadata;
 import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Bukkit.Message.Sender.TitleMetadata;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
 
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -34,9 +34,9 @@ import java.util.*;
 public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender>
 {
 	//region Variables
-	private final static String VERSION = NMSReflection.getVersion();
+	private final static boolean PRE_1_8_MC = MCVersion.isOlderThan(MCVersion.MC_1_8);
 
-	private SendMethod method = VERSION.contains("1_7") ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
+	private SendMethod method = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
 	//endregion
 
 	//region Constructors
@@ -136,13 +136,13 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 */
 	public void setSendMethod(@Nullable SendMethod method)
 	{
-		if(VERSION.contains("1_7"))
-		{
-			method = SendMethod.CHAT_CLASSIC;
-		}
-		else if(method == null)
+		if(method == null)
 		{
 			method = SendMethod.DISABLED;
+		}
+		else if(PRE_1_8_MC)
+		{
+			method = SendMethod.CHAT_CLASSIC;
 		}
 		this.method = method;
 	}

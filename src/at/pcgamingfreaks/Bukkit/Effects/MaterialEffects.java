@@ -17,51 +17,67 @@
 
 package at.pcgamingfreaks.Bukkit.Effects;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 
 /**
  * Only available for Minecraft 1.8 and newer!
  */
 @SuppressWarnings("unused")
-public enum MaterialEffects
+public enum MaterialEffects implements IEffects
 {
-	ITEM_CRACK("iconcrack", "ITEM_CRACK"),
-	BLOCK_CRACK("blockcrack", "BLOCK_CRACK"),
-	BLOCK_DUST("blockdust", "BLOCK_DUST");
+	@SuppressWarnings("SpellCheckingInspection")
+	ITEM_CRACK("iconcrack", "ITEM_CRACK", MCVersion.MC_1_8),
+	@SuppressWarnings("SpellCheckingInspection")
+	BLOCK_CRACK("blockcrack", "BLOCK_CRACK", MCVersion.MC_1_8),
+	@SuppressWarnings("SpellCheckingInspection")
+	BLOCK_DUST("blockdust", "BLOCK_DUST", MCVersion.MC_1_8),
+	/**
+	 * Only for Minecraft 1.10 and newer!
+	 */
+	@SuppressWarnings("SpellCheckingInspection")
+	FALLING_DUST("fallingdust", "FALLING_DUST", MCVersion.MC_1_10);
 
 	private final String name, nameUpperCase, newName;
 	private final Enum<?> nmsEnumParticle;
+	private final MCVersion minVersion;
 
-	MaterialEffects(String NAME, String NEWNAME)
+	MaterialEffects(String name, String newName, MCVersion minVersion)
 	{
-		name = NAME;
+		this.name = name;
 		nameUpperCase = name.toUpperCase();
-		newName = NEWNAME;
-		nmsEnumParticle = getNMSEnumParticle(NEWNAME);
+		this.newName = newName;
+		this.minVersion = minVersion;
+		nmsEnumParticle = (MCVersion.isNewerOrEqualThan(minVersion)) ? NMSReflection.getNMSEnum("EnumParticle." + newName) : null;
 	}
 
-	private static Enum<?> getNMSEnumParticle(String newName)
-	{
-		return (NMSReflection.getVersion().contains("1_8") || NMSReflection.getVersion().contains("1_9") || NMSReflection.getVersion().contains("1_10")) ? NMSReflection.getNMSEnum("EnumParticle." + newName) : null;
-	}
-
+	@Override
 	public String getName()
 	{
 		return name;
 	}
 
+	@Override
 	public String getNameUpperCase()
 	{
 		return nameUpperCase;
 	}
 
+	@Override
 	public String getNewName()
 	{
 		return newName;
 	}
 
+	@Override
 	public Enum<?> getEnum()
 	{
 		return nmsEnumParticle;
+	}
+
+	@Override
+	public MCVersion getMinVersion()
+	{
+		return minVersion;
 	}
 }

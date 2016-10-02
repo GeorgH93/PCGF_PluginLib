@@ -98,7 +98,7 @@ public class Language extends at.pcgamingfreaks.Language
 
 	public Message getMessage(String path, boolean escapeStringFormatCharacters)
 	{
-		if(NMSReflection.getVersion().contains("1_7"))
+		if(MCVersion.isOlderThan(MCVersion.MC_1_8))
 		{
 			Message msg = new Message((escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path));
 			msg.setSendMethod(SendMethod.CHAT_CLASSIC);
