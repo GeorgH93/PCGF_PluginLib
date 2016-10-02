@@ -39,6 +39,7 @@ public enum Effects implements IEffects
 	MOB_SPELL(13, "mobSpell", "SPELL_MOB"),
 	INSTANT_SPELL(14, "instantSpell", "SPELL_INSTANT"),
 	SPELL(15, "spell"),
+	SPELL_MOB_AMBIENT(16, "mobSpellAmbient", "SPELL_MOB_AMBIENT"),
 	WITCH_MAGIC(17, "witchMagic", "SPELL_WITCH"),
 	DRIP_WATER(18, "dripWater", "DRIP_WATER"),
 	DRIP_LAVA(19, "dripLava", "DRIP_LAVA"),
@@ -64,23 +65,31 @@ public enum Effects implements IEffects
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	DROPLET(36, "droplet", MCVersion.MC_1_8),
+	WATER_DROP(36, "droplet", "WATER_DROP", MCVersion.MC_1_8),
+	/**
+	 * Only for Minecraft 1.8 and newer!
+	 */
+	ITEM_TAKE(37, "take", "ITEM_TAKE", MCVersion.MC_1_8),
+	/**
+	 * Only for Minecraft 1.8 and newer!
+	 */
+	MOB_APPEARANCE(37, "mobappearance", "MOB_APPEARANCE", MCVersion.MC_1_8),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	SWEEP_ATTACK(37, "sweepAttack", "SWEEP_ATTACK", MCVersion.MC_1_9),
+	SWEEP_ATTACK(38, "sweepAttack", "SWEEP_ATTACK", MCVersion.MC_1_9),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	DRAGON_BREATH(38, "dragonBreath", "DRAGON_BREATH", MCVersion.MC_1_9),
+	DRAGON_BREATH(39, "dragonBreath", "DRAGON_BREATH", MCVersion.MC_1_9),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	END_ROD(39, "endRod", "END_ROD", MCVersion.MC_1_9),
+	END_ROD(40, "endRod", "END_ROD", MCVersion.MC_1_9),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	DAMAGE_INDICATOR(40, "damageIndicator", "DAMAGE_INDICATOR", MCVersion.MC_1_9);
+	DAMAGE_INDICATOR(41, "damageIndicator", "DAMAGE_INDICATOR", MCVersion.MC_1_9);
 
 	private final int id;
 	private final String name, newName;
