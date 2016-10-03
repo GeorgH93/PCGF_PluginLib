@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Effects;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.TestClasses.NMS.EnumParticle;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
@@ -32,15 +33,15 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Matchers.anyObject;
+import static org.powermock.api.mockito.PowerMockito.doAnswer;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class })
+@PrepareForTest({ MCVersion.class, NMSReflection.class })
 public class EffectsTest
 {
 	@BeforeClass
@@ -48,28 +49,14 @@ public class EffectsTest
 	{
 		Bukkit.setServer(new TestBukkitServer());
 		final int[] counter = { 0 };
-		mockStatic(NMSReflection.class);
-		doAnswer(new Answer<String>() {
+		mockStatic(MCVersion.class);
+		doAnswer(new Answer<Boolean>() {
 			@Override
-			public String answer(InvocationOnMock invocationOnMock) throws Throwable
+			public Boolean answer(InvocationOnMock invocationOnMock) throws Throwable
 			{
-				counter[0]++;
-				if (counter[0] < 4)
-				{
-					return "1_7";
-				}
-				else if (counter[0] < 41)
-				{
-					return "1_8";
-				}
-				else if (counter[0] < 47)
-				{
-					return "1_9";
-				}
-				return "1_10";
+				return ++counter[0] >= 36;
 			}
-		}).when(NMSReflection.class, "getVersion");
-		doCallRealMethod().when(NMSReflection.class, "getNMSEnum", anyString());
+		}).when(MCVersion.class, "isNewerOrEqualThan", anyObject());
 		TestObjects.initNMSReflection();
 	}
 
@@ -77,15 +64,11 @@ public class EffectsTest
 	public void testEffects() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
 	{
 		assertEquals("The name of the enum constant should match", "explode", Effects.EXPLODE.getName());
+		assertEquals("The name of the enum constant should match", "EXPLODE", Effects.EXPLODE.getNameUpperCase());
 		assertEquals("The new name of the enum constant should match", "EXPLOSION_NORMAL", Effects.EXPLODE.getNewName());
 		assertEquals("The id of the enum constant should match", 0, Effects.EXPLODE.getID());
 		assertNull("The enum of the enum constant should be null", Effects.EXPLODE.getEnum());
 		assertEquals("The enum of the enum constant should match", EnumParticle.BARRIER, Effects.BARRIER.getEnum());
-		assertNull("The enum of the enum constant should be null", Effects.SWEEP_ATTACK.getEnum());
-		assertEquals("The enum of the enum constant should match", EnumParticle.DRAGON_BREATH, Effects.DRAGON_BREATH.getEnum());
-		Method getNMSEnumParticle = Effects.class.getDeclaredMethod("getNMSEnumParticle", int.class, String.class);
-		getNMSEnumParticle.setAccessible(true);
-		assertNull("The enum of the invalid effect should be null", getNMSEnumParticle.invoke(null, 41, "INVALID"));
-		getNMSEnumParticle.setAccessible(false);
+		assertEquals("The min version should match", MCVersion.MC_1_9, Effects.DAMAGE_INDICATOR.getMinVersion());
 	}
 }

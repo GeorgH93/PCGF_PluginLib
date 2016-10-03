@@ -18,7 +18,9 @@
 package at.pcgamingfreaks.TestClasses.NMS;
 
 @SuppressWarnings("unused")
-public class PacketPlayOutWorldParticles
+public class PacketPlayOutWorldParticles extends Packet
 {
 	public PacketPlayOutWorldParticles(EnumParticle enumParticle, boolean bool, float f1, float f2, float f3, float f4, float f5, float f6, float f7, int i, int[] ints) {}
+
+	public PacketPlayOutWorldParticles(String name, float f1, float f2, float f3, float f4, float f5, float f6, float f7, int i) {}
 }

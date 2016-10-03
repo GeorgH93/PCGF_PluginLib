@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Message;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Sender.*;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
@@ -64,9 +65,6 @@ public class MessageTest
 		setVersion("1_7");
 		Message message = new Message("");
 		assertEquals("The send method should be correct", SendMethod.CHAT_CLASSIC, message.getSendMethod());
-		setVersion("");
-		message = new Message("");
-		assertEquals("The send method should be correct", SendMethod.CHAT, message.getSendMethod());
 		Message.class.getDeclaredMethod("send", Object.class, Object[].class).invoke(message, new Object(), new Object[] {});
 	}
 
@@ -245,13 +243,13 @@ public class MessageTest
 
 	private void setVersion(String version) throws NoSuchFieldException, IllegalAccessException
 	{
-		TestObjects.setBukkitVersion(version);
-		Field versionField = Message.class.getDeclaredField("VERSION");
+		TestObjects.setBukkitVersion(version + "_R1");
+		Field versionField = Message.class.getDeclaredField("PRE_1_8_MC");
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
 		versionField.setAccessible(true);
 		modifiers.set(versionField, versionField.getModifiers() & ~Modifier.FINAL);
-		versionField.set(null, version);
+		versionField.set(null, MCVersion.isOlderThan(MCVersion.MC_1_8));
 		modifiers.set(versionField, versionField.getModifiers() | Modifier.FINAL);
 		versionField.setAccessible(false);
 		modifiers.setAccessible(false);

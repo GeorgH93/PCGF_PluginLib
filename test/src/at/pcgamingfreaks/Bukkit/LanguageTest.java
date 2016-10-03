@@ -78,12 +78,12 @@ public class LanguageTest
 	@Test
 	public void testGetMessage() throws Exception
 	{
-		TestObjects.setBukkitVersion("TestServer-1_7");
+		TestObjects.setBukkitVersion("1_7_R1");
 		Language mockedLanguage = spy(new Language(TestObjects.getJavaPlugin(), 1));
 		doReturn("TestText").when(mockedLanguage).get("test");
 		assertEquals("The language text should match", "TestText", mockedLanguage.getMessage("test").getClassicMessage());
 		assertEquals("The language text should match", "TestText", mockedLanguage.getMessage("test", false).getClassicMessage());
-		TestObjects.setBukkitVersion("TestServer-1_1");
+		TestObjects.setBukkitVersion("1_1_R1");
 		assertEquals("The language text should match", "TestText", mockedLanguage.getMessage("test").getClassicMessage());
 	}
 }

@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Effects;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.NMS.EnumParticle;
@@ -31,9 +32,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class, Reflection.class })
@@ -49,7 +50,7 @@ public class MaterialEffectsTest
 	@Test
 	public void testMaterialEffects() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException
 	{
-		TestObjects.setBukkitVersion("1_8");
+		TestObjects.setBukkitVersion("1_8_R1");
 		MaterialEffects itemCrack = MaterialEffects.ITEM_CRACK;
 		//noinspection SpellCheckingInspection
 		assertEquals("The name of item crack should match", "iconcrack", itemCrack.getName());
@@ -58,14 +59,6 @@ public class MaterialEffectsTest
 		assertEquals("The new name of item crack should match", "ITEM_CRACK", itemCrack.getNewName());
 		assertNotNull("The enum of item crack should not be null", itemCrack.getEnum());
 		assertEquals("The enum value should match", EnumParticle.ITEM_CRACK, itemCrack.getEnum());
-		Method materialEffectsInitializer = MaterialEffects.class.getDeclaredMethod("getNMSEnumParticle", String.class);
-		materialEffectsInitializer.setAccessible(true);
-		TestObjects.setBukkitVersion("1_9");
-		assertEquals("The enum value should match", EnumParticle.BLOCK_CRACK, materialEffectsInitializer.invoke(null, "BLOCK_CRACK"));
-		TestObjects.setBukkitVersion("1_10");
-		assertEquals("The enum value should match", EnumParticle.BLOCK_DUST, materialEffectsInitializer.invoke(null, "BLOCK_DUST"));
-		TestObjects.setBukkitVersion("1_7");
-		assertNull("The enum of item crack should now be null", materialEffectsInitializer.invoke(null, "SOMETHING"));
-		materialEffectsInitializer.setAccessible(false);
+		assertEquals("The min version should match", MCVersion.MC_1_8, itemCrack.getMinVersion());
 	}
 }

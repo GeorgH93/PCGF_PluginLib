@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.TestClasses;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 
 import net.md_5.bungee.api.ProxyServer;
@@ -39,6 +40,7 @@ import org.powermock.api.mockito.PowerMockito;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -128,7 +130,7 @@ public class TestObjects
 	@SuppressWarnings("SpellCheckingInspection")
 	public static void initNMSReflection() throws NoSuchFieldException, IllegalAccessException
 	{
-		setBukkitVersion("1_7");
+		setBukkitVersion("1_7_R1");
 		Field nmsClassPath = NMSReflection.class.getDeclaredField("NMS_CLASS_PATH");
 		nmsClassPath.setAccessible(true);
 		nmsClassPath.set(null, "at.pcgamingfreaks.TestClasses.NMS.");
@@ -146,6 +148,15 @@ public class TestObjects
 		bukkitVersion.setAccessible(true);
 		bukkitVersion.set(null, version);
 		bukkitVersion.setAccessible(false);
+		Field modifiers = Field.class.getDeclaredField("modifiers");
+		modifiers.setAccessible(true);
+		Field currentVersion = MCVersion.class.getDeclaredField("CURRENT_VERSION");
+		currentVersion.setAccessible(true);
+		modifiers.set(currentVersion, currentVersion.getModifiers() & ~Modifier.FINAL);
+		currentVersion.set(null, MCVersion.getFromServerVersion(version));
+		modifiers.set(currentVersion, currentVersion.getModifiers() | Modifier.FINAL);
+		currentVersion.setAccessible(false);
+		modifiers.setAccessible(false);
 	}
 
 	public static void initPlayers()

@@ -49,7 +49,7 @@ public class TestBukkitPlayer implements Player
 	public int sendCalls = 0;
 
 	@SuppressWarnings("unused")
-	private Object getHandle()
+	public Object getHandle()
 	{
 		return new EntityPlayer();
 	}
