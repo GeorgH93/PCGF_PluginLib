@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * This enum allows to compare minecraft version. Useful for reflection and version depending stuff.
  */
+@SuppressWarnings("unused")
 public enum MCVersion
 {
 	UNKNOWN(0, ""),
@@ -156,6 +157,6 @@ public enum MCVersion
 				return entry.getValue();
 			}
 		}
-		return null;
+		return UNKNOWN;
 	}
 }
