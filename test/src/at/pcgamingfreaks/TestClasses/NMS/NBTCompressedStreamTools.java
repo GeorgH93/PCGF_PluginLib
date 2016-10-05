@@ -17,26 +17,22 @@
 
 package at.pcgamingfreaks.TestClasses.NMS;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 @SuppressWarnings("unused")
-public class ItemStack
+public class NBTCompressedStreamTools
 {
-	public org.bukkit.inventory.ItemStack itemStack;
+	public static void a(NBTTagCompound tagCompound, OutputStream outputStream) {}
 
-	public ItemStack(org.bukkit.inventory.ItemStack itemStack)
+	public static NBTTagCompound a(InputStream inputStream)
 	{
-		this.itemStack = itemStack;
-	}
-
-	public static ItemStack createStack(NBTTagCompound nbtTagCompound)
-	{
-		//noinspection deprecation
-		return new ItemStack(new org.bukkit.inventory.ItemStack(nbtTagCompound.getInt("id"), nbtTagCompound.getInt("Count")));
-	}
-
-	public NBTTagCompound save(NBTTagCompound nbtTagCompound)
-	{
-		nbtTagCompound.add("id", itemStack.getType());
-		nbtTagCompound.add("Count", itemStack.getAmount());
-		return nbtTagCompound;
+		NBTTagCompound tagCompound = new NBTTagCompound();
+		tagCompound.add("size", 10);
+		NBTTagCompound itemStack = new NBTTagCompound();
+		itemStack.add("id", 0);
+		itemStack.add("Count", 20);
+		tagCompound.add("0", itemStack);
+		return tagCompound;
 	}
 }

@@ -17,7 +17,8 @@
 
 package at.pcgamingfreaks.Bukkit.Effects;
 
-import org.bukkit.Bukkit;
+import at.pcgamingfreaks.Bukkit.MCVersion;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -141,32 +142,17 @@ public abstract class EffectBase
 	 */
 	public static EffectBase getEffectSpawner()
 	{
-		EffectBase eb = null;
-		String name = Bukkit.getServer().getClass().getPackage().getName();
-		String[] version = name.substring(name.lastIndexOf('.') + 2).split("_");
-		try
+		if (MCVersion.isOlderThan(MCVersion.MC_1_8) && MCVersion.isNewerThan(MCVersion.UNKNOWN))
 		{
-			if(version[0].equals("1"))
-			{
-				if(version[1].equals("7"))
-				{
-					eb = new EffectBukkit_1_7();
-				}
-				else if(version[1].equals("8") || version[1].equals("9") || version[1].equals("10"))
-				{
-					eb = new EffectBukkit_1_8_AND_NEWER();
-				}
-			}
+			return new EffectBukkit_1_7();
 		}
-		catch(NoClassDefFoundError | Exception e)
+		else if (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_8))
 		{
-			e.printStackTrace();
-			eb = null;
+			return new EffectBukkit_1_8_AND_NEWER();
 		}
-		if(eb == null)
+		else
 		{
-			Bukkit.getServer().getLogger().warning("Could not initialize effect spawner. Running: " + name + ":" + Bukkit.getVersion());
+			return null;
 		}
-		return eb;
 	}
 }

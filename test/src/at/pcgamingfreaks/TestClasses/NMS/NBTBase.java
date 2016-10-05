@@ -18,25 +18,4 @@
 package at.pcgamingfreaks.TestClasses.NMS;
 
 @SuppressWarnings("unused")
-public class ItemStack
-{
-	public org.bukkit.inventory.ItemStack itemStack;
-
-	public ItemStack(org.bukkit.inventory.ItemStack itemStack)
-	{
-		this.itemStack = itemStack;
-	}
-
-	public static ItemStack createStack(NBTTagCompound nbtTagCompound)
-	{
-		//noinspection deprecation
-		return new ItemStack(new org.bukkit.inventory.ItemStack(nbtTagCompound.getInt("id"), nbtTagCompound.getInt("Count")));
-	}
-
-	public NBTTagCompound save(NBTTagCompound nbtTagCompound)
-	{
-		nbtTagCompound.add("id", itemStack.getType());
-		nbtTagCompound.add("Count", itemStack.getAmount());
-		return nbtTagCompound;
-	}
-}
+public class NBTBase {}

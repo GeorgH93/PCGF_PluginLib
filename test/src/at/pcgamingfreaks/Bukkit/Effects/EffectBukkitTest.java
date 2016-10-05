@@ -19,11 +19,15 @@ package at.pcgamingfreaks.Bukkit.Effects;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -34,13 +38,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class, Utils.class })
@@ -70,7 +75,24 @@ public class EffectBukkitTest
 		spawnParticle.invoke(effect, null, 0.0, null);
 		verifyStatic(times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
-
+		List<Entity> players = new ArrayList<>();
+		Location mockedLocation = mock(Location.class);
+		World mockedWorld = mock(World.class);
+		doReturn(players).when(mockedWorld).getEntities();
+		doReturn(mockedWorld).when(mockedLocation).getWorld();
+		TestBukkitPlayer mockedPlayer = spy(new TestBukkitPlayer());
+		Location mockedLocation2 = mock(Location.class);
+		World mockedWorld2 = mock(World.class);
+		doReturn(mockedWorld2).when(mockedLocation2).getWorld();
+		doReturn(mockedLocation2).when(mockedPlayer).getLocation();
+		players.add(mockedPlayer);
+		spawnParticle.invoke(effect, mockedLocation, 10.0, Particle.CLOUD);
+		verifyStatic(times(0));
+		Utils.sendPacket(any(Player.class), anyObject());
+		doReturn(mockedLocation).when(mockedPlayer).getLocation();
+		spawnParticle.invoke(effect, mockedLocation, -10.0, Particle.CLOUD);
+		verifyStatic(times(0));
+		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle.setAccessible(false);
 	}
 }

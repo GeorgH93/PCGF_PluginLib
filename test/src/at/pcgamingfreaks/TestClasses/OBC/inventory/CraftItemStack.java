@@ -26,4 +26,10 @@ public class CraftItemStack
 	{
 		return new at.pcgamingfreaks.TestClasses.NMS.ItemStack(itemStack);
 	}
+
+	@SuppressWarnings("SpellCheckingInspection")
+	public static ItemStack asBukkitCopy(at.pcgamingfreaks.TestClasses.NMS.ItemStack itemStack)
+	{
+		return new ItemStack(itemStack.itemStack.getType(), itemStack.itemStack.getAmount());
+	}
 }

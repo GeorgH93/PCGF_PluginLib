@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public class NBTTagCompound
+public class NBTTagCompound extends NBTBase
 {
 	Map<String, Object> elements = new HashMap<>();
 
@@ -30,6 +30,18 @@ public class NBTTagCompound
 	{
 		elements.put(name, value);
 	}
+
+	public void set(String name, Object value) { elements.put(name, value); }
+
+	public void set(String name, NBTBase nbtBase) { elements.put(name, nbtBase); }
+
+	public void setInt(String name, int value) { elements.put(name, value); }
+
+	public int getInt(String name) { return (int) elements.get(name); }
+
+	public NBTTagCompound getCompound(String name) { return (NBTTagCompound) elements.get(name); }
+
+	public boolean hasKeyOfType(String name, int integer) { return elements.containsKey(name); }
 
 	@Override
 	public String toString()
