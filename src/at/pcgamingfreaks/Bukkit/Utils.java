@@ -62,9 +62,6 @@ public class Utils extends at.pcgamingfreaks.Utils
 			}
 			else
 			{
-				Object y = AS_NMS_COPY_METHOD.invoke(null, itemStack);
-				Object z = NBT_TAG_COMPOUND_CLASS.newInstance();
-				Object x = SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
 				return SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
 			}
 		}
@@ -73,6 +70,17 @@ public class Utils extends at.pcgamingfreaks.Utils
 			logger.log(Level.SEVERE, "Failed to serialize item stack to NMS item! Bukkit Version: " + Bukkit.getServer().getVersion() + "\n", t);
 		}
 		return "";
+	}
+
+	/**
+	 * Escapes special characters to allow the string to be placed inside a json string (e.g. to replace a text within an already built json).
+	 *
+	 * @param string The string to be escaped.
+	 * @return The escaped string.
+	 */
+	public static String escapeJsonString(String string)
+	{
+		return string.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
 	}
 
 	/**
