@@ -19,6 +19,8 @@ package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.ConsoleColor;
 
+import com.google.gson.Gson;
+
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -36,6 +38,7 @@ import java.util.logging.Logger;
  */
 public class Utils extends at.pcgamingfreaks.Utils
 {
+	private static final Gson GSON = new Gson();
 	private static final Class<?> CRAFT_ITEM_STACK_CLASS = NMSReflection.getOBCClass("inventory.CraftItemStack");
 	private static final Class<?> NMS_ITEM_STACK_CLASS = NMSReflection.getNMSClass("ItemStack");
 	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NMSReflection.getNMSClass("NBTTagCompound");
@@ -62,10 +65,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 			}
 			else
 			{
-				Object y = AS_NMS_COPY_METHOD.invoke(null, itemStack);
-				Object z = NBT_TAG_COMPOUND_CLASS.newInstance();
-				Object x = SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
-				return SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
+				return GSON.toJson(SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()));
 			}
 		}
 		catch (Throwable t)
