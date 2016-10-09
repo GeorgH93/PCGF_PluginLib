@@ -74,7 +74,7 @@ public class UUIDConverterTest
 		System.setOut(new PrintStream(outputStream));
 		System.setErr(new PrintStream(errorStream));
 		new UUIDConverter();
-		assertEquals("UUIDConverter should initialize with 3 messages", 3, outputStream.toString().split("\n").length);
+		assertEquals("UUIDConverter should initialize with 2 messages", 2, outputStream.toString().split("\n").length);
 		assertTrue("UUIDConverter should throw an error", errorStream.size() > 0);
 		//noinspection SpellCheckingInspection
 		assertEquals("UUIDConverter should contain file data", UUIDConverter.getUUIDFromName("VoidCrafterHD", true, true), "4ad6ef2a-7473-46bc-b15d-ec2ee61bc1b6");
