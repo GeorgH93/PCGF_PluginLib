@@ -47,7 +47,6 @@ public final class UUIDConverter
 		int loaded = 0;
 		//noinspection SpellCheckingInspection
 		File uuidCache = new File("usercache.json");
-		System.out.println(uuidCache.getAbsolutePath());
 		if(uuidCache.exists())
 		{
 			try(JsonReader reader = new JsonReader(new FileReader(uuidCache)))
