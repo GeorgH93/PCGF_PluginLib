@@ -17,16 +17,23 @@
 
 package at.pcgamingfreaks.Message;
 
+import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestMessage;
 import at.pcgamingfreaks.TestClasses.TestMessageComponent;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Reflection.class })
 public class MessageTest
 {
 	@Test
@@ -66,6 +73,8 @@ public class MessageTest
 	@Test
 	public void testMessageWithError() throws Exception
 	{
+		assertEquals("The test message should be empty", "", new TestMessage("").getClassicMessage());
+		mockStatic(Reflection.class);
 		assertEquals("The test message should be empty", "", new TestMessage("").getClassicMessage());
 	}
 }

@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Message;
 
+import at.pcgamingfreaks.Reflection;
+
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.Validate;
@@ -47,7 +49,7 @@ public abstract class Message<T extends Message, PLAYER, COMMAND_SENDER>
 		try
 		{
 			//noinspection unchecked
-			messageComponents = (List<? extends MessageComponent>) messageComponentClass.getMethod("fromJson", String.class).invoke(null, message);
+			messageComponents = (List<? extends MessageComponent>) Reflection.getMethod(messageComponentClass, "fromJson", String.class).invoke(null, message);
 		}
 		catch(Exception ignored) {} // If there was an exception it's very likely that the given message isn't a JSON, that's all we need to know.
 		if(messageComponents != null) // The json was successfully deserialized
@@ -60,13 +62,13 @@ public abstract class Message<T extends Message, PLAYER, COMMAND_SENDER>
 			List<MessageComponent> messageComponentsList = new ArrayList<>(1);
 			try
 			{
-				//noinspection unchecked
-				MessageComponent mc = (MessageComponent) messageComponentClass.getConstructor().newInstance();
+				//noinspection ConstantConditions
+				MessageComponent mc = (MessageComponent) Reflection.getConstructor(messageComponentClass).newInstance();
 				mc.setText(message);
 				messageComponentsList.add(mc);
 				messageComponents = messageComponentsList;
 			}
-			catch(InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+			catch(InstantiationException | IllegalAccessException | InvocationTargetException | NullPointerException e)
 			{
 				e.printStackTrace();
 			}

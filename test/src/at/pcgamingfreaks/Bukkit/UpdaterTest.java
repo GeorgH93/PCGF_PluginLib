@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -40,14 +41,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.powermock.api.mockito.PowerMockito.*;
 import static org.powermock.api.support.membermodification.MemberModifier.suppress;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Bukkit.class, JavaPlugin.class, PluginDescriptionFile.class })
+@PrepareForTest({ Bukkit.class, JavaPlugin.class, PluginDescriptionFile.class, Thread.class })
 public class UpdaterTest
 {
 	private final static File PLUGINS_FOLDER = new File("plugins"), TARGET_FILE = new File(PLUGINS_FOLDER, "updates" + File.separator + "MM.jar");
@@ -55,7 +54,8 @@ public class UpdaterTest
 	private static PluginDescriptionFile mockedPluginDescription;
 	private static String runnableStatus = "";
 
-	private Runnable syncRunnable = new Runnable() {
+	private Runnable syncRunnable = new Runnable()
+	{
 		@Override
 		public void run()
 		{
@@ -63,7 +63,8 @@ public class UpdaterTest
 		}
 	};
 
-	private Runnable asyncRunnable = new Runnable() {
+	private Runnable asyncRunnable = new Runnable()
+	{
 		@Override
 		public void run()
 		{
@@ -85,8 +86,6 @@ public class UpdaterTest
 		File updateFolder = new File("plugins/updates");
 		//noinspection ResultOfMethodCallIgnored
 		updateFolder.mkdirs();
-		mockStatic(Bukkit.class);
-		when(Bukkit.getUpdateFolderFile()).thenReturn(updateFolder);
 	}
 
 	@Before
@@ -102,8 +101,10 @@ public class UpdaterTest
 			}
 		});
 		suppress(at.pcgamingfreaks.Updater.Updater.class.getDeclaredMethods());
-		mockedPluginDescription = PowerMockito.mock(PluginDescriptionFile.class);
+		mockedPluginDescription = mock(PluginDescriptionFile.class);
 		when(TestObjects.getJavaPlugin().getDescription()).thenReturn(mockedPluginDescription);
+		mockStatic(Bukkit.class);
+		when(Bukkit.getUpdateFolderFile()).thenReturn(new File("plugins/updates"));
 	}
 
 	@Test
@@ -119,13 +120,13 @@ public class UpdaterTest
 		Field thread = Updater.class.getDeclaredField("thread");
 		thread.setAccessible(true);
 		thread.set(updater, null);
-		Thread mockedThread = PowerMockito.mock(Thread.class);
-		doThrow(new InterruptedException()).when(mockedThread).join();
-		whenNew(Thread.class).withArguments(asyncRunnable).thenReturn(mockedThread);
+		Thread mockedThread = mock(Thread.class);
+		whenNew(Thread.class).withAnyArguments().thenReturn(mockedThread);
 		updater.runAsync(asyncRunnable);
 		updater.waitForAsyncOperation();
 		assertEquals("No author should be found", "", updater.getAuthor());
-		when(mockedPluginDescription.getAuthors()).thenAnswer(new Answer<List<String>>() {
+		when(mockedPluginDescription.getAuthors()).thenAnswer(new Answer<List<String>>()
+		{
 			@Override
 			public List<String> answer(InvocationOnMock invocationOnMock) throws Throwable
 			{
@@ -140,6 +141,19 @@ public class UpdaterTest
 		thread.set(updater, null);
 		updater.waitForAsyncOperation();
 		thread.setAccessible(false);
+	}
+
+	@Test(timeout = 10000)
+	public void testWaitForAsync() throws Exception
+	{
+		TestUtils.initReflection();
+		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, 74734);
+		Thread mockedThread = mock(Thread.class);
+		PowerMockito.doReturn(true).when(mockedThread).isAlive();
+		PowerMockito.doThrow(new InterruptedException()).when(mockedThread).join();
+		Field thread = TestUtils.setAccessible(Updater.class, updater, "thread", mockedThread);
+		updater.waitForAsyncOperation();
+		TestUtils.setUnaccessible(thread, updater, false);
 	}
 
 	@AfterClass

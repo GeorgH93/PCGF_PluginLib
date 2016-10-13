@@ -18,80 +18,57 @@
 package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.TestClasses.NMS.IChatBaseComponent;
+import at.pcgamingfreaks.TestClasses.NMS.PacketPlayOutChat;
+import at.pcgamingfreaks.TestClasses.NMS.PlayerConnection;
+import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
+import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Bukkit.class, NMSReflection.class, PluginDescriptionFile.class, Reflection.class })
+@PrepareForTest({ Bukkit.class, NMSReflection.class, PlayerConnection.class, PluginDescriptionFile.class, Reflection.class })
 public class UtilsTest
 {
 	@SuppressWarnings("SpellCheckingInspection")
 	private static TestBukkitServer server = new TestBukkitServer();
 
 	@BeforeClass
-	public static void prepareTestData()
+	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
 		server.allowPluginManager = true;
 		Bukkit.setServer(server);
+		TestObjects.initNMSReflection();
+		TestUtils.initReflection();
 	}
 
 	@Before
 	public void prepareTestObjects()
 	{
-		mockStatic(Reflection.class);
-		given(Reflection.getMethod(any(Class.class), anyString(), any(Class.class))).willAnswer(new Answer<Object>() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				return null;
-			}
-		});
-		mockStatic(NMSReflection.class);
-		given(NMSReflection.getOBCClass(anyString())).willAnswer(new Answer<Object>()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				return null;
-			}
-		});
-		given(NMSReflection.getNMSClass(anyString())).willAnswer(new Answer<Object>()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				return null;
-			}
-		});
-		given(NMSReflection.getMethod(any(Class.class), anyString(), any(Class.class))).willAnswer(new Answer<Object>() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				return null;
-			}
-		});
 		new Utils();
 	}
 
@@ -123,5 +100,58 @@ public class UtilsTest
 		doReturn(mockedLocation).when(mockedPlayer2).getLocation();
 		doReturn(5.0).when(mockedLocation).distance(mockedLocation);
 		assertEquals("The distance should be correct if the players are in the same world", 5.0, Utils.getDistance(mockedPlayer1, mockedPlayer2), 0.1);
+	}
+
+	@Test
+	public void testConvertItemStackToJson() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException
+	{
+		Logger mockedLogger = spy(server.getLogger());
+		ItemStack itemStack = new ItemStack(Material.STONE, 23);
+		assertEquals("The converted ItemStack should match", "{\"id\":\"STONE\",\"Count\":\"23\"}", Utils.convertItemStackToJson(itemStack, mockedLogger));
+		Field field = TestUtils.setAccessible(Utils.class, null, "NBT_TAG_COMPOUND_CLASS", Utils.class);
+		assertEquals("The converted ItemStack should match", "", Utils.convertItemStackToJson(itemStack, mockedLogger));
+		verify(mockedLogger, times(1)).log(any(Level.class), anyString(), any(Throwable.class));
+		field.set(null, null);
+		assertEquals("The converted ItemStack should match", "", Utils.convertItemStackToJson(itemStack, mockedLogger));
+		TestUtils.setUnaccessible(field, null, true);
+		field = TestUtils.setAccessible(Utils.class, null, "AS_NMS_COPY_METHOD", null);
+		assertEquals("The converted ItemStack should match", "", Utils.convertItemStackToJson(itemStack, mockedLogger));
+		TestUtils.setUnaccessible(field, null, true);
+		field = TestUtils.setAccessible(Utils.class, null, "SAVE_NMS_ITEM_STACK_METHOD", null);
+		assertEquals("The converted ItemStack should match", "", Utils.convertItemStackToJson(itemStack, mockedLogger));
+		TestUtils.setUnaccessible(field, null, true);
+		verify(mockedLogger, times(3)).log(any(Level.class), anyString());
+	}
+
+	@Test
+	public void testSendPacket() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, NoSuchFieldException
+	{
+		int sendPacketCalls = 0;
+		//noinspection SpellCheckingInspection
+		TestBukkitPlayer player = spy(new TestBukkitPlayer());
+		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
+		verify(player, times(++sendPacketCalls)).getHandle();
+		doReturn(null).when(player).getHandle();
+		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
+		verify(player, times(++sendPacketCalls)).getHandle();
+		Field field = TestUtils.setAccessible(Utils.class, null, "SEND_PACKET", null);
+		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
+		verify(player, times(sendPacketCalls)).getHandle();
+		TestUtils.setUnaccessible(field, null, true);
+		field = TestUtils.setAccessible(Utils.class, null, "PLAYER_CONNECTION", null);
+		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
+		verify(player, times(sendPacketCalls)).getHandle();
+		TestUtils.setUnaccessible(field, null, true);
+		player = new TestBukkitPlayer();
+		player.isEntityPlayerHandle = false;
+		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
+		//verify(player, times(++sendPacketCalls)).getHandle();
+		player.isEntityPlayerHandle = true;
+	}
+
+	@Test
+	public void testEscapeJsonString()
+	{
+		assertEquals("The string should be escaped correctly", "\\\\Hello \\\"World!\\\"\\\\", Utils.escapeJsonString("\\Hello \"World!\"\\"));
 	}
 }

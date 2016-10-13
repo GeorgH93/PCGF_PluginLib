@@ -85,5 +85,7 @@ public class LanguageTest
 		assertEquals("The language text should match", "TestText", mockedLanguage.getMessage("test", false).getClassicMessage());
 		TestObjects.setBukkitVersion("1_1_R1");
 		assertEquals("The language text should match", "TestText", mockedLanguage.getMessage("test").getClassicMessage());
+		TestObjects.setBukkitVersion("1_8_R1");
+		assertEquals("The language text should match", "TestText", mockedLanguage.getMessage("test").getClassicMessage());
 	}
 }

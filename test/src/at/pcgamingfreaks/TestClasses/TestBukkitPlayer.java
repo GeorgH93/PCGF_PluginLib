@@ -47,11 +47,12 @@ import java.util.*;
 public class TestBukkitPlayer implements Player
 {
 	public int sendCalls = 0;
+	public boolean isEntityPlayerHandle = true;
 
 	@SuppressWarnings("unused")
 	public Object getHandle()
 	{
-		return new EntityPlayer();
+		return isEntityPlayerHandle ? new EntityPlayer() : new Object();
 	}
 
 	@Override

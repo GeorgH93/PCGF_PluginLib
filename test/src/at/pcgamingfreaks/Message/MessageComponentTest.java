@@ -19,12 +19,15 @@ package at.pcgamingfreaks.Message;
 
 import at.pcgamingfreaks.TestClasses.TestMessage;
 import at.pcgamingfreaks.TestClasses.TestMessageComponent;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -37,6 +40,12 @@ import static org.junit.Assert.*;
 
 public class MessageComponentTest
 {
+	@BeforeClass
+	public static void prepareTestData() throws NoSuchFieldException
+	{
+		TestUtils.initReflection();
+	}
+
 	@Test
 	public void testGetClassicMessage()
 	{
@@ -55,7 +64,7 @@ public class MessageComponentTest
 	}
 
 	@Test
-	public void testFormats()
+	public void testFormats() throws NoSuchFieldException, IllegalAccessException
 	{
 		TestMessageComponent messageComponent = new TestMessageComponent("This is a text");
 		messageComponent.bold().italic().obfuscated().strikethrough().underlined().color(MessageColor.BLACK).insert("Insertion");
@@ -95,6 +104,10 @@ public class MessageComponentTest
 		messageComponent.setFormats((Enum) null);
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.setFormats((Enum[]) null);
+		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
+		Field isFormatField = TestUtils.setAccessible(MessageColor.class, MessageColor.RESET, "isFormat", true);
+		messageComponent.setFormats(MessageColor.RESET);
+		TestUtils.setUnaccessible(isFormatField, MessageColor.RESET, true);
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.format();
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());

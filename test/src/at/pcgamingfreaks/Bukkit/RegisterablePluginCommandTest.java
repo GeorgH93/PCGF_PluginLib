@@ -134,5 +134,6 @@ public class RegisterablePluginCommandTest
 		pluginCommand.unregisterCommand();
 		aliases.setAccessible(false);
 		activeAliases.setAccessible(false);
+		assertEquals("The plugin commands should be equal", new RegisterablePluginCommand(plugin, "TestPlugin", null).toString(), new RegisterablePluginCommand(plugin, "TestPlugin", null, null).toString());
 	}
 }

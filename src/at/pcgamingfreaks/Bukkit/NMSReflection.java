@@ -102,7 +102,7 @@ public class NMSReflection extends Reflection
 		try
 		{
 			//noinspection ConstantConditions
-			return getMethod(obj.getClass(), "getHandle", new Class[0]).invoke(obj);
+			return getMethod(obj.getClass(), "getHandle").invoke(obj);
 		}
 		catch(Exception e)
 		{
