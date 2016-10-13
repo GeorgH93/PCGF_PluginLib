@@ -47,18 +47,18 @@ public class MCVersionTest
 	{
 		assertTrue("The version should match", MCVersion.isOlderOrEqualThan(MCVersion.MC_1_8));
 		assertTrue("The version should match", MCVersion.isOlderOrEqualThan(MCVersion.MC_1_9));
-		assertFalse("The version should match", MCVersion.isOlderOrEqualThan(MCVersion.MC_1_7));
+		assertFalse("The version should not match", MCVersion.isOlderOrEqualThan(MCVersion.MC_1_7));
 		assertTrue("The version should match", MCVersion.is(MCVersion.MC_1_8));
-		assertFalse("The version should match", MCVersion.is(MCVersion.MC_1_9));
+		assertFalse("The version should not match", MCVersion.is(MCVersion.MC_1_9));
 		assertTrue("The version should match", MCVersion.MC_1_8.isSame(MCVersion.MC_1_8));
-		assertFalse("The version should match", MCVersion.MC_1_8.isSame(MCVersion.MC_1_9));
+		assertFalse("The version should not match", MCVersion.MC_1_8.isSame(MCVersion.MC_1_9));
 		assertTrue("The version should match", MCVersion.MC_1_8.newerOrEqualThan(MCVersion.MC_1_8));
-		assertFalse("The version should match", MCVersion.MC_1_8.newerOrEqualThan(MCVersion.MC_1_9));
+		assertFalse("The version should not match", MCVersion.MC_1_8.newerOrEqualThan(MCVersion.MC_1_9));
 		assertTrue("The version should match", MCVersion.MC_1_8.newerThan(MCVersion.MC_1_7));
-		assertFalse("The version should match", MCVersion.MC_1_8.newerThan(MCVersion.MC_1_9));
+		assertFalse("The version should not match", MCVersion.MC_1_8.newerThan(MCVersion.MC_1_9));
 		assertTrue("The version should match", MCVersion.MC_1_8.olderOrEqualThan(MCVersion.MC_1_8));
-		assertFalse("The version should match", MCVersion.MC_1_8.olderOrEqualThan(MCVersion.MC_1_7));
+		assertFalse("The version should not match", MCVersion.MC_1_8.olderOrEqualThan(MCVersion.MC_1_7));
 		assertTrue("The version should match", MCVersion.MC_1_8.olderThan(MCVersion.MC_1_9));
-		assertFalse("The version should match", MCVersion.MC_1_8.olderThan(MCVersion.MC_1_8));
+		assertFalse("The version should not match", MCVersion.MC_1_8.olderThan(MCVersion.MC_1_8));
 	}
 }

@@ -25,7 +25,9 @@ import java.util.Collection;
 
 public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestMessageComponent, TestMessage, Enum>
 {
-	TestMessageComponent messageComponent;
+	public boolean appendNewLineFromFatherClass = false;
+
+	private TestMessageComponent messageComponent;
 
 	static
 	{
@@ -45,6 +47,10 @@ public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestM
 	@Override
 	public TestMessageBuilder appendNewLine()
 	{
+		if (appendNewLineFromFatherClass)
+		{
+			return super.appendNewLine();
+		}
 		messageComponent.addExtra(messageComponent.getNewLineComponent());
 		return this;
 	}

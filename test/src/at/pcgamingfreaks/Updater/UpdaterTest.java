@@ -361,8 +361,8 @@ public class UpdaterTest
 		//noinspection ResultOfMethodCallIgnored
 		updater.unzip(file);
 		File jarFile = new File("plugins/updates/Test-JAR.jar");
-		assertTrue("The jar file should exist", jarFile.exists());
-		assertFalse("The txt file shouldn't exist", new File("plugins/updates/Test-TXT.txt").exists());
+		assertTrue("The jar file should be unzipped", jarFile.exists());
+		assertFalse("The txt file shouldn't be unzipped", new File("plugins/updates/Test-TXT.txt").exists());
 		assertFalse("The given jar file should not be found as plugin", updater.isPluginFile("NotFound.jar"));
 		File pluginFile = new File("plugins/Test-JAR.jar");
 		Files.copy(jarFile, pluginFile);
