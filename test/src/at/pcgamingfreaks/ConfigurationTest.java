@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks;
 
+import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YAMLInvalidContentException;
 import at.pcgamingfreaks.yaml.YAMLKeyNotFoundException;
@@ -25,15 +26,20 @@ import at.pcgamingfreaks.yaml.YAMLNotInitializedException;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.logging.Logger;
@@ -45,32 +51,20 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ByteStreams.class, LanguageUpdateMethod.class })
 public class ConfigurationTest
 {
-	@Rule
-	public PowerMockRule powerMock = new PowerMockRule();
-
 	private static Logger mockedLogger;
 
 	@SuppressWarnings("SpellCheckingInspection")
 	private static int loggedInfos = 0;
 
 	@BeforeClass
-	public static void prepareTestData()
+	public static void prepareTestData() throws NoSuchFieldException
 	{
-		URL resource = UUIDConverterTest.class.getResource("/config.yml");
-		if(resource != null)
-		{
-			try
-			{
-				//noinspection deprecation
-				Files.copy(new File(URLDecoder.decode(resource.getFile())), new File("config.yml"));
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
+		setConfigFile();
+		TestUtils.initReflection();
 	}
 
 	@Before
@@ -88,15 +82,42 @@ public class ConfigurationTest
 		}).when(mockedLogger).info(anyString());
 	}
 
-	@Test
-	public void testBasicConfigurationFile() throws IOException, YAMLInvalidContentException, YAMLKeyNotFoundException
+	private static void setConfigFile()
 	{
-		Configuration configuration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1);
+		File targetFile = new File("config.yml");
+		if (targetFile.exists())
+		{
+			//noinspection ResultOfMethodCallIgnored
+			targetFile.delete();
+		}
+		URL resource = UUIDConverterTest.class.getResource("/config.yml");
+		if(resource != null)
+		{
+			try
+			{
+				//noinspection deprecation
+				Files.copy(new File(URLDecoder.decode(resource.getFile())), targetFile);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Test
+	public void testBasicConfigurationFile() throws IOException, YAMLInvalidContentException, YAMLKeyNotFoundException, NoSuchFieldException, IllegalAccessException
+	{
+		setConfigFile();
+		Configuration configuration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 5);
 		assertNotNull("The configuration file must not be null", configuration);
+		Field configField = TestUtils.setAccessible(Configuration.class, configuration, "config", null);
+		assertFalse("The configuration file should not be loaded", configuration.isLoaded());
+		TestUtils.setUnaccessible(configField, configuration, false);
 		assertTrue("The configuration file should be loaded", configuration.isLoaded());
 		YAML config = configuration.getConfig();
 		assertEquals("The test string value should be found in the test config file", "Another Test", config.getString("TestConfig.Value2"));
-		assertEquals("The test int value should be found in the test config file", 1, config.getInt("Version"));
+		assertEquals("The test int value should be found in the test config file", 5, config.getInt("Version"));
 		assertEquals("The test boolean value should be found in the test config file", false, config.getBoolean("TestBoolean"));
 		assertEquals("The test double value should be found in the test config file", 2.6, config.getDouble("TestDouble"), 0.1);
 		assertEquals("The returned string value should match", config.getString("TestConfig.Value2"), configuration.getString("TestConfig.Value2"));
@@ -133,7 +154,6 @@ public class ConfigurationTest
 		assertEquals("The configuration with the current version as upgrade threshold should return the same configuration", oldConfiguration.getConfig().getString("Version"), upgradeThresholdConfig.getConfig().getString("Version"));
 	}
 
-	@PrepareForTest({ ByteStreams.class, LanguageUpdateMethod.class })
 	@Test
 	public void testLoadConfig() throws Exception
 	{
@@ -162,6 +182,8 @@ public class ConfigurationTest
 		}).when(mockedFileOutputStream).flush();
 		mockStatic(ByteStreams.class);
 		when(ByteStreams.copy(any(FileInputStream.class), any(FileOutputStream.class))).thenReturn((long) 0);
+		invalidConfiguration.reload();
+		when(mockedFile.mkdir()).thenReturn(true);
 		invalidConfiguration.reload();
 		configBaseDir.set(invalidConfiguration, currentConfigBaseDir);
 		configFile.set(invalidConfiguration, currentConfigFile);
@@ -211,38 +233,88 @@ public class ConfigurationTest
 		assertFalse("No new configuration has been created, therefore false should be returned", configuration.newConfigCreated());
 	}
 
-	//@PrepareForTest({ Configuration.class })
 	@Test
 	public void testUpdateConfig() throws Exception
 	{
-		Configuration upgradeTest = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 3, 2);
-		File mockedFile = spy(new File(new File(System.getProperty("user.dir")) + "\\config.yml.old_v1"));
+		int currentVersion = 5;
+		File userDir = new File(System.getProperty("user.dir"));
+		Configuration upgradeTest = new Configuration(mockedLogger, userDir, 3, 2);
+		File mockedFile = spy(new File(userDir + "\\config.yml.old_v1"));
 		when(mockedFile.exists()).thenReturn(true);
 		when(mockedFile.delete()).thenReturn(false);
-		whenNew(File.class).withArguments(new File(System.getProperty("user.dir")) + "\\config.yml.old_v1").thenReturn(mockedFile);
+		whenNew(File.class).withArguments(userDir + "\\config.yml.old_v1").thenReturn(mockedFile);
 		upgradeTest.reload();
-		Configuration updateTest = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 3);
+		Configuration updateTest = spy(new Configuration(mockedLogger, userDir, currentVersion++));
+		Method updateConfig = Configuration.class.getDeclaredMethod("updateConfig");
+		updateConfig.setAccessible(true);
+		Field expectedVersion = TestUtils.setAccessible(Configuration.class, updateTest, "expectedVersion", ++currentVersion);
+		assertTrue("The configuration should have been updated", (Boolean) updateConfig.invoke(updateTest));
+		expectedVersion.set(updateTest, ++currentVersion);
+		Field upgradeThreshold = TestUtils.setAccessible(Configuration.class, updateTest, "upgradeThreshold", currentVersion);
+		assertTrue("The configuration should have been updated", (Boolean) updateConfig.invoke(updateTest));
+		expectedVersion.set(updateTest, ++currentVersion);
+		assertTrue("The configuration should have been updated", (Boolean) updateConfig.invoke(updateTest));
+		expectedVersion.set(updateTest, ++currentVersion);
+		upgradeThreshold.set(updateTest, 1);
+		doThrow(new FileNotFoundException()).when(updateTest).saveConfig();
+		assertFalse("The configuration should not have been updated", (Boolean) updateConfig.invoke(updateTest));
+		TestUtils.setUnaccessible(upgradeThreshold, updateTest, true);
+		TestUtils.setUnaccessible(expectedVersion, updateTest, true);
+		updateConfig.setAccessible(false);
 	}
 
 	@Test
-	public void testUpgrade() throws YAMLKeyNotFoundException
+	@PrepareForTest({ Configuration.class, File.class })
+	public void testUpgrade() throws Exception
 	{
-		Configuration configuration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1);
-		configuration.set("Version", 3);
+		int version = 3;
+		File userDir = new File(System.getProperty("user.dir"));
+		Configuration configuration = spy(new Configuration(mockedLogger, userDir, 1));
+		configuration.set("Version", version);
 		configuration.set("TestBoolean", true);
+		configuration.set("NewValue", "NotFound");
 		assertEquals("The TestBoolean value should be true", true, configuration.getBool("TestBoolean"));
-		Configuration oldConfiguration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1);
+		Configuration oldConfiguration = new Configuration(mockedLogger, userDir, 1);
 		configuration.doUpgrade(oldConfiguration);
-		assertEquals("The version of the upgraded configuration should match", 3, configuration.getVersion());
+		assertEquals("The version of the upgraded configuration should match", version, configuration.getVersion());
 		assertEquals("The boolean value should be taken from the old configuration", false, configuration.getBool("TestBoolean"));
+		Method upgradeConfig = Configuration.class.getDeclaredMethod("upgradeConfig");
+		upgradeConfig.setAccessible(true);
+		File mockedFile = mock(File.class);
+		//noinspection ResultOfMethodCallIgnored
+		doReturn(true).when(mockedFile).exists();
+		//noinspection ResultOfMethodCallIgnored
+		doReturn(false).when(mockedFile).delete();
+		Field configFile = TestUtils.setAccessible(Configuration.class, configuration, "configFile", mockedFile);
+		//noinspection ResultOfMethodCallIgnored
+		doReturn(false).when(mockedFile).renameTo(mockedFile);
+		whenNew(File.class).withAnyArguments().thenReturn(mockedFile);
+		upgradeConfig.invoke(configuration);
+		assertEquals("The version of the config file should match because it has not been upgraded", version, configuration.getVersion());
+		//noinspection ResultOfMethodCallIgnored
+		doThrow(new NullPointerException()).when(mockedFile).renameTo(mockedFile);
+		upgradeConfig.invoke(configuration);
+		assertEquals("The version of the config file should be set to -1 if an error occurs", -1, configuration.getVersion());
+		//noinspection ResultOfMethodCallIgnored
+		doReturn(true).when(mockedFile).delete();
+		//noinspection ResultOfMethodCallIgnored
+		doReturn(true).when(mockedFile).renameTo(mockedFile);
+		doReturn(false).when(configuration).isLoaded();
+		upgradeConfig.invoke(configuration);
+		assertEquals("The version of the config file should match because it has not been upgraded", -1, configuration.getVersion());
+		upgradeConfig.setAccessible(false);
+		TestUtils.setUnaccessible(configFile, configuration, true);
 	}
 
-	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@AfterClass
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static void cleanupTestData()
 	{
 		new File("config.yml").delete();
 		new File("NotFound.yml").delete();
 		new File("config.yml.old_v1").delete();
+		new File("config.yml.old_v3").delete();
+		new File("config.yml.old_v5").delete();
+		new File("config.yml.old_v7").delete();
 	}
 }

@@ -193,12 +193,12 @@ public class Language
 		try
 		{
 			lang = new YAML(langFile);
+			updateLang();
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
-		updateLang();
 	}
 
 	private void extractLangFile()

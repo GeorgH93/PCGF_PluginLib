@@ -20,6 +20,8 @@ package at.pcgamingfreaks;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
+
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.*;
 
@@ -33,7 +35,10 @@ public class ReflectionTest
 
 	private static class TestClass
 	{
+		public static String staticString = "STATIC";
+
 		protected String value = "Constant";
+		private final String CONSTANT = "CONST";
 
 		public TestClass() {}
 
@@ -47,6 +52,8 @@ public class ReflectionTest
 		{
 			return value;
 		}
+
+		public String getConstant() { return CONSTANT; }
 
 		@SuppressWarnings("unused")
 		public String getTestValue(String value) { return value; }
@@ -121,5 +128,23 @@ public class ReflectionTest
 		TestClass object = new TestClass();
 		Reflection.setValue(object, "value", "New value");
 		assertEquals("The new value should match", "New value", object.getValue());
+		Reflection.setValue(object, "CONSTANT", "New value");
+		assertEquals("The new value should not match the wished one", "CONST", object.getConstant());
+	}
+
+	@Test
+	public void testSetStaticField()
+	{
+		Reflection.setStaticField(TestClass.class, "staticString", "NEW");
+		assertEquals("The new value should not match", "NEW", TestClass.staticString);
+		Reflection.setStaticField(TestClass.class, "finalVar", "NEW");
+	}
+
+	@Test
+	public void testGetMethodIncludeParents() throws InvocationTargetException, IllegalAccessException
+	{
+		assertEquals("The method should be executable", "CONST", Reflection.getMethodIncludeParents(TestDerivedClass.class, "getConstant").invoke(new TestDerivedClass()));
+		assertNull("The method should not be found", Reflection.getMethodIncludeParents(TestDerivedClass.class, "abc"));
+		assertNull("An exception should be thrown", Reflection.getMethodIncludeParents(null, "abc"));
 	}
 }

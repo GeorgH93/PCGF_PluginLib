@@ -159,7 +159,7 @@ public class DBTools
 								}
 								createKeyArray = tempKeyMatcher.group(3).replaceAll("`", "").split(",\\s*");
 								currentTableColumnsIterator = currentTableColumns.iterator();
-								if (columnName == null || columnName.length() == 0)
+								if (columnName == null)
 								{
 									while (currentTableColumnsIterator.hasNext())
 									{
@@ -243,7 +243,7 @@ public class DBTools
 							}
 							if (!keyExists)
 							{
-								statement.executeUpdate("ALTER TABLE " + tableName + " ADD UNIQUE INDEX " + (columnName == null || columnName.length() == 0 ? "" : "`" + columnName + "` ") + "(" + tempKeyMatcher.group(3) + ")");
+								statement.executeUpdate("ALTER TABLE " + tableName + " ADD UNIQUE INDEX " + (columnName == null ? "" : "`" + columnName + "` ") + "(" + tempKeyMatcher.group(3) + ")");
 							}
 							break;
 						case "FOREIGN KEY":
@@ -262,7 +262,7 @@ public class DBTools
 									throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
 								}
 								currentTableColumnsIterator = currentTableColumns.iterator();
-								if (columnName == null || columnName.length() == 0)
+								if (columnName == null)
 								{
 									while (currentTableColumnsIterator.hasNext())
 									{
@@ -291,13 +291,13 @@ public class DBTools
 														keyExists = false;
 														continue;
 													}
+													else if (!currentMatcher.group(7).equalsIgnoreCase(tempKeyMatcher.group(7)))
+													{
+														keyExists = false;
+														continue;
+													}
 												}
 												else if (tempKeyMatcher.group(7) == null)
-												{
-													keyExists = false;
-													continue;
-												}
-												else if (!currentMatcher.group(7).equalsIgnoreCase(tempKeyMatcher.group(7)))
 												{
 													keyExists = false;
 													continue;
@@ -309,13 +309,13 @@ public class DBTools
 														keyExists = false;
 														continue;
 													}
+													else if (!currentMatcher.group(9).equalsIgnoreCase(tempKeyMatcher.group(9)))
+													{
+														keyExists = false;
+														continue;
+													}
 												}
 												else if (tempKeyMatcher.group(9) == null)
-												{
-													keyExists = false;
-													continue;
-												}
-												else if (!currentMatcher.group(9).equalsIgnoreCase(tempKeyMatcher.group(9)))
 												{
 													keyExists = false;
 													continue;
@@ -381,12 +381,12 @@ public class DBTools
 														{
 															update = true;
 														}
+														else if (!currentMatcher.group(7).equalsIgnoreCase(tempKeyMatcher.group(7)))
+														{
+															update = true;
+														}
 													}
 													else if (tempKeyMatcher.group(7) == null)
-													{
-														update = true;
-													}
-													else if (!currentMatcher.group(7).equalsIgnoreCase(tempKeyMatcher.group(7)))
 													{
 														update = true;
 													}
@@ -396,12 +396,12 @@ public class DBTools
 														{
 															update = true;
 														}
+														else if (!currentMatcher.group(9).equalsIgnoreCase(tempKeyMatcher.group(9)))
+														{
+															update = true;
+														}
 													}
 													else if (tempKeyMatcher.group(9) == null)
-													{
-														update = true;
-													}
-													else if (!currentMatcher.group(9).equalsIgnoreCase(tempKeyMatcher.group(9)))
 													{
 														update = true;
 													}

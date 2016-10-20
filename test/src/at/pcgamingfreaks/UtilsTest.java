@@ -152,6 +152,8 @@ public class UtilsTest
 		assertFalse("The array should not contain the string", Utils.stringArrayContains("Tree", array));
 		assertFalse("The array should not contain the string", Utils.stringArrayContains("hello", array));
 		assertFalse("The array should not contain the string", Utils.stringArrayContains("just a string", array));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains("", array));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains(null, array));
 	}
 
 	@Test
@@ -166,5 +168,7 @@ public class UtilsTest
 		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("Hello", array));
 		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("hello", array));
 		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase("just a string", array));
+		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase("", array));
+		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase(null, array));
 	}
 }

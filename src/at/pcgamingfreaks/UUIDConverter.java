@@ -38,11 +38,15 @@ import java.util.*;
  */
 public final class UUIDConverter
 {
+	private final static long MOJANG_QUERY_RETRY_TIME;
+
 	private final static Gson GSON = new Gson();
-	private final static UUIDCacheMap UUID_CACHE = new UUIDCacheMap(); // Cache object for resolved UUIDs
+	private final static UUIDCacheMap UUID_CACHE; // Cache object for resolved UUIDs
 
 	static
 	{
+		MOJANG_QUERY_RETRY_TIME = 600000L;
+		UUID_CACHE = new UUIDCacheMap();
 		System.out.println("Loading local uuid cache.");
 		int loaded = 0;
 		//noinspection SpellCheckingInspection
@@ -449,7 +453,7 @@ public final class UUIDConverter
 						{
 							System.out.println("Reached the request limit of the mojang api!\nConverting will be paused for 10 minutes and then continue!");
 							//TODO: better fail handling
-							Thread.sleep(10*60*1000L);
+							Thread.sleep(MOJANG_QUERY_RETRY_TIME);
 							success = false;
 							continue;
 						}
