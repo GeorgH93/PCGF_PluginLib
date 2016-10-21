@@ -270,6 +270,7 @@ public class Language
 				{
 					e.printStackTrace();
 					lang = null;
+					return false;
 				}
 			}
 			else

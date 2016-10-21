@@ -60,7 +60,6 @@ public class TestObjects
 	private static ProxiedPlayer mockedPlayer;
 
 	private static List<ProxiedPlayer> players;
-	private static List<Player> bukkitPlayers;
 
 	public static void initMockedJavaPlugin() throws Exception
 	{
@@ -131,25 +130,34 @@ public class TestObjects
 	public static void initNMSReflection() throws NoSuchFieldException, IllegalAccessException
 	{
 		setBukkitVersion("1_7_R1");
+		Field modifiers = Field.class.getDeclaredField("modifiers");
+		modifiers.setAccessible(true);
 		Field nmsClassPath = NMSReflection.class.getDeclaredField("NMS_CLASS_PATH");
 		nmsClassPath.setAccessible(true);
+		modifiers.set(nmsClassPath, nmsClassPath.getModifiers() & ~Modifier.FINAL);
 		nmsClassPath.set(null, "at.pcgamingfreaks.TestClasses.NMS.");
+		modifiers.set(nmsClassPath, nmsClassPath.getModifiers() | Modifier.FINAL);
 		nmsClassPath.setAccessible(false);
 		Field obcClassPath = NMSReflection.class.getDeclaredField("OBC_CLASS_PATH");
 		obcClassPath.setAccessible(true);
+		modifiers.set(obcClassPath, obcClassPath.getModifiers() & ~Modifier.FINAL);
 		obcClassPath.set(null, "at.pcgamingfreaks.TestClasses.OBC.");
+		modifiers.set(obcClassPath, obcClassPath.getModifiers() | Modifier.FINAL);
 		obcClassPath.setAccessible(false);
+		modifiers.setAccessible(false);
 	}
 
 	@SuppressWarnings("SpellCheckingInspection")
 	public static void setBukkitVersion(String version) throws NoSuchFieldException, IllegalAccessException
 	{
-		Field bukkitVersion = NMSReflection.class.getDeclaredField("BUKKIT_VERSION");
-		bukkitVersion.setAccessible(true);
-		bukkitVersion.set(null, version);
-		bukkitVersion.setAccessible(false);
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
+		Field bukkitVersion = NMSReflection.class.getDeclaredField("BUKKIT_VERSION");
+		bukkitVersion.setAccessible(true);
+		modifiers.set(bukkitVersion, bukkitVersion.getModifiers() & ~Modifier.FINAL);
+		bukkitVersion.set(null, version);
+		modifiers.set(bukkitVersion, bukkitVersion.getModifiers() | Modifier.FINAL);
+		bukkitVersion.setAccessible(false);
 		Field currentVersion = MCVersion.class.getDeclaredField("CURRENT_VERSION");
 		currentVersion.setAccessible(true);
 		modifiers.set(currentVersion, currentVersion.getModifiers() & ~Modifier.FINAL);
@@ -170,7 +178,7 @@ public class TestObjects
 	@SuppressWarnings("SpellCheckingInspection")
 	public static void initBukkitOnlinePlayers() throws Exception
 	{
-		bukkitPlayers = new ArrayList<>();
+		List<Player> bukkitPlayers = new ArrayList<>();
 		bukkitPlayers.add(new TestBukkitPlayer());
 		bukkitPlayers.add(new TestBukkitPlayer());
 		mockStatic(Bukkit.class);

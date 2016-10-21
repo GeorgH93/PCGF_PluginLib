@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.TestClasses;
 
+import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.Message.MessageComponent;
 
@@ -40,20 +41,14 @@ public class TestMessage extends Message<TestMessage, Player, CommandSender>
 	}
 
 	@Override
-	public void send(@NotNull CommandSender target, @Nullable Object... args)
-	{
-
-	}
+	public void send(@NotNull CommandSender target, @Nullable Object... args) { }
 
 	@Override
-	public void send(@NotNull Collection targets, @Nullable Object... args)
-	{
-
-	}
+	public void send(@NotNull Collection targets, @Nullable Object... args) { }
 
 	@Override
-	public void broadcast(@Nullable Object... args)
-	{
+	public void broadcast(@Nullable Object... args) { }
 
-	}
+	@SuppressWarnings("unused")
+	public void setSendMethod(SendMethod sendMethod) { }
 }
