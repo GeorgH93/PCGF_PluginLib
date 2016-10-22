@@ -297,7 +297,7 @@ public class DBTools
 														continue;
 													}
 												}
-												else if (tempKeyMatcher.group(7) == null)
+												else if (tempKeyMatcher.group(7) != null)
 												{
 													keyExists = false;
 													continue;
@@ -315,7 +315,7 @@ public class DBTools
 														continue;
 													}
 												}
-												else if (tempKeyMatcher.group(9) == null)
+												else if (tempKeyMatcher.group(9) != null)
 												{
 													keyExists = false;
 													continue;
@@ -344,7 +344,7 @@ public class DBTools
 										currentMatcher = columnConstraintCheckerPattern.matcher(currentTableColumnsIterator.next());
 										if (currentMatcher.find() && currentMatcher.group(4).equalsIgnoreCase("FOREIGN KEY"))
 										{
-											tempValue = (columnMatcher.group(3) == null ? (columnMatcher.group(2) == null ? "" : columnMatcher.group(2)) : columnMatcher.group(3));
+											tempValue = (currentMatcher.group(3) == null ? currentMatcher.group(2) : currentMatcher.group(3));
 											currentMatcher = foreignKeyPattern.matcher(currentMatcher.group(5));
 											if (currentMatcher.find())
 											{
@@ -386,7 +386,7 @@ public class DBTools
 															update = true;
 														}
 													}
-													else if (tempKeyMatcher.group(7) == null)
+													else if (tempKeyMatcher.group(7) != null)
 													{
 														update = true;
 													}
@@ -401,7 +401,7 @@ public class DBTools
 															update = true;
 														}
 													}
-													else if (tempKeyMatcher.group(9) == null)
+													else if (tempKeyMatcher.group(9) != null)
 													{
 														update = true;
 													}
@@ -422,7 +422,7 @@ public class DBTools
 							}
 							if (!keyExists)
 							{
-								statement.executeUpdate("ALTER TABLE " + tableName + " ADD CONSTRAINT " + (columnName == null || columnName.length() == 0 ? "" : "`" + columnName + "` ") + "FOREIGN KEY (" + tempKeyMatcher.group(3) + ") REFERENCES " + tempKeyMatcher.group(4) + " (" + tempKeyMatcher.group(5) + ") " + (tempKeyMatcher.group(6) == null ? "" : tempKeyMatcher.group(6) + " ") + (tempKeyMatcher.group(8) == null ? "" : tempKeyMatcher.group(8)));
+								statement.executeUpdate("ALTER TABLE " + tableName + " ADD CONSTRAINT " + (columnName == null ? "" : "`" + columnName + "` ") + "FOREIGN KEY (" + tempKeyMatcher.group(3) + ") REFERENCES " + tempKeyMatcher.group(4) + " (" + tempKeyMatcher.group(5) + ") " + (tempKeyMatcher.group(6) == null ? "" : tempKeyMatcher.group(6) + " ") + (tempKeyMatcher.group(8) == null ? "" : tempKeyMatcher.group(8)));
 							}
 							break;
 					}
@@ -532,40 +532,41 @@ public class DBTools
 							{
 								currentMatcher = columnTypeExtractorPattern.matcher(tempKeyMatcher.group(3));
 								tempKeyMatcher = columnTypeExtractorPattern.matcher(columnMatcher.group(3));
-								if(currentMatcher.find() && tempKeyMatcher.find())
+								//noinspection ResultOfMethodCallIgnored
+								currentMatcher.find();
+								//noinspection ResultOfMethodCallIgnored
+								tempKeyMatcher.find();
+								if (currentMatcher.group(1).equalsIgnoreCase(tempKeyMatcher.group(1)))
 								{
-									if (currentMatcher.group(1).equalsIgnoreCase(tempKeyMatcher.group(1)))
+									currentFlags = new LinkedList<>();
+									tempArray = currentMatcher.group(4).split("\\s+");
+									for (index = 0; index < tempArray.length; index++)
 									{
-										currentFlags = new LinkedList<>();
-										tempArray = currentMatcher.group(4).split("\\s+");
-										for (index = 0; index < tempArray.length; index++)
+										currentFlags.add(tempArray[index]);
+									}
+									for (String flag : tempKeyMatcher.group(4).split("\\s+"))
+									{
+										update = true;
+										currentFlagsIterator = currentFlags.iterator();
+										while (currentFlagsIterator.hasNext())
 										{
-											currentFlags.add(tempArray[index]);
-										}
-										for (String flag : tempKeyMatcher.group(4).split("\\s+"))
-										{
-											update = true;
-											currentFlagsIterator = currentFlags.iterator();
-											while (currentFlagsIterator.hasNext())
+											tempValue = currentFlagsIterator.next();
+											if (flag.equalsIgnoreCase(tempValue))
 											{
-												tempValue = currentFlagsIterator.next();
-												if (flag.equalsIgnoreCase(tempValue))
-												{
-													update = false;
-													currentFlagsIterator.remove();
-													break;
-												}
-											}
-											if (update)
-											{
+												update = false;
+												currentFlagsIterator.remove();
 												break;
 											}
 										}
+										if (update)
+										{
+											break;
+										}
 									}
-									if (update)
-									{
-										statement.executeUpdate("ALTER TABLE " + tableName + " MODIFY COLUMN `" + columnName + "` " + columnMatcher.group(3));
-									}
+								}
+								if (update)
+								{
+									statement.executeUpdate("ALTER TABLE " + tableName + " MODIFY COLUMN `" + columnName + "` " + columnMatcher.group(3));
 								}
 							}
 						}

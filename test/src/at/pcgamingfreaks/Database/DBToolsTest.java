@@ -365,6 +365,19 @@ public class DBToolsTest
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidForeignKeyUpdateReference() throws SQLException
+	{
+		doReturn("CREATE TABLE `test` (\n" +
+				         "  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				         "  CONSTRAINT `named` FOREIGN KEY (`id`) REFERENCES `table2` (`id`, `val`) ON DELETE CASCADE\n" +
+				         ")").when(mockedResultSet).getString(2);
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  CONSTRAINT `named` FOREIGN KEY (`id`) REFERENCES `table2` (`id`) ON DELETE CASCADE\n" +
+				")");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidForeignKeyReferenceInDatabase() throws SQLException
 	{
 		doReturn("CREATE TABLE `test` (\n" +
@@ -387,8 +400,11 @@ public class DBToolsTest
 				         "  `val` VARCHAR(255),\n" +
 				         "  PRIMARY KEY (`id`),\n" +
 				         "  CONSTRAINT FOREIGN KEY (``),\n" +
+				         "  `usr` INT(10) UNSIGNED,\n" +
+				         "  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`val`),\n" +
+				         "  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test3` (`id`) ON UPDATE CASCADE,\n" +
 				         "  CONSTRAINT `fk_single` FOREIGN KEY (`id`) REFERENCES `test2` (`id`),\n" +
-				         "  CONSTRAINT `fk_multiple` FOREIGN KEY (`id`, `val`) REFERENCES `test2` (`id`, `val`)\n" +
+				         "  CONSTRAINT `fk_multiple` FOREIGN KEY (`id`, `val`) REFERENCES `test2` (`id`, `val`) ON DELETE NO ACTION\n" +
 				         ")").when(mockedResultSet).getString(2);
 		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
@@ -411,9 +427,9 @@ public class DBToolsTest
 		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
 				"  `val` VARCHAR(255),\n" +
-				"  FOREIGN KEY (`id`) REFERENCES `table2` (`id`)\n" +
+				"  FOREIGN KEY (`id`) REFERENCES `test2` (`id`)\n" +
 				")");
-		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
+		verify(mockedStatement, times(addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
 		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
 				"  `val` VARCHAR(255),\n" +
@@ -452,13 +468,20 @@ public class DBToolsTest
 		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
 				"  `val` VARCHAR(255),\n" +
-				"  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE\n" +
+				"  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON DELETE NO ACTION\n" +
 				")");
-		verify(mockedStatement, times(addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON UPDATE NO ACTION\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
 		doReturn("CREATE TABLE `test` (\n" +
 				         "  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
 				         "  `val` VARCHAR(255),\n" +
-				         "  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON UPDATE CASCADE\n" +
+				         "  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON UPDATE CASCADE,\n" +
+				         "  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test3` (`id`) ON DELETE NO ACTION\n" +
 				         ")").when(mockedResultSet).getString(2);
 		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
@@ -475,14 +498,200 @@ public class DBToolsTest
 		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
 				"  `val` VARCHAR(255),\n" +
-				"  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE\n" +
+				"  CONSTRAINT FOREIGN KEY (`val`) REFERENCES `test2` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`val`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON UPDATE NO ACTION\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`val`) ON UPDATE CASCADE\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT FOREIGN KEY (`val`) REFERENCES `test2` (`id`) ON UPDATE CASCADE\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT FOREIGN KEY (`val`) REFERENCES `test2` (`val`) ON UPDATE CASCADE\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT `` FOREIGN KEY (`val`) REFERENCES `test2` (`val`)\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON UPDATE CASCADE\n" +
 				")");
 		verify(mockedStatement, times(addCalls)).executeUpdate(contains("ADD CONSTRAINT"));
 	}
 
 	@Test
+	public void testUpdateForeignKey() throws SQLException
+	{
+		int updateCalls = 0;
+		doReturn("CREATE TABLE `test` (\n" +
+				         "  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				         "  `val` VARCHAR(255),\n" +
+				         "  PRIMARY KEY (`id`),\n" +
+				         "  CONSTRAINT FOREIGN KEY (``),\n" +
+				         "  CONSTRAINT FOREIGN KEY `key` (`id`) REFERENCES `test2` (`val`),\n" +
+				         "  CONSTRAINT FOREIGN KEY key2 (`id`) REFERENCES `test2` (`val`),\n" +
+				         "  CONSTRAINT `fk_single` FOREIGN KEY (`id`) REFERENCES `test2` (`id`),\n" +
+				         "  CONSTRAINT fk_multiple FOREIGN KEY (`id`, `val`) REFERENCES `test2` (`id`, `val`) ON DELETE NO ACTION ON UPDATE CASCADE\n" +
+				         ")").when(mockedResultSet).getString(2);
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT `fk_single` FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON DELETE CASCADE\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT `fk_single` FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON UPDATE CASCADE\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT `fk_single` FOREIGN KEY (`id`) REFERENCES `test2` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT `fk_single` FOREIGN KEY (`id`) REFERENCES `test2` (`val`)\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT `fk_single` FOREIGN KEY (`val`) REFERENCES `test2` (`id`)\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT `fk_single` FOREIGN KEY (`val`) REFERENCES `test2` (`val`)\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT `fk_single` FOREIGN KEY (`id`, `val`) REFERENCES `test2` (`id`, `val`)\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT fk_multiple FOREIGN KEY (`id`, `val`) REFERENCES `test2` (`id`, `val`) ON DELETE CASCADE ON UPDATE NO ACTION\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT `fk_multiple` FOREIGN KEY (`id`, `val`) REFERENCES `test2` (`id`, `val`)\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  CONSTRAINT fk_multiple FOREIGN KEY (`id`, `val`) REFERENCES `test2` (`id`, `val`) ON DELETE NO ACTION ON UPDATE CASCADE\n" +
+				")");
+		verify(mockedStatement, times(updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
+	}
+
+	@Test
+	public void testAddIndex() throws SQLException
+	{
+		int addCalls = 0;
+		doReturn("CREATE TABLE `test` (\n" +
+				         "  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				         "  `val` VARCHAR(255),\n" +
+				         "  INDEX (`val`)\n" +
+				         ")").when(mockedResultSet).getString(2);
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  INDEX `idx` (id)\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD INDEX"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  INDEX idx (`id`)\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD INDEX"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  INDEX (`id`)\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD INDEX"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  INDEX (`id`, `val`)\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD INDEX"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  INDEX (`val`)\n" +
+				")");
+		verify(mockedStatement, times(addCalls)).executeUpdate(contains("ADD INDEX"));
+	}
+
+	@Test
+	public void testUpdateIndex() throws SQLException
+	{
+		int updateCalls = 0;
+		doReturn("CREATE TABLE `test` (\n" +
+				         "  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				         "  `val` VARCHAR(255),\n" +
+				         "  INDEX `idx` (`val`)\n" +
+				         ")").when(mockedResultSet).getString(2);
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  INDEX `idx` (`id`)\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP INDEX"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  INDEX `idx` (`id`, `val`)\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP INDEX"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `val` VARCHAR(255),\n" +
+				"  INDEX `idx` (`val`)\n" +
+				")");
+		verify(mockedStatement, times(updateCalls)).executeUpdate(contains("DROP INDEX"));
+	}
+
+	@Test
 	public void testAddColumn() throws SQLException
 	{
+		int addCalls = 0;
 		doReturn("CREATE TABLE `test` (\n" +
 				         "  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
 				         ")").when(mockedResultSet).getString(2);
@@ -490,19 +699,57 @@ public class DBToolsTest
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
 				"  `val` VARCHAR(255)\n" +
 				")");
-		verify(mockedStatement, times(1)).executeUpdate(contains("ADD COLUMN"));
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD COLUMN"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  val VARCHAR(255)\n" +
+				")");
+		verify(mockedStatement, times(++addCalls)).executeUpdate(contains("ADD COLUMN"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+				"  `new`\n" +
+				")");
+		verify(mockedStatement, times(addCalls)).executeUpdate(contains("ADD COLUMN"));
 	}
 
 	@Test
 	public void testUpdateColumn() throws SQLException
 	{
+		int updateCalls = 0;
 		doReturn("CREATE TABLE `test` (\n" +
+				         "  `idü*\\2`,\n" +
+				         "  PRIMARY KEY(`id2`),\n" +
 				         "  `id` INT(10) UNSIGNED NOT NULL,\n" +
+				         "  val VARCHAR(255),\n" +
 				         ")").when(mockedResultSet).getString(2);
 		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT\n" +
 				")");
-		verify(mockedStatement, times(1)).executeUpdate(contains("MODIFY COLUMN"));
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("MODIFY COLUMN"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) AUTO_INCREMENT UNSIGNED NOT NULL\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("MODIFY COLUMN"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(12) NOT NULL\n" +
+				")");
+		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("MODIFY COLUMN"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id2`    \n" +
+				")");
+		verify(mockedStatement, times(updateCalls)).executeUpdate(contains("MODIFY COLUMN"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `vü*al` INT(10) NOT NULL\n" +
+				")");
+		verify(mockedStatement, times(updateCalls)).executeUpdate(contains("MODIFY COLUMN"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) UNSIGNED NOT NULL\n" +
+				")");
+		verify(mockedStatement, times(updateCalls)).executeUpdate(contains("MODIFY COLUMN"));
+		DBTools.updateDB(mockedConnection, "CREATE TABLE `test` (\n" +
+				"  `id` INT(10) NOT NULL UNSIGNED\n" +
+				")");
+		verify(mockedStatement, times(updateCalls)).executeUpdate(contains("MODIFY COLUMN"));
 	}
 
 	@Test

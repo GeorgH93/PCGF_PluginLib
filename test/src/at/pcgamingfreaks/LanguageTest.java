@@ -125,7 +125,9 @@ public class LanguageTest
 		doReturn(true).when(mockedFile).exists();
 		doReturn(false).when(mockedFile).delete();
 		doReturn(false).when(mockedFile).createNewFile();
-		whenNew(FileOutputStream.class).withArguments(mockedFile).thenThrow(new FileNotFoundException());
+		FileOutputStream mockedOutputStream = spy(new FileOutputStream(new File(userDir, "en.yml")));
+		doThrow(new IOException()).when(mockedOutputStream).flush();
+		whenNew(FileOutputStream.class).withArguments(mockedFile).thenReturn(mockedOutputStream);
 		extractLangFile.invoke(language);
 		logCount += 2;
 		assertEquals("The log count should be correct", logCount, loggedInfoCount);

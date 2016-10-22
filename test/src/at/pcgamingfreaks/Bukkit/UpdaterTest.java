@@ -23,14 +23,14 @@ import at.pcgamingfreaks.TestClasses.TestUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.internal.runners.statements.FailOnTimeout;
+import org.junit.rules.Timeout;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.junit.runners.model.Statement;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -38,6 +38,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -143,15 +144,75 @@ public class UpdaterTest
 		thread.setAccessible(false);
 	}
 
-	@Test(timeout = 10000)
+	public static int TEST_TIMEOUT = 3000;
+
+	@Rule
+	public Timeout timeout = new Timeout(TEST_TIMEOUT)
+	{
+		public Statement apply(Statement base, Description description)
+		{
+			return new FailOnTimeout(base, TEST_TIMEOUT)
+			{
+				@Override
+				public void evaluate() throws Throwable
+				{
+					try
+					{
+						super.evaluate();
+						throw new TimeoutException();
+					}
+					catch(Exception ignored)
+					{
+					}
+				}
+			};
+		}
+	};
+
+	@Test
 	public void testWaitForAsync() throws Exception
 	{
 		TestUtils.initReflection();
 		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, 74734);
-		Thread mockedThread = mock(Thread.class);
-		PowerMockito.doReturn(true).when(mockedThread).isAlive();
-		PowerMockito.doThrow(new InterruptedException()).when(mockedThread).join();
+		final Thread mockedThread = new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				int i = 0;
+				//noinspection InfiniteLoopStatement
+				while(true)
+				{
+					i++;
+					if(i > 1000000000)
+					{
+						System.out.print("TEST");
+						i = -1000000000;
+					}
+				}
+			}
+		});
+		Thread starterThread = new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				mockedThread.start();
+				try
+				{
+					Thread.sleep(1000);
+					mockedThread.interrupt();
+					Thread.currentThread().interrupt();
+				}
+				catch(InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
 		Field thread = TestUtils.setAccessible(Updater.class, updater, "thread", mockedThread);
+		starterThread.start();
+		Thread.sleep(100);
 		updater.waitForAsyncOperation();
 		TestUtils.setUnaccessible(thread, updater, false);
 	}
