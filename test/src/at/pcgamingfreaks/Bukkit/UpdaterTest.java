@@ -186,7 +186,6 @@ public class UpdaterTest
 					i++;
 					if(i > 1000000000)
 					{
-						System.out.print("TEST");
 						i = -1000000000;
 					}
 				}

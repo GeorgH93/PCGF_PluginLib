@@ -30,12 +30,16 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import sun.reflect.ReflectionFactory;
+
 import java.io.*;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -103,12 +107,6 @@ public class UUIDConverterTest
 		assertEquals("Username from UUID without separators should be converted correctly", TEST_USER_NAME, UUIDConverter.getNameFromUUID(TEST_USER_UUID));
 		assertEquals("Username from UUID with separators should be converted correctly", TEST_USER_NAME, UUIDConverter.getNameFromUUID(TEST_USER_UUID_SEPARATORS));
 		assertEquals("Username from UUID object should be converted correctly", TEST_USER_NAME, UUIDConverter.getNameFromUUID(UUID.fromString(TEST_USER_UUID_SEPARATORS)));
-	}
-
-	@Test
-	public void testGetOnlineUUID()
-	{
-
 	}
 
 	@Test
@@ -328,6 +326,37 @@ public class UUIDConverterTest
 		assertEquals("The UUID should match", UUID.fromString(TEST_USER2_UUID_SEPARATORS), UUIDConverter.getUUIDFromNameAsUUID(TEST_USER2_NAME_OG, true, TEST_USER2_LAST_SEEN));
 		assertEquals("The UUID should match", UUID.fromString(TEST_USER2_UUID_SEPARATORS), UUIDConverter.getUUIDFromNameAsUUID(TEST_USER2_NAME_NEW, true, TODAY));
 		assertEquals("The UUID should match", UUID.fromString(TEST_USER2_UUID_SEPARATORS), UUIDConverter.getUUIDFromNameAsUUID(TEST_USER2_NAME_OG, true, false, TEST_USER2_LAST_SEEN));
+	}
+
+	@Test
+	@SuppressWarnings("SpellCheckingInspection,unchecked")
+	public void testInternalClasses() throws Exception
+	{
+		Object object;
+		ReflectionFactory reflection = ReflectionFactory.getReflectionFactory();
+		Constructor<?> constructor;
+		for(Class clazz : UUIDConverter.class.getDeclaredClasses())
+		{
+			constructor = reflection.newConstructorForSerialization(clazz, Object.class.getDeclaredConstructor());
+			object = constructor.newInstance();
+			switch(clazz.getName())
+			{
+				case "at.pcgamingfreaks.UUIDConverter$NameChange":
+					assertNotNull("The change date should not be null", clazz.getDeclaredMethod("getChangeDate").invoke(object));
+					break;
+				case "at.pcgamingfreaks.UUIDConverter$Profile":
+					assertNotNull("The object should not be null", object);
+					break;
+				case "at.pcgamingfreaks.UUIDConverter$CacheData":
+					SimpleDateFormat mockedDateFormat = mock(SimpleDateFormat.class);
+					doThrow(new ParseException("", 0)).when(mockedDateFormat).parse(anyString());
+					whenNew(SimpleDateFormat.class).withAnyArguments().thenReturn(mockedDateFormat);
+					Field expiresOn = clazz.getDeclaredField("expiresOn");
+					expiresOn.set(object, "2016-10-20 16:23:12 Z");
+					assertNotNull("The change date should not be null", clazz.getDeclaredMethod("getExpiresDate").invoke(object));
+					break;
+			}
+		}
 	}
 
 	@AfterClass
