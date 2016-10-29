@@ -184,7 +184,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		if(getSendMethod() == SendMethod.DISABLED) return;
 		if(target instanceof Player && getSendMethod() != SendMethod.CHAT_CLASSIC)
 		{
-			method.getSender().doSend((Player) target, (args != null && args.length > 0) ? String.format(json, args) : json, optionalParameters);
+			method.getSender().doSend((Player) target, (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
 		}
 		else
 		{
@@ -215,16 +215,16 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		}
 		else
 		{
-			method.getSender().doSend(targets, (args != null && args.length > 0) ? String.format(json, args) : json, optionalParameters);
+			method.getSender().doSend(targets, (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
 		}
 	}
 
 	/**
 	 * Sends the message to all online players on the server, as well as the console.
 	 *
-	 * @param args    An optional array of arguments.
-	 *                   If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
-	 *                   This can be used to add variable data into the message.
+	 * @param args An optional array of arguments.
+	 *                If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
+	 *                This can be used to add variable data into the message.
 	 */
 	@Override
 	public void broadcast(@Nullable Object... args)
@@ -237,7 +237,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		else
 		{
 			Bukkit.getConsoleSender().sendMessage((args != null && args.length > 0) ? String.format(fallback, args) : fallback); // Send the message to the console
-			method.getSender().doBroadcast((args != null && args.length > 0) ? String.format(json, args) : json, optionalParameters);
+			method.getSender().doBroadcast((args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
 		}
 	}
 }

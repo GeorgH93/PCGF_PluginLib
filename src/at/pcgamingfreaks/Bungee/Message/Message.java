@@ -175,7 +175,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 		if(getSendMethod() == SendMethod.DISABLED) return;
 		if(target instanceof ProxiedPlayer)
 		{
-			method.getSender().doSend((ProxiedPlayer) target, (args != null && args.length > 0) ? String.format(json, args) : json, optionalParameters);
+			method.getSender().doSend((ProxiedPlayer) target, (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
 		}
 		else
 		{
@@ -197,7 +197,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	{
 		Validate.notNull(targets, "The targets that should receive the message should not be null!");
 		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
-		method.getSender().doSend(targets, (args != null && args.length > 0) ? String.format(json, args) : json, optionalParameters);
+		method.getSender().doSend(targets, (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
 	}
 
 	/**
@@ -213,6 +213,6 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	{
 		if(getSendMethod() == SendMethod.DISABLED) return;
 		ProxyServer.getInstance().getConsole().sendMessage((args != null && args.length > 0) ? String.format(fallback, args) : fallback); // Send the message to the console
-		method.getSender().doBroadcast((args != null && args.length > 0) ? String.format(json, args) : json, optionalParameters);
+		method.getSender().doBroadcast((args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
 	}
 }

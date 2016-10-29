@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Message;
 
 import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.Utils;
 
 import com.google.gson.Gson;
 
@@ -184,4 +185,16 @@ public abstract class Message<T extends Message, PLAYER, COMMAND_SENDER>
 	 */
 	public abstract void broadcast(@Nullable Object... args);
 	//endregion
+
+	protected Object[] quoteArgs(Object[] args)
+	{
+		for(int i = 0; i < args.length; i++)
+		{
+			if(args[i] instanceof String)
+			{
+				args[i] = Utils.escapeJsonString((String) args[i]);
+			}
+		}
+		return args;
+	}
 }

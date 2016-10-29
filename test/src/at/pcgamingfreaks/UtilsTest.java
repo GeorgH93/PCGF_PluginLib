@@ -171,4 +171,10 @@ public class UtilsTest
 		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase("", array));
 		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase(null, array));
 	}
+
+	@Test
+	public void testEscapeJsonString()
+	{
+		assertEquals("The string should be escaped correctly", "\\\\Hello \\\"World!\\\"\\\\", Utils.escapeJsonString("\\Hello \"World!\"\\"));
+	}
 }

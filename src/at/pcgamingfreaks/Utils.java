@@ -161,4 +161,15 @@ public class Utils
 	{
 		return MessageColor.valueOf(style.name().toUpperCase());
 	}
+
+	/**
+	 * Escapes special characters to allow the string to be placed inside a json string (e.g. to replace a text within an already built json).
+	 *
+	 * @param string The string to be escaped.
+	 * @return The escaped string.
+	 */
+	public static String escapeJsonString(String string)
+	{
+		return string.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
+	}
 }

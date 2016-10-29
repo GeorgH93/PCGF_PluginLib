@@ -148,10 +148,4 @@ public class UtilsTest
 		//verify(player, times(++sendPacketCalls)).getHandle();
 		player.isEntityPlayerHandle = true;
 	}
-
-	@Test
-	public void testEscapeJsonString()
-	{
-		assertEquals("The string should be escaped correctly", "\\\\Hello \\\"World!\\\"\\\\", Utils.escapeJsonString("\\Hello \"World!\"\\"));
-	}
 }

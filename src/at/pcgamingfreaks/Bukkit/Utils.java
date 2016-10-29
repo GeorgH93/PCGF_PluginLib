@@ -73,17 +73,6 @@ public class Utils extends at.pcgamingfreaks.Utils
 	}
 
 	/**
-	 * Escapes special characters to allow the string to be placed inside a json string (e.g. to replace a text within an already built json).
-	 *
-	 * @param string The string to be escaped.
-	 * @return The escaped string.
-	 */
-	public static String escapeJsonString(String string)
-	{
-		return string.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
-	}
-
-	/**
 	 * Checks if per world plugins is installed. Used to check
 	 *
 	 * @return true if PerWorldPlugins is installed
