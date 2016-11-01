@@ -145,31 +145,53 @@ public class UtilsTest
 	public void testStringArrayContains()
 	{
 		String[] array = new String[] { "Junk", "tree", "Hello" };
-		assertTrue("The array should contain the string", Utils.stringArrayContains("tree", array));
-		assertTrue("The array should contain the string", Utils.stringArrayContains("Hello", array));
-		assertTrue("The array should contain the string", Utils.stringArrayContains("Junk", array));
-		assertFalse("The array should not contain the string", Utils.stringArrayContains("junk", array));
-		assertFalse("The array should not contain the string", Utils.stringArrayContains("Tree", array));
-		assertFalse("The array should not contain the string", Utils.stringArrayContains("hello", array));
-		assertFalse("The array should not contain the string", Utils.stringArrayContains("just a string", array));
-		assertFalse("The array should not contain the string", Utils.stringArrayContains("", array));
-		assertFalse("The array should not contain the string", Utils.stringArrayContains(null, array));
+		assertTrue("The array should contain the string", Utils.stringArrayContains(array, "tree"));
+		assertTrue("The array should contain the string", Utils.stringArrayContains(array, "Hello"));
+		assertTrue("The array should contain the string", Utils.stringArrayContains(array, "Junk"));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains(array, "junk"));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains(array, "Tree"));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains(array, "hello"));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains(array, "just a string"));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains(array, ""));
+		assertFalse("The array should not contain the string", Utils.stringArrayContains(array, null));
 	}
 
 	@Test
 	public void testStringArrayContainsIgnoreCase()
 	{
 		String[] array = new String[] { "Junk", "tree", "Hello" };
-		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("tree", array));
-		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("Tree", array));
-		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("Junk", array));
-		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("juNk", array));
-		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("junk", array));
-		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("Hello", array));
-		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase("hello", array));
-		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase("just a string", array));
-		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase("", array));
-		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase(null, array));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase(array, "tree"));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase(array, "Tree"));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase(array, "Junk"));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase(array, "juNk"));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase(array, "junk"));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase(array, "Hello"));
+		assertTrue("The array should contain the string", Utils.stringArrayContainsIgnoreCase(array, "hello"));
+		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase(array, "just a string"));
+		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase(array, ""));
+		assertFalse("The array should not contain the string", Utils.stringArrayContainsIgnoreCase(array, null));
+	}
+
+	@Test
+	public void testStringArrayContainsAny() throws Exception
+	{
+		String[] array = new String[] { "Junk", "tree", "Hello" };
+		assertTrue("The array should contain one of the strings", Utils.stringArrayContainsAny(array, "junk", "tree"));
+		assertFalse("The array should not contain one of the strings", Utils.stringArrayContainsAny(array, "junk", "Tree"));
+		assertFalse("The array should not contain one of the strings", Utils.stringArrayContainsAny(array));
+		assertFalse("The array should not contain one of the strings", Utils.stringArrayContainsAny(array, (String[]) null));
+	}
+
+	@Test
+	public void testStringArrayContainsAnyIgnoreCase() throws Exception
+	{
+		String[] array = new String[] { "Junk", "tree", "Hello" };
+		assertTrue("The array should contain one of the strings", Utils.stringArrayContainsAnyIgnoreCase(array, "junk", "tree"));
+		assertTrue("The array should not contain one of the strings", Utils.stringArrayContainsAnyIgnoreCase(array, "junk", "Tree"));
+		assertTrue("The array should not contain one of the strings", Utils.stringArrayContainsAnyIgnoreCase(array, "just a string", "hello"));
+		assertFalse("The array should not contain one of the strings", Utils.stringArrayContainsAnyIgnoreCase(array, "just a string", "an other string"));
+		assertFalse("The array should not contain one of the strings", Utils.stringArrayContainsAnyIgnoreCase(array));
+		assertFalse("The array should not contain one of the strings", Utils.stringArrayContainsAnyIgnoreCase(array, (String[]) null));
 	}
 
 	@Test

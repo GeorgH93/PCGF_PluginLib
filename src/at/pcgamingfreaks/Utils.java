@@ -20,6 +20,7 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.Message.MessageColor;
 
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -105,13 +106,42 @@ public class Utils
 		}
 	}
 
-	public static boolean stringArrayContains(String str, String[] strings)
+	public static boolean stringArrayContains(@NotNull String[] strings, @Nullable String searchFor)
 	{
-		if(str != null && !str.isEmpty())
+		Validate.notNull(strings);
+		for(String s : strings)
 		{
-			for(String s : strings)
+			//noinspection ConstantConditions
+			if((s != null && s.equals(searchFor)) || (s == null && searchFor == null))
 			{
-				if(s.equals(str))
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean stringArrayContainsIgnoreCase(@NotNull String[] strings, @Nullable String searchFor)
+	{
+		Validate.notNull(strings);
+		for(String s : strings)
+		{
+			//noinspection ConstantConditions
+			if((s != null && s.equalsIgnoreCase(searchFor)) || (s == null && searchFor == null))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Contract("_, null -> false")
+	public static boolean stringArrayContainsAnyIgnoreCase(@NotNull String[] strings, @Nullable String... searchFor)
+	{
+		if(searchFor != null && searchFor.length > 0)
+		{
+			for(String str : searchFor)
+			{
+				if(stringArrayContainsIgnoreCase(strings, str))
 				{
 					return true;
 				}
@@ -120,13 +150,14 @@ public class Utils
 		return false;
 	}
 
-	public static boolean stringArrayContainsIgnoreCase(String str, String[] strings)
+	@Contract("_, null -> false")
+	public static boolean stringArrayContainsAny(@NotNull String[] strings, @Nullable String... searchFor)
 	{
-		if(str != null && !str.isEmpty())
+		if(searchFor != null && searchFor.length > 0)
 		{
-			for(String s : strings)
+			for(String str : searchFor)
 			{
-				if(s.equalsIgnoreCase(str))
+				if(stringArrayContains(strings, str))
 				{
 					return true;
 				}
