@@ -958,7 +958,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	protected transient static Gson GSON;
 	protected transient static Constructor messageComponentConstructor;
 	protected transient static Class messageComponentClass;
-	protected transient final static JsonParser JSON_PARSER = new JsonParser();
+	protected static final transient JsonParser JSON_PARSER = new JsonParser();
 	//endregion
 
 	@Override

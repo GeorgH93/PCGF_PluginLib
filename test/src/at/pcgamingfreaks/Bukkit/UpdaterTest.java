@@ -50,7 +50,7 @@ import static org.powermock.api.support.membermodification.MemberModifier.suppre
 @PrepareForTest({ Bukkit.class, JavaPlugin.class, PluginDescriptionFile.class, Thread.class })
 public class UpdaterTest
 {
-	private final static File PLUGINS_FOLDER = new File("plugins"), TARGET_FILE = new File(PLUGINS_FOLDER, "updates" + File.separator + "MM.jar");
+	private static final File PLUGINS_FOLDER = new File("plugins"), TARGET_FILE = new File(PLUGINS_FOLDER, "updates" + File.separator + "MM.jar");
 
 	private static PluginDescriptionFile mockedPluginDescription;
 	private static String runnableStatus = "";

@@ -140,10 +140,10 @@ public class Utils extends at.pcgamingfreaks.Utils
 
 
 	//region Reflection constants for the send packet method
-	private final static Class<?> ENTITY_PLAYER = NMSReflection.getNMSClass("EntityPlayer");
-	private final static Class<?> PACKET = NMSReflection.getNMSClass("Packet");
-	private final static Method SEND_PACKET = NMSReflection.getMethod(NMSReflection.getNMSClass("PlayerConnection"), "sendPacket", PACKET);
-	private final static Field PLAYER_CONNECTION = NMSReflection.getField(ENTITY_PLAYER, "playerConnection");
+	private static final Class<?> ENTITY_PLAYER = NMSReflection.getNMSClass("EntityPlayer");
+	private static final Class<?> PACKET = NMSReflection.getNMSClass("Packet");
+	private static final Method SEND_PACKET = NMSReflection.getMethod(NMSReflection.getNMSClass("PlayerConnection"), "sendPacket", PACKET);
+	private static final Field PLAYER_CONNECTION = NMSReflection.getField(ENTITY_PLAYER, "playerConnection");
 	//endregion
 
 	/**

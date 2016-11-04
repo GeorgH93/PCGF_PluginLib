@@ -33,7 +33,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	private static Constructor EMPTY_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR = null, MESSAGE_CONSTRUCTOR = null;
 	private static Class<? extends MessageComponent> COMPONENT_CLASS;
 	private static MessageComponent NEW_LINE_HELPER = null;
-	protected final static Gson GSON = new Gson();
+	protected static final Gson GSON = new Gson();
 
 	/**
 	 * Creates a new MessageBuilder with a given {@link MessageComponent}.

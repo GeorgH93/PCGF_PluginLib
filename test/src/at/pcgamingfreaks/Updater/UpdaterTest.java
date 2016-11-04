@@ -66,8 +66,8 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PrepareForTest({ ByteStreams.class, FileOutputStream.class, Updater.class, Utils.class })
 public class UpdaterTest
 {
-	private final static Logger LOGGER = Logger.getLogger(UpdaterTest.class.getName());
-	private final static File PLUGINS_FOLDER = new File("plugins"), TARGET_FILE = new File(PLUGINS_FOLDER, "updates" + File.separator + "MM.jar");
+	private static final Logger LOGGER = Logger.getLogger(UpdaterTest.class.getName());
+	private static final File PLUGINS_FOLDER = new File("plugins"), TARGET_FILE = new File(PLUGINS_FOLDER, "updates" + File.separator + "MM.jar");
 
 	@SuppressWarnings("SpellCheckingInspection")
 	private static UpdateProvider bukkitProvider;

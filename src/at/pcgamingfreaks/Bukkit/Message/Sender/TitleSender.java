@@ -31,11 +31,11 @@ import java.util.Collection;
 
 public class TitleSender extends BaseSender
 {
-	private final static TitleMetadata METADATA = new TitleMetadata(); // Default metadata object
+	private static final TitleMetadata METADATA = new TitleMetadata(); // Default metadata object
 
 	//region Reflection stuff
-	private final static Class<?> PACKET_PLAY_OUT_TITLE = NMSReflection.getNMSClass("PacketPlayOutTitle");
-	private final static Constructor<?> PACKET_PLAY_OUT_TITLE_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_TITLE, NMSReflection.getNMSClass("PacketPlayOutTitle$EnumTitleAction"), I_CHAT_BASE_COMPONENT, int.class, int.class, int.class);
+	private static final Class<?> PACKET_PLAY_OUT_TITLE = NMSReflection.getNMSClass("PacketPlayOutTitle");
+	private static final Constructor<?> PACKET_PLAY_OUT_TITLE_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_TITLE, NMSReflection.getNMSClass("PacketPlayOutTitle$EnumTitleAction"), I_CHAT_BASE_COMPONENT, int.class, int.class, int.class);
 	//endregion
 
 	/**

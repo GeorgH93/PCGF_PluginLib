@@ -28,22 +28,22 @@ import java.lang.reflect.Method;
 public class NBTItemStackSerializer implements ItemStackSerializer
 {
 	//region Reflection Variables
-	private final static Class<?> CLASS_NBT_TAG_COMPOUND            = NMSReflection.getNMSClass("NBTTagCompound");
-	private final static Class<?> CLASS_NBT_COMPRESSED_STREAM_TOOLS = NMSReflection.getNMSClass("NBTCompressedStreamTools");
-	private final static Class<?> CLASS_CRAFT_ITEM_STACK            = NMSReflection.getOBCClass("inventory.CraftItemStack");
-	private final static Class<?> CLASS_NMS_ITEM_STACK              = NMSReflection.getNMSClass("ItemStack");
+	private static final Class<?> CLASS_NBT_TAG_COMPOUND            = NMSReflection.getNMSClass("NBTTagCompound");
+	private static final Class<?> CLASS_NBT_COMPRESSED_STREAM_TOOLS = NMSReflection.getNMSClass("NBTCompressedStreamTools");
+	private static final Class<?> CLASS_CRAFT_ITEM_STACK            = NMSReflection.getOBCClass("inventory.CraftItemStack");
+	private static final Class<?> CLASS_NMS_ITEM_STACK              = NMSReflection.getNMSClass("ItemStack");
 
-	private final static Method METHOD_NBT_TAG_C_SET_INT  = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "setInt", String.class, int.class);
-	private final static Method METHOD_NBT_COMP_STEAM_A   = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", CLASS_NBT_TAG_COMPOUND, OutputStream.class);
-	private final static Method METHOD_NBT_TAG_C_SET2     = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "set", String.class, NMSReflection.getNMSClass("NBTBase"));
-	private final static Method METHOD_SAVE               = NMSReflection.getMethod(CLASS_NMS_ITEM_STACK, "save", CLASS_NBT_TAG_COMPOUND);
-	private final static Method METHOD_AS_NMS_COPY        = NMSReflection.getMethod(CLASS_CRAFT_ITEM_STACK, "asNMSCopy", ItemStack.class);
-	private final static Method METHOD_GET_INT            = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "getInt", String.class);
-	private final static Method METHOD_HAS_KEY_OF_TYPE    = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "hasKeyOfType", String.class, int.class);
-	private final static Method METHOD_GET_COMPOUND       = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "getCompound", String.class);
-	private final static Method METHOD_CREATE_STACK       = NMSReflection.getMethod(CLASS_NMS_ITEM_STACK, "createStack", CLASS_NBT_TAG_COMPOUND);
-	private final static Method METHOD_AS_BUKKIT_COPY     = NMSReflection.getMethod(CLASS_CRAFT_ITEM_STACK, "asBukkitCopy", CLASS_NMS_ITEM_STACK);
-	private final static Method METHOD_NBT_COMP_STREAM_A2 = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", InputStream.class);
+	private static final Method METHOD_NBT_TAG_C_SET_INT  = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "setInt", String.class, int.class);
+	private static final Method METHOD_NBT_COMP_STEAM_A   = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", CLASS_NBT_TAG_COMPOUND, OutputStream.class);
+	private static final Method METHOD_NBT_TAG_C_SET2     = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "set", String.class, NMSReflection.getNMSClass("NBTBase"));
+	private static final Method METHOD_SAVE               = NMSReflection.getMethod(CLASS_NMS_ITEM_STACK, "save", CLASS_NBT_TAG_COMPOUND);
+	private static final Method METHOD_AS_NMS_COPY        = NMSReflection.getMethod(CLASS_CRAFT_ITEM_STACK, "asNMSCopy", ItemStack.class);
+	private static final Method METHOD_GET_INT            = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "getInt", String.class);
+	private static final Method METHOD_HAS_KEY_OF_TYPE    = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "hasKeyOfType", String.class, int.class);
+	private static final Method METHOD_GET_COMPOUND       = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "getCompound", String.class);
+	private static final Method METHOD_CREATE_STACK       = NMSReflection.getMethod(CLASS_NMS_ITEM_STACK, "createStack", CLASS_NBT_TAG_COMPOUND);
+	private static final Method METHOD_AS_BUKKIT_COPY     = NMSReflection.getMethod(CLASS_CRAFT_ITEM_STACK, "asBukkitCopy", CLASS_NMS_ITEM_STACK);
+	private static final Method METHOD_NBT_COMP_STREAM_A2 = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", InputStream.class);
 	//endregion
 
 	/**

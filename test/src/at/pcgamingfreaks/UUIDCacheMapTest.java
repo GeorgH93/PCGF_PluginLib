@@ -25,13 +25,13 @@ import static org.junit.Assert.assertTrue;
 
 public class UUIDCacheMapTest
 {
-	private final static String TEST_USER_NAME = "GeorgH93", TEST_USER_UUID = "6c99e2b55c9e4663b4db7ad3bc52d28d", TEST_USER_UUID_SEPARATORS = "6c99e2b5-5c9e-4663-b4db-7ad3bc52d28d";
+	private static final String TEST_USER_NAME = "GeorgH93", TEST_USER_UUID = "6c99e2b55c9e4663b4db7ad3bc52d28d", TEST_USER_UUID_SEPARATORS = "6c99e2b5-5c9e-4663-b4db-7ad3bc52d28d";
 	@SuppressWarnings("SpellCheckingInspection")
-	private final static String TEST_USER2_NAME = "Watchdog", TEST_USER2_UUID = "4ca6d49d8d80429fa7a4bcce9f9e4854", TEST_USER2_UUID_SEPARATORS = "4ca6d49d-8d80-429f-a7a4-bcce9f9e4854";
+	private static final String TEST_USER2_NAME = "Watchdog", TEST_USER2_UUID = "4ca6d49d8d80429fa7a4bcce9f9e4854", TEST_USER2_UUID_SEPARATORS = "4ca6d49d-8d80-429f-a7a4-bcce9f9e4854";
 	@SuppressWarnings("SpellCheckingInspection")
-	private final static String TEST_USER3_NAME = "CleoMalika", TEST_USER3_UUID = "fc4b363ba4474ab98778d0ee353151ee", TEST_USER3_UUID_SEPARATORS = "fc4b363b-a447-4ab9-8778-d0ee353151ee";
+	private static final String TEST_USER3_NAME = "CleoMalika", TEST_USER3_UUID = "fc4b363ba4474ab98778d0ee353151ee", TEST_USER3_UUID_SEPARATORS = "fc4b363b-a447-4ab9-8778-d0ee353151ee";
 	@SuppressWarnings("SpellCheckingInspection")
-	private final static String TEST_USER4_NAME = "AFKMaster", TEST_USER4_UUID = "175c57e4cd4b4fb3bfea1c28d094f5dc", TEST_USER4_UUID_SEPARATORS = "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc";
+	private static final String TEST_USER4_NAME = "AFKMaster", TEST_USER4_UUID = "175c57e4cd4b4fb3bfea1c28d094f5dc", TEST_USER4_UUID_SEPARATORS = "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc";
 
 	@Test
 	public void testStandard()

@@ -30,7 +30,7 @@ import java.util.Collection;
 
 public class ChatSender extends BaseSender
 {
-	private final static byte CHAT_ACTION = 0;
+	private static final byte CHAT_ACTION = 0;
 
 	/**
 	 * Sends a JSON message to a players chat.

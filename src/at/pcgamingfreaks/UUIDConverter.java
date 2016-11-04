@@ -38,10 +38,10 @@ import java.util.*;
  */
 public final class UUIDConverter
 {
-	private final static long MOJANG_QUERY_RETRY_TIME;
+	private static final long MOJANG_QUERY_RETRY_TIME;
 
-	private final static Gson GSON = new Gson();
-	private final static UUIDCacheMap UUID_CACHE; // Cache object for resolved UUIDs
+	private static final Gson GSON = new Gson();
+	private static final UUIDCacheMap UUID_CACHE; // Cache object for resolved UUIDs
 
 	static
 	{
@@ -370,7 +370,7 @@ public final class UUIDConverter
 
 	//region Multi querys
 	//TODO: JavaDoc Exception handling, more parameters, fallback
-	private final static int BATCH_SIZE = 100; // Limit from Mojang
+	private static final int BATCH_SIZE = 100; // Limit from Mojang
 
 	public static Map<String, String> getUUIDsFromNames(Collection<String> names, boolean onlineMode, boolean withSeparators)
 	{

@@ -30,8 +30,8 @@ import java.util.List;
 
 public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent, ChatColor> implements JsonDeserializer<MessageComponent>
 {
-	private transient final static at.pcgamingfreaks.Message.MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
-	private transient final static MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
+	private static final transient at.pcgamingfreaks.Message.MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
+	private static final transient MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 
 	static
 	{

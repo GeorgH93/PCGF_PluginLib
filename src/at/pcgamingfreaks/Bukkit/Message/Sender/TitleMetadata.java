@@ -30,9 +30,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class TitleMetadata
 {
-	private transient final static Enum<?> ENUM_TITLE = NMSReflection.getNMSEnum("PacketPlayOutTitle$EnumTitleAction.TITLE");
-	private transient final static Enum<?> ENUM_SUBTITLE = NMSReflection.getNMSEnum("PacketPlayOutTitle$EnumTitleAction.SUBTITLE");
-	private transient final static Gson GSON = new Gson();
+	private static final transient Enum<?> ENUM_TITLE = NMSReflection.getNMSEnum("PacketPlayOutTitle$EnumTitleAction.TITLE");
+	private static final transient Enum<?> ENUM_SUBTITLE = NMSReflection.getNMSEnum("PacketPlayOutTitle$EnumTitleAction.SUBTITLE");
+	private static final transient Gson GSON = new Gson();
 
 	private int fadeIn = 5, fadeOut = 50, stay = 5;
 	private boolean subtitle = false;

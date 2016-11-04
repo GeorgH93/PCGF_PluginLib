@@ -37,7 +37,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class RegisterablePluginCommand extends Command implements PluginIdentifiableCommand
 {
-	private final static Field FIELD_KNOWN_COMMANDS = NMSReflection.getField(SimpleCommandMap.class, "knownCommands");
+	private static final Field FIELD_KNOWN_COMMANDS = NMSReflection.getField(SimpleCommandMap.class, "knownCommands");
 
 	private final Plugin owningPlugin;
 	private CommandExecutor executor;

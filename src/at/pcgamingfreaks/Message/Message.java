@@ -35,7 +35,7 @@ import java.util.List;
 public abstract class Message<T extends Message, PLAYER, COMMAND_SENDER>
 {
 	//region Variables
-	protected final static Gson GSON = new Gson();
+	protected static final Gson GSON = new Gson();
 
 	protected Object optionalParameters = null;
 	protected String json, fallback;

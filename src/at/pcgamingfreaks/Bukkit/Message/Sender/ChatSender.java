@@ -32,11 +32,11 @@ import java.util.Collection;
 public class ChatSender extends BaseSender
 {
 	//region Reflection stuff
-	private final static Class<?> PACKET_PLAY_OUT_CHAT = NMSReflection.getNMSClass("PacketPlayOutChat");
-	private final static Constructor<?> PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, Byte.TYPE);
+	private static final Class<?> PACKET_PLAY_OUT_CHAT = NMSReflection.getNMSClass("PacketPlayOutChat");
+	private static final Constructor<?> PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, Byte.TYPE);
 	//endregion
 
-	private final static byte CHAT_ACTION = 0;
+	private static final byte CHAT_ACTION = 0;
 
 	/**
 	 * Sends a JSON message to a players chat.

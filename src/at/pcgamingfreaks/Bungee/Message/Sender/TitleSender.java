@@ -30,7 +30,7 @@ import java.util.Collection;
 
 public class TitleSender extends BaseSender
 {
-	private final static TitleMetadata METADATA = new TitleMetadata(); // Default metadata object
+	private static final TitleMetadata METADATA = new TitleMetadata(); // Default metadata object
 
 	/**
 	 * Sends a JSON message to a player shown as title.

@@ -45,7 +45,7 @@ import java.util.zip.ZipFile;
  */
 public abstract class Updater
 {
-	private final static int BUFFER_SIZE = 1024;
+	private static final int BUFFER_SIZE = 1024;
 
 	private final File pluginsFolder, updateFolder;
 	private final UpdateProvider updateProvider;

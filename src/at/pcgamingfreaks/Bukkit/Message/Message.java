@@ -34,7 +34,7 @@ import java.util.*;
 public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender>
 {
 	//region Variables
-	private final static boolean PRE_1_8_MC = MCVersion.isOlderThan(MCVersion.MC_1_8);
+	private static final boolean PRE_1_8_MC = MCVersion.isOlderThan(MCVersion.MC_1_8);
 
 	private SendMethod method = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
 	//endregion

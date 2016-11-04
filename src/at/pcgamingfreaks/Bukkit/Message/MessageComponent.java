@@ -38,16 +38,16 @@ import java.util.List;
 public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent, ChatColor> implements JsonDeserializer<MessageComponent>
 {
 	//region Reflection Variables
-	private transient final static Class<?> CRAFT_STATISTIC = NMSReflection.getOBCClass("CraftStatistic");
-	private transient final static Method GET_NMS_ACHIEVEMENT =  NMSReflection.getMethod(CRAFT_STATISTIC, "getNMSAchievement", Achievement.class);
-	private transient final static Method GET_NMS_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getNMSStatistic", Statistic.class);
-	private transient final static Method GET_MATERIAL_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getMaterialStatistic", Statistic.class, Material.class);
-	private transient final static Method GET_ENTITY_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getEntityStatistic", Statistic.class, EntityType.class);
-	private transient final static Field FIELD_STATISTIC_NAME = NMSReflection.getField(NMSReflection.getNMSClass("Statistic"), "name");
+	private static final transient Class<?> CRAFT_STATISTIC = NMSReflection.getOBCClass("CraftStatistic");
+	private static final transient Method GET_NMS_ACHIEVEMENT =  NMSReflection.getMethod(CRAFT_STATISTIC, "getNMSAchievement", Achievement.class);
+	private static final transient Method GET_NMS_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getNMSStatistic", Statistic.class);
+	private static final transient Method GET_MATERIAL_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getMaterialStatistic", Statistic.class, Material.class);
+	private static final transient Method GET_ENTITY_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getEntityStatistic", Statistic.class, EntityType.class);
+	private static final transient Field FIELD_STATISTIC_NAME = NMSReflection.getField(NMSReflection.getNMSClass("Statistic"), "name");
 	//endregion
 
-	private transient final static at.pcgamingfreaks.Message.MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
-	private transient final static MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
+	private static final transient at.pcgamingfreaks.Message.MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
+	private static final transient MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 
 	static
 	{

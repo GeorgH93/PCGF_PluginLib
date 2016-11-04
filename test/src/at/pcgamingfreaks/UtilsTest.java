@@ -31,12 +31,12 @@ import static org.mockito.Mockito.mock;
 
 public class UtilsTest
 {
-	private final static byte[] byteArray1 = new byte[] { 0x01, 0x02, 0x03 }, byteArray2 = new byte[] { (byte) 0xFD, (byte) 0xDA, 0x11 };
+	private static final byte[] byteArray1 = new byte[] { 0x01, 0x02, 0x03 }, byteArray2 = new byte[] { (byte) 0xFD, (byte) 0xDA, 0x11 };
 	@SuppressWarnings("SpellCheckingInspection")
-	private final static String final1 = "010203", final2 = "fdda11";
-	private final static String longText = "This is a long text, without any meaningful content.", shortText = "Just a text.", exactText = "This text should not change.";
-	private final static int maxLength = exactText.length();
-	private final static String longTextFinal = longText.substring(0, maxLength - 1), shortTextFinal = shortText, exactTextFinal = exactText;
+	private static final String final1 = "010203", final2 = "fdda11";
+	private static final String longText = "This is a long text, without any meaningful content.", shortText = "Just a text.", exactText = "This text should not change.";
+	private static final int maxLength = exactText.length();
+	private static final String longTextFinal = longText.substring(0, maxLength - 1), shortTextFinal = shortText, exactTextFinal = exactText;
 
 	@BeforeClass
 	public static void prepareTestData()

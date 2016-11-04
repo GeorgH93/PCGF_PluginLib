@@ -27,7 +27,7 @@ import java.util.Collection;
 
 public class ActionBarSender extends ChatSender
 {
-	private final static byte ACTION_BAR_ACTION = 2;
+	private static final byte ACTION_BAR_ACTION = 2;
 
 	/**
 	 * Sends a JSON message to a players action bar.
