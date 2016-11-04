@@ -17,14 +17,13 @@
 
 package at.pcgamingfreaks;
 
-import at.pcgamingfreaks.Message.MessageColor;
-
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class Utils
@@ -166,31 +165,43 @@ public class Utils
 		return false;
 	}
 
-	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum... styles)
+	public static @NotNull List<String> getAllContainingStrings(@NotNull String[] source, @NotNull String searchFor)
 	{
-		if(styles != null && styles.length > 0)
+		Validate.notNull(source);
+		Validate.notNull(searchFor);
+		List<String> result = new LinkedList<>();
+		for(String str : source)
 		{
-			MessageColor[] msgStyles = new MessageColor[styles.length];
-			int i = 0;
-			for(Enum style : styles)
+			//noinspection ConstantConditions
+			if(str != null && str.contains(searchFor))
 			{
-				if(style != null)
-				{
-					msgStyles[i++] = MessageColor.valueOf(style.name().toUpperCase());
-				}
+				result.add(str);
 			}
-			if(msgStyles.length > i)
-			{
-				return Arrays.copyOf(msgStyles, i);
-			}
-			return msgStyles;
 		}
-		return null;
+		return result;
 	}
 
-	public static @Nullable MessageColor messageColorFromStyle(@NotNull Enum style)
+	public static @NotNull List<String> getAllContainingStringsIgnoreCase(@NotNull String[] source, @NotNull String searchFor)
 	{
-		return MessageColor.valueOf(style.name().toUpperCase());
+		Validate.notNull(source);
+		Validate.notNull(searchFor);
+		List<String> result = new LinkedList<>();
+		for(String str : source)
+		{
+			//noinspection ConstantConditions
+			if(str != null && stringContainsIgnoreCase(str, searchFor))
+			{
+				result.add(str);
+			}
+		}
+		return result;
+	}
+
+	public static boolean stringContainsIgnoreCase(@NotNull String string, @NotNull String searchFor)
+	{
+		Validate.notNull(string);
+		Validate.notNull(searchFor);
+		return string.toLowerCase().contains(searchFor.toLowerCase());
 	}
 
 	/**

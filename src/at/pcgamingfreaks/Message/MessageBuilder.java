@@ -17,8 +17,6 @@
 
 package at.pcgamingfreaks.Message;
 
-import at.pcgamingfreaks.Utils;
-
 import com.google.gson.Gson;
 
 import java.lang.reflect.Array;
@@ -31,6 +29,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	private List<COMPONENT> messageList = new LinkedList<>();
 	private COMPONENT current;
 	private static Constructor EMPTY_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR = null, MESSAGE_CONSTRUCTOR = null;
+	@SuppressWarnings("unused")
 	private static Class<? extends MessageComponent> COMPONENT_CLASS;
 	private static MessageComponent NEW_LINE_HELPER = null;
 	protected static final Gson GSON = new Gson();
@@ -97,7 +96,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	{
 
 		if(styles == null || styles.length == 0) return (T)this;
-		return append(text, Utils.messageColorArrayFromStylesArray((Enum[]) styles));
+		return append(text, MessageColor.messageColorArrayFromStylesArray((Enum[]) styles));
 	}
 
 	/**

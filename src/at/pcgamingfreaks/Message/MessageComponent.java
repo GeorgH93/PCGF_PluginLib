@@ -17,8 +17,6 @@
 
 package at.pcgamingfreaks.Message;
 
-import at.pcgamingfreaks.Utils;
-
 import com.google.gson.*;
 
 import org.jetbrains.annotations.Nullable;
@@ -281,7 +279,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	 */
 	public T setColor(STYLES color) throws IllegalArgumentException
 	{
-		return setColor(Utils.messageColorFromStyle(color));
+		return setColor(MessageColor.messageColorFromStyle(color));
 	}
 
 	/**
@@ -555,7 +553,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	public T setFormats(@Nullable STYLES... formats) throws IllegalArgumentException
 	{
 		if(formats == null || formats.length == 0) return (T)this;
-		return setFormats(Utils.messageColorArrayFromStylesArray((Enum[]) formats));
+		return setFormats(MessageColor.messageColorArrayFromStylesArray((Enum[]) formats));
 	}
 
 	/**
@@ -594,7 +592,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	public T setStyles(@Nullable STYLES... styles)
 	{
 		if(styles == null || styles.length == 0) return (T)this;
-		return setStyles(Utils.messageColorArrayFromStylesArray((Enum[]) styles));
+		return setStyles(MessageColor.messageColorArrayFromStylesArray((Enum[]) styles));
 	}
 	//endregion
 

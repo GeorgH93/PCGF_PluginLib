@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
@@ -135,13 +136,6 @@ public class UtilsTest
 	}
 
 	@Test
-	public void testMessageColorArrayFromStylesArray()
-	{
-		assertNull("No styles should return null", Utils.messageColorArrayFromStylesArray((Enum[]) null));
-		assertNull("No styles should return null", Utils.messageColorArrayFromStylesArray());
-	}
-
-	@Test
 	public void testStringArrayContains()
 	{
 		String[] array = new String[] { "Junk", "tree", "Hello" };
@@ -173,7 +167,7 @@ public class UtilsTest
 	}
 
 	@Test
-	public void testStringArrayContainsAny() throws Exception
+	public void testStringArrayContainsAny()
 	{
 		String[] array = new String[] { "Junk", "tree", "Hello" };
 		assertTrue("The array should contain one of the strings", Utils.stringArrayContainsAny(array, "junk", "tree"));
@@ -183,7 +177,7 @@ public class UtilsTest
 	}
 
 	@Test
-	public void testStringArrayContainsAnyIgnoreCase() throws Exception
+	public void testStringArrayContainsAnyIgnoreCase()
 	{
 		String[] array = new String[] { "Junk", "tree", "Hello" };
 		assertTrue("The array should contain one of the strings", Utils.stringArrayContainsAnyIgnoreCase(array, "junk", "tree"));
@@ -198,5 +192,65 @@ public class UtilsTest
 	public void testEscapeJsonString()
 	{
 		assertEquals("The string should be escaped correctly", "\\\\Hello \\\"World!\\\"\\\\", Utils.escapeJsonString("\\Hello \"World!\"\\"));
+	}
+
+	@Test
+	public void testStringContainsIgnoreCase()
+	{
+		String testString = "This is a test string";
+		assertTrue("The searched element should be contained", Utils.stringContainsIgnoreCase(testString, "This"));
+		assertTrue("The searched element should be contained", Utils.stringContainsIgnoreCase(testString, "this"));
+		assertTrue("The searched element should be contained", Utils.stringContainsIgnoreCase(testString, "String"));
+		assertTrue("The searched element should be contained", Utils.stringContainsIgnoreCase(testString, "string"));
+		assertFalse("The searched element should not be contained", Utils.stringContainsIgnoreCase(testString, "tree"));
+		assertFalse("The searched element should not be contained", Utils.stringContainsIgnoreCase(testString, "Tree"));
+	}
+
+	private static final String t1 = "Test String 1", t2 = "test 2", t3 = "The tree is old.";
+	private static final String[] testArray = new String[] { t1, t2, t3 };
+
+	@Test
+	public void testGetAllContainingStrings()
+	{
+		List<String> result = Utils.getAllContainingStrings(testArray, "String");
+		assertEquals("The lists element count should math", 1, result.size());
+		assertTrue("The list should contain the element", result.contains(t1));
+		assertFalse("The list should not contain the element", result.contains(t2));
+		assertFalse("The list should not contain the element", result.contains(t3));
+		result = Utils.getAllContainingStrings(testArray, "string");
+		assertEquals("The lists element count should math", 0, result.size());
+		assertFalse("The list should not contain the element", result.contains(t1));
+		assertFalse("The list should not contain the element", result.contains(t2));
+		assertFalse("The list should not contain the element", result.contains(t3));
+		result = Utils.getAllContainingStrings(testArray, "test");
+		assertEquals("The lists element count should math", 1, result.size());
+		assertFalse("The list should not contain the element", result.contains(t1));
+		assertTrue("The list should contain the element", result.contains(t2));
+		assertFalse("The list should not contain the element", result.contains(t3));
+	}
+
+	@Test
+	public void testGetAllContainingStringsIgnoreCase()
+	{
+		List<String> result = Utils.getAllContainingStringsIgnoreCase(testArray, "String");
+		assertEquals("The lists element count should math", 1, result.size());
+		assertTrue("The list should contain the element", result.contains(t1));
+		assertFalse("The list should not contain the element", result.contains(t2));
+		assertFalse("The list should not contain the element", result.contains(t3));
+		result = Utils.getAllContainingStringsIgnoreCase(testArray, "string");
+		assertEquals("The lists element count should math", 1, result.size());
+		assertTrue("The list should contain the element", result.contains(t1));
+		assertFalse("The list should not contain the element", result.contains(t2));
+		assertFalse("The list should not contain the element", result.contains(t3));
+		result = Utils.getAllContainingStringsIgnoreCase(testArray, "test");
+		assertEquals("The lists element count should math", 2, result.size());
+		assertTrue("The list should contain the element", result.contains(t1));
+		assertTrue("The list should contain the element", result.contains(t2));
+		assertFalse("The list should not contain the element", result.contains(t3));
+		result = Utils.getAllContainingStringsIgnoreCase(testArray, "Train");
+		assertEquals("The lists element count should math", 0, result.size());
+		assertFalse("The list should not contain the element", result.contains(t1));
+		assertFalse("The list should not contain the element", result.contains(t2));
+		assertFalse("The list should not contain the element", result.contains(t3));
 	}
 }

@@ -19,6 +19,11 @@ package at.pcgamingfreaks.Message;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+
 public enum  MessageColor
 {
 	/**
@@ -139,6 +144,33 @@ public enum  MessageColor
 	{
 		this.code = code;
 		this.isFormat = isFormat;
+	}
+
+	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum... styles)
+	{
+		if(styles != null && styles.length > 0)
+		{
+			MessageColor[] msgStyles = new MessageColor[styles.length];
+			int i = 0;
+			for(Enum style : styles)
+			{
+				if(style != null)
+				{
+					msgStyles[i++] = valueOf(style.name().toUpperCase());
+				}
+			}
+			if(msgStyles.length > i)
+			{
+				return Arrays.copyOf(msgStyles, i);
+			}
+			return msgStyles;
+		}
+		return null;
+	}
+
+	public static @Nullable MessageColor messageColorFromStyle(@NotNull Enum style)
+	{
+		return valueOf(style.name().toUpperCase());
 	}
 
 	@Override

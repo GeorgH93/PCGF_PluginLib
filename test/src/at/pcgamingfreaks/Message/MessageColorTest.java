@@ -19,9 +19,8 @@ package at.pcgamingfreaks.Message;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 
 public class MessageColorTest
 {
@@ -104,5 +103,12 @@ public class MessageColorTest
 		assertEquals(MessageColor.MAGIC.toString(), "\u00A7" + 'k');
 		assertEquals(MessageColor.UNDERLINE.toString(), "\u00A7" + 'n');
 		assertEquals(MessageColor.STRIKETHROUGH.toString(), "\u00A7" + 'm');
+	}
+
+	@Test
+	public void testMessageColorArrayFromStylesArray()
+	{
+		assertNull("No styles should return null", MessageColor.messageColorArrayFromStylesArray((Enum[]) null));
+		assertNull("No styles should return null", MessageColor.messageColorArrayFromStylesArray());
 	}
 }
