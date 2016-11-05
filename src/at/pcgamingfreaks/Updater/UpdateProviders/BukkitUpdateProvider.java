@@ -105,7 +105,7 @@ public class BukkitUpdateProvider implements UpdateProvider
 		return UpdateResult.SUCCESS;
 	}
 
-	private class Version
+	private static class Version
 	{
 		@SuppressWarnings("unused")
 		public String name, downloadUrl, fileName, fileUrl, releaseType, gameVersion, md5, projectId;
