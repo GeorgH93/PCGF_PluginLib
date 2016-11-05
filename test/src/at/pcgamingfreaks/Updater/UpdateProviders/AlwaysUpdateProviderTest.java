@@ -26,11 +26,11 @@ import static org.junit.Assert.*;
 
 public class AlwaysUpdateProviderTest
 {
-	private static final String url = "http://test.com/download/test.jar";
-	private final AlwaysUpdateProvider provider = new AlwaysUpdateProvider(url);
+	private static final String URL = "http://test.com/download/test.jar";
+	private final AlwaysUpdateProvider provider = new AlwaysUpdateProvider(URL);
 
 	@Test
-	public void query() throws Exception
+	public void testQuery() throws Exception
 	{
 		assertEquals("The result should match", UpdateResult.SUCCESS, provider.query(null));
 	}
@@ -44,7 +44,7 @@ public class AlwaysUpdateProviderTest
 	@Test
 	public void testGetLatestFileURL() throws Exception
 	{
-		assertEquals("The url should match", url, provider.getLatestFileURL().toString());
+		assertEquals("The URL should match", URL, provider.getLatestFileURL().toString());
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class AlwaysUpdateProviderTest
 	public void testGetLatestReleaseType() throws Exception
 	{
 		assertEquals("The release type should match", ReleaseType.RELEASE, provider.getLatestReleaseType());
-		assertEquals("The release type should match", ReleaseType.BETA, new AlwaysUpdateProvider(url, ReleaseType.BETA).getLatestReleaseType());
+		assertEquals("The release type should match", ReleaseType.BETA, new AlwaysUpdateProvider(URL, ReleaseType.BETA).getLatestReleaseType());
 	}
 
 	@Test
@@ -135,42 +135,48 @@ public class AlwaysUpdateProviderTest
 	@Test
 	public void testProvideDownloadURL() throws Exception
 	{
-		assertTrue(provider.provideDownloadURL());
+		assertTrue("The download URL should be provided", provider.provideDownloadURL());
 	}
 
 	@Test
 	public void testProvideMinecraftVersion() throws Exception
 	{
-		assertFalse(provider.provideMinecraftVersion());
+		assertFalse("The Minecraft version should not be provided", provider.provideMinecraftVersion());
 	}
 
 	@Test
 	public void testProvideChangelog() throws Exception
 	{
-		assertFalse(provider.provideChangelog());
+		assertFalse("The changelog should not be provided", provider.provideChangelog());
 	}
 
 	@Test
 	public void testProvideMD5Checksum() throws Exception
 	{
-		assertFalse(provider.provideMD5Checksum());
+		assertFalse("The MD5 checksum should not be provided", provider.provideMD5Checksum());
 	}
 
 	@Test
 	public void testProvideReleaseType() throws Exception
 	{
-		assertTrue(provider.provideReleaseType());
+		assertTrue("The release type should not be provided", provider.provideReleaseType());
 	}
 
 	@Test
 	public void testProvideUpdateHistory() throws Exception
 	{
-		assertFalse(provider.provideUpdateHistory());
+		assertFalse("The update history should not be provided", provider.provideUpdateHistory());
 	}
 
 	@Test
 	public void testProvideDependencies() throws Exception
 	{
-		assertFalse(provider.provideDependencies());
+		assertFalse("The dependencies should not be provided", provider.provideDependencies());
+	}
+
+	@Test
+	public void testWithInvalidURL() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		assertNull("An invalid URL should throw an exception and therefore not lead to a download URL object", new AlwaysUpdateProvider("x://invalid-path").getLatestFileURL());
 	}
 }
