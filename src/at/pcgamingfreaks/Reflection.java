@@ -172,7 +172,7 @@ public class Reflection
 		return null;
 	}
 
-	public static boolean ClassListEqual(Class<?>[] l1, Class<?>[] l2)
+	public static boolean classListEqual(Class<?>[] l1, Class<?>[] l2)
 	{
 		boolean equal = true;
 		if(l1.length != l2.length)

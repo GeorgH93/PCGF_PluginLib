@@ -70,9 +70,9 @@ public class ReflectionTest
 	@Test
 	public void testClassListEqual()
 	{
-		assertFalse("The class list should not equal", Reflection.ClassListEqual(new Class<?>[] { String.class, Integer.class }, new Class<?>[] { String.class }));
-		assertFalse("The class list should not equal", Reflection.ClassListEqual(new Class<?>[] { String.class, Integer.class }, new Class<?>[] { String.class, Double.class }));
-		assertTrue("The class list should be equal", Reflection.ClassListEqual(new Class<?>[] { String.class, Integer.class }, new Class<?>[] { String.class, Integer.class }));
+		assertFalse("The class list should not equal", Reflection.classListEqual(new Class<?>[] { String.class, Integer.class }, new Class<?>[] { String.class }));
+		assertFalse("The class list should not equal", Reflection.classListEqual(new Class<?>[] { String.class, Integer.class }, new Class<?>[] { String.class, Double.class }));
+		assertTrue("The class list should be equal", Reflection.classListEqual(new Class<?>[] { String.class, Integer.class }, new Class<?>[] { String.class, Integer.class }));
 	}
 
 	@Test

@@ -38,6 +38,8 @@ import java.util.*;
  */
 public final class UUIDConverter
 {
+	private static final String UUID_FORMAT_REGEX = "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})";
+	private static final String UUID_FORMAT_REPLACE_TO = "$1-$2-$3-$4-$5";
 	private static final long MOJANG_QUERY_RETRY_TIME;
 
 	private static final Gson GSON = new Gson();
@@ -242,7 +244,7 @@ public final class UUIDConverter
 		{
 			if(!uuid.contains("-"))
 			{
-				uuid = uuid.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
+				uuid = uuid.replaceAll(UUID_FORMAT_REGEX, UUID_FORMAT_REPLACE_TO);
 			}
 		}
 		else
@@ -304,7 +306,7 @@ public final class UUIDConverter
 			String sUUID = getOnlineUUID(name, lastKnownDate);
 			if(sUUID != null)
 			{
-				uuid = UUID.fromString(sUUID.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+				uuid = UUID.fromString(sUUID.replaceAll(UUID_FORMAT_REGEX, UUID_FORMAT_REPLACE_TO));
 			}
 			else if(offlineUUIDonFail)
 			{
@@ -410,7 +412,7 @@ public final class UUIDConverter
 				String name = players.next();
 				if(UUID_CACHE.containsKey(name))
 				{
-					result.put(name, UUID.fromString(UUID_CACHE.get(name).replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5")));
+					result.put(name, UUID.fromString(UUID_CACHE.get(name).replaceAll(UUID_FORMAT_REGEX, UUID_FORMAT_REPLACE_TO)));
 					fromCache++;
 				}
 				else
@@ -475,7 +477,7 @@ public final class UUIDConverter
 	/**
 	 * A helper class to store the name changes and dates
 	 */
-	public class NameChange
+	public static class NameChange
 	{
 		/**
 		 * The name to which the name was changed
@@ -498,18 +500,18 @@ public final class UUIDConverter
 		}
 	}
 
-	private class Profile
+	private static class Profile
 	{
 		public String id;
 		public String name;
 
 		public UUID getUUID()
 		{
-			return UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+			return UUID.fromString(id.replaceAll(UUID_FORMAT_REGEX, UUID_FORMAT_REPLACE_TO));
 		}
 	}
 
-	private class CacheData
+	private static class CacheData
 	{
 		public String name, uuid, expiresOn;
 
