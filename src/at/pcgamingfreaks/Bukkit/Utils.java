@@ -131,7 +131,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 		{
 			return 0;
 		}
-		if(player1.getWorld().equals(player2.getWorld()))
+		if(player1.getWorld().getName().equalsIgnoreCase(player2.getWorld().getName()))
 		{
 			return player1.getLocation().distance(player2.getLocation());
 		}

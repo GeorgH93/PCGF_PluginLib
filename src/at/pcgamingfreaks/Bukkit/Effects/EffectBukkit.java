@@ -32,7 +32,7 @@ public abstract class EffectBukkit extends EffectBase
 		if(particle == null) return;
 		for(Entity entity : location.getWorld().getEntities())
 		{
-			if(entity instanceof Player && entity.getLocation().getWorld().equals(location.getWorld()) && entity.getLocation().distance(location) < visibleRange)
+			if(entity instanceof Player && entity.getLocation().getWorld().getName().equalsIgnoreCase(location.getWorld().getName()) && entity.getLocation().distance(location) < visibleRange)
 			{
 				Utils.sendPacket((Player)entity, particle);
 			}
