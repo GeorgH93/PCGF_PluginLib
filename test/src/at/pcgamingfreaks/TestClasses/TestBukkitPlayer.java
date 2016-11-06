@@ -170,6 +170,12 @@ public class TestBukkitPlayer implements Player
 	public void playSound(Location location, String s, float v, float v1) {}
 
 	@Override
+	public void stopSound(Sound sound) {}
+
+	@Override
+	public void stopSound(String s) {}
+
+	@Override
 	public void playEffect(Location location, Effect effect, int i) {}
 
 	@Override
@@ -188,10 +194,7 @@ public class TestBukkitPlayer implements Player
 	public void sendBlockChange(Location location, int i, byte b) {}
 
 	@Override
-	public void sendSignChange(Location location, String[] strings) throws IllegalArgumentException
-	{
-
-	}
+	public void sendSignChange(Location location, String[] strings) throws IllegalArgumentException {}
 
 	@Override
 	public void sendMap(MapView mapView) {}
@@ -212,34 +215,19 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void incrementStatistic(Statistic statistic) throws IllegalArgumentException
-	{
-
-	}
+	public void incrementStatistic(Statistic statistic) throws IllegalArgumentException {}
 
 	@Override
-	public void decrementStatistic(Statistic statistic) throws IllegalArgumentException
-	{
-
-	}
+	public void decrementStatistic(Statistic statistic) throws IllegalArgumentException {}
 
 	@Override
-	public void incrementStatistic(Statistic statistic, int i) throws IllegalArgumentException
-	{
-
-	}
+	public void incrementStatistic(Statistic statistic, int i) throws IllegalArgumentException {}
 
 	@Override
-	public void decrementStatistic(Statistic statistic, int i) throws IllegalArgumentException
-	{
-
-	}
+	public void decrementStatistic(Statistic statistic, int i) throws IllegalArgumentException {}
 
 	@Override
-	public void setStatistic(Statistic statistic, int i) throws IllegalArgumentException
-	{
-
-	}
+	public void setStatistic(Statistic statistic, int i) throws IllegalArgumentException {}
 
 	@Override
 	public int getStatistic(Statistic statistic) throws IllegalArgumentException
@@ -248,16 +236,10 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void incrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException
-	{
-
-	}
+	public void incrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {}
 
 	@Override
-	public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException
-	{
-
-	}
+	public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {}
 
 	@Override
 	public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException
@@ -266,34 +248,19 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void incrementStatistic(Statistic statistic, Material material, int i) throws IllegalArgumentException
-	{
-
-	}
+	public void incrementStatistic(Statistic statistic, Material material, int i) throws IllegalArgumentException {}
 
 	@Override
-	public void decrementStatistic(Statistic statistic, Material material, int i) throws IllegalArgumentException
-	{
-
-	}
+	public void decrementStatistic(Statistic statistic, Material material, int i) throws IllegalArgumentException {}
 
 	@Override
-	public void setStatistic(Statistic statistic, Material material, int i) throws IllegalArgumentException
-	{
-
-	}
+	public void setStatistic(Statistic statistic, Material material, int i) throws IllegalArgumentException {}
 
 	@Override
-	public void incrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException
-	{
-
-	}
+	public void incrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {}
 
 	@Override
-	public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException
-	{
-
-	}
+	public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {}
 
 	@Override
 	public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException
@@ -302,10 +269,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void incrementStatistic(Statistic statistic, EntityType entityType, int i) throws IllegalArgumentException
-	{
-
-	}
+	public void incrementStatistic(Statistic statistic, EntityType entityType, int i) throws IllegalArgumentException {}
 
 	@Override
 	public void decrementStatistic(Statistic statistic, EntityType entityType, int i) {}
@@ -725,6 +689,51 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
+	public boolean isSilent()
+	{
+		return false;
+	}
+
+	@Override
+	public void setSilent(boolean b) {}
+
+	@Override
+	public boolean hasGravity()
+	{
+		return false;
+	}
+
+	@Override
+	public void setGravity(boolean b) {}
+
+	@Override
+	public int getPortalCooldown()
+	{
+		return 0;
+	}
+
+	@Override
+	public void setPortalCooldown(int i) {}
+
+	@Override
+	public Set<String> getScoreboardTags()
+	{
+		return null;
+	}
+
+	@Override
+	public boolean addScoreboardTag(String s)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean removeScoreboardTag(String s)
+	{
+		return false;
+	}
+
+	@Override
 	public boolean isFlying()
 	{
 		return false;
@@ -734,16 +743,10 @@ public class TestBukkitPlayer implements Player
 	public void setFlying(boolean b) {}
 
 	@Override
-	public void setFlySpeed(float v) throws IllegalArgumentException
-	{
-
-	}
+	public void setFlySpeed(float v) throws IllegalArgumentException {}
 
 	@Override
-	public void setWalkSpeed(float v) throws IllegalArgumentException
-	{
-
-	}
+	public void setWalkSpeed(float v) throws IllegalArgumentException {}
 
 	@Override
 	public float getFlySpeed()
@@ -770,10 +773,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException
-	{
-
-	}
+	public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {}
 
 	@Override
 	public boolean isHealthScaled()
@@ -785,10 +785,7 @@ public class TestBukkitPlayer implements Player
 	public void setHealthScaled(boolean b) {}
 
 	@Override
-	public void setHealthScale(double v) throws IllegalArgumentException
-	{
-
-	}
+	public void setHealthScale(double v) throws IllegalArgumentException {}
 
 	@Override
 	public double getHealthScale()
@@ -965,6 +962,12 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
+	public boolean isHandRaised()
+	{
+		return false;
+	}
+
+	@Override
 	public int getExpToLevel()
 	{
 		return 0;
@@ -1106,6 +1109,12 @@ public class TestBukkitPlayer implements Player
 	public boolean hasPotionEffect(PotionEffectType potionEffectType)
 	{
 		return false;
+	}
+
+	@Override
+	public PotionEffect getPotionEffect(PotionEffectType potionEffectType)
+	{
+		return null;
 	}
 
 	@Override
