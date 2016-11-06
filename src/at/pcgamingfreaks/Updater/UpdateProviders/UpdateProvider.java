@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
+import at.pcgamingfreaks.Version;
 
 import java.net.URL;
 import java.util.logging.Logger;
@@ -39,7 +40,15 @@ public interface UpdateProvider
 	 * @return The latest version string.
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	String getLatestVersion() throws NotSuccessfullyQueriedException;
+	String getLatestVersionAsString() throws NotSuccessfullyQueriedException;
+
+	/**
+	 * Gets the latest version's version (such as 1.32)
+	 *
+	 * @return The latest version string.
+	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
+	 */
+	Version getLatestVersion() throws NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's direct download url.

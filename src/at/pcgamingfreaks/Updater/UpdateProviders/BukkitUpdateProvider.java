@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Updater.UpdateProviders;
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
+import at.pcgamingfreaks.Version;
 
 import com.google.gson.*;
 
@@ -31,20 +32,22 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BukkitUpdateProvider implements UpdateProvider
 {
 	//region static stuff
 	private static final String USER_AGENT = "Plugin-Updater";
 	private static final String HOST = "https://api.curseforge.com/servermods/files?projectIds=";
-	private static final String VERSION_DELIMITER = "^[vV]|[\\s_-][vV]"; // Used for locating version numbers in file names, bukkit doesn't provide the version on it's own :(
+	private static final Pattern VERSION_PATTERN = Pattern.compile(Version.VERSION_STING_FORMAT); // Used for locating version numbers in file names, bukkit doesn't provide the version on it's own :(
 	//endregion
 
 	private final int projectID;
 	private final String apiKey;
 	private URL url = null;
 
-	private Version[] versions = null;
+	private DevBukkitVersion[] devBukkitVersions = null;
 
 	public BukkitUpdateProvider(int projectID)
 	{
@@ -77,8 +80,8 @@ public class BukkitUpdateProvider implements UpdateProvider
 
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream())))
 			{
-				versions = new Gson().fromJson(reader, Version[].class);
-				if(versions == null || versions.length == 0)
+				devBukkitVersions = new Gson().fromJson(reader, DevBukkitVersion[].class);
+				if(devBukkitVersions == null || devBukkitVersions.length == 0)
 				{
 					logger.warning(ConsoleColor.RED + "The updater could not find any files for the project id " + projectID + " " + ConsoleColor.RESET);
 					return UpdateResult.FAIL_FILE_NOT_FOUND;
@@ -105,7 +108,7 @@ public class BukkitUpdateProvider implements UpdateProvider
 		return UpdateResult.SUCCESS;
 	}
 
-	private static class Version
+	private static class DevBukkitVersion
 	{
 		@SuppressWarnings("unused")
 		public String name, downloadUrl, fileName, fileUrl, releaseType, gameVersion, md5, projectId;
@@ -157,40 +160,49 @@ public class BukkitUpdateProvider implements UpdateProvider
 
 	//region getter for the latest version
 	@Override
-	public String getLatestVersion() throws NotSuccessfullyQueriedException
+	public String getLatestVersionAsString() throws NotSuccessfullyQueriedException
 	{
-		String name = getLatestName();
-		String[] help = name.split(VERSION_DELIMITER);
-		if(help.length == 2)
+		String latest = getLatestName();
+		if(latest == null) return null;
+		Matcher matcher = VERSION_PATTERN.matcher(latest);
+		if(matcher.find())
 		{
-			return help[1].split("\\s+")[0];
+			return matcher.group();
 		}
 		return null;
 	}
 
+	@Override
+	public Version getLatestVersion() throws NotSuccessfullyQueriedException
+	{
+		String latest = getLatestVersionAsString();
+		if(latest == null) return null;
+		return new Version(latest);
+	}
+
 	public String getLatestVersionFileName() throws NotSuccessfullyQueriedException
 	{
-		if(versions == null)
+		if(devBukkitVersions == null)
 		{
 			throw new NotSuccessfullyQueriedException();
 		}
-		return versions[versions.length - 1].fileName;
+		return devBukkitVersions[devBukkitVersions.length - 1].fileName;
 	}
 
 	@Override
 	public URL getLatestFileURL() throws NotSuccessfullyQueriedException
 	{
-		if(versions == null)
+		if(devBukkitVersions == null)
 		{
 			throw new NotSuccessfullyQueriedException();
 		}
 		try
 		{
-			return new URL(versions[versions.length - 1].downloadUrl);
+			return new URL(devBukkitVersions[devBukkitVersions.length - 1].downloadUrl);
 		}
 		catch(MalformedURLException e)
 		{
-			System.out.println(ConsoleColor.RED + "Failed to interpret download url \"" + versions[versions.length - 1].downloadUrl + "\"!" + ConsoleColor.RESET);
+			System.out.println(ConsoleColor.RED + "Failed to interpret download url \"" + devBukkitVersions[devBukkitVersions.length - 1].downloadUrl + "\"!" + ConsoleColor.RESET);
 			e.printStackTrace();
 		}
 		return null;
@@ -199,33 +211,33 @@ public class BukkitUpdateProvider implements UpdateProvider
 	@Override
 	public String getLatestName() throws NotSuccessfullyQueriedException
 	{
-		if(versions == null)
+		if(devBukkitVersions == null)
 		{
 			throw new NotSuccessfullyQueriedException();
 		}
-		return versions[versions.length - 1].name;
+		return devBukkitVersions[devBukkitVersions.length - 1].name;
 	}
 
 	@Override
 	public String getLatestMinecraftVersion() throws NotSuccessfullyQueriedException
 	{
-		if(versions == null)
+		if(devBukkitVersions == null)
 		{
 			throw new NotSuccessfullyQueriedException();
 		}
-		return versions[versions.length - 1].gameVersion;
+		return devBukkitVersions[devBukkitVersions.length - 1].gameVersion;
 	}
 
 	@Override
 	public ReleaseType getLatestReleaseType() throws NotSuccessfullyQueriedException
 	{
-		if(versions == null)
+		if(devBukkitVersions == null)
 		{
 			throw new NotSuccessfullyQueriedException();
 		}
 		try
 		{
-			return ReleaseType.valueOf(versions[versions.length - 1].releaseType.toUpperCase());
+			return ReleaseType.valueOf(devBukkitVersions[devBukkitVersions.length - 1].releaseType.toUpperCase());
 		}
 		catch(Exception ignored) {}
 		return ReleaseType.UNKNOWN;
@@ -234,11 +246,11 @@ public class BukkitUpdateProvider implements UpdateProvider
 	@Override
 	public String getLatestChecksum() throws NotSuccessfullyQueriedException
 	{
-		if(versions == null)
+		if(devBukkitVersions == null)
 		{
 			throw new NotSuccessfullyQueriedException();
 		}
-		return versions[versions.length - 1].md5;
+		return devBukkitVersions[devBukkitVersions.length - 1].md5;
 	}
 
 	@Override

@@ -133,8 +133,16 @@ public class BukkitUpdateProviderTest
 		currentSevere += 3;
 		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
-		versionConstructor.newInstance(bukkitUpdateProvider);
+		versionConstructor.newInstance();
 		versionConstructor.setAccessible(false);
+	}
+
+	@Test
+	public void testGetLatestVersionAsString() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	{
+		BukkitUpdateProvider bukkitUpdateProvider = spy(getProvider());
+		doReturn("").when(bukkitUpdateProvider).getLatestName();
+		assertNull("The latest version should be null", bukkitUpdateProvider.getLatestVersionAsString());
 	}
 
 	@Test
@@ -220,7 +228,7 @@ public class BukkitUpdateProviderTest
 	private BukkitUpdateProvider getProvider() throws NoSuchFieldException, IllegalAccessException
 	{
 		BukkitUpdateProvider bukkitUpdateProvider = new BukkitUpdateProvider(74734);
-		TestUtils.setAccessible(BukkitUpdateProvider.class, bukkitUpdateProvider, "versions", null);
+		TestUtils.setAccessible(BukkitUpdateProvider.class, bukkitUpdateProvider, "devBukkitVersions", null);
 		return bukkitUpdateProvider;
 	}
 

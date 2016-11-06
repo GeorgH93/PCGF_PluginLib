@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Updater;
 import at.pcgamingfreaks.Updater.UpdateProviders.NotSuccessfullyQueriedException;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 import at.pcgamingfreaks.Utils;
+import at.pcgamingfreaks.Version;
 import at.pcgamingfreaks.yaml.YAML;
 
 import com.google.common.io.ByteStreams;
@@ -31,11 +32,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -51,7 +50,8 @@ public abstract class Updater
 	private final UpdateProvider updateProvider;
 	private final boolean announceDownloadProgress, downloadDependencies;
 	private final Logger logger;
-	private final String localVersion, targetFileName;
+	private final String targetFileName;
+	private final Version localVersion;
 
 	private UpdateResult result;
 
@@ -68,7 +68,7 @@ public abstract class Updater
 		this.announceDownloadProgress = announceDownloadProgress;
 		this.downloadDependencies = downloadDependencies;
 		this.logger = logger;
-		this.localVersion = localVersion;
+		this.localVersion = new Version(localVersion);
 		this.targetFileName = targetFileName;
 
 		//region Check if updater is disabled globally
@@ -117,96 +117,17 @@ public abstract class Updater
 	public abstract void waitForAsyncOperation();
 
 	//region version checking logic
-
-	/**
-	 * This function prepares a given version string to be interpreted by the updater.
-	 * The version therefor will be split on each "." to get the individual parts of the version string.
-	 * If it's a snapshot/alpha/beta build we reduce the last digit by 1 so that the updater will kick in as soon as the final of the version is released.
-	 *
-	 * @param version The version to prepare for interpretation
-	 * @return The prepared version
-	 */
-	protected String[] prepareVersion(String version)
-	{
-		String[] v = version.toLowerCase().split("-")[0].replaceAll("(\\.0)*$", "").split(Pattern.quote("."));
-		try
-		{
-			if(version.contains("snapshot") || version.contains("alpha") || version.contains("beta") || version.contains("pre") || version.contains("rc"))
-			{
-				v = Arrays.copyOf(v, v.length + 1);
-				for(int i = v.length - 2; i >= 0; i--)
-				{
-					if(Integer.parseInt(v[i]) > 0)
-					{
-						v[i] = Integer.toString(Integer.parseInt(v[i]) - 1);
-						break;
-					}
-				}
-				int lv = Integer.MAX_VALUE;
-				if(version.contains("alpha")) lv -= 10000;
-				if(version.contains("beta"))  lv -= 1000;
-				if(version.contains("pre"))   lv -= 100;
-				if(version.contains("rc"))    lv -= 10;
-				v[v.length - 1] = Integer.toString(lv);
-			}
-		}
-		catch(Exception ignored) {}
-		return v;
-	}
-
-	/**
-	 * This method provides a basic version comparison. If you don't like it's behavior please Override it!
-	 * <p> With default behavior, the Updater only supports this format: <b>\d(.\d)*(-SOMETHING)*</b>
-	 * If the version string doesn't match this scheme the fallback of comparing local and remote version will be used.</p>
-	 *
-	 * @param remoteVersion the remote version
-	 * @return true if the updater should consider the remote version and update, false if not.
-	 */
-	protected boolean shouldUpdate(String remoteVersion)
-	{
-		String[] locVersion = prepareVersion(localVersion), remVersion = prepareVersion(remoteVersion);
-		try
-		{
-			int c = Math.min(locVersion.length, remVersion.length);
-			for(int i = 0; i < c; i++)
-			{
-				int r = Integer.parseInt(remVersion[i]), l = Integer.parseInt(locVersion[i]);
-				if(r > l)
-				{
-					return true;
-				}
-				else if(r < l)
-				{
-					return false;
-				}
-			}
-			// If both version are the same for the length of the shorter version the version that has more digits probably is the newer one.
-			if(remVersion.length > locVersion.length)
-			{
-				return true;
-			}
-		}
-		catch(Exception e)
-		{
-			// There was a problem parsing the version. Use the fallback (if they don't match the remote version is the newer one)
-			logger.warning("Failed to determine the newer version between local version \"" + localVersion +
-					"\" and remote version \"" + remoteVersion + "\"! Using fallback method (if they don't match the remote version is the newer one)!");
-			return !localVersion.equalsIgnoreCase(remoteVersion);
-		}
-		return false;
-	}
-
 	/**
 	 * Check to see if the program should continue by evaluating whether the plugin is already updated, or shouldn't be updated.
 	 *
 	 * @param remoteVersion The version to compare against
 	 * @return true if the version was located and is newer then the local version
 	 */
-	protected boolean versionCheck(String remoteVersion)
+	protected boolean versionCheck(Version remoteVersion)
 	{
 		if(remoteVersion != null)
 		{
-			if(!this.shouldUpdate(remoteVersion))
+			if(!this.localVersion.olderThan(remoteVersion))
 			{
 				// We already have the latest version, or this build is tagged for no-update
 				result = UpdateResult.NO_UPDATE;
@@ -268,7 +189,7 @@ public abstract class Updater
 				byte[] buffer = new byte[BUFFER_SIZE];
 				if(announceDownloadProgress)
 				{
-					logger.info("Start downloading update: " + updateProvider.getLatestVersion());
+					logger.info("Start downloading update: " + updateProvider.getLatestVersionAsString());
 				}
 				long downloaded = 0;
 				while((count = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1)
@@ -367,11 +288,26 @@ public abstract class Updater
 	 *
 	 * @return The latest remote version of the last query. Null if there wasn't a successful query before.
 	 */
-	protected String getRemoteVersion()
+	protected Version getRemoteVersion()
 	{
 		try
 		{
 			return updateProvider.getLatestVersion();
+		}
+		catch(NotSuccessfullyQueriedException ignored) {}
+		return null;
+	}
+
+	/**
+	 * Gets the latest remote version of the last query.
+	 *
+	 * @return The latest remote version of the last query. Null if there wasn't a successful query before.
+	 */
+	protected String getRemoteVersionAsString()
+	{
+		try
+		{
+			return updateProvider.getLatestVersionAsString();
 		}
 		catch(NotSuccessfullyQueriedException ignored) {}
 		return null;

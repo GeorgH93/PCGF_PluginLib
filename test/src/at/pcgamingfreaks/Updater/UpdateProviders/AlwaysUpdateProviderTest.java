@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
+import at.pcgamingfreaks.Version;
 
 import org.junit.Test;
 
@@ -36,9 +37,15 @@ public class AlwaysUpdateProviderTest
 	}
 
 	@Test
+	public void testGetLatestVersionAsString() throws Exception
+	{
+		assertEquals("The version strings should match", Integer.MAX_VALUE + "." + Integer.MAX_VALUE, provider.getLatestVersionAsString());
+	}
+
+	@Test
 	public void testGetLatestVersion() throws Exception
 	{
-		assertEquals("The version strings should match", Integer.MAX_VALUE + "." + Integer.MAX_VALUE, provider.getLatestVersion());
+		assertTrue("The version should match", new Version(Integer.MAX_VALUE + "." + Integer.MAX_VALUE).equals(provider.getLatestVersion()));
 	}
 
 	@Test

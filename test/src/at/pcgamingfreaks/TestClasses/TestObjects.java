@@ -109,8 +109,8 @@ public class TestObjects
 		when(mockedProxyServer.getPluginsFolder()).thenReturn(new File(""));
 		when(mockedProxyServer.getScheduler()).thenReturn(mockedTaskScheduler);
 		PluginDescription mockedPluginDescription = mock(PluginDescription.class);
-		when(mockedPluginDescription.getName()).thenReturn("");
-		when(mockedPluginDescription.getVersion()).thenReturn("TestPlugin 1.0");
+		when(mockedPluginDescription.getName()).thenReturn("TestPlugin");
+		when(mockedPluginDescription.getVersion()).thenReturn("1.0");
 		when(mockedPluginDescription.getFile()).thenReturn(mockedFile);
 		mockedPlugin = mock(Plugin.class);
 		when(mockedPlugin.getProxy()).thenReturn(mockedProxyServer);

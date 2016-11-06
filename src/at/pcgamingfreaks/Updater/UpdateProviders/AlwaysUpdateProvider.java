@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
+import at.pcgamingfreaks.Version;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -66,9 +67,15 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	}
 
 	@Override
-	public String getLatestVersion() throws NotSuccessfullyQueriedException
+	public String getLatestVersionAsString() throws NotSuccessfullyQueriedException
 	{
 		return Integer.MAX_VALUE + "." + Integer.MAX_VALUE;
+	}
+
+	@Override
+	public Version getLatestVersion() throws NotSuccessfullyQueriedException
+	{
+		return new Version(getLatestVersionAsString());
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import at.pcgamingfreaks.Updater.UpdateProviders.NotSuccessfullyQueriedException
 import at.pcgamingfreaks.Updater.UpdateProviders.RequestTypeNotAvailableException;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 import at.pcgamingfreaks.Utils;
+import at.pcgamingfreaks.Version;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -243,8 +244,8 @@ public class UpdaterTest
 		final Field result = TestUtils.setAccessible(Updater.class, updater, "result", UpdateResult.NO_UPDATE);
 		doReturn(UpdateResult.SUCCESS).when(mockedUpdateProvider).query(any(Logger.class));
 		doReturn(false).when(mockedUpdateProvider).provideDownloadURL();
-		doReturn("").when(updater).getRemoteVersion();
-		doReturn(true).when(updater).versionCheck(anyString());
+		doReturn(null).when(updater).getRemoteVersion();
+		doReturn(true).when(updater).versionCheck((Version) anyObject());
 		updater.update(updaterResponse);
 		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
 		doReturn("test.zip").when(mockedUpdateProvider).getLatestVersionFileName();
@@ -501,6 +502,17 @@ public class UpdaterTest
 	}
 
 	@Test
+	public void testGetVersionAsString() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	{
+		Updater updater = getUpdater("1.0");
+		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
+		doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestVersionAsString();
+		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
+		assertNull("The version result should be null", updater.getRemoteVersion());
+		TestUtils.setUnaccessible(updateProvider, updater, true);
+	}
+
+	@Test
 	public void testGetVersion() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
 	{
 		Updater updater = getUpdater("1.0");
@@ -509,54 +521,6 @@ public class UpdaterTest
 		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
 		assertNull("The version result should be null", updater.getRemoteVersion());
 		TestUtils.setUnaccessible(updateProvider, updater, true);
-	}
-
-	@Test
-	public void testPrepareVersion()
-	{
-		Updater updater = getUpdater("1.0");
-		String[] versionResult = updater.prepareVersion("1.3-alpha");
-		assertEquals("The version result length should match", 3, versionResult.length);
-		assertEquals("The version result should match", "1", versionResult[0]);
-		assertEquals("The version result should match", "2", versionResult[1]);
-		assertEquals("The version result should match", String.valueOf(Integer.MAX_VALUE - 10000), versionResult[2]);
-		versionResult = updater.prepareVersion("3-beta");
-		assertEquals("The version result length should match", 2, versionResult.length);
-		assertEquals("The version result should match", "2", versionResult[0]);
-		assertEquals("The version result should match", String.valueOf(Integer.MAX_VALUE - 1000), versionResult[1]);
-		versionResult = updater.prepareVersion("0-snapshot");
-		assertEquals("The version result length should match", 2, versionResult.length);
-		assertEquals("The version result should match", "0", versionResult[0]);
-		assertEquals("The version result should match", String.valueOf(Integer.MAX_VALUE), versionResult[1]);
-		versionResult = updater.prepareVersion("1.0.7-pre");
-		assertEquals("The version result length should match", 4, versionResult.length);
-		assertEquals("The version result should match", "1", versionResult[0]);
-		assertEquals("The version result should match", "0", versionResult[1]);
-		assertEquals("The version result should match", "6", versionResult[2]);
-		assertEquals("The version result should match", String.valueOf(Integer.MAX_VALUE - 100), versionResult[3]);
-		versionResult = updater.prepareVersion("1.3.5.5-rc");
-		assertEquals("The version result length should match", 5, versionResult.length);
-		assertEquals("The version result should match", "1", versionResult[0]);
-		assertEquals("The version result should match", "3", versionResult[1]);
-		assertEquals("The version result should match", "5", versionResult[2]);
-		assertEquals("The version result should match", "4", versionResult[3]);
-		assertEquals("The version result should match", String.valueOf(Integer.MAX_VALUE - 10), versionResult[4]);
-		versionResult = updater.prepareVersion("1.7");
-		assertEquals("The version result length should match", 2, versionResult.length);
-		assertEquals("The version result should match", "1", versionResult[0]);
-		assertEquals("The version result should match", "7", versionResult[1]);
-	}
-
-	@Test
-	public void testShouldUpdate()
-	{
-		Updater updater = getUpdater("1.7.3");
-		assertTrue("The plugin should be updated", updater.shouldUpdate("1.7.5"));
-		assertFalse("The plugin should not be updated", updater.shouldUpdate("1.0"));
-		assertTrue("The plugin should be updated when the newer one could not be determined", updater.shouldUpdate("1.7.a-z"));
-		assertTrue("The plugin should be updated", updater.shouldUpdate("2.0.8"));
-		updater = getUpdater("1.7.a-z");
-		assertFalse("The plugin should not be updated when the invalid version matches", updater.shouldUpdate("1.7.a-z"));
 	}
 
 	@Test
