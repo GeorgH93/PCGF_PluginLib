@@ -513,6 +513,20 @@ public class UpdaterTest
 	}
 
 	@Test
+	public void testGetRemoteVersionAsString() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	{
+		String version = "v1.8";
+		Updater updater = getUpdater("1.0");
+		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
+		doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestVersionAsString();
+		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
+		assertNull("The version result should be null", updater.getRemoteVersionAsString());
+		doReturn(version).when(mockedUpdateProvider).getLatestVersionAsString();
+		assertEquals("The version result should match", version, updater.getRemoteVersionAsString());
+		TestUtils.setUnaccessible(updateProvider, updater, true);
+	}
+
+	@Test
 	public void testGetVersion() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
 	{
 		Updater updater = getUpdater("1.0");

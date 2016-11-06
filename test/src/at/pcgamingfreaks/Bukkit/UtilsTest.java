@@ -89,7 +89,9 @@ public class UtilsTest
 		Player mockedPlayer1 = mock(Player.class);
 		Player mockedPlayer2 = mock(Player.class);
 		World mockedWorld1 = mock(World.class);
+		doReturn("World1").when(mockedWorld1).getName();
 		World mockedWorld2 = mock(World.class);
+		doReturn("World2").when(mockedWorld2).getName();
 		Location mockedLocation = mock(Location.class);
 		assertEquals("The distance should be 0 if the players are the same", 0.0, Utils.getDistance(mockedPlayer1, mockedPlayer1), 0.1);
 		doReturn(mockedWorld1).when(mockedPlayer1).getWorld();

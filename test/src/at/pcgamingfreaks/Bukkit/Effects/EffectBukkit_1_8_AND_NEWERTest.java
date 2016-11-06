@@ -74,6 +74,7 @@ public class EffectBukkit_1_8_AND_NEWERTest
 	{
 		int sendPacketCalls = 0;
 		World mockedWorld = mock(World.class);
+		doReturn("World1").when(mockedWorld).getName();
 		Location mockedLocation = spy(new Location(mockedWorld, 10.0, 20.0, 30.0));
 		List<Entity> entities = new ArrayList<>();
 		TestBukkitPlayer mockedPlayer = spy(new TestBukkitPlayer());

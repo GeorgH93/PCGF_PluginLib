@@ -48,8 +48,7 @@ import java.util.logging.Logger;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 public class TestObjects
 {
@@ -182,7 +181,7 @@ public class TestObjects
 		bukkitPlayers.add(new TestBukkitPlayer());
 		bukkitPlayers.add(new TestBukkitPlayer());
 		mockStatic(Bukkit.class);
-		PowerMockito.doReturn(bukkitPlayers).when(Bukkit.class, "getOnlinePlayers");
+		doReturn(bukkitPlayers).when(Bukkit.class, "getOnlinePlayers");
 	}
 
 	public static void initProxyServer() throws NoSuchFieldException, IllegalAccessException

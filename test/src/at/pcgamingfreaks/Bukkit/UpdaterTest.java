@@ -44,7 +44,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
-import static org.powermock.api.support.membermodification.MemberModifier.suppress;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Bukkit.class, JavaPlugin.class, PluginDescriptionFile.class, Thread.class })
@@ -82,7 +81,7 @@ public class UpdaterTest
 	};
 
 	@BeforeClass
-	public static void prepareTestData() throws NoSuchFieldException
+	public static void prepareTestData() throws Exception
 	{
 		File updateFolder = new File("plugins/updates");
 		//noinspection ResultOfMethodCallIgnored
@@ -103,6 +102,8 @@ public class UpdaterTest
 		});
 		suppress(at.pcgamingfreaks.Updater.Updater.class.getDeclaredMethods());
 		mockedPluginDescription = mock(PluginDescriptionFile.class);
+		when(mockedPluginDescription.getVersion()).thenReturn("v1.8.2-SNAPSHOT");
+		when(mockedPluginDescription.getAuthors()).thenReturn(new ArrayList<String>());
 		when(TestObjects.getJavaPlugin().getDescription()).thenReturn(mockedPluginDescription);
 		mockStatic(Bukkit.class);
 		when(Bukkit.getUpdateFolderFile()).thenReturn(new File("plugins/updates"));
@@ -146,6 +147,7 @@ public class UpdaterTest
 
 	public static int TEST_TIMEOUT = 3000;
 
+	@SuppressWarnings("deprecation")
 	@Rule
 	public Timeout timeout = new Timeout(TEST_TIMEOUT)
 	{
