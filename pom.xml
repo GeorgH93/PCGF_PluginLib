@@ -34,6 +34,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<!-- There seems to be a problem with version 1.6.6 (missing methods event thou they are there), so we use version 1.6.5 -->
+		<powermockVersion>1.6.5</powermockVersion><!-- property so that we have to change only one value to update all the powermock dependencies -->
 	</properties>
 
 	<repositories>
@@ -74,7 +76,7 @@
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
-			<version>1.6.6</version>
+			<version>${powermockVersion}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.powermock</groupId>
@@ -90,19 +92,19 @@
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-mockito</artifactId>
-			<version>1.6.6</version>
+			<version>${powermockVersion}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4-rule</artifactId>
-			<version>1.6.6</version>
+			<version>${powermockVersion}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-classloading-xstream</artifactId>
-			<version>1.6.6</version>
+			<version>${powermockVersion}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- For better code documentation -->
