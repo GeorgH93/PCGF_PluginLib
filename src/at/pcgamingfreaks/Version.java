@@ -65,7 +65,7 @@ public class Version
 		this.rawVersion = version;
 		// Prepare data
 		String[] comps = version.split("-", 2);
-		version = comps[0];
+		version = comps[0].replaceAll("(\\.0)*$", "");
 		String options = comps.length > 1 ? comps[1] : "";
 		this.optionalTags = options.split("-");
 		comps = version.split("\\.");
