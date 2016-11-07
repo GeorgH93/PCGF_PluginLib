@@ -34,7 +34,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<!-- There seems to be a problem with version 1.6.6 (missing methods event thou they are there), so we use version 1.6.5 -->
+		<!-- There seems to be a problem with version 1.6.6 (missing method coverage even though they should be covered), so we use version 1.6.5 -->
 		<powermockVersion>1.6.5</powermockVersion><!-- property so that we have to change only one value to update all the powermock dependencies -->
 	</properties>
 

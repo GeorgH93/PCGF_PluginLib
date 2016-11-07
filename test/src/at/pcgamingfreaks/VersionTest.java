@@ -47,6 +47,31 @@ public class VersionTest
 		assertFalse("The given string should not be a valid version string", Version.isValidVersionString("v1.0--alpha"));
 	}
 
+	@Test(expected = Version.InvalidVersionStringException.class)
+	public void testNullVersion()
+	{
+		new Version(null);
+	}
+
+	@Test(expected = Version.InvalidVersionStringException.class)
+	public void testEmptyVersion()
+	{
+		new Version("");
+	}
+
+	@Test(expected = Version.InvalidVersionStringException.class)
+	public void testInvalidVersion()
+	{
+		new Version("invalid-version");
+	}
+
+	@Test
+	public void testSpecialVersion()
+	{
+		assertEquals("The version should match", "1.8.0", new Version("1.8.0").toString());
+		assertEquals("The version should match", "1.8-alpha-snapshot", new Version("1.8-alpha-snapshot").toString());
+	}
+
 	@Test
 	public void testNewerThan() throws Exception
 	{
@@ -536,7 +561,6 @@ public class VersionTest
 		assertFalse("The version should not be the same", version_1_2_beta2.equals(version_v2_0));
 		//noinspection ObjectEqualsNull
 		assertFalse("The version should not be the same", version_v2_0.equals(null));
-		// Compare new versions with the existing
 		assertTrue("The versions should match", new Version(VERSION_1).equals(version_1));
 		assertTrue("The versions should match", new Version(VERSION_1_0).equals(version_1_0));
 		assertTrue("The versions should match", new Version(VERSION_1_0).equals(version_1));

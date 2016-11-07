@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ByteStreams.class, LanguageUpdateMethod.class })
+@PrepareForTest({ ByteStreams.class, LanguageUpdateMethod.class, YAML.class })
 public class ConfigurationTest
 {
 	private static Logger mockedLogger;
@@ -184,6 +184,7 @@ public class ConfigurationTest
 		when(ByteStreams.copy(any(FileInputStream.class), any(FileOutputStream.class))).thenReturn((long) 0);
 		invalidConfiguration.reload();
 		when(mockedFile.mkdir()).thenReturn(true);
+		whenNew(YAML.class).withAnyArguments().thenReturn(null);
 		invalidConfiguration.reload();
 		configBaseDir.set(invalidConfiguration, currentConfigBaseDir);
 		configFile.set(invalidConfiguration, currentConfigFile);
@@ -251,6 +252,7 @@ public class ConfigurationTest
 		assertTrue("The configuration should have been updated", (Boolean) updateConfig.invoke(updateTest));
 		expectedVersion.set(updateTest, ++currentVersion);
 		Field upgradeThreshold = TestUtils.setAccessible(Configuration.class, updateTest, "upgradeThreshold", currentVersion);
+		doReturn(true).when(updateTest).newConfigCreated();
 		assertTrue("The configuration should have been updated", (Boolean) updateConfig.invoke(updateTest));
 		expectedVersion.set(updateTest, ++currentVersion);
 		assertTrue("The configuration should have been updated", (Boolean) updateConfig.invoke(updateTest));
@@ -270,6 +272,7 @@ public class ConfigurationTest
 		int version = 3;
 		File userDir = new File(System.getProperty("user.dir"));
 		Configuration configuration = spy(new Configuration(mockedLogger, userDir, 1));
+		doReturn(true).when(configuration).newConfigCreated();
 		configuration.set("Version", version);
 		configuration.set("TestBoolean", true);
 		configuration.set("NewValue", "NotFound");

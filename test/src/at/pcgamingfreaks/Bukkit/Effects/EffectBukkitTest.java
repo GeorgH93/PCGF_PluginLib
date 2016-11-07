@@ -78,11 +78,13 @@ public class EffectBukkitTest
 		List<Entity> players = new ArrayList<>();
 		Location mockedLocation = mock(Location.class);
 		World mockedWorld = mock(World.class);
+		doReturn("World1").when(mockedWorld).getName();
 		doReturn(players).when(mockedWorld).getEntities();
 		doReturn(mockedWorld).when(mockedLocation).getWorld();
 		TestBukkitPlayer mockedPlayer = spy(new TestBukkitPlayer());
 		Location mockedLocation2 = mock(Location.class);
 		World mockedWorld2 = mock(World.class);
+		doReturn("World2").when(mockedWorld2).getName();
 		doReturn(mockedWorld2).when(mockedLocation2).getWorld();
 		doReturn(mockedLocation2).when(mockedPlayer).getLocation();
 		players.add(mockedPlayer);
