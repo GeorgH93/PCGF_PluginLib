@@ -152,4 +152,29 @@ public class StringUtils
 	{
 		return string.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
 	}
+
+	//region Enabled / Disabled messages
+	private static final String ENABLED_MESSAGE = ConsoleColor.GREEN + " %s has been enabled! " + ConsoleColor.YELLOW + " :) " + ConsoleColor.RESET;
+	private static final String DISABLED_MESSAGE = ConsoleColor.RED + " %s has been disabled. " + ConsoleColor.YELLOW + " :( " + ConsoleColor.RESET;
+
+	public static String getPluginEnabledMessage(String pluginName)
+	{
+		return String.format(ENABLED_MESSAGE, pluginName);
+	}
+
+	public static String getPluginEnabledMessage(String pluginName, Version version)
+	{
+		return getPluginEnabledMessage(pluginName + " v" + version);
+	}
+
+	public static String getPluginDisabledMessage(String pluginName)
+	{
+		return String.format(DISABLED_MESSAGE, pluginName);
+	}
+
+	public static String getPluginDisabledMessage(String pluginName, Version version)
+	{
+		return getPluginDisabledMessage(pluginName + " v" + version);
+	}
+	//endregion
 }
