@@ -68,7 +68,9 @@ public enum MCVersion
 	MC_1_10(31, "1_10"),
 	MC_1_10_1(31, "1_10"),
 	MC_1_10_2(31, "1_10"),
-	MC_NMS_1_10_R1(31, "1_10");
+	MC_NMS_1_10_R1(31, "1_10"),
+	MC_1_11(41, "1_11"),
+	MC_NMS_1_11_R1(31, "1_11");
 
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new ConcurrentHashMap<>();
 
