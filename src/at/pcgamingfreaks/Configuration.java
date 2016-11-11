@@ -308,6 +308,18 @@ public class Configuration
 	}
 
 	/**
+	 * Gets an {@link Integer} value from the configuration.
+	 *
+	 * @param path The path to the value in the configuration file.
+	 * @param returnOnNotFound The value returned if the key was not found.
+	 * @return The {@link Integer} value from the configuration file.
+	 */
+	public int getInt(String path, int returnOnNotFound)
+	{
+		return config.getInt(path, returnOnNotFound);
+	}
+
+	/**
 	 * Gets an {@link Double} value from the configuration.
 	 *
 	 * @param path The path to the value in the configuration file.
@@ -318,6 +330,18 @@ public class Configuration
 	public double getDouble(String path) throws YAMLKeyNotFoundException, NumberFormatException
 	{
 		return config.getDouble(path);
+	}
+
+	/**
+	 * Gets an {@link Double} value from the configuration.
+	 *
+	 * @param path The path to the value in the configuration file.
+	 * @param returnOnNotFound The value returned if the key was not found.
+	 * @return The {@link Double} value from the configuration file.
+	 */
+	public double getDouble(String path, double returnOnNotFound)
+	{
+		return config.getDouble(path, returnOnNotFound);
 	}
 
 	/**
@@ -333,6 +357,18 @@ public class Configuration
 	}
 
 	/**
+	 * Gets a {@link String} value from the configuration.
+	 *
+	 * @param path The path to the value in the configuration file.
+	 * @param returnOnNotFound The value returned if the key was not found.
+	 * @return The {@link String} value from the configuration file.
+	 */
+	public String getString(String path, String returnOnNotFound)
+	{
+		return config.getString(path, returnOnNotFound);
+	}
+
+	/**
 	 * Gets an {@link Boolean} value from the configuration.
 	 *
 	 * @param path The path to the value in the configuration file.
@@ -342,6 +378,18 @@ public class Configuration
 	public boolean getBool(String path) throws YAMLKeyNotFoundException
 	{
 		return config.getBoolean(path);
+	}
+
+	/**
+	 * Gets an {@link Boolean} value from the configuration.
+	 *
+	 * @param path The path to the value in the configuration file.
+	 * @param returnOnNotFound The value returned if the key was not found.
+	 * @return The {@link Boolean} value from the configuration file.
+	 */
+	public boolean getBool(String path, boolean returnOnNotFound)
+	{
+		return config.getBoolean(path, returnOnNotFound);
 	}
 
 	/**
