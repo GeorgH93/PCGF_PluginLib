@@ -31,6 +31,8 @@ public class StringUtilsTest
 	private static final String longTextFinal = longText.substring(0, maxLength - 1), shortTextFinal = shortText, exactTextFinal = exactText;
 	private static final String t1 = "Test String 1", t2 = "test 2", t3 = "The tree is old.";
 	private static final String[] testArray = new String[] { t1, t2, t3 };
+	private static final String ENABLED_MESSAGE = ConsoleColor.GREEN + " TestPlugin v1.2 has been enabled! " + ConsoleColor.YELLOW + " :) " + ConsoleColor.RESET;
+	private static final String DISABLED_MESSAGE = ConsoleColor.RED + " TestPlugin v1.2 has been disabled. " + ConsoleColor.YELLOW + " :( " + ConsoleColor.RESET;
 
 	@BeforeClass
 	public static void prepareTestData()
@@ -180,5 +182,19 @@ public class StringUtilsTest
 		assertFalse("The list should not contain the element", result.contains(t1));
 		assertFalse("The list should not contain the element", result.contains(t2));
 		assertFalse("The list should not contain the element", result.contains(t3));
+	}
+
+	@Test
+	public void testGetPluginEnabledMessage()
+	{
+		assertEquals("The messages should match", ENABLED_MESSAGE, StringUtils.getPluginEnabledMessage("TestPlugin v1.2"));
+		assertEquals("The messages should match", ENABLED_MESSAGE, StringUtils.getPluginEnabledMessage("TestPlugin", new Version("v1.2")));
+	}
+
+	@Test
+	public void testGetPluginDisabledMessage()
+	{
+		assertEquals("The messages should match", DISABLED_MESSAGE, StringUtils.getPluginDisabledMessage("TestPlugin v1.2"));
+		assertEquals("The messages should match", DISABLED_MESSAGE, StringUtils.getPluginDisabledMessage("TestPlugin", new Version("v1.2")));
 	}
 }
