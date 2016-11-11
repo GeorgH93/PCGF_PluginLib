@@ -148,7 +148,7 @@ public class StringUtils
 	 * @param string The string to be escaped.
 	 * @return The escaped string.
 	 */
-	public static String escapeJsonString(String string)
+	public static String escapeJsonString(@NotNull String string)
 	{
 		return string.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
 	}
@@ -157,22 +157,22 @@ public class StringUtils
 	private static final String ENABLED_MESSAGE = ConsoleColor.GREEN + " %s has been enabled! " + ConsoleColor.YELLOW + " :) " + ConsoleColor.RESET;
 	private static final String DISABLED_MESSAGE = ConsoleColor.RED + " %s has been disabled. " + ConsoleColor.YELLOW + " :( " + ConsoleColor.RESET;
 
-	public static String getPluginEnabledMessage(String pluginName)
+	public static String getPluginEnabledMessage(@NotNull String pluginName)
 	{
 		return String.format(ENABLED_MESSAGE, pluginName);
 	}
 
-	public static String getPluginEnabledMessage(String pluginName, Version version)
+	public static String getPluginEnabledMessage(@NotNull String pluginName, @NotNull Version version)
 	{
 		return getPluginEnabledMessage(pluginName + " v" + version);
 	}
 
-	public static String getPluginDisabledMessage(String pluginName)
+	public static String getPluginDisabledMessage(@NotNull String pluginName)
 	{
 		return String.format(DISABLED_MESSAGE, pluginName);
 	}
 
-	public static String getPluginDisabledMessage(String pluginName, Version version)
+	public static String getPluginDisabledMessage(@NotNull String pluginName, @NotNull Version version)
 	{
 		return getPluginDisabledMessage(pluginName + " v" + version);
 	}

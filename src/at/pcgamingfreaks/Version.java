@@ -17,6 +17,9 @@
 
 package at.pcgamingfreaks;
 
+import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,19 +50,20 @@ public class Version
 
 	/**
 	 * @param version A string representing this version. Must be in the format: {@value #VERSION_STING_FORMAT}
-	 * @throws InvalidVersionStringException The exception is thrown when the given string doesn't match the required format
+	 * @throws InvalidVersionStringException The exception is thrown when the given string doesn't match the required format.
 	 */
-	public Version(String version) throws InvalidVersionStringException
+	public Version(@NotNull String version) throws InvalidVersionStringException
 	{
 		this(version, false);
 	}
 
 	/**
 	 * @param version A string representing this version. Must be in the format: {@value #VERSION_STING_FORMAT}
-	 * @throws InvalidVersionStringException The exception is thrown when the given string doesn't match the required format
+	 * @throws InvalidVersionStringException The exception is thrown when the given string doesn't match the required format.
 	 */
-	public Version(String version, boolean ignoreOptionalTags) throws InvalidVersionStringException
+	public Version(@NotNull String version, boolean ignoreOptionalTags) throws InvalidVersionStringException
 	{
+		//noinspection ConstantConditions
 		if(version == null || version.isEmpty() || !isValidVersionString(version)) throw new InvalidVersionStringException("The version string must be in the format: " + VERSION_STING_FORMAT);
 		if(version.startsWith("v") || version.startsWith("V")) version = version.substring(1);
 		this.rawVersion = version;
@@ -134,8 +138,9 @@ public class Version
 	 * @param otherVersion The version to compare with.
 	 * @return -1 this older than otherVersion, 0 equals, 1 this newer than otherVersion
 	 */
-	private byte compare(Version otherVersion)
+	private byte compare(@NotNull Version otherVersion)
 	{
+		Validate.notNull(otherVersion);
 		int c = Math.min(this.version.length, otherVersion.version.length);
 		for(int i = 0; i < c; i++)
 		{
@@ -152,36 +157,69 @@ public class Version
 		if(this.version.length == otherVersion.version.length) return 0;
 		boolean otherLonger = otherVersion.version.length > this.version.length;
 		int[] longer = (otherLonger) ? otherVersion.version : this.version;
+		byte result = SAME;
 		for(int i = c; i < longer.length; i++)
 		{
-			if(longer[i] != 0) return (byte) ((otherLonger) ? OLDER : NEWER);
+			if(longer[i] > 0)
+			{
+				result = (byte) ((otherLonger) ? OLDER : NEWER);
+			}
 		}
-		return SAME;
+		return result;
 	}
 
 	//region comparision functions
-	public boolean newerThan(Version otherVersion)
+	/**
+	 * Checks if the version is newer than the given version.
+	 *
+	 * @param otherVersion The version to compare with.
+	 * @return True if the version is newer, false if not.
+	 */
+	public boolean newerThan(@NotNull Version otherVersion)
 	{
 		return compare(otherVersion) == NEWER;
 	}
 
-	public boolean newerOrEqualThan(Version otherVersion)
+	/**
+	 * Checks if the version is newer or the same than the given version.
+	 *
+	 * @param otherVersion The version to compare with.
+	 * @return True if the version is newer or the same, false if not.
+	 */
+	public boolean newerOrEqualThan(@NotNull Version otherVersion)
 	{
 		return compare(otherVersion)>= SAME;
 	}
 
-	public boolean olderThan(Version otherVersion)
+	/**
+	 * Checks if the version is older than the given version.
+	 *
+	 * @param otherVersion The version to compare with.
+	 * @return True if the version is older, false if not.
+	 */
+	public boolean olderThan(@NotNull Version otherVersion)
 	{
 		return compare(otherVersion) == OLDER;
 	}
 
-	public boolean olderOrEqualThan(Version otherVersion)
+	/**
+	 * Checks if the version is older or the same than the given version.
+	 *
+	 * @param otherVersion The version to compare with.
+	 * @return True if the version is older or the same, false if not.
+	 */
+	public boolean olderOrEqualThan(@NotNull Version otherVersion)
 	{
 		return compare(otherVersion) <= SAME;
 	}
 	//endregion
 
 	//region Overriding functions
+	/**
+	 * Returns the original version string. But without the optional "v" at the start.
+	 *
+	 * @return The string representing this version.
+	 */
 	@Override
 	public String toString()
 	{
@@ -189,11 +227,10 @@ public class Version
 	}
 
 	/**
-	 * Compares two versions if they are completely equal (same version string and same settings).
-	 * If you like to check if two versions are the same based on the data given to the constructor please use the isSame method.
+	 * Compares two versions if they are the same.
 	 *
-	 * @param otherVersion The other version to compare with.
-	 * @return True if both versions are equal.
+	 * @param otherVersion The version to compare with.
+	 * @return True if both versions are equal, false if not.
 	 */
 	@Override
 	public boolean equals(Object otherVersion)
@@ -208,6 +245,9 @@ public class Version
 	}
 	//endregion
 
+	/**
+	 * This exception is thrown when the string representing an version is invalid.
+	 */
 	public static class InvalidVersionStringException extends IllegalArgumentException
 	{
 		public InvalidVersionStringException(String string)
