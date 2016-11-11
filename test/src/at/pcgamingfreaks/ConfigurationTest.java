@@ -124,6 +124,10 @@ public class ConfigurationTest
 		assertEquals("The returned integer value should match", config.getInt("Version"), configuration.getInt("Version"));
 		assertEquals("The returned boolean value should match", config.getBoolean("TestBoolean"), configuration.getBool("TestBoolean"));
 		assertEquals("The returned double value should match", config.getDouble("TestDouble"), configuration.getDouble("TestDouble"), 0.1);
+		assertEquals("The returned string value should match", "Not there", configuration.getString("Nothing", "Not there"));
+		assertEquals("The returned integer value should match", -1, configuration.getInt("Nothing", -1));
+		assertEquals("The returned boolean value should match", true, configuration.getBool("Nothing", true));
+		assertEquals("The returned double value should match", 1.0, configuration.getDouble("Nothing", 1.0), 0.1);
 		config.set("TestConfig.Value3", "String");
 		config.set("VersionX", 3);
 		config.set("TestBoolean2", true);
