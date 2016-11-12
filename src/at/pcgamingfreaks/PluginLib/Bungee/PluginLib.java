@@ -79,7 +79,7 @@ public class PluginLib extends Plugin implements PluginLibrary
 		this.getLogger().info(StringUtils.getPluginDisabledMessage(this.getDescription().getName(), version));
 	}
 
-	public PluginLibrary getInstance()
+	public static PluginLibrary getInstance()
 	{
 		return instance;
 	}
