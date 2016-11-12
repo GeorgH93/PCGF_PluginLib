@@ -1,0 +1,5 @@
+name: PCGF_MC_Plugin_Lib
+author: GeorgH93
+website: ToDo
+main: at.pcgamingfreaks.PluginLib.Bungee.PluginLib
+version: ${project.version}

@@ -1,0 +1,22 @@
+# Settings for the shared database pool.
+# The shared connectin ppol can help a lot if your database server is running out of connections and you are using many plugins that support this function.
+# It also prevents you from entering you database informations into many plugins over and over again.
+Database:
+  # Database type. MySQL, SQLite or Off (Disables shared database pool)
+  # Yes you can use a single SQLite file for all supporting plugins with this option. But it probably has a negative inpact on performance, so you should probably consider using MySQL.
+  Type: Off
+  SQL:
+    Host: localhost:3306
+    Database: minecraft
+    User: minecraft
+    Password: minecraft
+    #The max amount of connections to the database the connection pool will open.
+    # To high numbers may cause your SQL server to run out of connections, to low numbers may cause an negative inpact on performance when a lot of plugins are using the pool.
+    MaxConnections: 4
+
+Misc:
+  # You may want to disable automatic updates if you have plugins that require a certain version of this library.
+  AutoUpdate: true
+
+# Config file version. Don't touch it!
+Version: 1

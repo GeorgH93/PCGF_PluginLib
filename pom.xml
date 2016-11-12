@@ -145,6 +145,17 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
 		</dependency>
+		<!-- JDBC connection pool -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>2.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -152,6 +163,7 @@
 		<resources>
 			<resource>
 				<directory>resources</directory>
+				<filtering>true</filtering>
 			</resource>
 		</resources>
 		<sourceDirectory>src</sourceDirectory>
@@ -210,6 +222,8 @@
 									<include>at.pcgamingfreaks:YAML-Parser</include>
 									<include>com.google.code.gson:gson</include> <!-- Not included in Bukkit, we need it (a lot)! -->
 									<include>org.apache.commons:commons-lang3</include> <!-- The old version is included in Bukkit, but not in BungeeCord, we just put in the new version for both -->
+									<include>com.zaxxer:HikariCP</include>
+									<include>org.slf4j:*</include>
 								</includes>
 							</artifactSet>
 						</configuration>
@@ -272,6 +286,7 @@
 					<instrumentation>
 						<excludes>
 							<exclude>org/mcstats/*</exclude>
+							<exclude>at/pcgamingfreaks/PluginLib/*</exclude>
 						</excludes>
 					</instrumentation>
 					<check/>
@@ -305,8 +320,8 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<!-- Java 1.8 uses checks for the JavaDoc, we disable them on Java 1.8, but older Java version don't understand the parameter, so we have to use a small trick -->
 	<profiles>
+		<!-- Java 1.8 uses checks for the JavaDoc, we disable them on Java 1.8, but older Java version don't understand the parameter, so we have to use a small trick -->
 		<profile>
 			<id>doclint-java8-disable</id>
 			<activation>
@@ -316,6 +331,7 @@
 				<javadoc.opts>-Xdoclint:none</javadoc.opts>
 			</properties>
 		</profile>
+		<!-- Java 1.7 ran out of space during tests, but Java 1.8 no longer needs this parameter, so we have to use a small trick -->
 		<profile>
 			<id>use-permgen-java7</id>
 			<activation>
