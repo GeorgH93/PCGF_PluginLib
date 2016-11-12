@@ -36,6 +36,8 @@ public class PluginLib extends Plugin implements PluginLibrary
 {
 	private static final String URL = "https://ci.pcgamingfreaks.at/job/Bukkit_Bungee_PluginLib/lastSuccessfulBuild/artifact/target/Bukkit_Bungee_PluginLib-1.0-SNAPSHOT.jar";
 
+	private static PluginLibrary instance = null;
+
 	private Configuration config;
 	private Version version;
 	private DatabaseConnectionPoolBase databaseConnectionPool;
@@ -58,13 +60,14 @@ public class PluginLib extends Plugin implements PluginLibrary
 			Updater updater = new Updater(this, true, new AlwaysUpdateProvider(URL));
 			updater.update();
 		}
-
+		instance = this;
 		this.getLogger().info(StringUtils.getPluginEnabledMessage(this.getDescription().getName(), version));
 	}
 
 	@Override
 	public void onDisable()
 	{
+		instance = null;
 		Updater updater = null;
 		if(this.config.getBool("Misc.AutoUpdate", true))
 		{
@@ -74,6 +77,11 @@ public class PluginLib extends Plugin implements PluginLibrary
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.close();
 		if(updater != null) updater.waitForAsyncOperation();
 		this.getLogger().info(StringUtils.getPluginDisabledMessage(this.getDescription().getName(), version));
+	}
+
+	public PluginLibrary getInstance()
+	{
+		return instance;
 	}
 
 	@Override
