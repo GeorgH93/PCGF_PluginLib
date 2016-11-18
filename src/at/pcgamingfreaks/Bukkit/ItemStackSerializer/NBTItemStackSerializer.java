@@ -17,12 +17,14 @@
 
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 public class NBTItemStackSerializer implements ItemStackSerializer
@@ -32,7 +34,7 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 	private static final Class<?> CLASS_NBT_COMPRESSED_STREAM_TOOLS = NMSReflection.getNMSClass("NBTCompressedStreamTools");
 	private static final Class<?> CLASS_CRAFT_ITEM_STACK            = NMSReflection.getOBCClass("inventory.CraftItemStack");
 	private static final Class<?> CLASS_NMS_ITEM_STACK              = NMSReflection.getNMSClass("ItemStack");
-
+	private static final Constructor<?> CONSTRUCTOR_NMS_ITEM_STACK  = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11)) ? NMSReflection.getConstructor(CLASS_NMS_ITEM_STACK, CLASS_NBT_TAG_COMPOUND) : null;
 	private static final Method METHOD_NBT_TAG_C_SET_INT  = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "setInt", String.class, int.class);
 	private static final Method METHOD_NBT_COMP_STEAM_A   = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", CLASS_NBT_TAG_COMPOUND, OutputStream.class);
 	private static final Method METHOD_NBT_TAG_C_SET2     = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "set", String.class, NMSReflection.getNMSClass("NBTBase"));
@@ -41,7 +43,7 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 	private static final Method METHOD_GET_INT            = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "getInt", String.class);
 	private static final Method METHOD_HAS_KEY_OF_TYPE    = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "hasKeyOfType", String.class, int.class);
 	private static final Method METHOD_GET_COMPOUND       = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "getCompound", String.class);
-	private static final Method METHOD_CREATE_STACK       = NMSReflection.getMethod(CLASS_NMS_ITEM_STACK, "createStack", CLASS_NBT_TAG_COMPOUND);
+	private static final Method METHOD_CREATE_STACK       = (MCVersion.isOlderThan(MCVersion.MC_1_11)) ? NMSReflection.getMethod(CLASS_NMS_ITEM_STACK, "createStack", CLASS_NBT_TAG_COMPOUND) : null;
 	private static final Method METHOD_AS_BUKKIT_COPY     = NMSReflection.getMethod(CLASS_CRAFT_ITEM_STACK, "asBukkitCopy", CLASS_NMS_ITEM_STACK);
 	private static final Method METHOD_NBT_COMP_STREAM_A2 = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", InputStream.class);
 	//endregion
@@ -55,11 +57,11 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 	@Override
 	public ItemStack[] deserialize(byte[] data)
 	{
-		if(METHOD_NBT_COMP_STREAM_A2 == null || METHOD_GET_INT == null || METHOD_HAS_KEY_OF_TYPE == null || METHOD_AS_BUKKIT_COPY == null || METHOD_GET_COMPOUND == null || METHOD_CREATE_STACK == null)
+		if(METHOD_NBT_COMP_STREAM_A2 == null || METHOD_GET_INT == null || METHOD_HAS_KEY_OF_TYPE == null || METHOD_AS_BUKKIT_COPY == null || METHOD_GET_COMPOUND == null ||
+				(METHOD_CREATE_STACK == null && CONSTRUCTOR_NMS_ITEM_STACK == null))
 		{
 			System.out.println("It seems like the system wasn't able to find the some of the Bukkit/Minecraft classes and functions.\n" +
-					"Is the plugin up-to-date and compatible with the used server version?\n" +
-					"Bukkit Version: " + Bukkit.getVersion());
+					"Is the plugin up-to-date and compatible with the used server version?\nBukkit Version: " + Bukkit.getVersion());
 		}
 		else if(data != null)
 		{
@@ -72,7 +74,18 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 				{
 					if((boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, String.valueOf(i), 10))
 					{
-						its[i] = (ItemStack) METHOD_AS_BUKKIT_COPY.invoke(null, METHOD_CREATE_STACK.invoke(null, METHOD_GET_COMPOUND.invoke(localNBTTagCompound, String.valueOf(i))));
+						Object compound = METHOD_GET_COMPOUND.invoke(localNBTTagCompound, String.valueOf(i));
+						Object nbtStack;
+						if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11))
+						{
+							nbtStack = CONSTRUCTOR_NMS_ITEM_STACK.newInstance(compound);
+						}
+						else
+						{
+							//noinspection ConstantConditions
+							nbtStack = METHOD_CREATE_STACK.invoke(null, compound);
+						}
+						its[i] = (nbtStack != null) ? (ItemStack) METHOD_AS_BUKKIT_COPY.invoke(null, nbtStack) : null;
 					}
 				}
 				return its;
@@ -98,8 +111,7 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 		if(CLASS_NBT_TAG_COMPOUND == null || METHOD_NBT_TAG_C_SET2 == null || METHOD_NBT_TAG_C_SET_INT == null || METHOD_SAVE == null || METHOD_AS_NMS_COPY == null || METHOD_NBT_COMP_STEAM_A == null)
 		{
 			System.out.println("It seems like the system wasn't able to find the some of the Bukkit/Minecraft classes and functions.\n" +
-					"Is the plugin up-to-date and compatible with the used server version?\n" +
-					"Bukkit Version: " + Bukkit.getVersion());
+					"Is the plugin up-to-date and compatible with the used server version?\nBukkit Version: " + Bukkit.getVersion());
 		}
 		else if(itemStacks != null)
 		{
