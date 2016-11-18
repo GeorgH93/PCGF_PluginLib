@@ -286,7 +286,8 @@
 					<instrumentation>
 						<excludes>
 							<exclude>org/mcstats/*</exclude>
-							<exclude>at/pcgamingfreaks/PluginLib/*</exclude>
+							<!-- The plugin for Bukkit/BungeeCord should be ignored in the coverage report -->
+							<exclude>at/pcgamingfreaks/PluginLib/**/*</exclude>
 						</excludes>
 					</instrumentation>
 					<check/>
