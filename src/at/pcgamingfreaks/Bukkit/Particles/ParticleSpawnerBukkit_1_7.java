@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2016 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,28 +15,31 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Effects;
+package at.pcgamingfreaks.Bukkit.Particles;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 
 import java.lang.reflect.Constructor;
 
-public class EffectBukkit_1_7 extends EffectBukkit
+class ParticleSpawnerBukkit_1_7 extends ParticleSpawnerBukkit
 {
 	private static final Constructor PACKET_CONSTRUCTOR = NMSReflection.getConstructor(NMSReflection.getNMSClass("PacketPlayOutWorldParticles"), String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
 
-	public void spawnParticle(Location location, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
+	public void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
+		Validate.isTrue(type.getMinVersion().olderOrEqualThan(MCVersion.MC_1_7_10), "The %s particle is not available in your minecraft version!", type.getName());
 		try
 		{
 			//noinspection ConstantConditions
-			spawnParticle(location, visibleRange, PACKET_CONSTRUCTOR.newInstance(type.getName(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count));
+			spawnParticle(location, visibleRange, PACKET_CONSTRUCTOR.newInstance(type.getOldName(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count));
 		}
 		catch(Exception e)
 		{
-			System.out.println("Unable to spawn particle " + type.getName() + ". (Version 1.7)");
+			System.out.println("Unable to spawn particle " + type.getOldName() + ". (Version 1.7)");
 			e.printStackTrace();
 		}
 	}

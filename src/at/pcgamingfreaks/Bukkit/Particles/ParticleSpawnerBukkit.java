@@ -15,7 +15,7 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Effects;
+package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.Utils;
 
@@ -25,16 +25,16 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 
-public abstract class EffectBukkit extends EffectBase
+abstract class ParticleSpawnerBukkit extends ParticleSpawner
 {
-	protected void spawnParticle(Location location, double visibleRange, Object particle) throws IllegalAccessException, InvocationTargetException
+	protected void spawnParticle(Location location, double visibleRange, Object particlePacket) throws IllegalAccessException, InvocationTargetException
 	{
-		if(particle == null) return;
+		if(particlePacket == null) return;
 		for(Entity entity : location.getWorld().getEntities())
 		{
 			if(entity instanceof Player && entity.getLocation().getWorld().getName().equalsIgnoreCase(location.getWorld().getName()) && entity.getLocation().distance(location) < visibleRange)
 			{
-				Utils.sendPacket((Player)entity, particle);
+				Utils.sendPacket((Player)entity, particlePacket);
 			}
 		}
 	}

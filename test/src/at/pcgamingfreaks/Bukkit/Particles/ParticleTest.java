@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Effects;
+package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
@@ -42,7 +42,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ MCVersion.class, NMSReflection.class })
-public class EffectsTest
+public class ParticleTest
 {
 	@BeforeClass
 	public static void prepareTestData() throws Exception
@@ -63,12 +63,11 @@ public class EffectsTest
 	@Test
 	public void testEffects() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
 	{
-		assertEquals("The name of the enum constant should match", "explode", Effects.EXPLODE.getName());
-		assertEquals("The name of the enum constant should match", "EXPLODE", Effects.EXPLODE.getNameUpperCase());
-		assertEquals("The new name of the enum constant should match", "EXPLOSION_NORMAL", Effects.EXPLODE.getNewName());
-		assertEquals("The id of the enum constant should match", 0, Effects.EXPLODE.getID());
-		assertNull("The enum of the enum constant should be null", Effects.EXPLODE.getEnum());
-		assertEquals("The enum of the enum constant should match", EnumParticle.BARRIER, Effects.BARRIER.getEnum());
-		assertEquals("The min version should match", MCVersion.MC_1_9, Effects.DAMAGE_INDICATOR.getMinVersion());
+		assertEquals("The name of the enum constant should match", "explode", Particle.EXPLOSION.getOldName());
+		assertEquals("The name of the enum constant should match", "EXPLODE", Particle.EXPLOSION.getOldNameUpperCase());
+		assertEquals("The new name of the enum constant should match", "EXPLOSION_NORMAL", Particle.EXPLOSION.getName());
+		assertEquals("The enum of the enum constant should match", EnumParticle.BARRIER, Particle.BARRIER.getEnum());
+		assertEquals("The min version should match", MCVersion.MC_1_9, Particle.DAMAGE_INDICATOR.getMinVersion());
+		assertNull("The enum of the enum constant should be null", Particle.EXPLOSION.getEnum());
 	}
 }

@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Effects;
+package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.Utils;
@@ -53,7 +53,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class, Utils.class })
 @SuppressWarnings("SpellCheckingInspection")
-public class EffectBukkit_1_7Test
+public class ParticleSpawnerBukkit_1_7Test
 {
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
@@ -84,18 +84,18 @@ public class EffectBukkit_1_7Test
 		Entity mockedEntity = mock(Entity.class);
 		entities.add(mockedEntity);
 		doReturn(entities).when(mockedWorld).getEntities();
-		EffectBukkit_1_7 effect = new EffectBukkit_1_7();
-		effect.spawnParticle(mockedLocation, Effects.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
+		ParticleSpawnerBukkit_1_7 effect = new ParticleSpawnerBukkit_1_7();
+		effect.spawnParticle(mockedLocation, Particle.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
 		verifyStatic(times(++sendPacketCalls));
 		Utils.sendPacket(any(TestBukkitPlayer.class), anyObject());
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
-		Field packetConstructorField = EffectBukkit_1_7.class.getDeclaredField("PACKET_CONSTRUCTOR");
+		Field packetConstructorField = ParticleSpawnerBukkit_1_7.class.getDeclaredField("PACKET_CONSTRUCTOR");
 		packetConstructorField.setAccessible(true);
 		modifiers.set(packetConstructorField, packetConstructorField.getModifiers() & ~Modifier.FINAL);
 		Constructor packetConstructor = (Constructor) packetConstructorField.get(null);
 		packetConstructorField.set(null, null);
-		effect.spawnParticle(mockedLocation, Effects.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
+		effect.spawnParticle(mockedLocation, Particle.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
 		verifyStatic(times(sendPacketCalls));
 		Utils.sendPacket(any(TestBukkitPlayer.class), anyObject());
 		packetConstructorField.set(null, packetConstructor);

@@ -15,19 +15,24 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Effects;
+package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
 
-interface IEffects
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+interface IParticle
 {
-	String getName();
+	@NotNull String getOldName();
 
-	String getNameUpperCase();
+	@NotNull String getOldNameUpperCase();
 
-	String getNewName();
+	@NotNull String getName();
 
-	Enum<?> getEnum();
+	@Nullable Enum<?> getEnum();
 
-	MCVersion getMinVersion();
+	@NotNull MCVersion getMinVersion();
+
+	int getParameterCount();
 }

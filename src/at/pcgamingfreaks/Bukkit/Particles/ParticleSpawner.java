@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2016 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,14 +15,14 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Effects;
+package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-public abstract class EffectBase
+public abstract class ParticleSpawner
 {
 	/**
 	 * Spawns a single material based particle.
@@ -33,7 +33,7 @@ public abstract class EffectBase
 	 * @param material     the material of the particle
 	 * @param visibleRange the range that the effect will be visible
 	 */
-	public void spawnParticle(Location location, MaterialEffects type, Material material, double visibleRange)
+	public void spawnParticle(Location location, Particle type, Material material, double visibleRange)
 	{
 		spawnParticle(location, type, material, visibleRange, 1, 0, 0, 0, 0);
 	}
@@ -52,7 +52,7 @@ public abstract class EffectBase
 	 * @param offsetZ      is added to the Z position after being multiplied by random.nextGaussian() to spread the particles out
 	 * @param speed        the speed the particles are moving with
 	 */
-	public void spawnParticle(Location location, MaterialEffects type, Material material, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
+	public void spawnParticle(Location location, Particle type, Material material, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
 		spawnParticle(location, type, material, 0, visibleRange, count, offsetX, offsetY, offsetZ, speed);
 	}
@@ -67,7 +67,7 @@ public abstract class EffectBase
 	 * @param materialData the material data of the particle
 	 * @param visibleRange the range that the effect will be visible
 	 */
-	public void spawnParticle(Location location, MaterialEffects type, Material material, int materialData, double visibleRange)
+	public void spawnParticle(Location location, Particle type, Material material, int materialData, double visibleRange)
 	{
 		spawnParticle(location, type, material, materialData, visibleRange, 1, 0, 0, 0, 0);
 	}
@@ -88,25 +88,27 @@ public abstract class EffectBase
 	 * @param speed        the speed the particles are moving with
 	 */
 	@SuppressWarnings("deprecation")
-	public void spawnParticle(Location location, MaterialEffects type, Material material, int materialData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
+	public void spawnParticle(Location location, Particle type, Material material, int materialData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
 		int[] data = null;
 		switch(type)
 		{
 			case ITEM_CRACK:
-				data = new int[]{material.getId(), materialData};
+				data = new int[] { material.getId(), materialData };
 				break;
 			case BLOCK_CRACK:
-				data = new int[]{material.getId() + 4096 * materialData};
+				data = new int[] { material.getId() + 4096 * materialData };
 				break;
 			case BLOCK_DUST:
-				data = new int[]{material.getId()};
+				data = new int[] { material.getId() };
 				break;
+			case FALLING_DUST:
+				data = new int[] { material.getId() };
 		}
 		spawnParticle(location, type, visibleRange, count, offsetX, offsetY, offsetZ, speed, data);
 	}
 
-	protected void spawnParticle(Location location, MaterialEffects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data) {}
+	protected void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data) {}
 
 	/**
 	 * Spawns a single particle.
@@ -115,7 +117,7 @@ public abstract class EffectBase
 	 * @param type         the type of the effect that should be spawned
 	 * @param visibleRange the range that the effect will be visible
 	 */
-	public void spawnParticle(Location location, Effects type, double visibleRange)
+	public void spawnParticle(Location location, Particle type, double visibleRange)
 	{
 		spawnParticle(location, type, visibleRange, 1, 0, 0, 0, 0);
 	}
@@ -132,7 +134,7 @@ public abstract class EffectBase
 	 * @param offsetZ      is added to the Z position after being multiplied by random.nextGaussian() to spread the particles out
 	 * @param speed        the speed the particles are moving with
 	 */
-	public abstract void spawnParticle(Location location, Effects type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed);
+	public abstract void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed);
 
 	/**
 	 * It is recommended to use this function to get an effect spawner instance! It will give you the right object for your Minecraft version.
@@ -140,15 +142,15 @@ public abstract class EffectBase
 	 *
 	 * @return A for your Minecraft version compatible effect spawner. null if your Minecraft version is not supported.
 	 */
-	public static EffectBase getEffectSpawner()
+	public static ParticleSpawner getParticleSpawner()
 	{
 		if (MCVersion.isOlderThan(MCVersion.MC_1_8) && MCVersion.isNewerThan(MCVersion.UNKNOWN))
 		{
-			return new EffectBukkit_1_7();
+			return new ParticleSpawnerBukkit_1_7();
 		}
 		else if (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_8))
 		{
-			return new EffectBukkit_1_8_AND_NEWER();
+			return new ParticleSpawnerBukkit_1_8_AndNewer();
 		}
 		else
 		{

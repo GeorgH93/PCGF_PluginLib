@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Effects;
+package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.Utils;
@@ -50,7 +50,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class, Utils.class })
 @SuppressWarnings("SpellCheckingInspection")
-public class EffectBukkitTest
+public class ParticleSpawnerBukkitTest
 {
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
@@ -69,8 +69,8 @@ public class EffectBukkitTest
 	@Test
 	public void testSpawnParticle() throws InvocationTargetException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException
 	{
-		EffectBukkit effect = new EffectBukkit_1_7();
-		Method spawnParticle = EffectBukkit.class.getDeclaredMethod("spawnParticle", Location.class, double.class, Object.class);
+		ParticleSpawnerBukkit effect = new ParticleSpawnerBukkit_1_7();
+		Method spawnParticle = ParticleSpawnerBukkit.class.getDeclaredMethod("spawnParticle", Location.class, double.class, Object.class);
 		spawnParticle.setAccessible(true);
 		spawnParticle.invoke(effect, null, 0.0, null);
 		verifyStatic(times(0));
