@@ -63,7 +63,14 @@ public abstract class DatabaseConnectionPoolBase implements DatabaseConnectionPo
 	{
 		this.config = config;
 		this.dataFolder = dataFolder;
-		this.dataSource = new HikariDataSource(getPoolConfig());
+		HikariConfig poolConfig = getPoolConfig();
+		poolConfig.setPoolName("PCGF_PluginLib-Connection-Pool");
+		poolConfig.addDataSourceProperty("useUnicode", "true");
+		poolConfig.addDataSourceProperty("characterEncoding", "utf-8");
+		poolConfig.addDataSourceProperty("cachePrepStmts", "true");
+		poolConfig.addDataSourceProperty("prepStmtCacheSize", "250");
+		poolConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+		this.dataSource = new HikariDataSource(poolConfig);
 	}
 
 	protected abstract HikariConfig getPoolConfig();

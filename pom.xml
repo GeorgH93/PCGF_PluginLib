@@ -2,7 +2,7 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>at.pcgamingfreaks</groupId>
-	<artifactId>Bukkit_Bungee_PluginLib</artifactId>
+	<artifactId>PluginLib</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -20,7 +20,7 @@
 		<url>http://ci.pcgamingfreaks.at/job/Bukkit_Bungee_PluginLib/</url>
 	</ciManagement>
 
-	<name>Bukkit_Bungee_PluginLib</name>
+	<name>PCGF MC PluginLib</name>
 	<description>A library to reduce work and code on Bukkit or BungeeCord plugins.</description>
 	<inceptionYear>2015</inceptionYear>
 	<licenses>
@@ -153,8 +153,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.6.4</version>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.7.10</version>
 		</dependency>
 	</dependencies>
 
