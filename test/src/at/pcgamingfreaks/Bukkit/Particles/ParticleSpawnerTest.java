@@ -91,7 +91,7 @@ public class ParticleSpawnerTest
 
 	@Test
 	@SuppressWarnings("SpellCheckingInspection")
-	public void testGetEffectSpawner() throws NoSuchFieldException, IllegalAccessException
+	public void testGetParticleSpawner() throws NoSuchFieldException, IllegalAccessException
 	{
 		TestObjects.setBukkitVersion("0_7_R1");
 		assertNull("The effect object should be null", ParticleSpawner.getParticleSpawner());

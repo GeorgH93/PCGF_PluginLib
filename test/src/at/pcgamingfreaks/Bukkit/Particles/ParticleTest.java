@@ -54,14 +54,14 @@ public class ParticleTest
 			@Override
 			public Boolean answer(InvocationOnMock invocationOnMock) throws Throwable
 			{
-				return ++counter[0] >= 36;
+				return ++counter[0] >= 36 && counter[0] < 45;
 			}
 		}).when(MCVersion.class, "isNewerOrEqualThan", anyObject());
 		TestObjects.initNMSReflection();
 	}
 
 	@Test
-	public void testEffects() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
+	public void testParticles() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
 	{
 		assertEquals("The name of the enum constant should match", "explode", Particle.EXPLOSION.getOldName());
 		assertEquals("The name of the enum constant should match", "EXPLODE", Particle.EXPLOSION.getOldNameUpperCase());

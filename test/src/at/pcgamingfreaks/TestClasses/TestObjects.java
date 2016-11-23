@@ -128,7 +128,7 @@ public class TestObjects
 	@SuppressWarnings("SpellCheckingInspection")
 	public static void initNMSReflection() throws NoSuchFieldException, IllegalAccessException
 	{
-		setBukkitVersion("1_7_R1");
+		setBukkitVersion("1_8_R1");
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
 		Field nmsClassPath = NMSReflection.class.getDeclaredField("NMS_CLASS_PATH");

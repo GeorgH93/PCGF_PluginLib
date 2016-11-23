@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings({ "unused", "SpellCheckingInspection" })
-public enum Particle implements IParticle
+public enum Particle
 {
 	EXPLOSION       ("explode",         "EXPLOSION_NORMAL"),
 	EXPLOSION_LARGE ("largeexplosion",  "EXPLOSION_LARGE"),
@@ -131,7 +131,7 @@ public enum Particle implements IParticle
 		}
 	}
 
-	private final int parameterCount;
+	//private final int parameterCount;
 	private final String oldName, name;
 	private final Enum<?> nmsEnumParticle;
 	private final MCVersion minVersion;
@@ -156,20 +156,20 @@ public enum Particle implements IParticle
 		this.name = name;
 		this.oldName = oldName;
 		this.minVersion = minVersion;
-		int paramCount = 0;
+		//int paramCount = 0;
 		Enum<?> nmsEnum = null;
 		if(MCVersion.isNewerOrEqualThan(minVersion))
 		{
 			nmsEnum = NMSReflection.getNMSEnum("EnumParticle." + name);
-			try
+			/*try
 			{
 				//noinspection ConstantConditions
 				paramCount = (int) NMSReflection.getNMSMethod("EnumParticle", "d").invoke(nmsEnum);
 			}
-			catch(Exception ignored) {}
+			catch(Exception ignored) {}*/
 		}
 		this.nmsEnumParticle = nmsEnum;
-		this.parameterCount = paramCount;
+		//this.parameterCount = paramCount;
 	}
 
 	public @NotNull String getOldName()
@@ -182,29 +182,25 @@ public enum Particle implements IParticle
 		return name;
 	}
 
-	@Override
 	public @Nullable Enum<?> getEnum()
 	{
 		return nmsEnumParticle;
 	}
 
-	@Override
 	public @NotNull String getOldNameUpperCase()
 	{
 		return getOldName().toUpperCase();
 	}
 
-	@Override
 	public @NotNull MCVersion getMinVersion()
 	{
 		return minVersion;
 	}
 
-	@Override
-	public int getParameterCount()
+	/*public int getParameterCount()
 	{
 		return this.parameterCount;
-	}
+	}*/
 
 	public static @Nullable Particle getFrom(org.bukkit.Particle bukkitParticle)
 	{
