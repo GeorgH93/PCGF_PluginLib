@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 public class AlwaysUpdateProvider implements UpdateProvider
 {
 	private URL downloadUrl = null;
+	private String fileName;
 	private ReleaseType releaseType;
 
 	/**
@@ -40,16 +41,27 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 */
 	public AlwaysUpdateProvider(String url)
 	{
-		this(url, ReleaseType.RELEASE);
+		this(url, "file.jar");
+	}
+
+	/**
+	 * @param url      The url to the file that should be downloaded.
+	 * @param fileName The name of the file.
+	 */
+	public AlwaysUpdateProvider(String url, String fileName)
+	{
+		this(url, fileName, ReleaseType.RELEASE);
 	}
 
 	/**
 	 * @param url         The url to the file that should be downloaded.
+	 * @param fileName    The name of the file.
 	 * @param releaseType The release type.
 	 */
-	public AlwaysUpdateProvider(String url, ReleaseType releaseType)
+	public AlwaysUpdateProvider(String url, String fileName, ReleaseType releaseType)
 	{
 		this.releaseType = releaseType;
+		this.fileName = fileName;
 		try
 		{
 			downloadUrl = new URL(url);
@@ -85,9 +97,9 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	}
 
 	@Override
-	public String getLatestVersionFileName() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	public String getLatestVersionFileName() throws NotSuccessfullyQueriedException
 	{
-		throw new RequestTypeNotAvailableException("This provider does not provide the name of the latest file.");
+		return fileName;
 	}
 
 	@Override

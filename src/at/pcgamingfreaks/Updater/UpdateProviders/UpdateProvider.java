@@ -63,10 +63,9 @@ public interface UpdateProvider
 	 * Get the latest version's file name.
 	 *
 	 * @return latest version's file name.
-	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	String getLatestVersionFileName() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
+	String getLatestVersionFileName() throws NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's name (such as "Project v1.0").

@@ -57,14 +57,7 @@ public class AlwaysUpdateProviderTest
 	@Test
 	public void testGetLatestVersionFileName() throws Exception
 	{
-		try
-		{
-			provider.getLatestVersionFileName();
-		}
-		catch(RequestTypeNotAvailableException e)
-		{
-			assertEquals("The exception message should match", "This provider does not provide the name of the latest file.", e.getMessage());
-		}
+		assertEquals("The file name should match", "file.jar", provider.getLatestVersionFileName());
 	}
 
 	@Test
@@ -97,7 +90,7 @@ public class AlwaysUpdateProviderTest
 	public void testGetLatestReleaseType() throws Exception
 	{
 		assertEquals("The release type should match", ReleaseType.RELEASE, provider.getLatestReleaseType());
-		assertEquals("The release type should match", ReleaseType.BETA, new AlwaysUpdateProvider(URL, ReleaseType.BETA).getLatestReleaseType());
+		assertEquals("The release type should match", ReleaseType.BETA, new AlwaysUpdateProvider(URL, "file.jar", ReleaseType.BETA).getLatestReleaseType());
 	}
 
 	@Test
