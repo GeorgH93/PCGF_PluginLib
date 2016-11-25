@@ -774,4 +774,28 @@ public class DBToolsTest
 		verify(mockedStatement, times(0)).executeUpdate(contains("ADD COLUMN"));
 		verify(mockedStatement, times(0)).executeUpdate(contains("MODIFY COLUMN"));
 	}
+
+	@Test
+	public void testWithEngineParameter() throws SQLException
+	{
+		//noinspection SpellCheckingInspection
+		doReturn("CREATE TABLE `test` (\n" +
+				         "  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT\n" +
+				         ") ENGINE=InnoDB").when(mockedResultSet).getString(2);
+		//noinspection SpellCheckingInspection
+		String createStatement = "CREATE TABLE `test` (\n" +
+				"  INT(10) UNSIGNED NOT NULL AUTO_INCREMENT\n" +
+				") ENGINE=InnoDB;";
+		DBTools.updateDB(mockedConnection, createStatement);
+		verify(mockedStatement, times(0)).executeUpdate(createStatement);
+		//noinspection SpellCheckingInspection
+		createStatement = "CREATE TABLE `test` (\n" +
+				"  INT(10) UNSIGNED NOT NULL AUTO_INCREMENT\n" +
+				") engine=InnoDB;";
+		DBTools.updateDB(mockedConnection, createStatement);
+		verify(mockedStatement, times(0)).executeUpdate(createStatement);
+		doThrow(new SQLException()).when(mockedStatement).executeQuery(anyString());
+		DBTools.updateDB(mockedConnection, createStatement);
+		verify(mockedStatement, times(1)).executeUpdate(createStatement);
+	}
 }

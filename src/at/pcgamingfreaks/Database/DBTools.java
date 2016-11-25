@@ -53,14 +53,14 @@ public class DBTools
 	 */
 	public static void updateDB(Connection connection, String tableDefinition) throws IllegalArgumentException, SQLException
 	{
-		Pattern currentTableInfo = Pattern.compile("^\\w*(CREATE TABLE IF NOT EXISTS|CREATE TABLE)\\s+(`(\\w+)`|\\w+)\\s+\\(\\n([\\s\\S]*)\\n\\);?$", Pattern.CASE_INSENSITIVE);
+		Pattern currentTableInfo = Pattern.compile("^\\w*(CREATE TABLE IF NOT EXISTS|CREATE TABLE)\\s+(`(\\w+)`|\\w+)\\s+\\(\\n([\\s\\S]*)\\n\\)(\\s+ENGINE=\\w+)?;?$", Pattern.CASE_INSENSITIVE);
 		Matcher currentTableInfoMatch = currentTableInfo.matcher(tableDefinition.trim());
 		String tableName;
 		String[] tableColumns;
 		List<String> currentTableColumns;
 		if (currentTableInfoMatch.find())
 		{
-			tableName = currentTableInfoMatch.group(currentTableInfoMatch.groupCount() - 1);
+			tableName = currentTableInfoMatch.group(currentTableInfoMatch.groupCount() - 2);
 			Statement statement = connection.createStatement();
 			try
 			{
@@ -78,7 +78,7 @@ public class DBTools
 				statement.executeUpdate(tableDefinition);
 				return;
 			}
-			tableColumns = currentTableInfoMatch.group(currentTableInfoMatch.groupCount()).split(",\n\\s?");
+			tableColumns = currentTableInfoMatch.group(currentTableInfoMatch.groupCount() - 1).split(",\n\\s?");
 			Pattern columnNameExtractorPattern = Pattern.compile("^(`(\\w+)`|\\w+) (.*)$", Pattern.CASE_INSENSITIVE);
 			Pattern columnConstraintCheckerPattern = Pattern.compile("^(CONSTRAINT\\s*(`(\\w*)`|\\w*)\\s+)?(PRIMARY KEY|UNIQUE KEY|UNIQUE INDEX|FOREIGN KEY)\\s+(.*)$", Pattern.CASE_INSENSITIVE);
 			Pattern columnKeyCheckerPattern = Pattern.compile("^(INDEX|KEY)\\s+(`(\\w*)`|(\\w*))?\\s?\\(((`\\w*`|\\w*)(,\\s*(`\\w*`|\\w*))*)\\)$", Pattern.CASE_INSENSITIVE);
