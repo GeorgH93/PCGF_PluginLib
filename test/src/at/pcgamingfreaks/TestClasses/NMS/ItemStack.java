@@ -27,6 +27,12 @@ public class ItemStack
 		this.itemStack = itemStack;
 	}
 
+	public ItemStack(NBTTagCompound nbtTagCompound)
+	{
+		//noinspection deprecation
+		this.itemStack = new org.bukkit.inventory.ItemStack(nbtTagCompound.getInt("id"), nbtTagCompound.getInt("Count"));
+	}
+
 	public static ItemStack createStack(NBTTagCompound nbtTagCompound)
 	{
 		//noinspection deprecation
