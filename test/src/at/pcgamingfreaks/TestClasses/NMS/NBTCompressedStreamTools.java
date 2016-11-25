@@ -35,4 +35,11 @@ public class NBTCompressedStreamTools
 		tagCompound.add("0", itemStack);
 		return tagCompound;
 	}
+
+	public static NBTTagCompound fakeFunction(InputStream inputStream)
+	{
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.set("size", 1);
+		return compound;
+	}
 }

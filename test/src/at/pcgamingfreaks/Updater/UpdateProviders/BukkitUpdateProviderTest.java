@@ -141,7 +141,7 @@ public class BukkitUpdateProviderTest
 	public void testGetLatestVersionAsString() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
 	{
 		BukkitUpdateProvider bukkitUpdateProvider = spy(getProvider());
-		doReturn("").when(bukkitUpdateProvider).getLatestName();
+		doReturn(null).when(bukkitUpdateProvider).getLatestName();
 		assertNull("The latest version should be null", bukkitUpdateProvider.getLatestVersionAsString());
 	}
 

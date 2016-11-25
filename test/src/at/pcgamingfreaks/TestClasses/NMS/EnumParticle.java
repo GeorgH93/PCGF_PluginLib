@@ -65,5 +65,9 @@ public enum EnumParticle
 	SWEEP_ATTACK,
 	DRAGON_BREATH,
 	END_ROD,
-	DAMAGE_INDICATOR
+	DAMAGE_INDICATOR,
+	TOTEM,
+	SPIT;
+
+	public int d() { return 0; }
 }

@@ -17,7 +17,10 @@
 
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.TestClasses.NMS.NBTCompressedStreamTools;
+import at.pcgamingfreaks.TestClasses.NMS.NBTTagCompound;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 import at.pcgamingfreaks.TestClasses.TestUtils;
@@ -31,6 +34,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertNotNull;
@@ -74,6 +78,20 @@ public class NBTItemStackSerializerTest
 		TestUtils.setUnaccessible(field, null, true);
 		field = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "METHOD_CREATE_STACK", null);
 		assertNull("Deserialized data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
+		Field field2 = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "CONSTRUCTOR_NMS_ITEM_STACK", NMSReflection.getConstructor(at.pcgamingfreaks.TestClasses.NMS.ItemStack.class, NBTTagCompound.class));
+		assertNull("Deserialized data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
+		TestUtils.setUnaccessible(field, null, true);
+		TestUtils.setUnaccessible(field2, null, true);
+		TestObjects.setBukkitVersion("1_11");
+		field = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "CONSTRUCTOR_NMS_ITEM_STACK", NMSReflection.getConstructor(at.pcgamingfreaks.TestClasses.NMS.ItemStack.class, NBTTagCompound.class));
+		field2 = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.MC_1_11);
+		deserializer = new NBTItemStackSerializer();
+		assertNotNull("Deserialized data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
+		TestUtils.setUnaccessible(field, null, true);
+		TestUtils.setUnaccessible(field2, null, true);
+		field = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "METHOD_NBT_COMP_STREAM_A2", NMSReflection.getMethod(NBTCompressedStreamTools.class, "fakeFunction", InputStream.class));
+		assertNotNull("Deserialized data should not be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
+		assertNull("Deserialized object data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 })[0]);
 		TestUtils.setUnaccessible(field, null, true);
 	}
 
