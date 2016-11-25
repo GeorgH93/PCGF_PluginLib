@@ -137,4 +137,15 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 		}
 		return ba;
 	}
+
+	@Override
+	public boolean checkIsMCVersionCompatible()
+	{
+		return isMCVersionCompatible();
+	}
+
+	public static boolean isMCVersionCompatible()
+	{
+		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_11_R1);
+	}
 }

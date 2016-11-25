@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -73,5 +75,16 @@ public class BukkitItemStackSerializer implements ItemStackSerializer
 			}
 		}
 		return ba;
+	}
+
+	@Override
+	public boolean checkIsMCVersionCompatible()
+	{
+		return isMCVersionCompatible();
+	}
+
+	public static boolean isMCVersionCompatible()
+	{
+		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7);
 	}
 }

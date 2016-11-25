@@ -36,4 +36,6 @@ public interface ItemStackSerializer
 	 * @return Serialized ItemsStacks as byte array. Null if serialization failed.
 	 */
 	byte[] serialize(ItemStack[] itemStacks);
+
+	boolean checkIsMCVersionCompatible();
 }

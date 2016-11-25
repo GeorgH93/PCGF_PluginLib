@@ -17,10 +17,15 @@
 
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
 
+import at.pcgamingfreaks.TestClasses.TestBukkitServer;
+import at.pcgamingfreaks.TestClasses.TestObjects;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -31,6 +36,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.*;
@@ -40,6 +46,13 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @SuppressWarnings("SpellCheckingInspection")
 public class BukkitItemStackSerializerTest
 {
+	@BeforeClass
+	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
+	{
+		Bukkit.setServer(new TestBukkitServer());
+		TestObjects.initNMSReflection();
+	}
+
 	@Test
 	public void testDeserialize() throws Exception
 	{
@@ -65,5 +78,17 @@ public class BukkitItemStackSerializerTest
 		assertNotNull("Serialized data should not be null", serializer.serialize(new ItemStack[] { new ItemStack(Material.APPLE, 10) }));
 		doThrow(new IOException()).when(mockedOutputStream).writeObject(any(at.pcgamingfreaks.TestClasses.NMS.ItemStack[].class));
 		assertNull("Serialized data should be null when an error occurs", serializer.serialize(new ItemStack[] { new ItemStack(Material.APPLE, 10) }));
+	}
+
+	@Test
+	public void testIsMCVersionCompatible()
+	{
+		assertTrue(BukkitItemStackSerializer.isMCVersionCompatible());
+	}
+
+	@Test
+	public void testCheckIsMCVersionCompatible()
+	{
+		assertTrue(new NBTItemStackSerializer().checkIsMCVersionCompatible());
 	}
 }

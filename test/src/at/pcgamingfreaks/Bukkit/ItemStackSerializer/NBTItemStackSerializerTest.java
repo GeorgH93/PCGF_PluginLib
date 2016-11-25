@@ -35,6 +35,7 @@ import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class })
@@ -103,5 +104,17 @@ public class NBTItemStackSerializerTest
 		field = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "METHOD_NBT_COMP_STEAM_A", null);
 		assertNull("Serialized data should be null", serializer.serialize(new ItemStack[] { new ItemStack(Material.DIRT, 45), null }));
 		TestUtils.setUnaccessible(field, null, true);
+	}
+
+	@Test
+	public void testIsMCVersionCompatible()
+	{
+		assertTrue(NBTItemStackSerializer.isMCVersionCompatible());
+	}
+
+	@Test
+	public void testCheckIsMCVersionCompatible()
+	{
+		assertTrue(new NBTItemStackSerializer().checkIsMCVersionCompatible());
 	}
 }
