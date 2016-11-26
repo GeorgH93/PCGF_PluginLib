@@ -17,8 +17,10 @@
 
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,10 +35,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.*;
@@ -51,6 +52,7 @@ public class BukkitItemStackSerializerTest
 	{
 		Bukkit.setServer(new TestBukkitServer());
 		TestObjects.initNMSReflection();
+		TestUtils.initReflection();
 	}
 
 	@Test
@@ -81,14 +83,21 @@ public class BukkitItemStackSerializerTest
 	}
 
 	@Test
-	public void testIsMCVersionCompatible()
+	public void testIsMCVersionCompatible() throws NoSuchFieldException, IllegalAccessException
 	{
-		assertTrue(BukkitItemStackSerializer.isMCVersionCompatible());
+		Field field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.MC_1_8);
+		assertTrue("It should be MCVersion compatible", BukkitItemStackSerializer.isMCVersionCompatible());
+		TestUtils.setUnaccessible(field, null, true);
 	}
 
 	@Test
-	public void testCheckIsMCVersionCompatible()
+	public void testCheckIsMCVersionCompatible() throws NoSuchFieldException, IllegalAccessException
 	{
-		assertTrue(new NBTItemStackSerializer().checkIsMCVersionCompatible());
+		Field field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.UNKNOWN);
+		assertFalse("It should not be MCVersion compatible", new BukkitItemStackSerializer().checkIsMCVersionCompatible());
+		TestUtils.setUnaccessible(field, null, true);
+		field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.MC_1_9);
+		assertTrue("It should be MCVersion compatible", new BukkitItemStackSerializer().checkIsMCVersionCompatible());
+		TestUtils.setUnaccessible(field, null, true);
 	}
 }

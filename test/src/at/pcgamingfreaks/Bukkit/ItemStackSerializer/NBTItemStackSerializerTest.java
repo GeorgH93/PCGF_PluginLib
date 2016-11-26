@@ -37,9 +37,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class })
@@ -125,14 +123,21 @@ public class NBTItemStackSerializerTest
 	}
 
 	@Test
-	public void testIsMCVersionCompatible()
+	public void testIsMCVersionCompatible() throws NoSuchFieldException, IllegalAccessException
 	{
-		assertTrue(NBTItemStackSerializer.isMCVersionCompatible());
+		Field field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.MC_1_8);
+		assertTrue("It should be MCVersion compatible", NBTItemStackSerializer.isMCVersionCompatible());
+		TestUtils.setUnaccessible(field, null, true);
 	}
 
 	@Test
-	public void testCheckIsMCVersionCompatible()
+	public void testCheckIsMCVersionCompatible() throws NoSuchFieldException, IllegalAccessException
 	{
-		assertTrue(new NBTItemStackSerializer().checkIsMCVersionCompatible());
+		Field field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.UNKNOWN);
+		assertFalse("It should not be MCVersion compatible", new NBTItemStackSerializer().checkIsMCVersionCompatible());
+		TestUtils.setUnaccessible(field, null, true);
+		field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.MC_1_8);
+		assertTrue("It should be MCVersion compatible", new NBTItemStackSerializer().checkIsMCVersionCompatible());
+		TestUtils.setUnaccessible(field, null, true);
 	}
 }
