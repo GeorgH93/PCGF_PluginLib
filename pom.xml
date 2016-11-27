@@ -129,14 +129,14 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.10.2-R0.1-SNAPSHOT</version>
+			<version>1.11-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- BungeeCord API -->
 		<dependency>
 			<groupId>net.md-5</groupId>
 			<artifactId>bungeecord-api</artifactId>
-			<version>1.10-SNAPSHOT</version>
+			<version>1.11-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- We use some of their classes for Validation and other things -->
@@ -269,6 +269,7 @@
 				<version>2.7.2</version>
 				<configuration>
 					<workingDirectory>${java.io.tmpdir}</workingDirectory>
+					<!--suppress MavenModelInspection -->
 					<argLine>${permgen.args}</argLine>
 				</configuration>
 			</plugin>

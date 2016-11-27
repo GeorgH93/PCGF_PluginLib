@@ -170,10 +170,22 @@ public class TestBukkitPlayer implements Player
 	public void playSound(Location location, String s, float v, float v1) {}
 
 	@Override
+	public void playSound(Location location, Sound sound, SoundCategory soundCategory, float v, float v1) {}
+
+	@Override
+	public void playSound(Location location, String s, SoundCategory soundCategory, float v, float v1) {}
+
+	@Override
 	public void stopSound(Sound sound) {}
 
 	@Override
 	public void stopSound(String s) {}
+
+	@Override
+	public void stopSound(Sound sound, SoundCategory soundCategory) {}
+
+	@Override
+	public void stopSound(String s, SoundCategory soundCategory) {}
 
 	@Override
 	public void playEffect(Location location, Effect effect, int i) {}
@@ -909,6 +921,12 @@ public class TestBukkitPlayer implements Player
 
 	@Override
 	public InventoryView openMerchant(Villager villager, boolean b)
+	{
+		return null;
+	}
+
+	@Override
+	public InventoryView openMerchant(Merchant merchant, boolean b)
 	{
 		return null;
 	}

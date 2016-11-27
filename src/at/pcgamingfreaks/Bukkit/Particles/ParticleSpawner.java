@@ -90,20 +90,14 @@ public abstract class ParticleSpawner
 	@SuppressWarnings("deprecation")
 	public void spawnParticle(Location location, Particle type, Material material, int materialData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
-		int[] data = null;
+		int[] data;
 		switch(type)
 		{
-			case ITEM_CRACK:
-				data = new int[] { material.getId(), materialData };
-				break;
-			case BLOCK_CRACK:
-				data = new int[] { material.getId() + 4096 * materialData };
-				break;
-			case BLOCK_DUST:
-				data = new int[] { material.getId() };
-				break;
-			case FALLING_DUST:
-				data = new int[] { material.getId() };
+			case ITEM_CRACK: data = new int[] { material.getId(), materialData }; break;
+			case BLOCK_CRACK: data = new int[] { material.getId() + 4096 * materialData }; break;
+			case BLOCK_DUST: data = new int[] { material.getId() }; break;
+			case FALLING_DUST: data = new int[] { material.getId() }; break;
+			default: data = new int[] {};
 		}
 		spawnParticle(location, type, visibleRange, count, offsetX, offsetY, offsetZ, speed, data);
 	}

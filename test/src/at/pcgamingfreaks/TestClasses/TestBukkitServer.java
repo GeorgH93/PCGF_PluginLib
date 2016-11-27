@@ -69,10 +69,7 @@ public class TestBukkitServer implements Server
 		}
 
 		@Override
-		public void registerInterface(Class<? extends PluginLoader> aClass) throws IllegalArgumentException
-		{
-
-		}
+		public void registerInterface(Class<? extends PluginLoader> aClass) throws IllegalArgumentException {}
 
 		@Override
 		public Plugin getPlugin(String s)
@@ -116,52 +113,28 @@ public class TestBukkitServer implements Server
 		}
 
 		@Override
-		public void disablePlugins()
-		{
-
-		}
+		public void disablePlugins() {}
 
 		@Override
-		public void clearPlugins()
-		{
-
-		}
+		public void clearPlugins() {}
 
 		@Override
-		public void callEvent(Event event) throws IllegalStateException
-		{
-
-		}
+		public void callEvent(Event event) throws IllegalStateException {}
 
 		@Override
-		public void registerEvents(Listener listener, Plugin plugin)
-		{
-
-		}
+		public void registerEvents(Listener listener, Plugin plugin) {}
 
 		@Override
-		public void registerEvent(Class<? extends Event> aClass, Listener listener, EventPriority eventPriority, EventExecutor eventExecutor, Plugin plugin)
-		{
-
-		}
+		public void registerEvent(Class<? extends Event> aClass, Listener listener, EventPriority eventPriority, EventExecutor eventExecutor, Plugin plugin) {}
 
 		@Override
-		public void registerEvent(Class<? extends Event> aClass, Listener listener, EventPriority eventPriority, EventExecutor eventExecutor, Plugin plugin, boolean b)
-		{
-
-		}
+		public void registerEvent(Class<? extends Event> aClass, Listener listener, EventPriority eventPriority, EventExecutor eventExecutor, Plugin plugin, boolean b) {}
 
 		@Override
-		public void enablePlugin(Plugin plugin)
-		{
-
-		}
+		public void enablePlugin(Plugin plugin) {}
 
 		@Override
-		public void disablePlugin(Plugin plugin)
-		{
-
-		}
+		public void disablePlugin(Plugin plugin) {}
 
 		@Override
 		public Permission getPermission(String s)
@@ -170,22 +143,13 @@ public class TestBukkitServer implements Server
 		}
 
 		@Override
-		public void addPermission(Permission permission)
-		{
-
-		}
+		public void addPermission(Permission permission) {}
 
 		@Override
-		public void removePermission(Permission permission)
-		{
-
-		}
+		public void removePermission(Permission permission) {}
 
 		@Override
-		public void removePermission(String s)
-		{
-
-		}
+		public void removePermission(String s) {}
 
 		@Override
 		public Set<Permission> getDefaultPermissions(boolean b)
@@ -194,22 +158,13 @@ public class TestBukkitServer implements Server
 		}
 
 		@Override
-		public void recalculatePermissionDefaults(Permission permission)
-		{
-
-		}
+		public void recalculatePermissionDefaults(Permission permission) {}
 
 		@Override
-		public void subscribeToPermission(String s, Permissible permissible)
-		{
-
-		}
+		public void subscribeToPermission(String s, Permissible permissible) {}
 
 		@Override
-		public void unsubscribeFromPermission(String s, Permissible permissible)
-		{
-
-		}
+		public void unsubscribeFromPermission(String s, Permissible permissible) {}
 
 		@Override
 		public Set<Permissible> getPermissionSubscriptions(String s)
@@ -218,16 +173,10 @@ public class TestBukkitServer implements Server
 		}
 
 		@Override
-		public void subscribeToDefaultPerms(boolean b, Permissible permissible)
-		{
-
-		}
+		public void subscribeToDefaultPerms(boolean b, Permissible permissible) {}
 
 		@Override
-		public void unsubscribeFromDefaultPerms(boolean b, Permissible permissible)
-		{
-
-		}
+		public void unsubscribeFromDefaultPerms(boolean b, Permissible permissible) {}
 
 		@Override
 		public Set<Permissible> getDefaultPermSubscriptions(boolean b)
@@ -353,10 +302,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void setWhitelist(boolean b)
-	{
-
-	}
+	public void setWhitelist(boolean b) {}
 
 	@Override
 	public Set<OfflinePlayer> getWhitelistedPlayers()
@@ -365,10 +311,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void reloadWhitelist()
-	{
-
-	}
+	public void reloadWhitelist() {}
 
 	@Override
 	public int broadcastMessage(String s)
@@ -494,10 +437,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void reload()
-	{
-
-	}
+	public void reload() {}
 
 	@Override
 	public Logger getLogger()
@@ -512,10 +452,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void savePlayers()
-	{
-
-	}
+	public void savePlayers() {}
 
 	@Override
 	public boolean dispatchCommand(CommandSender commandSender, String s) throws CommandException
@@ -524,10 +461,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void configureDbConfig(ServerConfig serverConfig)
-	{
-
-	}
+	public void configureDbConfig(ServerConfig serverConfig) {}
 
 	@Override
 	public boolean addRecipe(Recipe recipe)
@@ -548,16 +482,10 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void clearRecipes()
-	{
-
-	}
+	public void clearRecipes() {}
 
 	@Override
-	public void resetRecipes()
-	{
-
-	}
+	public void resetRecipes() {}
 
 	@Override
 	public Map<String, String[]> getCommandAliases()
@@ -572,10 +500,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void setSpawnRadius(int i)
-	{
-
-	}
+	public void setSpawnRadius(int i) {}
 
 	@Override
 	public boolean getOnlineMode()
@@ -596,16 +521,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public boolean useExactLoginLocation()
-	{
-		return false;
-	}
-
-	@Override
-	public void shutdown()
-	{
-
-	}
+	public void shutdown() {}
 
 	@Override
 	public int broadcast(String s, String s1)
@@ -632,16 +548,10 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void banIP(String s)
-	{
-
-	}
+	public void banIP(String s) {}
 
 	@Override
-	public void unbanIP(String s)
-	{
-
-	}
+	public void unbanIP(String s) {}
 
 	@Override
 	public Set<OfflinePlayer> getBannedPlayers()
@@ -668,10 +578,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void setDefaultGameMode(GameMode gameMode)
-	{
-
-	}
+	public void setDefaultGameMode(GameMode gameMode) {}
 
 	@Override
 	public ConsoleCommandSender getConsoleSender()
@@ -723,6 +630,12 @@ public class TestBukkitServer implements Server
 
 	@Override
 	public Inventory createInventory(InventoryHolder inventoryHolder, int i, String s) throws IllegalArgumentException
+	{
+		return null;
+	}
+
+	@Override
+	public Merchant createMerchant(String s)
 	{
 		return null;
 	}
@@ -806,10 +719,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void setIdleTimeout(int i)
-	{
-
-	}
+	public void setIdleTimeout(int i) {}
 
 	@Override
 	public int getIdleTimeout()
@@ -837,10 +747,7 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public void sendPluginMessage(Plugin plugin, String s, byte[] bytes)
-	{
-
-	}
+	public void sendPluginMessage(Plugin plugin, String s, byte[] bytes) {}
 
 	@Override
 	public Set<String> getListeningPluginChannels()
