@@ -58,7 +58,7 @@
 	</repositories>
 
 	<dependencies>
-		<!-- We have jUnit tests in this library -->
+		<!-- jUnit for unit tests -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
