@@ -17,14 +17,8 @@
 
 package at.pcgamingfreaks.Database;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -583,6 +577,31 @@ public class DBTools
 		else
 		{
 			throw new IllegalArgumentException("Invalid format of create query detected!");
+		}
+	}
+
+	/**
+	 * Creates an {@link PreparedStatement} form the {@link Connection}, fills it with the data given and executes it.
+	 * This method is not async! And the connection is not closed after it is done!
+	 *
+	 * @param connection The connection used for the query.
+	 * @param query The query to execute.
+	 * @param args The arguments used for the query.
+	 */
+	public static void runStatement(final Connection connection, final String query, final Object... args)
+	{
+		try(PreparedStatement preparedStatement = connection.prepareStatement(query))
+		{
+			for(int i = 0; args != null && i < args.length; i++)
+			{
+				preparedStatement.setObject(i + 1, args[i]);
+			}
+			preparedStatement.execute();
+		}
+		catch(SQLException e)
+		{
+			System.out.print("\nQuery: " + query + "\n" + "Data: " + Arrays.toString(args)); //TODO remove debug output
+			e.printStackTrace();
 		}
 	}
 }

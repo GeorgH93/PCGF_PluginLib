@@ -818,6 +818,9 @@ public class TestBukkitPlayer implements Player
 	public void sendTitle(String s, String s1) {}
 
 	@Override
+	public void sendTitle(String s, String s1, int i, int i1, int i2) {}
+
+	@Override
 	public void resetTitle() {}
 
 	@Override
