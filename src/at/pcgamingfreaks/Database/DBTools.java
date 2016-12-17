@@ -17,6 +17,9 @@
 
 package at.pcgamingfreaks.Database;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.sql.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -45,7 +48,7 @@ public class DBTools
 	 * @throws IllegalArgumentException If the create query is not in the right format
 	 * @throws SQLException If any handling with the database failed
 	 */
-	public static void updateDB(Connection connection, String tableDefinition) throws IllegalArgumentException, SQLException
+	public static void updateDB(@NotNull Connection connection, @NotNull String tableDefinition) throws IllegalArgumentException, SQLException
 	{
 		Pattern currentTableInfo = Pattern.compile("^\\w*(CREATE TABLE IF NOT EXISTS|CREATE TABLE)\\s+(`(\\w+)`|\\w+)\\s+\\(\\n([\\s\\S]*)\\n\\)(\\s+ENGINE=\\w+)?;?$", Pattern.CASE_INSENSITIVE);
 		Matcher currentTableInfoMatch = currentTableInfo.matcher(tableDefinition.trim());
@@ -588,7 +591,7 @@ public class DBTools
 	 * @param query The query to execute.
 	 * @param args The arguments used for the query.
 	 */
-	public static void runStatement(final Connection connection, final String query, final Object... args)
+	public static void runStatement(final @NotNull Connection connection, final @NotNull String query, final @Nullable Object... args)
 	{
 		try(PreparedStatement preparedStatement = connection.prepareStatement(query))
 		{

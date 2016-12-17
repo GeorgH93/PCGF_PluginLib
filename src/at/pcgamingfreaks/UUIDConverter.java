@@ -23,6 +23,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -83,7 +86,7 @@ public final class UUIDConverter
 	 * @param uuid The UUID of the player.
 	 * @return The name of the player.
 	 */
-	public static String getNameFromUUID(UUID uuid)
+	public static String getNameFromUUID(@NotNull UUID uuid)
 	{
 		return getNameFromUUID(uuid.toString());
 	}
@@ -95,7 +98,7 @@ public final class UUIDConverter
 	 * @param uuid The UUID of the player.
 	 * @return The name of the player.
 	 */
-	public static String getNameFromUUID(String uuid)
+	public static String getNameFromUUID(@NotNull String uuid)
 	{
 		NameChange[] names = getNamesFromUUID(uuid);
 		return names[names.length - 1].name;
@@ -108,7 +111,7 @@ public final class UUIDConverter
 	 * @param uuid The UUID of the player.
 	 * @return The names and name change dates of the player.
 	 */
-	public static NameChange[] getNamesFromUUID(UUID uuid)
+	public static NameChange[] getNamesFromUUID(@NotNull UUID uuid)
 	{
 		return getNamesFromUUID(uuid.toString());
 	}
@@ -120,7 +123,7 @@ public final class UUIDConverter
 	 * @param uuid The UUID of the player.
 	 * @return The names and name change dates of the player.
 	 */
-	public static NameChange[] getNamesFromUUID(String uuid)
+	public static NameChange[] getNamesFromUUID(@NotNull String uuid)
 	{
 		NameChange[] names = null;
 		try
@@ -151,7 +154,7 @@ public final class UUIDConverter
 	 * @param onlineMode True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @return The requested UUID (without separators).
 	 */
-	public static String getUUIDFromName(String name, boolean onlineMode)
+	public static String getUUIDFromName(@NotNull String name, boolean onlineMode)
 	{
 		return getUUIDFromName(name, onlineMode, false, false, null);
 	}
@@ -162,7 +165,7 @@ public final class UUIDConverter
 	 * @param lastKnownDate The last time you know that the player had this name.
 	 * @return The requested UUID (without separators).
 	 */
-	public static String getUUIDFromName(String name, boolean onlineMode, Date lastKnownDate)
+	public static String getUUIDFromName(@NotNull String name, boolean onlineMode, @Nullable Date lastKnownDate)
 	{
 		return getUUIDFromName(name, onlineMode, false, false, lastKnownDate);
 	}
@@ -174,7 +177,7 @@ public final class UUIDConverter
 	 *                       False will return the UUID without the '-' separator (format: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx).
 	 * @return The requested UUID.
 	 */
-	public static String getUUIDFromName(String name, boolean onlineMode, boolean withSeparators)
+	public static String getUUIDFromName(@NotNull String name, boolean onlineMode, boolean withSeparators)
 	{
 		return getUUIDFromName(name, onlineMode, withSeparators, false, null);
 	}
@@ -187,7 +190,7 @@ public final class UUIDConverter
 	 * @param lastKnownDate  The last time you know that the player had this name.
 	 * @return The requested UUID.
 	 */
-	public static String getUUIDFromName(String name, boolean onlineMode, boolean withSeparators, Date lastKnownDate)
+	public static String getUUIDFromName(@NotNull String name, boolean onlineMode, boolean withSeparators, @Nullable Date lastKnownDate)
 	{
 		return getUUIDFromName(name, onlineMode, withSeparators, false, lastKnownDate);
 	}
@@ -201,7 +204,7 @@ public final class UUIDConverter
 	 *                          False if null should be returned if the Mojang server doesn't return an UUID.
 	 * @return The requested UUID.
 	 */
-	public static String getUUIDFromName(String name, boolean onlineMode, boolean withSeparators, boolean offlineUUIDonFail)
+	public static String getUUIDFromName(@NotNull String name, boolean onlineMode, boolean withSeparators, boolean offlineUUIDonFail)
 	{
 		return getUUIDFromName(name, onlineMode, withSeparators, offlineUUIDonFail, null);
 	}
@@ -216,7 +219,7 @@ public final class UUIDConverter
 	 * @param lastKnownDate     The last time you know that the player had this name.
 	 * @return The requested UUID.
 	 */
-	public static String getUUIDFromName(String name, boolean onlineMode, boolean withSeparators, boolean offlineUUIDonFail, Date lastKnownDate)
+	public static String getUUIDFromName(@NotNull String name, boolean onlineMode, boolean withSeparators, boolean offlineUUIDonFail, @Nullable Date lastKnownDate)
 	{
 		String uuid;
 		if(onlineMode)
@@ -262,9 +265,9 @@ public final class UUIDConverter
 	 * @param onlineMode True if the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @return The requested UUID object.
 	 */
-	public static UUID getUUIDFromNameAsUUID(String name, boolean onlineMode)
+	public static UUID getUUIDFromNameAsUUID(@NotNull String name, boolean onlineMode)
 	{
-		return getUUIDFromNameAsUUID(name, onlineMode, false, null);
+		return getUUIDFromNameAsUUID(name, onlineMode, false);
 	}
 
 	/**
@@ -273,7 +276,7 @@ public final class UUIDConverter
 	 * @param lastKnownDate The last time you know that the player had this name.
 	 * @return The requested UUID object.
 	 */
-	public static UUID getUUIDFromNameAsUUID(String name, boolean onlineMode, Date lastKnownDate)
+	public static UUID getUUIDFromNameAsUUID(@NotNull String name, boolean onlineMode, @Nullable Date lastKnownDate)
 	{
 		return getUUIDFromNameAsUUID(name, onlineMode, false, lastKnownDate);
 	}
@@ -285,7 +288,7 @@ public final class UUIDConverter
 	 *                          False if null should be returned if the Mojang server doesn't return an UUID.
 	 * @return The requested UUID object.
 	 */
-	public static UUID getUUIDFromNameAsUUID(String name, boolean onlineMode, boolean offlineUUIDonFail)
+	public static UUID getUUIDFromNameAsUUID(@NotNull String name, boolean onlineMode, boolean offlineUUIDonFail)
 	{
 		return getUUIDFromNameAsUUID(name, onlineMode, offlineUUIDonFail, null);
 	}
@@ -298,7 +301,7 @@ public final class UUIDConverter
 	 * @param lastKnownDate     The last time you know that the player had this name.
 	 * @return The requested UUID object.
 	 */
-	public static UUID getUUIDFromNameAsUUID(String name, boolean onlineMode, boolean offlineUUIDonFail, Date lastKnownDate)
+	public static UUID getUUIDFromNameAsUUID(@NotNull String name, boolean onlineMode, boolean offlineUUIDonFail, @Nullable Date lastKnownDate)
 	{
 		UUID uuid = null;
 		if(onlineMode)
@@ -320,7 +323,7 @@ public final class UUIDConverter
 		return uuid;
 	}
 
-	private static String getOnlineUUID(String name, Date at)
+	private static String getOnlineUUID(@NotNull String name, @Nullable Date at)
 	{
 		if((at == null || at.after(new Date(new Date().getTime() - 1000L*24*3600* 30))) && UUID_CACHE.containsKey(name))
 		{
@@ -374,7 +377,7 @@ public final class UUIDConverter
 	//TODO: JavaDoc Exception handling, more parameters, fallback
 	private static final int BATCH_SIZE = 100; // Limit from Mojang
 
-	public static Map<String, String> getUUIDsFromNames(Collection<String> names, boolean onlineMode, boolean withSeparators)
+	public static Map<String, String> getUUIDsFromNames(@NotNull Collection<String> names, boolean onlineMode, boolean withSeparators)
 	{
 		Map<String, String> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		for(Map.Entry<String, UUID> entry : getUUIDsFromNamesAsUUIDs(names, onlineMode).entrySet())
@@ -384,7 +387,7 @@ public final class UUIDConverter
 		return result;
 	}
 
-	public static Map<String, UUID> getUUIDsFromNamesAsUUIDs(Collection<String> names, boolean onlineMode)
+	public static Map<String, UUID> getUUIDsFromNamesAsUUIDs(@NotNull Collection<String> names, boolean onlineMode)
 	{
 		if(onlineMode)
 		{
@@ -398,7 +401,7 @@ public final class UUIDConverter
 		return result;
 	}
 
-	public static Map<String, UUID> getUUIDsFromNamesAsUUIDs(Collection<String> names)
+	public static Map<String, UUID> getUUIDsFromNamesAsUUIDs(@NotNull Collection<String> names)
 	{
 		List<String> batch = new LinkedList<>();
 		Iterator<String> players = names.iterator();
