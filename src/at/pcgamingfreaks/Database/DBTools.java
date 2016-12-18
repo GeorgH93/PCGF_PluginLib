@@ -595,16 +595,29 @@ public class DBTools
 	{
 		try(PreparedStatement preparedStatement = connection.prepareStatement(query))
 		{
-			for(int i = 0; args != null && i < args.length; i++)
-			{
-				preparedStatement.setObject(i + 1, args[i]);
-			}
+			setParameters(preparedStatement, args);
 			preparedStatement.execute();
 		}
 		catch(SQLException e)
 		{
 			System.out.print("\nQuery: " + query + "\n" + "Data: " + Arrays.toString(args)); //TODO remove debug output
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Method to batch set parameters of a prepared statement.
+	 * Starts with 1.
+	 *
+	 * @param preparedStatement The prepared statement to set the parameters.
+	 * @param args The values to be set.
+	 * @throws SQLException If there was a problem.
+	 */
+	public static void setParameters(@NotNull PreparedStatement preparedStatement, @Nullable Object... args) throws SQLException
+	{
+		for(int i = 0; args != null && i < args.length; i++)
+		{
+			preparedStatement.setObject(i + 1, args[i]);
 		}
 	}
 }
