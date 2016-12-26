@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PluginLib extends JavaPlugin implements PluginLibrary
 {
-	private static final String URL = "https://ci.pcgamingfreaks.at/job/PluginLib/lastSuccessfulBuild/artifact/target/Bukkit_Bungee_PluginLib-1.0-SNAPSHOT.jar";
+	private static final String URL = "http://ci.pcgamingfreaks.at:8080/job/PluginLib/lastSuccessfulBuild/artifact/target/PluginLib-1.0-SNAPSHOT.jar";
 
 	private static PluginLibrary instance = null;
 
