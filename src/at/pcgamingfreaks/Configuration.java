@@ -30,6 +30,7 @@ public class Configuration
 {
 	protected final Logger logger; // The logger instance of the using plugin
 	protected YAML config = null;  // The yaml config instance of the configuration
+	protected String languageKey = "Language", languageUpdateKey = "LanguageUpdateMode"; // Allow to change the keys for the language and the language update mode setting
 
 	private final String configPath, inJarPrefix;
 	private final int expectedVersion, upgradeThreshold;
@@ -418,7 +419,7 @@ public class Configuration
 	 */
 	public String getLanguage()
 	{
-		return config.getString("Language", "en");
+		return config.getString(languageKey, "en");
 	}
 
 	/**
@@ -428,13 +429,14 @@ public class Configuration
 	 */
 	public LanguageUpdateMethod getLanguageUpdateMode()
 	{
+		String mode = config.getString(languageUpdateKey, "upgrade");
 		try
 		{
-			return LanguageUpdateMethod.valueOf(config.getString("LanguageUpdateMode", "upgrade").toUpperCase());
+			return LanguageUpdateMethod.valueOf(mode.toUpperCase());
 		}
-		catch(Exception ignored)
+		catch(IllegalArgumentException ignored)
 		{
-			logger.warning("Failed to read \"LanguageUpdateMode\" config option. Using default value (\"upgrade\").");
+			logger.warning("Failed to read \"" + languageUpdateKey + "\" config option (Invalid value: " + mode + "). Using default value (\"upgrade\").");
 		}
 		return LanguageUpdateMethod.UPGRADE;
 	}
