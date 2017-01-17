@@ -21,10 +21,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -797,5 +794,19 @@ public class DBToolsTest
 		doThrow(new SQLException()).when(mockedStatement).executeQuery(anyString());
 		DBTools.updateDB(mockedConnection, createStatement);
 		verify(mockedStatement, times(1)).executeUpdate(createStatement);
+	}
+
+	@Test
+	public void testRunStatement() throws SQLException
+	{
+		PreparedStatement mockedPreparedStatement = mock(PreparedStatement.class);
+		doReturn(mockedPreparedStatement).when(mockedConnection).prepareStatement(anyString());
+		DBTools.runStatement(mockedConnection, "SELECT * FROM table WHERE id = ? AND name = ?", 3, "TEST");
+		verify(mockedPreparedStatement, times(1)).execute();
+		DBTools.runStatement(mockedConnection, "SELECT * FROM table WHERE id = ? AND name = ?", (Object) null);
+		verify(mockedPreparedStatement, times(2)).execute();
+		doThrow(new SQLException()).when(mockedConnection).prepareStatement(anyString());
+		DBTools.runStatement(mockedConnection, "SELECT * FROM table WHERE id = ? AND name = ?", 3, "TEST");
+		verify(mockedPreparedStatement, times(2)).execute();
 	}
 }
