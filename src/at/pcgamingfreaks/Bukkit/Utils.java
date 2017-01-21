@@ -41,6 +41,13 @@ public class Utils extends at.pcgamingfreaks.Utils
 	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NMSReflection.getNMSClass("NBTTagCompound");
 	private static final Method AS_NMS_COPY_METHOD = NMSReflection.getMethod(CRAFT_ITEM_STACK_CLASS, "asNMSCopy", ItemStack.class);
 	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NMSReflection.getMethod(NMS_ITEM_STACK_CLASS, "save", NBT_TAG_COMPOUND_CLASS);
+	//region Reflection constants for the send packet method
+	private static final Class<?> ENTITY_PLAYER = NMSReflection.getNMSClass("EntityPlayer");
+	private static final Class<?> PACKET = NMSReflection.getNMSClass("Packet");
+	private static final Method SEND_PACKET = NMSReflection.getMethod(NMSReflection.getNMSClass("PlayerConnection"), "sendPacket", PACKET);
+	private static final Field PLAYER_CONNECTION = NMSReflection.getField(ENTITY_PLAYER, "playerConnection");
+	//endregion
+	private static final Field PLAYER_PING = NMSReflection.getField(ENTITY_PLAYER, "ping");
 
 	/**
 	 * Converts an item stack into a json string used for chat messages.
@@ -138,14 +145,6 @@ public class Utils extends at.pcgamingfreaks.Utils
 		return Double.POSITIVE_INFINITY;
 	}
 
-
-	//region Reflection constants for the send packet method
-	private static final Class<?> ENTITY_PLAYER = NMSReflection.getNMSClass("EntityPlayer");
-	private static final Class<?> PACKET = NMSReflection.getNMSClass("Packet");
-	private static final Method SEND_PACKET = NMSReflection.getMethod(NMSReflection.getNMSClass("PlayerConnection"), "sendPacket", PACKET);
-	private static final Field PLAYER_CONNECTION = NMSReflection.getField(ENTITY_PLAYER, "playerConnection");
-	//endregion
-
 	/**
 	 * Sends a nms packet to the client
 	 *
@@ -162,5 +161,30 @@ public class Utils extends at.pcgamingfreaks.Utils
 		{
 			SEND_PACKET.invoke(PLAYER_CONNECTION.get(handle), packet);
 		}
+	}
+
+	/**
+	 * Gets the ping for a player.
+	 *
+	 * @param player The player for witch the ping should be retrieved.
+	 * @return The ping of the player.
+	 */
+	public static int getPing(@NotNull Player player)
+	{
+		Validate.notNull(player, "The player for which the ping is requested must not be null!");
+		if(PLAYER_PING == null) return -1;
+		Object handle = NMSReflection.getHandle(player);
+		if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
+		{
+			try
+			{
+				return PLAYER_PING.getInt(handle);
+			}
+			catch(IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return -1;
 	}
 }
