@@ -146,6 +146,12 @@ public enum  MessageColor
 		this.isFormat = isFormat;
 	}
 
+	/**
+	 * Mass converts multiple Bukkit or BungeeCord ChatColor elements to the corresponding {@link MessageColor} elements.
+	 *
+	 * @param styles The style elements to be converted.
+	 * @return The converted {@link MessageColor} elements.
+	 */
 	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum... styles)
 	{
 		if(styles != null && styles.length > 0)
@@ -168,6 +174,12 @@ public enum  MessageColor
 		return null;
 	}
 
+	/**
+	 * Converts a Bukkit or BungeeCord ChatColor element to the corresponding {@link MessageColor} element.
+	 *
+	 * @param style The style element to be converted.
+	 * @return The converted {@link MessageColor} element.
+	 */
 	public static @Nullable MessageColor messageColorFromStyle(@NotNull Enum style)
 	{
 		return valueOf(style.name().toUpperCase());
@@ -181,6 +193,8 @@ public enum  MessageColor
 
 	/**
 	 * Checks if this code is a format code.
+	 *
+	 * @return True if the instance is a format code.
 	 */
 	public boolean isFormat()
 	{
@@ -189,6 +203,8 @@ public enum  MessageColor
 
 	/**
 	 * Checks if this code is a color code.
+	 *
+	 * @return True if the instance is a color code.
 	 */
 	public boolean isColor()
 	{

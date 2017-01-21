@@ -150,6 +150,8 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 *
 	 * @param player The player that should receive the packet
 	 * @param packet The packet that should be sent to the client
+	 * @throws IllegalAccessException If the access to the NMS player was denied by the Java language access control.
+	 * @throws InvocationTargetException If the NMS player method used for sending caused an exception.
 	 */
 	public static void sendPacket(@NotNull Player player, @NotNull Object packet) throws IllegalAccessException, InvocationTargetException
 	{

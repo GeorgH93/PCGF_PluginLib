@@ -59,6 +59,7 @@ public class Version
 
 	/**
 	 * @param version A string representing this version. Must be in the format: {@value #VERSION_STING_FORMAT}
+	 * @param ignoreOptionalTags Ignores tags like -alpha for the version comparison.
 	 * @throws InvalidVersionStringException The exception is thrown when the given string doesn't match the required format.
 	 */
 	public Version(@NotNull String version, boolean ignoreOptionalTags) throws InvalidVersionStringException

@@ -132,7 +132,7 @@ public abstract class ParticleSpawner
 
 	/**
 	 * It is recommended to use this function to get an effect spawner instance! It will give you the right object for your Minecraft version.
-	 * If it returns null your Minecraft version is not compatible! Like version < 1.7 and some modded servers.
+	 * If it returns null your Minecraft version is not compatible! Like version &lt; 1.7 and some modded servers.
 	 *
 	 * @return A for your Minecraft version compatible effect spawner. null if your Minecraft version is not supported.
 	 */

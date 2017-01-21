@@ -71,7 +71,7 @@ public class Language extends at.pcgamingfreaks.Language
 	}
 
 	/**
-	 * Gets the message from the language file and replaces bukkit color codes (&) to minecraft color codes (§)
+	 * Gets the message from the language file and replaces bukkit color codes (&amp;) to minecraft color codes (§)
 	 *
 	 * @param path the path to the searched language value
 	 * @return returns the language data

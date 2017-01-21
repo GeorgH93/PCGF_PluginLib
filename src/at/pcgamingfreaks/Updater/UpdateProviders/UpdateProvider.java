@@ -29,6 +29,7 @@ public interface UpdateProvider
 	/**
 	 * Make a connection to the provider an requests the file's details.
 	 *
+	 * @param logger The logger used for the outputs.
 	 * @return The update result from the query.
 	 */
 	UpdateResult query(Logger logger);

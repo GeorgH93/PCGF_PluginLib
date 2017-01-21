@@ -479,6 +479,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	 * Sets all the extras of the component.
 	 *
 	 * @param extras A list of MessageComponents used as extras for the component.
+	 * @return This message component instance.
 	 */
 	public T setExtras(List<T> extras)
 	{
