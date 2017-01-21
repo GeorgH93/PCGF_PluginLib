@@ -119,6 +119,12 @@
 			<artifactId>YAML-Parser</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<!-- The Plugin Metrics libs for Bukkit and BungeeCord -->
+		<dependency>
+			<groupId>at.pcgamingfreaks</groupId>
+			<artifactId>PluginMetricUberJar</artifactId>
+			<version>R8-SNAPSHOT</version>
+		</dependency>
 		<!-- The JSON-Parser we use. It is included in BungeeCord, but we also want to use it on Bukkit -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -183,26 +189,6 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			<!-- Adds libs to build -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<id>add-wsdl-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${basedir}/libs</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<!-- Shades some required libs into the final jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -220,6 +206,7 @@
 							<artifactSet>
 								<includes>
 									<include>at.pcgamingfreaks:YAML-Parser</include>
+									<include>at.pcgamingfreaks:PluginMetricUberJar</include>
 									<include>com.google.code.gson:gson</include> <!-- Not included in Bukkit, we need it (a lot)! -->
 									<include>org.apache.commons:commons-lang3</include> <!-- The old version is included in Bukkit, but not in BungeeCord, we just put in the new version for both -->
 									<include>com.zaxxer:HikariCP</include>
@@ -286,7 +273,6 @@
 					<aggregate>true</aggregate>
 					<instrumentation>
 						<excludes>
-							<exclude>org/mcstats/*</exclude>
 							<!-- The plugin for Bukkit/BungeeCord should be ignored in the coverage report -->
 							<exclude>at/pcgamingfreaks/PluginLib/**/*</exclude>
 						</excludes>
