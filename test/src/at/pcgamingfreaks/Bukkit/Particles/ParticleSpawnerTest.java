@@ -81,6 +81,9 @@ public class ParticleSpawnerTest
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, Material.ACTIVATOR_RAIL, 200.0);
 		verifyStatic(times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
+		spawnParticle.invoke(effect, mockedLocation, Particle.EXPLOSION, Material.TNT, 10.0);
+		verifyStatic(times(0));
+		Utils.sendPacket(any(Player.class), anyObject());
 		ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, Material.class, int.class, double.class).invoke(effect, mockedLocation, Particle.BLOCK_CRACK, Material.DIAMOND, 5, 100.0);
 		verifyStatic(times(0));
 		Utils.sendPacket(any(Player.class), anyObject());

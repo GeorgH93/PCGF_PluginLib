@@ -85,7 +85,7 @@ public class ConfigurationTest
 	private static void setConfigFile()
 	{
 		File targetFile = new File("config.yml");
-		if (targetFile.exists())
+		if(targetFile.exists())
 		{
 			//noinspection ResultOfMethodCallIgnored
 			targetFile.delete();
@@ -197,7 +197,11 @@ public class ConfigurationTest
 		assertEquals("The version should not be found", -1, invalidConfiguration.getVersion());
 		mockStatic(LanguageUpdateMethod.class);
 		given(LanguageUpdateMethod.valueOf(anyString())).willThrow(new IllegalArgumentException());
+		YAML mockedYAML = mock(YAML.class);
+		when(mockedYAML.getString(anyString(), anyString())).thenReturn("SOMETHING");
+		Field configYAML = TestUtils.setAccessible(Configuration.class, invalidConfiguration, "config", mockedYAML);
 		assertEquals("The language update mode should not be found", LanguageUpdateMethod.UPGRADE, invalidConfiguration.getLanguageUpdateMode());
+		TestUtils.setUnaccessible(configYAML, invalidConfiguration, false);
 	}
 
 	@Test
