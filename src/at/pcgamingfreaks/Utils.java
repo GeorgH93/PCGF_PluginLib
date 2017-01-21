@@ -64,7 +64,7 @@ public class Utils
 		Validate.notNull(logger, "The logger must not be null.");
 		if (System.getProperty("java.version").startsWith("1.7"))
 		{
-			logger.warning(ConsoleColor.RED + "You are still using Java 1.7. Java 1.7 ist EOL for over a year now! You should really update to Java 1.8!" + ConsoleColor.RESET);
+			logger.warning(ConsoleColor.RED + "You are still using Java 1.7. Java 1.7 is EOL for over a year now! You should really update to Java 1.8!" + ConsoleColor.RESET);
 			logger.info(ConsoleColor.YELLOW + "For now this plugin will still work fine with Java 1.7 but no warranty that this won't change in the future." + ConsoleColor.RESET);
 			blockThread(pauseTime);
 		}
