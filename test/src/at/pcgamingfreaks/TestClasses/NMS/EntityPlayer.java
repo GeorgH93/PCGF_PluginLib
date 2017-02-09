@@ -21,4 +21,8 @@ package at.pcgamingfreaks.TestClasses.NMS;
 public class EntityPlayer
 {
 	public PlayerConnection playerConnection = new PlayerConnection();
+
+	public int ping = 123;
+
+	private int failPing = 10;
 }

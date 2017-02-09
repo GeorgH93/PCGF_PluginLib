@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.TestClasses.NMS.EntityPlayer;
 import at.pcgamingfreaks.TestClasses.NMS.IChatBaseComponent;
 import at.pcgamingfreaks.TestClasses.NMS.PacketPlayOutChat;
 import at.pcgamingfreaks.TestClasses.NMS.PlayerConnection;
@@ -149,5 +150,21 @@ public class UtilsTest
 		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
 		//verify(player, times(++sendPacketCalls)).getHandle();
 		player.isEntityPlayerHandle = true;
+	}
+
+	@Test
+	public void testGetPing() throws NoSuchFieldException, IllegalAccessException
+	{
+		TestBukkitPlayer player = spy(new TestBukkitPlayer());
+		assertEquals("The Ping should match", 123, Utils.getPing(player));
+		Field playerPingField = TestUtils.setAccessible(Utils.class, null, "PLAYER_PING", EntityPlayer.class.getDeclaredField("failPing"));
+		assertEquals("The Ping value should not be able to be retrieved", -1, Utils.getPing(player));
+		doReturn(null).when(player).getHandle();
+		assertEquals("The Ping field should not be found", -1, Utils.getPing(player));
+		doReturn("Test").when(player).getHandle();
+		assertEquals("The Ping field should not be found", -1, Utils.getPing(player));
+		playerPingField.set(null, null);
+		assertEquals("The Ping field should not be found", -1, Utils.getPing(player));
+		TestUtils.setUnaccessible(playerPingField, null, true);
 	}
 }

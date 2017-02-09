@@ -59,9 +59,9 @@ public class UUIDConverterTest
 	private static final UUID TEST_USER_UUID_AS_UUID = UUID.fromString(TEST_USER_UUID_SEPARATORS), TEST_USER_OFFLINE_UUID_AS_UUID = UUID.fromString(TEST_USER_OFFLINE_UUID_SEPARATORS);
 
 	@SuppressWarnings("SpellCheckingInspection")
-	private static final String TEST_USER2_NAME_NEW = "Watchdog", TEST_USER2_NAME_OG = "rzrct_";
+	private static final String TEST_USER2_NAME_NEW = "Watchdog", TEST_USER2_NAME_OG = "ReedtheRed";
 	@SuppressWarnings("SpellCheckingInspection")
-	private static final String TEST_USER2_UUID = "4ca6d49d8d80429fa7a4bcce9f9e4854", TEST_USER2_UUID_SEPARATORS = "4ca6d49d-8d80-429f-a7a4-bcce9f9e4854";
+	private static final String TEST_USER2_UUID = "8f54523078d5474bbbea693964467ef0", TEST_USER2_UUID_SEPARATORS = "8f545230-78d5-474b-bbea-693964467ef0";
 	private static final UUID TEST_USER2_UUID_AS_UUID = UUID.fromString(TEST_USER2_UUID_SEPARATORS);
 	private static final Date TEST_USER2_LAST_SEEN = new Date(1423214002000L), TODAY = new Date(1456071840000L);
 
@@ -292,11 +292,11 @@ public class UUIDConverterTest
 		UUIDConverter.NameChange[] nameChanges = UUIDConverter.getNamesFromUUID(TEST_USER2_UUID);
 		assertTrue("There should be at least 2 name changes (2 are already known)", nameChanges.length >= 2);
 		assertEquals("The first name of the user should match", TEST_USER2_NAME_OG, nameChanges[0].name);
-		assertEquals("The username after the first name change should match", TEST_USER2_NAME_NEW, nameChanges[1].name);
+		assertEquals("The username after the fifth name change should match", TEST_USER2_NAME_NEW, nameChanges[5].name);
 		nameChanges = UUIDConverter.getNamesFromUUID(TEST_USER2_UUID_AS_UUID);
 		assertTrue("There should be at least 2 name changes (2 are already known)", nameChanges.length >= 2);
 		assertEquals("The first name of the user should match", TEST_USER2_NAME_OG, nameChanges[0].name);
-		assertEquals("The username after the first name change should match", TEST_USER2_NAME_NEW, nameChanges[1].name);
+		assertEquals("The username after the fifth name change should match", TEST_USER2_NAME_NEW, nameChanges[5].name);
 		assertNull("The invalid UUID should return null", UUIDConverter.getNamesFromUUID("123456"));
 		URL mockedURL = PowerMockito.mock(URL.class);
 		whenNew(URL.class).withAnyArguments().thenReturn(mockedURL);
