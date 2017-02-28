@@ -17,7 +17,7 @@
 	</issueManagement>
 	<ciManagement>
 		<system>jenkins</system>
-		<url>http://ci.pcgamingfreaks.at/job/PluginLib/</url>
+		<url>https://ci.pcgamingfreaks.at/job/PluginLib/</url>
 	</ciManagement>
 
 	<name>PCGF MC PluginLib</name>
@@ -44,7 +44,7 @@
 	<repositories>
 		<repository>
 			<id>pcgf-repo</id>
-			<url>http://repo.pcgamingfreaks.at/repository/everything/</url>
+			<url>https://repo.pcgamingfreaks.at/repository/everything/</url>
 		</repository>
 		<repository>
 			<id>spigot-nexus</id>
@@ -303,11 +303,11 @@
 	<distributionManagement>
 		<repository>
 			<id>releases</id>
-			<url>http://repo.pcgamingfreaks.at/repository/releases/</url>
+			<url>https://repo.pcgamingfreaks.at/repository/releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
-			<url>http://repo.pcgamingfreaks.at/repository/snapshots/</url>
+			<url>https://repo.pcgamingfreaks.at/repository/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 

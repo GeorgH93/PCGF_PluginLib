@@ -32,9 +32,9 @@ import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PluginLib extends Plugin implements PluginLibrary
+public final class PluginLib extends Plugin implements PluginLibrary
 {
-	private static final String URL = "http://ci.pcgamingfreaks.at:8080/job/PluginLib/lastSuccessfulBuild/artifact/target/PluginLib-1.0-SNAPSHOT.jar";
+	private static final String URL = "https://ci.pcgamingfreaks.at/job/PluginLib/lastSuccessfulBuild/artifact/target/PluginLib-1.0-SNAPSHOT.jar";
 
 	private static PluginLibrary instance = null;
 
