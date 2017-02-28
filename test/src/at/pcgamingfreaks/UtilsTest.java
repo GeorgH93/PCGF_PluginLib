@@ -146,7 +146,6 @@ public class UtilsTest
 		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 1.0));
 		assertFalse(Utils.inRange(PLAYER1, PLAYER2, 1.0));
 		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 0));
-		
 		assertTrue(Utils.inRange(PLAYER1, PLAYER2, -1.0, "bypass.rangelimit"));
 		assertTrue(Utils.inRange(PLAYER1, PLAYER4, -1.0, "bypass.rangelimit"));
 		assertTrue(Utils.inRange(PLAYER1, PLAYER4, 1.0, "bypass.rangelimit"));
