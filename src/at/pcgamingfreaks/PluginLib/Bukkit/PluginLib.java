@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks.PluginLib.Bukkit;
 
-import at.pcgamingfreaks.Bukkit.Configuration;
 import at.pcgamingfreaks.Bukkit.Updater;
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
@@ -31,13 +30,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PluginLib extends JavaPlugin implements PluginLibrary
+public final class PluginLib extends JavaPlugin implements PluginLibrary
 {
-	private static final String URL = "http://ci.pcgamingfreaks.at:8080/job/PluginLib/lastSuccessfulBuild/artifact/target/PluginLib-1.0-SNAPSHOT.jar";
+	private static final String URL = "https://ci.pcgamingfreaks.at/job/PluginLib/lastSuccessfulBuild/artifact/target/PluginLib-1.0-SNAPSHOT.jar";
 
 	private static PluginLibrary instance = null;
 
-	private Configuration config;
+	private Config config;
 	private Version version;
 	private DatabaseConnectionPoolBase databaseConnectionPool;
 
@@ -45,7 +44,7 @@ public class PluginLib extends JavaPlugin implements PluginLibrary
 	public void onEnable()
 	{
 		this.version = new Version(this.getDescription().getVersion());
-		this.config = new Configuration(this, 1);
+		this.config = new Config(this, 1);
 		if(!this.config.isLoaded())
 		{
 			this.getLogger().warning(ConsoleColor.RED + "Failed to load config! Can't start up!" + ConsoleColor.RESET);
@@ -60,6 +59,9 @@ public class PluginLib extends JavaPlugin implements PluginLibrary
 			Updater updater = new Updater(this, this.getFile(), true, new AlwaysUpdateProvider(URL));
 			updater.update();
 		}
+
+		new ItemNameResolver(this);
+
 		instance = this;
 		this.getLogger().info(StringUtils.getPluginEnabledMessage(this.getDescription().getFullName()));
 	}
@@ -94,5 +96,15 @@ public class PluginLib extends JavaPlugin implements PluginLibrary
 	public @Nullable DatabaseConnectionPool getDatabaseConnectionPool()
 	{
 		return databaseConnectionPool;
+	}
+
+	public @NotNull ItemNameResolver getItemNameResolver()
+	{
+		return ItemNameResolver.getInstance();
+	}
+
+	Config getConfiguration()
+	{
+		return config;
 	}
 }

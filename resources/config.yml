@@ -1,9 +1,9 @@
 # Settings for the shared database pool.
-# The shared connectin ppol can help a lot if your database server is running out of connections and you are using many plugins that support this function.
-# It also prevents you from entering you database informations into many plugins over and over again.
+# The shared connection pool can help a lot if your database server is running out of connections and you are using many plugins that support this function.
+# It also prevents you from entering you database information's into many plugins over and over again.
 Database:
   # Database type. MySQL, SQLite or Off (Disables shared database pool)
-  # Yes you can use a single SQLite file for all supporting plugins with this option. But it probably has a negative inpact on performance, so you should probably consider using MySQL.
+  # Yes you can use a single SQLite file for all supporting plugins with this option. But it probably has a negative impact on performance, so you should probably consider using MySQL.
   Type: Off
   SQL:
     Host: localhost:3306
@@ -11,8 +11,24 @@ Database:
     User: minecraft
     Password: minecraft
     #The max amount of connections to the database the connection pool will open.
-    # To high numbers may cause your SQL server to run out of connections, to low numbers may cause an negative inpact on performance when a lot of plugins are using the pool.
+    # To high numbers may cause your SQL server to run out of connections, to low numbers may cause an negative impact on performance when a lot of plugins are using the pool.
     MaxConnections: 4
+
+# These settings will be used for the library's translation providers.
+Language:
+  Language: en
+  # The update mode for the item translations.
+  # Change this depending on your setup. Here is an overview of the different options:
+  #   Update:  Will only install the most important updates. All your changes will stay.
+  #   Upgrade: Will create a new translation file with the default data and copy over your changes. This mode will update everything and also update comments. All your changes will be preserved.
+  #   Overwrite: Will replace the translation file with a new copy from the plugin. All changes will be lost!
+  UpdateMode: Upgrade
+  # The update mode for the item translations. Make sure to change this if you make changes to the items_[lang].yml file!!!
+  # Change this depending on your setup. Here is an overview of the different options:
+  #   Update:  This mode will only add the most important changes. This will not add new item names!!! All your changes will stay.
+  #   Upgrade: This mode will update everything. Only use this option if you have not changed the keys (replaced the id with the name, eg: 0 -> AIR)! All changes will be preserved.
+  #   Overwrite: This mode will replace the translation file with a new copy from the plugin. All changes will be lost!
+  ItemUpdateMode: Overwrite
 
 Misc:
   # You may want to disable automatic updates if you have plugins that require a certain version of this library.
