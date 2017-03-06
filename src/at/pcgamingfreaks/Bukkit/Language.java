@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2014-2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 */
 	public Language(JavaPlugin plugin, int version, String path, String prefix)
 	{
-		this(plugin, version, -1, path, prefix);
+		this(plugin, version, -1, path, prefix, prefix);
 	}
 
 	/**
@@ -75,7 +75,20 @@ public class Language extends at.pcgamingfreaks.Language
 	 */
 	public Language(JavaPlugin plugin, int version, int upgradeThreshold, String path, String prefix)
 	{
-		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, "");
+		this(plugin, version, upgradeThreshold, path, prefix, prefix);
+	}
+
+	/**
+	 * @param plugin           The instance of the plugin
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 * @param path             The sub-folder for the language file
+	 * @param prefix           The prefix for the language file
+	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bukkit_)
+	 */
+	public Language(JavaPlugin plugin, int version, int upgradeThreshold, String path, String prefix, String inJarPrefix)
+	{
+		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, inJarPrefix);
 		this.plugin = plugin;
 	}
 

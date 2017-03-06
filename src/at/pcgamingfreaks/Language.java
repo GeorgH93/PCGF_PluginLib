@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2014-2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -186,7 +186,7 @@ public class Language
 	private void loadLang()
 	{
 		langFile = new File(baseDir, prefix + language + ".yml");
-		if(!langFile.exists())
+		if(!langFile.exists() || langFile.length() == 0)
 		{
 			extractLangFile();
 		}

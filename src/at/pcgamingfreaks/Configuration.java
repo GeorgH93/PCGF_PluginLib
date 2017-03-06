@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2014-2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -189,7 +189,7 @@ public class Configuration
 	{
 		try
 		{
-			if(!configFile.exists())
+			if(!configFile.exists() || configFile.length() == 0)
 			{
 				logger.info("No config found. Create new one ...");
 				if(!configBaseDir.exists() && !configBaseDir.mkdir())
