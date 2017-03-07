@@ -3,4 +3,4 @@ author: ${author}
 website: ${website}
 description: ${description}
 main: ${project.groupId}.PluginLib.Bukkit.PluginLib
-version: ${project.version}
+version: ${project.version}-T${timestamp}

@@ -39,6 +39,8 @@
 		<pluginName>PCGF_PluginLib</pluginName>
 		<author>GeorgH93</author>
 		<website>TODO</website>
+		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+		<timestamp>${maven.build.timestamp}</timestamp>
 	</properties>
 
 	<repositories>
