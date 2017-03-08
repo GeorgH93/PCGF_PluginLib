@@ -25,11 +25,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Version
 {
 	public static final String VERSION_STING_FORMAT = "[vV]?\\d+(\\.\\d+)*(-[^-\\s]+)*";
-	private static final int SAME = 0, OLDER = -1, NEWER = 1;
+	private static final byte SAME = 0, OLDER = -1, NEWER = 1;
 	private static final String PRE_RELEASE_TAG_FORMAT = "\\w+\\d";
 	private static final String[] PRE_RELEASE_TAGS = new String[] { "alpha", "beta", "pre", "rc", "snapshot"};
 	private static final Map<String, Integer> PRE_RELEASE_TAG_VALUE_RESOLUTION = new ConcurrentHashMap<>();
@@ -47,6 +49,7 @@ public class Version
 	private final String[] optionalTags;
 	private final int[] version;
 	private final int hashCode;
+	private final long timestamp, buildNumber;
 
 	/**
 	 * @param version A string representing this version. Must be in the format: {@value #VERSION_STING_FORMAT}
@@ -109,7 +112,29 @@ public class Version
 				}
 			}
 		}
+
+		timestamp = getBuildParameter(this.optionalTags, "(t|ts|time(stamp)?)");
+		//noinspection SpellCheckingInspection
+		buildNumber = getBuildParameter(this.optionalTags, "(b|build(number)?)");
 		this.hashCode = Arrays.hashCode(this.version);
+	}
+
+	private static long getBuildParameter(@NotNull String[] tags, @NotNull String parameter)
+	{
+		Pattern searchPattern = Pattern.compile(parameter + "[=:_]?(?<number>\\d+)", Pattern.CASE_INSENSITIVE);
+		for(String tag : tags)
+		{
+			Matcher matcher = searchPattern.matcher(tag);
+			if(matcher.matches())
+			{
+				try
+				{
+					return Long.parseLong(matcher.group("number"));
+				}
+				catch(NumberFormatException ignored) {}
+			}
+		}
+		return -1;
 	}
 
 	private static List<String> getAll(String[] source, String[] searchForArray)
@@ -154,19 +179,38 @@ public class Version
 				return NEWER;
 			}
 		}
-		// If both version are the same for the length of the shorter version the version that has more digits probably is the newer one.
-		if(this.version.length == otherVersion.version.length) return 0;
-		boolean otherLonger = otherVersion.version.length > this.version.length;
-		int[] longer = (otherLonger) ? otherVersion.version : this.version;
-		byte result = SAME;
-		for(int i = c; i < longer.length; i++)
+		// If both version are the same for the length, the version that has more digits (>0) probably is the newer one.
+		if(this.version.length != otherVersion.version.length)
 		{
-			if(longer[i] > 0)
+			boolean otherLonger = otherVersion.version.length > this.version.length;
+			int[] longer = (otherLonger) ? otherVersion.version : this.version;
+			for(int i = c; i < longer.length; i++)
 			{
-				result = (byte) ((otherLonger) ? OLDER : NEWER);
+				if(longer[i] > 0)
+				{
+					return ((otherLonger) ? OLDER : NEWER);
+				}
 			}
 		}
-		return result;
+		// If both versions have the same length we still can compare the build timestamp (if available)
+		if(this.timestamp > otherVersion.timestamp)
+		{
+			return NEWER;
+		}
+		else if(this.timestamp < otherVersion.timestamp)
+		{
+			return OLDER;
+		}
+		// If both versions still can't be distinguished we can use the build number (if available)
+		if(this.buildNumber > otherVersion.buildNumber)
+		{
+			return NEWER;
+		}
+		else if(this.buildNumber < otherVersion.buildNumber)
+		{
+			return OLDER;
+		}
+		return SAME;
 	}
 
 	//region comparision functions
@@ -247,7 +291,7 @@ public class Version
 	//endregion
 
 	/**
-	 * This exception is thrown when the string representing an version is invalid.
+	 * This exception is thrown when the string representing a version is invalid.
 	 */
 	public static class InvalidVersionStringException extends IllegalArgumentException
 	{

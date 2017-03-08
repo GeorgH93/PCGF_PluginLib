@@ -25,10 +25,14 @@ public class VersionTest
 {
 	private static final String VERSION_1 = "1", VERSION_1_0 = "1.0", VERSION_V1_0 = "v1.0", VERSION_V2_0 = "v2.0", VERSION_2_0_SNAPSHOT = "2.0-SNAPSHOT";
 	private static final String VERSION_1_2_SNAPSHOT = "1.2-SNAPSHOT", VERSION_1_2 = "1.2", VERSION_1_2_BETA = "1.2-Beta", VERSION_1_2_BETA2 = "1.2-BETA2";
+	private static final String VERSION_1_2_SNAPSHOT_BUILD_5 = "1.2-SNAPSHOT-Build5", VERSION_1_2_SNAPSHOT_BUILD_8 = "1.2-SNAPSHOT-Build=8";
+	private static final String VERSION_1_2_SNAPSHOT_TIME_201703081212 = "1.2-SNAPSHOT-T201703081212", VERSION_1_2_SNAPSHOT_TIME_201603081212 = "1.2-SNAPSHOT-Timestamp=201603081212";
 	private static final Version version_1 = new Version(VERSION_1), version_1_0 = new Version(VERSION_1_0), version_v1_0 = new Version(VERSION_V1_0), version_1_2_it = new Version(VERSION_1_2, true);
 	private static final Version version_1_2_snapshot = new Version(VERSION_1_2_SNAPSHOT), version_1_2 = new Version(VERSION_1_2), version_1_2_snapshot_it = new Version(VERSION_1_2_SNAPSHOT, true);
 	private static final Version version_1_2_beta = new Version(VERSION_1_2_BETA), version_1_2_beta2 = new Version(VERSION_1_2_BETA2), version_v2_0 = new Version(VERSION_V2_0);
 	private static final Version version_2_0_snapshot = new Version(VERSION_2_0_SNAPSHOT);
+	private static final Version version_1_2_snapshot_b_5 = new Version(VERSION_1_2_SNAPSHOT_BUILD_5), version_1_2_snapshot_b_8 = new Version(VERSION_1_2_SNAPSHOT_BUILD_8);
+	private static final Version version_1_2_snapshot_t_201703081212 = new Version(VERSION_1_2_SNAPSHOT_TIME_201703081212), version_1_2_snapshot_t_201603081212 = new Version(VERSION_1_2_SNAPSHOT_TIME_201603081212);
 
 	@Test
 	public void testIsValidVersionString() throws Exception
@@ -52,6 +56,7 @@ public class VersionTest
 	@Test(expected = Version.InvalidVersionStringException.class)
 	public void testNullVersion()
 	{
+		//noinspection ConstantConditions
 		new Version(null);
 	}
 
@@ -109,6 +114,10 @@ public class VersionTest
 		assertTrue("The version should be newer", version_1_2_beta2.newerThan(version_1_2_beta));
 		assertTrue("The version should be newer", version_2_0_snapshot.newerThan(version_1_2));
 		assertTrue("The version should be newer", version_v2_0.newerThan(version_2_0_snapshot));
+		assertTrue("The version should be newer", version_1_2_snapshot_b_5.newerThan(version_1_2_snapshot));
+		assertTrue("The version should be newer", version_1_2_snapshot_b_8.newerThan(version_1_2_snapshot_b_5));
+		assertTrue("The version should be newer", version_1_2_snapshot_t_201703081212.newerThan(version_1_2_snapshot));
+		assertTrue("The version should be newer", version_1_2_snapshot_t_201703081212.newerThan(version_1_2_snapshot_t_201603081212));
 		assertFalse("The version should not be newer", version_1.newerThan(version_1));
 		assertFalse("The version should not be newer", version_1.newerThan(version_1_0));
 		assertFalse("The version should not be newer", version_1.newerThan(version_v1_0));
@@ -170,6 +179,10 @@ public class VersionTest
 		assertFalse("The version should not be newer", version_1_2_beta2.newerThan(version_1_2_beta2));
 		assertFalse("The version should not be newer", version_1_2_beta2.newerThan(version_v2_0));
 		assertFalse("The version should not be newer", version_2_0_snapshot.newerThan(version_v2_0));
+		assertFalse("The version should not be newer", version_1_2_snapshot.newerThan(version_1_2_snapshot_b_5));
+		assertFalse("The version should not be newer", version_1_2_snapshot_b_5.newerThan(version_1_2_snapshot_b_8));
+		assertFalse("The version should not be newer", version_1_2_snapshot.newerThan(version_1_2_snapshot_t_201703081212));
+		assertFalse("The version should not be newer", version_1_2_snapshot_t_201603081212.newerThan(version_1_2_snapshot_t_201703081212));
 	}
 
 	@Test
