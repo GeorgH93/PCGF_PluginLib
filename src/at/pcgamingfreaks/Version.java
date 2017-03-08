@@ -32,7 +32,7 @@ public class Version
 {
 	public static final String VERSION_STING_FORMAT = "[vV]?\\d+(\\.\\d+)*(-[^-\\s]+)*";
 	private static final byte SAME = 0, OLDER = -1, NEWER = 1;
-	private static final String PRE_RELEASE_TAG_FORMAT = "\\w+\\d";
+	private static final String VERSION_SPLIT_REGEX = "\\.", TAG_SPLIT_REGEX = "-", UNIMPORTANT_VERSION_PARTS_REGEX = "(\\.0)*$", PRE_RELEASE_TAG_FORMAT = "\\w+\\d";
 	private static final String[] PRE_RELEASE_TAGS = new String[] { "alpha", "beta", "pre", "rc", "snapshot"};
 	private static final Map<String, Integer> PRE_RELEASE_TAG_VALUE_RESOLUTION = new ConcurrentHashMap<>();
 
@@ -72,11 +72,10 @@ public class Version
 		if(version.startsWith("v") || version.startsWith("V")) version = version.substring(1);
 		this.rawVersion = version;
 		// Prepare data
-		String[] comps = version.split("-", 2);
-		version = comps[0].replaceAll("(\\.0)*$", "");
-		String options = comps.length > 1 ? comps[1] : "";
-		this.optionalTags = options.split("-");
-		comps = version.split("\\.");
+		String[] comps = version.split(TAG_SPLIT_REGEX, 2); // Split the version string and the tags
+		version = comps[0].replaceAll(UNIMPORTANT_VERSION_PARTS_REGEX, ""); // Remove all unimportant parts from the version
+		this.optionalTags = (comps.length > 1 ? comps[1] : "").split(TAG_SPLIT_REGEX); // Split the tags
+		comps = version.split(VERSION_SPLIT_REGEX);
 		List<String> tags = (!ignoreOptionalTags) ? getAll(this.optionalTags, PRE_RELEASE_TAGS) : null;
 		boolean notAFinalVersion = !ignoreOptionalTags && tags.size() > 0;
 		this.version = new int[notAFinalVersion ? comps.length + 1 : comps.length];
