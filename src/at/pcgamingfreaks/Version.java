@@ -192,22 +192,28 @@ public class Version
 			}
 		}
 		// If both versions have the same length we still can compare the build timestamp (if available)
-		if(this.timestamp > otherVersion.timestamp)
+		if(this.timestamp > 0 && otherVersion.timestamp > 0)
 		{
-			return NEWER;
-		}
-		else if(this.timestamp < otherVersion.timestamp)
-		{
-			return OLDER;
+			if(this.timestamp > otherVersion.timestamp)
+			{
+				return NEWER;
+			}
+			else if(this.timestamp < otherVersion.timestamp)
+			{
+				return OLDER;
+			}
 		}
 		// If both versions still can't be distinguished we can use the build number (if available)
-		if(this.buildNumber > otherVersion.buildNumber)
+		if(this.buildNumber > 0 && otherVersion.buildNumber > 0)
 		{
-			return NEWER;
-		}
-		else if(this.buildNumber < otherVersion.buildNumber)
-		{
-			return OLDER;
+			if(this.buildNumber > otherVersion.buildNumber)
+			{
+				return NEWER;
+			}
+			else if(this.buildNumber < otherVersion.buildNumber)
+			{
+				return OLDER;
+			}
 		}
 		return SAME;
 	}

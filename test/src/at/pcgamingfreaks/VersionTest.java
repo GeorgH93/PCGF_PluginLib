@@ -114,9 +114,7 @@ public class VersionTest
 		assertTrue("The version should be newer", version_1_2_beta2.newerThan(version_1_2_beta));
 		assertTrue("The version should be newer", version_2_0_snapshot.newerThan(version_1_2));
 		assertTrue("The version should be newer", version_v2_0.newerThan(version_2_0_snapshot));
-		assertTrue("The version should be newer", version_1_2_snapshot_b_5.newerThan(version_1_2_snapshot));
 		assertTrue("The version should be newer", version_1_2_snapshot_b_8.newerThan(version_1_2_snapshot_b_5));
-		assertTrue("The version should be newer", version_1_2_snapshot_t_201703081212.newerThan(version_1_2_snapshot));
 		assertTrue("The version should be newer", version_1_2_snapshot_t_201703081212.newerThan(version_1_2_snapshot_t_201603081212));
 		assertFalse("The version should not be newer", version_1.newerThan(version_1));
 		assertFalse("The version should not be newer", version_1.newerThan(version_1_0));
@@ -178,6 +176,8 @@ public class VersionTest
 		assertFalse("The version should not be newer", version_1_2_beta2.newerThan(version_1_2_snapshot_it));
 		assertFalse("The version should not be newer", version_1_2_beta2.newerThan(version_1_2_beta2));
 		assertFalse("The version should not be newer", version_1_2_beta2.newerThan(version_v2_0));
+		assertFalse("The version should not be newer", version_1_2_snapshot_b_5.newerThan(version_1_2_snapshot));
+		assertFalse("The version should not be newer", version_1_2_snapshot_t_201703081212.newerThan(version_1_2_snapshot));
 		assertFalse("The version should not be newer", version_2_0_snapshot.newerThan(version_v2_0));
 		assertFalse("The version should not be newer", version_1_2_snapshot.newerThan(version_1_2_snapshot_b_5));
 		assertFalse("The version should not be newer", version_1_2_snapshot_b_5.newerThan(version_1_2_snapshot_b_8));
