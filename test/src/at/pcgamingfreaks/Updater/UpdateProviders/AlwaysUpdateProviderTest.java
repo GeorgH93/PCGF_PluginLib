@@ -33,7 +33,7 @@ public class AlwaysUpdateProviderTest
 	@Test
 	public void testQuery() throws Exception
 	{
-		assertEquals("The result should match", UpdateResult.SUCCESS, provider.query(null));
+		assertEquals("The result should match", UpdateResult.SUCCESS, provider.query());
 	}
 
 	@Test
@@ -154,12 +154,6 @@ public class AlwaysUpdateProviderTest
 	public void testProvideMD5Checksum() throws Exception
 	{
 		assertFalse("The MD5 checksum should not be provided", provider.provideMD5Checksum());
-	}
-
-	@Test
-	public void testProvideReleaseType() throws Exception
-	{
-		assertTrue("The release type should not be provided", provider.provideReleaseType());
 	}
 
 	@Test

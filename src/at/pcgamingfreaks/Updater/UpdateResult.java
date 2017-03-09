@@ -51,7 +51,7 @@ public enum UpdateResult
 	 */
 	FAIL_FILE_NOT_FOUND,
 	/**
-	 * The server administrator has improperly configured their API key in the configuration.
+	 * The server administrator has improperly configured their API key or access token in the configuration.
 	 */
 	FAIL_API_KEY,
 	/**

@@ -326,7 +326,7 @@ public abstract class Updater
 			@Override
 			public void run()
 			{
-				result = updateProvider.query(logger);
+				result = updateProvider.query();
 				if(result == UpdateResult.SUCCESS)
 				{
 					if(versionCheck(getRemoteVersion()))
@@ -373,7 +373,7 @@ public abstract class Updater
 			@Override
 			public void run()
 			{
-				result = updateProvider.query(logger);
+				result = updateProvider.query();
 				if(result == UpdateResult.SUCCESS)
 				{
 					result = versionCheck(getRemoteVersion()) ? UpdateResult.UPDATE_AVAILABLE : UpdateResult.NO_UPDATE;

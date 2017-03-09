@@ -101,35 +101,35 @@ public class BukkitUpdateProviderTest
 		Class versionClass = BukkitUpdateProvider.class.getDeclaredClasses()[0];
 		Constructor versionConstructor = versionClass.getDeclaredConstructors()[0];
 		versionConstructor.setAccessible(true);
-		BukkitUpdateProvider bukkitUpdateProvider = new BukkitUpdateProvider(-3);
+		BukkitUpdateProvider bukkitUpdateProvider = new BukkitUpdateProvider(-3, mockedLogger);
 		Field url = TestUtils.setAccessible(BukkitUpdateProvider.class, bukkitUpdateProvider, "url", null);
-		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query(mockedLogger));
+		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
-		bukkitUpdateProvider = new BukkitUpdateProvider(74734);
+		bukkitUpdateProvider = new BukkitUpdateProvider(74734, mockedLogger);
 		URL mockedURL = PowerMockito.mock(URL.class);
 		PowerMockito.doThrow(new IOException("")).when(mockedURL).openConnection();
 		url.set(bukkitUpdateProvider, mockedURL);
-		bukkitUpdateProvider.query(mockedLogger);
+		bukkitUpdateProvider.query();
 		currentSevere += 3;
 		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
 		TestUtils.setUnaccessible(url, bukkitUpdateProvider, false);
-		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query(mockedLogger));
+		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
 		Gson mockedGson = PowerMockito.mock(Gson.class);
 		PowerMockito.doReturn(Array.newInstance(versionClass, 0)).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
 		whenNew(Gson.class).withAnyArguments().thenReturn(mockedGson);
-		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query(mockedLogger));
+		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
 		PowerMockito.doReturn(null).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
-		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query(mockedLogger));
+		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
-		bukkitUpdateProvider = new BukkitUpdateProvider(74734, "Nothing");
-		assertEquals("The API key isn't correct, therefore it should fail", UpdateResult.FAIL_API_KEY, bukkitUpdateProvider.query(mockedLogger));
+		bukkitUpdateProvider = new BukkitUpdateProvider(74734, "Nothing", mockedLogger);
+		assertEquals("The API key isn't correct, therefore it should fail", UpdateResult.FAIL_API_KEY, bukkitUpdateProvider.query());
 		currentSevere += 3;
 		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
@@ -227,7 +227,7 @@ public class BukkitUpdateProviderTest
 
 	private BukkitUpdateProvider getProvider() throws NoSuchFieldException, IllegalAccessException
 	{
-		BukkitUpdateProvider bukkitUpdateProvider = new BukkitUpdateProvider(74734);
+		BukkitUpdateProvider bukkitUpdateProvider = new BukkitUpdateProvider(74734, null);
 		TestUtils.setAccessible(BukkitUpdateProvider.class, bukkitUpdateProvider, "devBukkitVersions", null);
 		return bukkitUpdateProvider;
 	}
@@ -235,8 +235,8 @@ public class BukkitUpdateProviderTest
 	private BukkitUpdateProvider getLoggedProvider()
 	{
 		Logger mockedLogger = mock(Logger.class);
-		BukkitUpdateProvider bukkitUpdateProvider = new BukkitUpdateProvider(74734);
-		bukkitUpdateProvider.query(mockedLogger);
+		BukkitUpdateProvider bukkitUpdateProvider = new BukkitUpdateProvider(74734, mockedLogger);
+		bukkitUpdateProvider.query();
 		return bukkitUpdateProvider;
 	}
 }

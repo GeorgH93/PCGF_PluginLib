@@ -30,7 +30,7 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 
 	public Updater(Plugin plugin, boolean announceDownloadProgress, int bukkitPluginID)
 	{
-		this(plugin, announceDownloadProgress, new BukkitUpdateProvider(bukkitPluginID));
+		this(plugin, announceDownloadProgress, new BukkitUpdateProvider(bukkitPluginID, plugin.getLogger()));
 	}
 
 	public Updater(Plugin plugin, boolean announceDownloadProgress, UpdateProvider updateProvider)
