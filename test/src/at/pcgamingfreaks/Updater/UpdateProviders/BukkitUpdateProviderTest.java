@@ -39,18 +39,16 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
@@ -137,44 +135,28 @@ public class BukkitUpdateProviderTest
 		versionConstructor.setAccessible(false);
 	}
 
-	@Test
+	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestVersionAsString() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
 	{
-		BukkitUpdateProvider bukkitUpdateProvider = spy(getProvider());
-		doReturn(null).when(bukkitUpdateProvider).getLatestName();
-		assertNull("The latest version should be null", bukkitUpdateProvider.getLatestVersionAsString());
+		getProvider().getLatestVersionAsString();
 	}
 
-	@Test
+	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestVersion() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
 	{
-		BukkitUpdateProvider bukkitUpdateProvider = spy(getProvider());
-		doReturn("").when(bukkitUpdateProvider).getLatestName();
-		assertNull("The latest version should be null", bukkitUpdateProvider.getLatestVersion());
+		getProvider().getLatestVersion();
 	}
 
-	@Test
+	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestFileUrl() throws Exception
 	{
-		BukkitUpdateProvider bukkitUpdateProvider = getLoggedProvider();
-		whenNew(URL.class).withParameterTypes(String.class).withArguments(anyString()).thenThrow(new MalformedURLException());
-		assertNull("The latest file url should be null", bukkitUpdateProvider.getLatestFileURL());
+		getProvider().getLatestFileURL();
 	}
 
 	@Test
 	public void testGetLatestMinecraftVersion() throws NotSuccessfullyQueriedException
 	{
 		assertNotNull("The latest Minecraft version should not be null", getLoggedProvider().getLatestMinecraftVersion());
-	}
-
-	@Test
-	public void testGetLatestReleaseType() throws Exception
-	{
-		BukkitUpdateProvider bukkitUpdateProvider = getLoggedProvider();
-		bukkitUpdateProvider.getLatestReleaseType();
-		mockStatic(ReleaseType.class);
-		PowerMockito.doThrow(new IllegalArgumentException()).when(ReleaseType.class, "valueOf", anyString());
-		assertEquals("The release type should be unknown", ReleaseType.UNKNOWN, bukkitUpdateProvider.getLatestReleaseType());
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
@@ -228,7 +210,6 @@ public class BukkitUpdateProviderTest
 	private BukkitUpdateProvider getProvider() throws NoSuchFieldException, IllegalAccessException
 	{
 		BukkitUpdateProvider bukkitUpdateProvider = new BukkitUpdateProvider(74734, null);
-		TestUtils.setAccessible(BukkitUpdateProvider.class, bukkitUpdateProvider, "devBukkitVersions", null);
 		return bukkitUpdateProvider;
 	}
 

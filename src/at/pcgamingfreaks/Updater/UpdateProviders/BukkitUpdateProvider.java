@@ -187,8 +187,8 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 	@Override
 	public @NotNull Version getLatestVersion() throws NotSuccessfullyQueriedException
 	{
-		String latest = getLatestVersionAsString();
-		return new Version(latest);
+		if(lastResult == null) throw new NotSuccessfullyQueriedException();
+		return lastResult.getVersion();
 	}
 
 	public @NotNull String getLatestVersionFileName() throws NotSuccessfullyQueriedException

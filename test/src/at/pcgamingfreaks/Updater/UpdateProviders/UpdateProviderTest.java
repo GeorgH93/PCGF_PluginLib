@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
+import at.pcgamingfreaks.Version;
+
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -33,10 +35,10 @@ public class UpdateProviderTest
 	{
 		URL downloadURL = new URL("http://www.download.url/File.dl");
 		String name = "Update File";
-		String version = "1.3.6";
+		Version version = new Version("1.3.6");
 		String fileName = "UpdateFile-1.3.6.zip";
 		Class updateFileClass = UpdateProvider.class.getDeclaredClasses()[0];
-		Object updaterFile = updateFileClass.getDeclaredConstructors()[0].newInstance(downloadURL, name, version, fileName);
+		Object updaterFile = updateFileClass.getDeclaredConstructors()[1].newInstance(downloadURL, name, version, fileName, "", "", "");
 		assertEquals("The download url of the update file should match", downloadURL, updateFileClass.getDeclaredMethod("getDownloadURL").invoke(updaterFile));
 		assertEquals("The name of the update file should match", name, updateFileClass.getDeclaredMethod("getName").invoke(updaterFile));
 		assertEquals("The file name of the update file should match", fileName, updateFileClass.getDeclaredMethod("getFileName").invoke(updaterFile));
