@@ -18,11 +18,11 @@
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.ConsoleColor;
-import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
 
-import com.google.gson.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,56 +35,81 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BukkitUpdateProvider implements UpdateProvider
+public class BukkitUpdateProvider extends AbstractOnlineProvider
 {
 	//region static stuff
-	private static final String USER_AGENT = "Plugin-Updater";
 	private static final String HOST = "https://api.curseforge.com/servermods/files?projectIds=";
 	private static final Pattern VERSION_PATTERN = Pattern.compile(Version.VERSION_STING_FORMAT); // Used for locating version numbers in file names, bukkit doesn't provide the version on it's own :(
 	//endregion
 
 	private final int projectID;
 	private final String apiKey;
-	private URL url = null;
+	private final URL url;
 
-	private DevBukkitVersion[] devBukkitVersions = null;
+	private UpdateFile lastResult = null;
 
-	public BukkitUpdateProvider(int projectID)
+	public BukkitUpdateProvider(int projectID, @NotNull Logger logger)
 	{
-		this(projectID, null);
+		this(projectID, null, logger);
 	}
 
-	public BukkitUpdateProvider(int projectID, String apiKey)
+	public BukkitUpdateProvider(int projectID, @Nullable String apiKey, @NotNull Logger logger)
 	{
+		super(logger);
 		this.projectID = projectID;
 		this.apiKey = apiKey;
-
+		URL url = null;
 		try
 		{
 			url = new URL(HOST + projectID);
 		}
 		catch(MalformedURLException ignored) {}
+		this.url = url;
 	}
 
 	@Override
-	public UpdateResult query(Logger logger)
+	public @NotNull UpdateResult query()
 	{
 		if(url == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 		try
 		{
 			URLConnection connection = url.openConnection();
-			connection.setConnectTimeout(5000);
+			connection.setConnectTimeout(TIMEOUT);
 			if(apiKey != null) connection.addRequestProperty("X-API-Key", apiKey);
-			connection.addRequestProperty("User-Agent", USER_AGENT);
+			connection.addRequestProperty(PROPERTY_USER_AGENT, USER_AGENT);
 			connection.setDoOutput(true);
 
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream())))
 			{
-				devBukkitVersions = new Gson().fromJson(reader, DevBukkitVersion[].class);
+				DevBukkitVersion[] devBukkitVersions = GSON.fromJson(reader, DevBukkitVersion[].class);
 				if(devBukkitVersions == null || devBukkitVersions.length == 0)
 				{
 					logger.warning(ConsoleColor.RED + "The updater could not find any files for the project id " + projectID + " " + ConsoleColor.RESET);
 					return UpdateResult.FAIL_FILE_NOT_FOUND;
+				}
+				else
+				{
+					try
+					{
+						DevBukkitVersion devBukkitVersion = devBukkitVersions[devBukkitVersions.length - 1];
+						String latestName = devBukkitVersion.name;
+						Matcher matcher = VERSION_PATTERN.matcher(latestName);
+						if(matcher.find())
+						{
+							this.lastResult = new UpdateFile(new URL(devBukkitVersion.downloadUrl), latestName, new Version(matcher.group() + "-" + devBukkitVersion.releaseType),
+							                                 devBukkitVersion.fileName, devBukkitVersion.md5, "", devBukkitVersion.gameVersion);
+						}
+						else
+						{
+							return UpdateResult.FAIL_NO_VERSION_FOUND;
+						}
+					}
+					catch(MalformedURLException e)
+					{
+						logger.warning(ConsoleColor.RED + "Failed to interpret download url \"" + devBukkitVersions[devBukkitVersions.length - 1].downloadUrl + "\"!" + ConsoleColor.RESET);
+						e.printStackTrace();
+						return UpdateResult.FAIL_FILE_NOT_FOUND;
+					}
 				}
 			}
 		}
@@ -99,7 +124,7 @@ public class BukkitUpdateProvider implements UpdateProvider
 			}
 			else
 			{
-				logger.severe(ConsoleColor.RED + "The updater could not contact dev.bukkit.org for updating!" + ConsoleColor.RESET);
+				logger.severe(ConsoleColor.RED + "The updater could not contact dev.bukkit.org to check for updates!" + ConsoleColor.RESET);
 				logger.severe(ConsoleColor.RED + "If this is the first time you are seeing this message, the site may be experiencing temporary downtime." + ConsoleColor.RESET);
 				logger.log(Level.SEVERE, null, e);
 				return UpdateResult.FAIL_SERVER_OFFLINE;
@@ -140,12 +165,6 @@ public class BukkitUpdateProvider implements UpdateProvider
 	}
 
 	@Override
-	public boolean provideReleaseType()
-	{
-		return true;
-	}
-
-	@Override
 	public boolean provideUpdateHistory()
 	{
 		return true;
@@ -160,107 +179,60 @@ public class BukkitUpdateProvider implements UpdateProvider
 
 	//region getter for the latest version
 	@Override
-	public String getLatestVersionAsString() throws NotSuccessfullyQueriedException
+	public @NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException
 	{
-		String latest = getLatestName();
-		if(latest == null) return null;
-		Matcher matcher = VERSION_PATTERN.matcher(latest);
-		if(matcher.find())
-		{
-			return matcher.group();
-		}
-		return null;
+		return getLatestVersion().toString();
 	}
 
 	@Override
-	public Version getLatestVersion() throws NotSuccessfullyQueriedException
+	public @NotNull Version getLatestVersion() throws NotSuccessfullyQueriedException
 	{
-		String latest = getLatestVersionAsString();
-		if(latest == null) return null;
-		return new Version(latest);
+		if(lastResult == null) throw new NotSuccessfullyQueriedException();
+		return lastResult.getVersion();
 	}
 
-	public String getLatestVersionFileName() throws NotSuccessfullyQueriedException
+	public @NotNull String getLatestVersionFileName() throws NotSuccessfullyQueriedException
 	{
-		if(devBukkitVersions == null)
-		{
-			throw new NotSuccessfullyQueriedException();
-		}
-		return devBukkitVersions[devBukkitVersions.length - 1].fileName;
+		if(lastResult == null) throw new NotSuccessfullyQueriedException();
+		return lastResult.getFileName();
 	}
 
 	@Override
-	public URL getLatestFileURL() throws NotSuccessfullyQueriedException
+	public @NotNull URL getLatestFileURL() throws NotSuccessfullyQueriedException
 	{
-		if(devBukkitVersions == null)
-		{
-			throw new NotSuccessfullyQueriedException();
-		}
-		try
-		{
-			return new URL(devBukkitVersions[devBukkitVersions.length - 1].downloadUrl);
-		}
-		catch(MalformedURLException e)
-		{
-			System.out.println(ConsoleColor.RED + "Failed to interpret download url \"" + devBukkitVersions[devBukkitVersions.length - 1].downloadUrl + "\"!" + ConsoleColor.RESET);
-			e.printStackTrace();
-		}
-		return null;
+		if(lastResult == null) throw new NotSuccessfullyQueriedException();
+		return lastResult.getDownloadURL();
 	}
 
 	@Override
-	public String getLatestName() throws NotSuccessfullyQueriedException
+	public @NotNull String getLatestName() throws NotSuccessfullyQueriedException
 	{
-		if(devBukkitVersions == null)
-		{
-			throw new NotSuccessfullyQueriedException();
-		}
-		return devBukkitVersions[devBukkitVersions.length - 1].name;
+		if(lastResult == null) throw new NotSuccessfullyQueriedException();
+		return lastResult.getName();
 	}
 
 	@Override
-	public String getLatestMinecraftVersion() throws NotSuccessfullyQueriedException
+	public @NotNull String getLatestMinecraftVersion() throws NotSuccessfullyQueriedException
 	{
-		if(devBukkitVersions == null)
-		{
-			throw new NotSuccessfullyQueriedException();
-		}
-		return devBukkitVersions[devBukkitVersions.length - 1].gameVersion;
+		if(lastResult == null) throw new NotSuccessfullyQueriedException();
+		return lastResult.getGameVersion();
 	}
 
 	@Override
-	public ReleaseType getLatestReleaseType() throws NotSuccessfullyQueriedException
+	public @NotNull String getLatestChecksum() throws NotSuccessfullyQueriedException
 	{
-		if(devBukkitVersions == null)
-		{
-			throw new NotSuccessfullyQueriedException();
-		}
-		try
-		{
-			return ReleaseType.valueOf(devBukkitVersions[devBukkitVersions.length - 1].releaseType.toUpperCase());
-		}
-		catch(Exception ignored) {}
-		return ReleaseType.UNKNOWN;
+		if(lastResult == null) throw new NotSuccessfullyQueriedException();
+		return lastResult.getChecksum();
 	}
 
 	@Override
-	public String getLatestChecksum() throws NotSuccessfullyQueriedException
-	{
-		if(devBukkitVersions == null)
-		{
-			throw new NotSuccessfullyQueriedException();
-		}
-		return devBukkitVersions[devBukkitVersions.length - 1].md5;
-	}
-
-	@Override
-	public String getLatestChangelog() throws RequestTypeNotAvailableException
+	public @NotNull String getLatestChangelog() throws RequestTypeNotAvailableException
 	{
 		throw new RequestTypeNotAvailableException("The dev.bukkit.org API does not provide a changelog!");
 	}
 
 	@Override
-	public UpdateFile[] getLatestDependencies() throws RequestTypeNotAvailableException
+	public @NotNull UpdateFile[] getLatestDependencies() throws RequestTypeNotAvailableException
 	{
 		throw new RequestTypeNotAvailableException("The dev.bukkit.org API does not provide a list of dependencies to download!");
 	}

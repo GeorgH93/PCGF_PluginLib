@@ -21,9 +21,10 @@ import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Logger;
 
 /**
  * An update provider that returns an very high version so that the file gets downloaded every time.
@@ -39,7 +40,7 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	/**
 	 * @param url The url to the file that should be downloaded.
 	 */
-	public AlwaysUpdateProvider(String url)
+	public AlwaysUpdateProvider(@NotNull String url)
 	{
 		this(url, "file.jar");
 	}
@@ -48,7 +49,7 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param url      The url to the file that should be downloaded.
 	 * @param fileName The name of the file.
 	 */
-	public AlwaysUpdateProvider(String url, String fileName)
+	public AlwaysUpdateProvider(@NotNull String url, String fileName)
 	{
 		this(url, fileName, ReleaseType.RELEASE);
 	}
@@ -58,7 +59,7 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param fileName    The name of the file.
 	 * @param releaseType The release type.
 	 */
-	public AlwaysUpdateProvider(String url, String fileName, ReleaseType releaseType)
+	public AlwaysUpdateProvider(@NotNull String url, String fileName, ReleaseType releaseType)
 	{
 		this.releaseType = releaseType;
 		this.fileName = fileName;
@@ -73,67 +74,68 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	}
 
 	@Override
-	public UpdateResult query(Logger logger)
+	public @NotNull UpdateResult query()
 	{
 		return UpdateResult.SUCCESS;
 	}
 
 	@Override
-	public String getLatestVersionAsString() throws NotSuccessfullyQueriedException
+	public @NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException
 	{
 		return Integer.MAX_VALUE + "." + Integer.MAX_VALUE;
 	}
 
 	@Override
-	public Version getLatestVersion() throws NotSuccessfullyQueriedException
+	public @NotNull Version getLatestVersion() throws NotSuccessfullyQueriedException
 	{
 		return new Version(getLatestVersionAsString());
 	}
 
 	@Override
-	public URL getLatestFileURL() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	public @NotNull URL getLatestFileURL() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		return downloadUrl;
 	}
 
 	@Override
-	public String getLatestVersionFileName() throws NotSuccessfullyQueriedException
+	public @NotNull String getLatestVersionFileName() throws NotSuccessfullyQueriedException
 	{
 		return fileName;
 	}
 
 	@Override
-	public String getLatestName() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	public @NotNull String getLatestName() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		throw new RequestTypeNotAvailableException("This provider does not provide the name of the latest version.");
 	}
 
 	@Override
-	public String getLatestMinecraftVersion() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	public @NotNull String getLatestMinecraftVersion() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		throw new RequestTypeNotAvailableException("This provider does not provide the minecraft version of the latest version.");
 	}
 
+	@NotNull
 	@Override
-	public ReleaseType getLatestReleaseType() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	public ReleaseType getLatestReleaseType() throws NotSuccessfullyQueriedException
 	{
 		return releaseType;
 	}
 
 	@Override
-	public String getLatestChecksum() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	public @NotNull String getLatestChecksum() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		throw new RequestTypeNotAvailableException("This provider does not provide the checksum for the latest file.");
 	}
 
 	@Override
-	public String getLatestChangelog() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	public @NotNull String getLatestChangelog() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		throw new RequestTypeNotAvailableException("This provider does not provide the changelog for the latest file.");
 	}
 
 	@Override
-	public UpdateFile[] getLatestDependencies() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	public @NotNull UpdateFile[] getLatestDependencies() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		throw new RequestTypeNotAvailableException("This provider does not provide dependencies for the latest file.");
 	}
@@ -160,12 +162,6 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	public boolean provideMD5Checksum()
 	{
 		return false;
-	}
-
-	@Override
-	public boolean provideReleaseType()
-	{
-		return true;
 	}
 
 	@Override

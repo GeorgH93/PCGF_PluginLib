@@ -120,7 +120,7 @@ public class UpdaterTest
 	public static void prepareTestData() throws NoSuchFieldException
 	{
 		//noinspection SpellCheckingInspection
-		bukkitProvider = new BukkitUpdateProvider(74734); // 74734 is the Bukkit id of Marriage Master
+		bukkitProvider = new BukkitUpdateProvider(74734, LOGGER); // 74734 is the Bukkit id of Marriage Master
 		//noinspection ResultOfMethodCallIgnored
 		new File("plugins/updates").mkdirs();
 		//noinspection ResultOfMethodCallIgnored
@@ -138,14 +138,13 @@ public class UpdaterTest
 		assertTrue(bukkitProvider.provideMD5Checksum());
 		assertTrue(bukkitProvider.provideMinecraftVersion());
 		assertTrue(bukkitProvider.provideUpdateHistory());
-		assertTrue(bukkitProvider.provideReleaseType());
 	}
 
 	@SuppressWarnings("SpellCheckingInspection")
 	@Test
 	public void testBukkitUpdateProvider()
 	{
-		assertEquals("The result of the query should be success.", UpdateResult.SUCCESS, bukkitProvider.query(LOGGER));
+		assertEquals("The result of the query should be success.", UpdateResult.SUCCESS, bukkitProvider.query());
 	}
 
 	@Test
@@ -161,7 +160,7 @@ public class UpdaterTest
 			}
 		});
 		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
-		doReturn(UpdateResult.DISABLED).when(mockedUpdateProvider).query(any(Logger.class));
+		doReturn(UpdateResult.DISABLED).when(mockedUpdateProvider).query();
 		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
 		updater.checkForUpdate(new Updater.UpdaterResponse()
 		{
@@ -237,12 +236,12 @@ public class UpdaterTest
 		};
 		final Updater updater = spy(getUpdater("1.0"));
 		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
-		doReturn(UpdateResult.DISABLED).when(mockedUpdateProvider).query(any(Logger.class));
+		doReturn(UpdateResult.DISABLED).when(mockedUpdateProvider).query();
 		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
 		updater.update(updaterResponse);
 		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
 		final Field result = TestUtils.setAccessible(Updater.class, updater, "result", UpdateResult.NO_UPDATE);
-		doReturn(UpdateResult.SUCCESS).when(mockedUpdateProvider).query(any(Logger.class));
+		doReturn(UpdateResult.SUCCESS).when(mockedUpdateProvider).query();
 		doReturn(false).when(mockedUpdateProvider).provideDownloadURL();
 		doReturn(null).when(updater).getRemoteVersion();
 		doReturn(true).when(updater).versionCheck((Version) anyObject());
@@ -260,7 +259,7 @@ public class UpdaterTest
 		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
 		doReturn(new URL("http://www.test.xyz")).when(mockedUpdateProvider).getLatestFileURL();
 		doReturn(true).when(mockedUpdateProvider).provideDependencies();
-		UpdateProvider.UpdateFile updateFile = new UpdateProvider.UpdateFile(new URL("http://www.test.download.link"), "DepFile", "", "");
+		UpdateProvider.UpdateFile updateFile = new UpdateProvider.UpdateFile(new URL("http://www.test.download.link"), "DepFile", new Version("1.0"), "", "", "", "");
 		doReturn(new UpdateProvider.UpdateFile[] { updateFile }).when(mockedUpdateProvider).getLatestDependencies();
 		Field downloadDependencies = TestUtils.setAccessible(Updater.class, updater, "downloadDependencies", true);
 		doAnswer(new Answer()

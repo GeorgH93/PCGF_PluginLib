@@ -21,6 +21,8 @@ import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -29,10 +31,9 @@ public interface UpdateProvider
 	/**
 	 * Make a connection to the provider an requests the file's details.
 	 *
-	 * @param logger The logger used for the outputs.
 	 * @return The update result from the query.
 	 */
-	UpdateResult query(Logger logger);
+	@NotNull UpdateResult query();
 
 	//region getter for the latest version
 	/**
@@ -41,7 +42,7 @@ public interface UpdateProvider
 	 * @return The latest version string.
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	String getLatestVersionAsString() throws NotSuccessfullyQueriedException;
+	@NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException;
 
 	/**
 	 * Gets the latest version's version (such as 1.32)
@@ -49,7 +50,7 @@ public interface UpdateProvider
 	 * @return The latest version string.
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	Version getLatestVersion() throws NotSuccessfullyQueriedException;
+	@NotNull Version getLatestVersion() throws NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's direct download url.
@@ -58,7 +59,7 @@ public interface UpdateProvider
 	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	URL getLatestFileURL() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
+	@NotNull URL getLatestFileURL() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's file name.
@@ -66,7 +67,7 @@ public interface UpdateProvider
 	 * @return latest version's file name.
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	String getLatestVersionFileName() throws NotSuccessfullyQueriedException;
+	@NotNull String getLatestVersionFileName() throws NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's name (such as "Project v1.0").
@@ -75,7 +76,7 @@ public interface UpdateProvider
 	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	String getLatestName() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
+	@NotNull String getLatestName() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's game version (such as "CB 1.7.2-R0.3" or "1.9").
@@ -84,7 +85,7 @@ public interface UpdateProvider
 	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	String getLatestMinecraftVersion() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
+	@NotNull String getLatestMinecraftVersion() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's release type.
@@ -92,10 +93,9 @@ public interface UpdateProvider
 	 * @return latest version's release type.
 	 * @see ReleaseType
 	 *
-	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	ReleaseType getLatestReleaseType() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
+	@NotNull ReleaseType getLatestReleaseType() throws NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's checksum (md5).
@@ -104,7 +104,7 @@ public interface UpdateProvider
 	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	String getLatestChecksum() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
+	@NotNull String getLatestChecksum() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's changelog.
@@ -113,7 +113,7 @@ public interface UpdateProvider
 	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	String getLatestChangelog() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
+	@NotNull String getLatestChangelog() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's dependencies.
@@ -122,7 +122,7 @@ public interface UpdateProvider
 	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	UpdateFile[] getLatestDependencies() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
+	@NotNull UpdateFile[] getLatestDependencies() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
 	//endregion
 
 	//region provider property's
@@ -134,24 +134,53 @@ public interface UpdateProvider
 
 	boolean provideMD5Checksum();
 
-	boolean provideReleaseType();
-
-	boolean provideUpdateHistory();
+	boolean provideUpdateHistory(); // TODO add an getter!
 
 	boolean provideDependencies();
 	//endregion
 
 	class UpdateFile
 	{
-		private URL downloadURL;
-		private String name, version, fileName;
+		private URL downloadURL = null;
+		private String name = null, fileName = null, checksum = null, changelog = "", gameVersion = null;
+		private Version version = null;
 
-		public UpdateFile(URL downloadURL, String name, String version, String fileName)
+		public UpdateFile() {}
+
+		public UpdateFile(URL downloadURL, String name, Version version, String fileName, String checksum, String changelog, String gameVersion)
 		{
 			this.downloadURL = downloadURL;
 			this.name = name;
 			this.version = version;
 			this.fileName = fileName;
+			this.checksum = checksum;
+			this.changelog = changelog;
+			this.gameVersion = gameVersion;
+		}
+
+		public void setName(String name)
+		{
+			this.name = name;
+		}
+
+		public void setChecksum(String checksum)
+		{
+			this.checksum = checksum;
+		}
+
+		public void setDownloadURL(URL downloadURL)
+		{
+			this.downloadURL = downloadURL;
+		}
+
+		public void setFileName(String fileName)
+		{
+			this.fileName = fileName;
+		}
+
+		public void setVersion(Version version)
+		{
+			this.version = version;
 		}
 
 		public URL getDownloadURL()
@@ -169,9 +198,34 @@ public interface UpdateProvider
 			return fileName;
 		}
 
-		public String getVersion()
+		public Version getVersion()
 		{
 			return version;
+		}
+
+		public String getChecksum()
+		{
+			return checksum;
+		}
+
+		public String getChangelog()
+		{
+			return changelog;
+		}
+
+		public void setChangelog(String changelog)
+		{
+			this.changelog = changelog;
+		}
+
+		public String getGameVersion()
+		{
+			return gameVersion;
+		}
+
+		public void setGameVersion(String gameVersion)
+		{
+			this.gameVersion = gameVersion;
 		}
 	}
 }

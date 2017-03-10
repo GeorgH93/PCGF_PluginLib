@@ -50,6 +50,7 @@ public class Version
 	private final int[] version;
 	private final int hashCode;
 	private final long timestamp, buildNumber;
+	private final boolean preRelease;
 
 	/**
 	 * @param version A string representing this version. Must be in the format: {@value #VERSION_STING_FORMAT}
@@ -85,6 +86,7 @@ public class Version
 		}
 		if(notAFinalVersion)
 		{
+			this.preRelease = true;
 			int last = 0;
 			for(String str : tags)
 			{
@@ -110,6 +112,10 @@ public class Version
 					}
 				}
 			}
+		}
+		else
+		{
+			this.preRelease = false;
 		}
 
 		timestamp = getBuildParameter(this.optionalTags, "(t|ts|time(stamp)?)");
@@ -216,6 +222,16 @@ public class Version
 			}
 		}
 		return SAME;
+	}
+
+	/**
+	 * Checks if the version is a pre release version or not.
+	 *
+	 * @return True if the version is a pre release version. False if not.
+	 */
+	public boolean isPreRelease()
+	{
+		return preRelease;
 	}
 
 	//region comparision functions
