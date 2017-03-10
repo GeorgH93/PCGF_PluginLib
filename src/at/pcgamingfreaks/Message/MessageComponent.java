@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -521,13 +521,6 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	{
 		if(formats != null)
 		{
-			for(MessageColor style : formats)
-			{
-				if(!style.isFormat())
-				{
-					throw new IllegalArgumentException(style.name() + " is not a formatter");
-				}
-			}
 			for(MessageColor format : formats)
 			{
 				switch(format)
@@ -537,6 +530,8 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 					case UNDERLINE: setUnderlined(); break;
 					case STRIKETHROUGH: setStrikethrough(); break;
 					case MAGIC: setObfuscated(); break;
+					case RESET: break;
+					default: throw new IllegalArgumentException(format.name() + " is not a formatter");
 				}
 			}
 		}

@@ -222,7 +222,7 @@ public class Language
 				ByteStreams.copy(is, os);
 				os.flush();
 			}
-			catch(Exception e)
+			catch(IOException | NullPointerException e)
 			{
 				try(InputStream is = getClass().getResourceAsStream("/lang/" + inJarPrefix + "en.yml"); OutputStream os = new FileOutputStream(langFile))
 				{

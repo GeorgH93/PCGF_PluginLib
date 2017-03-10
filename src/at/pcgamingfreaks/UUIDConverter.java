@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2014-2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -330,7 +329,7 @@ public final class UUIDConverter
 			return UUID_CACHE.get(name);
 		}
 		String uuid = null;
-		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + at.getTime() : "")).openStream())))
+		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + at.getTime() : "")).openStream(), "UTF-8")))
 		{
 			uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).getAsString();
 			if(uuid != null && (at == null || at.after(new Date(new Date().getTime() - 1000L*24*3600* 30))))
@@ -439,7 +438,7 @@ public final class UUIDConverter
 						out.write(GSON.toJson(batch).getBytes(Charsets.UTF_8));
 					}
 					Profile[] profiles;
-					try(Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream())))
+					try(Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8")))
 					{
 						profiles = GSON.fromJson(in, Profile[].class);
 					}
@@ -462,9 +461,12 @@ public final class UUIDConverter
 							success = false;
 							continue;
 						}
+						else
+						{
+							e.printStackTrace();
+						}
 					}
-					catch(Exception ignore) {}
-					e.printStackTrace();
+					catch(InterruptedException | IOException ignore) {}
 					return result;
 				}
 				batch.clear();
@@ -520,11 +522,10 @@ public final class UUIDConverter
 
 		public Date getExpiresDate()
 		{
-			//noinspection SpellCheckingInspection
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 			try
 			{
-				return format.parse(expiresOn);
+				//noinspection SpellCheckingInspection
+				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").parse(expiresOn);
 			}
 			catch(ParseException e)
 			{
