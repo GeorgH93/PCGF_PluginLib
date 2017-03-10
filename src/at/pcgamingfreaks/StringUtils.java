@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,9 +24,30 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+/**
+ * This class provides some useful methods around strings as well as some useful strings (and char arrays) as well as regex pattern
+ */
+@SuppressWarnings("unused")
 public class StringUtils
 {
+	//region some useful strings
+	@SuppressWarnings("SpellCheckingInspection")
+	public static final String ALPHABET_LOWERCASE = "abcdefghijklmnopqrstuvwxyz", ALPHABET_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", NUMBERS = "0123456789", CHAT_COLORS = "0123456789abcdef";
+	@SuppressWarnings("unused")
+	public static final String ALPHABET = ALPHABET_LOWERCASE + ALPHABET_UPPERCASE, ALPHANUMERIC = ALPHABET_LOWERCASE + ALPHABET_UPPERCASE + NUMBERS;
+	//endregion
+	//region some useful char collections
+	private static final char[] CHAT_COLORS_CHAR_ARRAY = CHAT_COLORS.toCharArray(), ALPHABET_LOWERCASE_CHAR_ARRAY = ALPHABET_LOWERCASE.toCharArray(), ALPHABET_UPPERCASE_CHAR_ARRAY = ALPHABET_UPPERCASE.toCharArray();
+	private static final char[] NUMBERS_CHAR_ARRAY = NUMBERS.toCharArray(), ALPHABET_CHAR_ARRAY = ALPHABET.toCharArray(), ALPHANUMERIC_CHAR_ARRAY = ALPHANUMERIC.toCharArray();
+	//endregion
+	//region some useful regex patterns
+	public static final Pattern EMAIL_PATTERN = Pattern.compile("^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+	public static final Pattern IPv4_PATTERN  = Pattern.compile("(((?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}) ?[.,-:;_ ] ?){3}(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))");
+	public static final Pattern URL_PATTERN   = Pattern.compile("[-a-zA-Z0-9@:%_+.~#?&/=]{2,63}[.,][a-z]{2,10}\\b(/[-a-zA-Z0-9@:%_+~#?&/=]*)?");
+	//endregion
+
 	public static boolean arrayContains(@NotNull String[] strings, @Nullable String searchFor)
 	{
 		Validate.notNull(strings);
