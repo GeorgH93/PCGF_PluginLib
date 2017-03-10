@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -282,7 +282,6 @@ public class UUIDConverterTest
 		UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
 		TestUtils.setUnaccessible(queryRetryTime, null, true);
 		assertTrue("A message should be written to System.out when an error occurs", outputStream.size() > 0);
-		assertTrue("An exception should be handled when it occurs", errorStream.size() > 0);
 		uuidCache.setAccessible(false);
 	}
 

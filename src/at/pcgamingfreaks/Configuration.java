@@ -18,12 +18,14 @@
 package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.yaml.YAML;
+import at.pcgamingfreaks.yaml.YAMLInvalidContentException;
 import at.pcgamingfreaks.yaml.YAMLKeyNotFoundException;
 import at.pcgamingfreaks.yaml.YAMLNotInitializedException;
 
 import com.google.common.io.ByteStreams;
 
 import java.io.*;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 public class Configuration
@@ -201,11 +203,23 @@ public class Configuration
 					ByteStreams.copy(is, os);
 					os.flush();
 				}
+				catch(NullPointerException | IOException e)
+				{
+					logger.warning(ConsoleColor.RED + "Failed to extract configuration!" + ConsoleColor.RESET);
+					return;
+				}
 				logger.info("Configuration extracted successfully!");
 				config = new YAML(configFile);
 				if(newConfigCreated())
 				{
-					saveConfig();
+					try
+					{
+						saveConfig();
+					}
+					catch(FileNotFoundException e)
+					{
+						logger.warning(ConsoleColor.RED + "Failed to save the config cause the file does not exist! Has it been deleted?" + ConsoleColor.RESET);
+					}
 				}
 			}
 			else
@@ -214,10 +228,10 @@ public class Configuration
 				updateConfig();
 			}
 		}
-		catch(Exception e)
+		catch(IOException | YAMLInvalidContentException | NoSuchElementException e)
 		{
+			logger.warning(ConsoleColor.RED + "Failed to read the config file! Please check it!" + ConsoleColor.RESET);
 			e.printStackTrace();
-			config = null;
 		}
 	}
 

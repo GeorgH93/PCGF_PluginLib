@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,9 @@
 
 package at.pcgamingfreaks.Updater;
 
+import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Updater.UpdateProviders.NotSuccessfullyQueriedException;
+import at.pcgamingfreaks.Updater.UpdateProviders.RequestTypeNotAvailableException;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 import at.pcgamingfreaks.Utils;
 import at.pcgamingfreaks.Version;
@@ -32,6 +34,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -153,10 +156,9 @@ public abstract class Updater
 
 	protected void download(URL url, String fileName, int movedCount) // Saves file into servers update directory
 	{
-		if(!updateFolder.exists())
+		if(!updateFolder.exists() && !updateFolder.mkdirs())
 		{
-			//noinspection ResultOfMethodCallIgnored
-			updateFolder.mkdirs();
+			logger.warning(ConsoleColor.RED + "Failed to create folder for updates!" + ConsoleColor.RESET);
 		}
 		try
 		{
@@ -214,8 +216,10 @@ public abstract class Updater
 					logger.warning("The auto-updater was able to download the file, but the checksum did not match! Delete file.");
 					logger.warning("Checksum expected: " + MD5Target + " Checksum download: " + MD5Download);
 					result = UpdateResult.FAIL_DOWNLOAD;
-					//noinspection ResultOfMethodCallIgnored
-					downloadFile.delete();
+					if(!downloadFile.delete())
+					{
+						logger.warning(ConsoleColor.RED + "Failed to delete file:" + ConsoleColor.WHITE + ' ' + downloadFile.getAbsolutePath() + ' ' + ConsoleColor.RESET);
+					}
 					return;
 				}
 			}
@@ -229,12 +233,23 @@ public abstract class Updater
 				logger.info("Finished updating.");
 			}
 		}
-		catch(Exception ignored)
+		catch(RequestTypeNotAvailableException e)
+		{
+			logger.warning(ConsoleColor.RED + "The update provider provide invalid data about it's capabilities!" + ConsoleColor.RESET);
+			e.printStackTrace();
+		}
+		catch(NotSuccessfullyQueriedException e)
+		{
+			logger.warning(ConsoleColor.RED + "The update provider was not queried successfully!" + ConsoleColor.RESET);
+			e.printStackTrace();
+		}
+		catch(IOException ignored)
 		{
 			logger.warning("The auto-updater tried to download a new update, but was unsuccessful.");
 			ignored.printStackTrace();
 			result = UpdateResult.FAIL_DOWNLOAD;
 		}
+		catch(NoSuchAlgorithmException ignored) {}
 	}
 
 	/**
