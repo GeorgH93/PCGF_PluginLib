@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -132,12 +132,12 @@ public class UpdaterTest
 	@Test
 	public void testBukkitUpdateProviderProperties()
 	{
-		assertFalse(bukkitProvider.provideDependencies());
 		assertFalse(bukkitProvider.provideChangelog());
+		assertFalse(bukkitProvider.provideDependencies());
+		assertFalse(bukkitProvider.provideUpdateHistory());
 		assertTrue(bukkitProvider.provideDownloadURL());
 		assertTrue(bukkitProvider.provideMD5Checksum());
 		assertTrue(bukkitProvider.provideMinecraftVersion());
-		assertTrue(bukkitProvider.provideUpdateHistory());
 	}
 
 	@SuppressWarnings("SpellCheckingInspection")

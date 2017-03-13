@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -138,6 +138,12 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	public @NotNull UpdateFile[] getLatestDependencies() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		throw new RequestTypeNotAvailableException("This provider does not provide dependencies for the latest file.");
+	}
+
+	@Override
+	public @NotNull UpdateFile[] getUpdateHistory() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		throw new RequestTypeNotAvailableException("This provider does not provide an update history.");
 	}
 
 	@Override

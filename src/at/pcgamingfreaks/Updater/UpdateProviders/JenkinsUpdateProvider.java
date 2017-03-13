@@ -225,6 +225,13 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 	}
 
 	@Override
+	public @NotNull UpdateFile[] getUpdateHistory() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		//TODO add it!
+		throw new RequestTypeNotAvailableException("This provider does not provide an update history.");
+	}
+
+	@Override
 	public boolean provideDownloadURL()
 	{
 		return true;
@@ -251,7 +258,7 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 	@Override
 	public boolean provideUpdateHistory()
 	{
-		return true; // TODO
+		return false; // TODO
 	}
 
 	@Override

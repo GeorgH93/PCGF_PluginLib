@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ import at.pcgamingfreaks.Version;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
-import java.util.logging.Logger;
 
 public interface UpdateProvider
 {
@@ -118,11 +117,20 @@ public interface UpdateProvider
 	/**
 	 * Get the latest version's dependencies.
 	 *
-	 * @return latest version's dependencies. Null if there are no dependencies.
+	 * @return latest version's dependencies. Empty collection if there are no dependencies.
 	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
 	@NotNull UpdateFile[] getLatestDependencies() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
+
+	/**
+	 * Get a collection of the latest versions.
+	 *
+	 * @return Array with the updates.
+	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
+	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
+	 */
+	@NotNull UpdateFile[] getUpdateHistory() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
 	//endregion
 
 	//region provider property's
@@ -134,7 +142,7 @@ public interface UpdateProvider
 
 	boolean provideMD5Checksum();
 
-	boolean provideUpdateHistory(); // TODO add an getter!
+	boolean provideUpdateHistory();
 
 	boolean provideDependencies();
 	//endregion

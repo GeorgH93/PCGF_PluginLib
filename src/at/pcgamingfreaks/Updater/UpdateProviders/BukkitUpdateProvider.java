@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -167,7 +167,8 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 	@Override
 	public boolean provideUpdateHistory()
 	{
-		return true;
+		//TODO
+		return false;
 	}
 
 	@Override
@@ -235,6 +236,13 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 	public @NotNull UpdateFile[] getLatestDependencies() throws RequestTypeNotAvailableException
 	{
 		throw new RequestTypeNotAvailableException("The dev.bukkit.org API does not provide a list of dependencies to download!");
+	}
+
+	@Override
+	public @NotNull UpdateFile[] getUpdateHistory() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		//TODO add it!
+		throw new RequestTypeNotAvailableException("This provider does not provide an update history.");
 	}
 	//endregion
 }
