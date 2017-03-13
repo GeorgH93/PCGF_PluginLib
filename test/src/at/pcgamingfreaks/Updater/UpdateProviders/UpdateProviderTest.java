@@ -37,11 +37,10 @@ public class UpdateProviderTest
 		String name = "Update File";
 		Version version = new Version("1.3.6");
 		String fileName = "UpdateFile-1.3.6.zip";
-		Class updateFileClass = UpdateProvider.class.getDeclaredClasses()[0];
-		Object updaterFile = updateFileClass.getDeclaredConstructors()[1].newInstance(downloadURL, name, version, fileName, "", "", "");
-		assertEquals("The download url of the update file should match", downloadURL, updateFileClass.getDeclaredMethod("getDownloadURL").invoke(updaterFile));
-		assertEquals("The name of the update file should match", name, updateFileClass.getDeclaredMethod("getName").invoke(updaterFile));
-		assertEquals("The file name of the update file should match", fileName, updateFileClass.getDeclaredMethod("getFileName").invoke(updaterFile));
-		assertEquals("The version of the update file should match", version, updateFileClass.getDeclaredMethod("getVersion").invoke(updaterFile));
+		UpdateProvider.UpdateFile updaterFile = new UpdateProvider.UpdateFile(downloadURL, name, version, fileName, "", "", "");
+		assertEquals("The download url of the update file should match", downloadURL, updaterFile.getDownloadURL());
+		assertEquals("The name of the update file should match", name, updaterFile.getName());
+		assertEquals("The file name of the update file should match", fileName, updaterFile.getFileName());
+		assertEquals("The version of the update file should match", version, updaterFile.getVersion());
 	}
 }
