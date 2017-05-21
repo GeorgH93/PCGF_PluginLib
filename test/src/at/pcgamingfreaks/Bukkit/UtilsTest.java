@@ -81,7 +81,7 @@ public class UtilsTest
 		verify(mockedLogger, times(0)).warning(anyString());
 		server.perWorldPlugins = true;
 		Utils.warnIfPerWorldPluginsIsInstalled(mockedLogger, 0);
-		verify(mockedLogger, times(9)).warning(anyString());
+		verify(mockedLogger, times(8)).warning(anyString());
 	}
 
 	@Test

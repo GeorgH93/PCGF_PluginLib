@@ -118,7 +118,6 @@ public class Utils extends at.pcgamingfreaks.Utils
 			logger.warning(ConsoleColor.YELLOW + " If you block it from running in all worlds there probably will be problems!" + ConsoleColor.RESET);
 			logger.warning(ConsoleColor.YELLOW + " If you don't want you players to use this plugin in certain worlds please use permissions and the plugins config!" + ConsoleColor.RESET);
 			logger.warning(ConsoleColor.RED    + " There will be no support for bugs caused by \"PerWorldPlugins\"!" + ConsoleColor.RESET);
-			logger.warning(ConsoleColor.YELLOW + " Waiting " + pauseTime + " seconds till loading will resume!" + ConsoleColor.RESET);
 			blockThread(pauseTime);
 		}
 	}
