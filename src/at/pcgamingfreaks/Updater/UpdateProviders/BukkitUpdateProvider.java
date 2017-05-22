@@ -47,6 +47,7 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 	private final URL url;
 
 	private UpdateFile lastResult = null;
+	private UpdateFile[] lastHistory = null;
 
 	public BukkitUpdateProvider(int projectID, @NotNull Logger logger)
 	{
@@ -91,17 +92,27 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 				{
 					try
 					{
-						DevBukkitVersion devBukkitVersion = devBukkitVersions[devBukkitVersions.length - 1];
-						String latestName = devBukkitVersion.name;
-						Matcher matcher = VERSION_PATTERN.matcher(latestName);
-						if(matcher.find())
+						lastHistory = new UpdateFile[devBukkitVersions.length];
+						for(int i = 0; i < devBukkitVersions.length; i++)
 						{
-							this.lastResult = new UpdateFile(new URL(devBukkitVersion.downloadUrl), latestName, new Version(matcher.group() + "-" + devBukkitVersion.releaseType),
-							                                 devBukkitVersion.fileName, devBukkitVersion.md5, "", devBukkitVersion.gameVersion);
-						}
-						else
-						{
-							return UpdateResult.FAIL_NO_VERSION_FOUND;
+							DevBukkitVersion devBukkitVersion = devBukkitVersions[devBukkitVersions.length - 1];
+							String latestName = devBukkitVersion.name;
+							URL url = new URL(devBukkitVersion.downloadUrl);
+							Matcher matcher = VERSION_PATTERN.matcher(latestName);
+							if(matcher.find())
+							{
+								this.lastResult = new UpdateFile(url, latestName, new Version(matcher.group() + "-" + devBukkitVersion.releaseType),
+								                                 devBukkitVersion.fileName, devBukkitVersion.md5, "", devBukkitVersion.gameVersion);
+								this.lastHistory[i] = lastResult;
+							}
+							else if(i == devBukkitVersions.length - 1)
+							{
+								return UpdateResult.FAIL_NO_VERSION_FOUND;
+							}
+							else
+							{
+								this.lastHistory[i] = new UpdateFile(url, latestName, new Version("0.0"), devBukkitVersion.fileName, devBukkitVersion.md5, "", devBukkitVersion.gameVersion);
+							}
 						}
 					}
 					catch(MalformedURLException e)
@@ -167,8 +178,7 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 	@Override
 	public boolean provideUpdateHistory()
 	{
-		//TODO
-		return false;
+		return true;
 	}
 
 	@Override
@@ -241,8 +251,8 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 	@Override
 	public @NotNull UpdateFile[] getUpdateHistory() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
-		//TODO add it!
-		throw new RequestTypeNotAvailableException("This provider does not provide an update history.");
+		if(lastHistory == null) throw new NotSuccessfullyQueriedException();
+		return lastHistory;
 	}
 	//endregion
 }
