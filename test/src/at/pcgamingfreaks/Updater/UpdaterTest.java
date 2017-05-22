@@ -134,10 +134,10 @@ public class UpdaterTest
 	{
 		assertFalse(bukkitProvider.provideChangelog());
 		assertFalse(bukkitProvider.provideDependencies());
-		assertFalse(bukkitProvider.provideUpdateHistory());
 		assertTrue(bukkitProvider.provideDownloadURL());
 		assertTrue(bukkitProvider.provideMD5Checksum());
 		assertTrue(bukkitProvider.provideMinecraftVersion());
+		assertTrue(bukkitProvider.provideUpdateHistory());
 	}
 
 	@SuppressWarnings("SpellCheckingInspection")
