@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Message;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.Utils;
@@ -27,13 +28,31 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 public class ChatSender extends BaseSender
 {
 	//region Reflection stuff
 	private static final Class<?> PACKET_PLAY_OUT_CHAT = NMSReflection.getNMSClass("PacketPlayOutChat");
-	private static final Constructor<?> PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, Byte.TYPE);
+	private static final Constructor<?> PACKET_PLAY_OUT_CHAT_CONSTRUCTOR;
+	private static final Method BYTE_TO_MESSAGE_TYPE_ENUM;
+
+	static
+	{
+		if(MCVersion.isOlderThan(MCVersion.MC_1_12))
+		{
+			PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, Byte.TYPE);
+			BYTE_TO_MESSAGE_TYPE_ENUM = null;
+		}
+		else
+		{
+			Class<?> chatMessageType = NMSReflection.getNMSClass("ChatMessageType");
+			PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, chatMessageType);
+			BYTE_TO_MESSAGE_TYPE_ENUM = NMSReflection.getMethod(chatMessageType, "a", Byte.TYPE);
+		}
+	}
 	//endregion
 
 	private static final byte CHAT_ACTION = 0;
@@ -138,12 +157,17 @@ public class ChatSender extends BaseSender
 		send(players, json);
 	}
 
+	private static Object createPacket(@NotNull String json, byte action) throws InvocationTargetException, IllegalAccessException, InstantiationException
+	{
+		return PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(finalizeJson(json), (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? action : BYTE_TO_MESSAGE_TYPE_ENUM.invoke(null, action));
+	}
+
 	protected static void send(@NotNull Player player, @NotNull String json, byte action)
 	{
 		if(CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_CHAT_CONSTRUCTOR == null) return; // The class isn't initialized correctly! May it's not running on a bukkit/spigot server.
 		try
 		{
-			Utils.sendPacket(player, PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(finalizeJson(json), action));
+			Utils.sendPacket(player, createPacket(json, action));
 		}
 		catch (Exception ex)
 		{
@@ -156,7 +180,7 @@ public class ChatSender extends BaseSender
 		if(CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_CHAT_CONSTRUCTOR == null) return; // The class isn't initialized correctly! May it's not running on a bukkit/spigot server.
 		try
 		{
-			Object packet = PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(finalizeJson(json), action);
+			Object packet = createPacket(json, action);
 			for(Player player : players)
 			{
 				Utils.sendPacket(player, packet);

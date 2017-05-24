@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Message;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.Utils;
 import at.pcgamingfreaks.Message.MessageColor;
@@ -39,7 +40,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 {
 	//region Reflection Variables
 	private static final transient Class<?> CRAFT_STATISTIC = NMSReflection.getOBCClass("CraftStatistic");
-	private static final transient Method GET_NMS_ACHIEVEMENT =  NMSReflection.getMethod(CRAFT_STATISTIC, "getNMSAchievement", Achievement.class);
+	private static final transient Method GET_NMS_ACHIEVEMENT =  (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? NMSReflection.getMethod(CRAFT_STATISTIC, "getNMSAchievement", Achievement.class) : null;
 	private static final transient Method GET_NMS_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getNMSStatistic", Statistic.class);
 	private static final transient Method GET_MATERIAL_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getMaterialStatistic", Statistic.class, Material.class);
 	private static final transient Method GET_ENTITY_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getEntityStatistic", Statistic.class, EntityType.class);
@@ -130,19 +131,27 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	//region Short message modifier (setter)
 	/**
 	 * Set the behavior of the component to display information about an achievement when the client hovers over the text.
+	 * Not supported in MC 1.12 and newer.
 	 *
 	 * @param achievement The achievement to display.
 	 * @return This message component instance.
 	 */
 	public MessageComponent achievementTooltip(Achievement achievement)
 	{
-		try
+		if(MCVersion.isOlderThan(MCVersion.MC_1_12))
 		{
-			return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, (String) FIELD_STATISTIC_NAME.get(GET_NMS_ACHIEVEMENT.invoke(null, achievement)));
+			try
+			{
+				return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, (String) FIELD_STATISTIC_NAME.get(GET_NMS_ACHIEVEMENT.invoke(null, achievement)));
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
-		catch (Exception e)
+		else
 		{
-			e.printStackTrace();
+			System.out.println("Achievements are not supported in your minecraft version!");
 		}
 		return this;
 	}
