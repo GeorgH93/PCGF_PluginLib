@@ -167,7 +167,7 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 	@Override
 	public @NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException
 	{
-		return lastResult.getVersion().toString();
+		return getLatestVersion().toString();
 	}
 
 	@Override
