@@ -119,6 +119,7 @@ public class BukkitUpdateProviderTest
 		Gson mockedGson = PowerMockito.mock(Gson.class);
 		PowerMockito.doReturn(Array.newInstance(versionClass, 0)).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
 		whenNew(Gson.class).withAnyArguments().thenReturn(mockedGson);
+		Field gsonField = TestUtils.setAccessible(AbstractOnlineProvider.class, null, "GSON", mockedGson);
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
@@ -126,6 +127,22 @@ public class BukkitUpdateProviderTest
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
+		Class devBukkitVersionClass = BukkitUpdateProvider.class.getDeclaredClasses()[0];
+		Object devBukkitVersions = Array.newInstance(devBukkitVersionClass, 3);
+		Object devBukkitVersion = devBukkitVersionClass.newInstance();
+		Field latestNameField = TestUtils.setAccessible(devBukkitVersionClass, devBukkitVersion, "name", "INVALID-VERSION-STRING");
+		for(int i = 0; i < ((Object[]) devBukkitVersions).length; i++)
+		{
+			((Object[]) devBukkitVersions)[i] = devBukkitVersion;
+		}
+		PowerMockito.doReturn(devBukkitVersions).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
+		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
+		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
+		Field downloadURLField = TestUtils.setAccessible(devBukkitVersionClass, devBukkitVersion, "downloadUrl", "http://dl.url.org/dl");
+		assertEquals("No valid version should be found", UpdateResult.FAIL_NO_VERSION_FOUND, bukkitUpdateProvider.query());
+		TestUtils.setUnaccessible(downloadURLField, devBukkitVersion, false);
+		TestUtils.setUnaccessible(latestNameField, devBukkitVersion, false);
+		TestUtils.setUnaccessible(gsonField, null, true);
 		bukkitUpdateProvider = new BukkitUpdateProvider(74734, "Nothing", mockedLogger);
 		assertEquals("The API key isn't correct, therefore it should fail", UpdateResult.FAIL_API_KEY, bukkitUpdateProvider.query());
 		currentSevere += 3;
@@ -207,10 +224,35 @@ public class BukkitUpdateProviderTest
 		getProvider().getLatestReleaseType();
 	}
 
+	@Test(expected = NotSuccessfullyQueriedException.class)
+	public void testGetLatestNameException() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	{
+		getProvider().getLatestName();
+	}
+
+	@Test
+	public void testGetLatestNameSuccess() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	{
+		getProvider().query();
+		assertNotNull("The latest name should not be null", getLoggedProvider().getLatestName());
+	}
+
+	@Test(expected = NotSuccessfullyQueriedException.class)
+	public void testGetUpdateHistoryException() throws NoSuchFieldException, IllegalAccessException, RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		getProvider().getUpdateHistory();
+	}
+
+	@Test
+	public void testGetUpdateHistorySuccess() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException, RequestTypeNotAvailableException
+	{
+		assertNotNull("The latest name should not be null", getLoggedProvider().getUpdateHistory());
+	}
+
 	private BukkitUpdateProvider getProvider() throws NoSuchFieldException, IllegalAccessException
 	{
-		BukkitUpdateProvider bukkitUpdateProvider = new BukkitUpdateProvider(74734, null);
-		return bukkitUpdateProvider;
+		//noinspection ConstantConditions
+		return new BukkitUpdateProvider(74734, null);
 	}
 
 	private BukkitUpdateProvider getLoggedProvider()

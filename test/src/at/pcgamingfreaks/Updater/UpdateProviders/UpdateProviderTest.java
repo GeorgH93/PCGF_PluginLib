@@ -42,5 +42,7 @@ public class UpdateProviderTest
 		assertEquals("The name of the update file should match", name, updaterFile.getName());
 		assertEquals("The file name of the update file should match", fileName, updaterFile.getFileName());
 		assertEquals("The version of the update file should match", version, updaterFile.getVersion());
+		updaterFile.setGameVersion("Minecraft 1.11.2");
+		assertEquals("The game version should match", "Minecraft 1.11.2", updaterFile.getGameVersion());
 	}
 }

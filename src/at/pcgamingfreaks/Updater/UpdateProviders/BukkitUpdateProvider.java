@@ -144,12 +144,6 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 		return UpdateResult.SUCCESS;
 	}
 
-	private static class DevBukkitVersion
-	{
-		@SuppressWarnings("unused")
-		public String name, downloadUrl, fileName, fileUrl, releaseType, gameVersion, md5, projectId;
-	}
-
 	//region provider property's
 	@Override
 	public boolean provideDownloadURL()
@@ -255,4 +249,10 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 		return lastHistory;
 	}
 	//endregion
+
+	private static class DevBukkitVersion
+	{
+		@SuppressWarnings("unused")
+		public String name, downloadUrl, fileName, fileUrl, releaseType, gameVersion, md5, projectId;
+	}
 }

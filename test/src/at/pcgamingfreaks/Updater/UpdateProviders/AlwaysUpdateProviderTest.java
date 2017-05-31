@@ -132,6 +132,12 @@ public class AlwaysUpdateProviderTest
 		}
 	}
 
+	@Test(expected = RequestTypeNotAvailableException.class)
+	public void testGetUpdateHistory() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		provider.getUpdateHistory();
+	}
+
 	@Test
 	public void testProvideDownloadURL() throws Exception
 	{

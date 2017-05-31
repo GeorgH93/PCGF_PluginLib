@@ -25,11 +25,13 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.IndicateReloadClass;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -42,6 +44,20 @@ import static org.mockito.Mockito.mock;
 @PrepareForTest({ URL.class, JenkinsUpdateProvider.class })
 public class JenkinsUpdateProviderTest
 {
+	@Test(expected = NullPointerException.class)
+	public void testJenkinsUpdateProviderWithoutJob()
+	{
+		//noinspection ConstantConditions
+		new JenkinsUpdateProvider("", null, null);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testJenkinsUpdateProviderWithoutHost()
+	{
+		//noinspection ConstantConditions
+		new JenkinsUpdateProvider(null, null, null);
+	}
+
 	@Test
 	public void testQuery() throws Exception
 	{
@@ -241,16 +257,16 @@ public class JenkinsUpdateProviderTest
 	}
 
 	@Test
-	public void testSettings()
+	public void testSettings() throws IllegalAccessException, InvocationTargetException, InstantiationException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
+		//noinspection ConstantConditions
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", null);
 		assertTrue("The JenkinsUpdateProvider should provide a download URL", updater.provideDownloadURL());
 		assertTrue("The JenkinsUpdateProvider should provide a changelog", updater.provideChangelog());
 		assertTrue("The JenkinsUpdateProvider should provide a checksum", updater.provideMD5Checksum());
+		updater = (JenkinsUpdateProvider) JenkinsUpdateProvider.class.getDeclaredConstructors()[0].newInstance(new IndicateReloadClass());
 		assertFalse("The JenkinsUpdateProvider should not provide a Minecraft version", updater.provideMinecraftVersion());
 		assertFalse("The JenkinsUpdateProvider should not provide a update history", updater.provideUpdateHistory());
 		assertFalse("The JenkinsUpdateProvider should not provide dependencies", updater.provideDependencies());
-		JenkinsUpdateProvider.class.getConstructors();
 	}
 }

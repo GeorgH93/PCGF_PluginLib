@@ -46,7 +46,7 @@ abstract class AbstractOnlineProvider implements UpdateProvider
 		String sVersion = version.toString().toLowerCase();
 		if(sVersion.contains("alpha")) return ReleaseType.ALPHA;
 		if(sVersion.contains("beta"))  return ReleaseType.BETA;
-		if(sVersion.contains("alpha")) return ReleaseType.SNAPSHOT;
+		if(sVersion.contains("snapshot")) return ReleaseType.SNAPSHOT;
 		return ReleaseType.UNKNOWN;
 	}
 }
