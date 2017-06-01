@@ -586,7 +586,7 @@ public class UpdaterTest
 		result.set(updater, UpdateResult.NO_UPDATE);
 		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
-		File mockedFile = spy(new File(System.getProperty("user.dir") + "\\Test-ZIP.zip"));
+		File mockedFile = spy(new File(System.getProperty("user.dir"), "Test-ZIP.zip"));
 		doReturn(false).when(mockedFile).delete();
 		whenNew(File.class).withAnyArguments().thenReturn(mockedFile);
 		download.invoke(updater, mockedURL, "Test-ZIP.zip", 0);
