@@ -242,6 +242,7 @@ public abstract class Updater
 		{
 			logger.warning(ConsoleColor.RED + "The update provider was not queried successfully!" + ConsoleColor.RESET);
 			e.printStackTrace();
+			result = UpdateResult.FAIL_NO_VERSION_FOUND;
 		}
 		catch(IOException ignored)
 		{
