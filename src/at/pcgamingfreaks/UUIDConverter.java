@@ -324,7 +324,7 @@ public final class UUIDConverter
 
 	private static String getOnlineUUID(@NotNull String name, @Nullable Date at)
 	{
-		if((at == null || at.after(new Date(new Date().getTime() - 1000L*24*3600* 30))) && UUID_CACHE.containsKey(name))
+		if((at == null || at.after(new Date(System.currentTimeMillis() - 1000L*24*3600* 30))) && UUID_CACHE.containsKey(name))
 		{
 			return UUID_CACHE.get(name);
 		}
@@ -332,7 +332,7 @@ public final class UUIDConverter
 		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + at.getTime() : "")).openStream(), "UTF-8")))
 		{
 			uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).getAsString();
-			if(uuid != null && (at == null || at.after(new Date(new Date().getTime() - 1000L*24*3600* 30))))
+			if(uuid != null && (at == null || at.after(new Date(System.currentTimeMillis() - 1000L*24*3600* 30))))
 			{
 				UUID_CACHE.put(name, uuid);
 			}
