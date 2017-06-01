@@ -596,14 +596,14 @@ public class UpdaterTest
 		result.set(updater, UpdateResult.NO_UPDATE);
 		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
-		doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestChecksum();
-		result.set(updater, UpdateResult.NO_UPDATE);
-		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
-		assertEquals("The update result should be correct", UpdateResult.FAIL_NO_VERSION_FOUND, result.get(updater));
 		doThrow(new RequestTypeNotAvailableException("")).when(mockedUpdateProvider).getLatestChecksum();
 		result.set(updater, UpdateResult.NO_UPDATE);
 		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
 		assertEquals("The update result should be correct", UpdateResult.NO_UPDATE, result.get(updater));
+		doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestChecksum();
+		result.set(updater, UpdateResult.NO_UPDATE);
+		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
+		assertEquals("The update result should be correct", UpdateResult.FAIL_NO_VERSION_FOUND, result.get(updater));
 		TestUtils.setUnaccessible(updateFolder, updater, true);
 		TestUtils.setUnaccessible(announceDownload, updater, true);
 		TestUtils.setUnaccessible(updateProvider, updater, true);
