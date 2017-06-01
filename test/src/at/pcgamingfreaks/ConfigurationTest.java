@@ -317,12 +317,41 @@ public class ConfigurationTest
 		TestUtils.setUnaccessible(configFile, configuration, true);
 	}
 
+	@Test
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	@PrepareForTest({ ByteStreams.class, Configuration.class })
+	public void testSaveError() throws Exception
+	{
+		final int[] loggerObject = { 0 };
+		mockStatic(ByteStreams.class);
+		when(ByteStreams.copy(any(FileInputStream.class), any(FileOutputStream.class))).thenReturn((long) 0);
+		Logger mockedLogger = mock(Logger.class);
+		YAML mockedYAML = mock(YAML.class);
+		whenNew(YAML.class).withArguments(File.class).thenReturn(mockedYAML);
+		Configuration configuration = spy(new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1, 10, "NOT_HERE.cfg"));
+		new File("NOT_HERE.cfg").delete();
+		doReturn(true).when(configuration).newConfigCreated();
+		doThrow(new FileNotFoundException()).when(configuration).saveConfig();
+		doAnswer(new Answer()
+		{
+			@Override
+			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
+			{
+				loggerObject[0]++;
+				return null;
+			}
+		}).when(mockedLogger).warning(anyString());
+		configuration.reload();
+		assertEquals("The error should be logged", 1, loggerObject[0]);
+	}
+
 	@AfterClass
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static void cleanupTestData()
 	{
 		new File("config.yml").delete();
 		new File("NotFound.yml").delete();
+		new File("NOT_HERE.cfg").delete();
 		new File("config.yml.old_v1").delete();
 		new File("config.yml.old_v3").delete();
 		new File("config.yml.old_v5").delete();

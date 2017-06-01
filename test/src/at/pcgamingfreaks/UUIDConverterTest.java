@@ -51,7 +51,6 @@ import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ URL.class, UUIDConverter.class })
 public class UUIDConverterTest
 {
 	private static final String TEST_USER_NAME = "GeorgH93", TEST_USER_UUID = "6c99e2b55c9e4663b4db7ad3bc52d28d", TEST_USER_UUID_SEPARATORS = "6c99e2b5-5c9e-4663-b4db-7ad3bc52d28d";
@@ -110,6 +109,7 @@ public class UUIDConverterTest
 	}
 
 	@Test
+	@PrepareForTest({ URL.class, UUIDConverter.class })
 	public void testGetOnlineUUIDFromName() throws Exception
 	{
 		Field uuidCache = UUIDConverter.class.getDeclaredField("UUID_CACHE");
@@ -201,6 +201,7 @@ public class UUIDConverterTest
 
 	@Test
 	@SuppressWarnings("SpellCheckingInspection")
+	@PrepareForTest({ URL.class, UUIDConverter.class })
 	public void testGetUUIDsFromNames() throws Exception
 	{
 		final Map<String, String> testNames = new TreeMap<>();
@@ -286,6 +287,7 @@ public class UUIDConverterTest
 	}
 
 	@Test
+	@PrepareForTest({ URL.class, UUIDConverter.class })
 	public void testNameHistory() throws Exception
 	{
 		UUIDConverter.NameChange[] nameChanges = UUIDConverter.getNamesFromUUID(TEST_USER2_UUID);

@@ -59,11 +59,13 @@ public class MessageComponentTest
 	}
 
 	@Test
-	public void testMessageComponent()
+	public void testMessageComponent() throws NoSuchFieldException, IllegalAccessException
 	{
 		MessageComponent messageComponent = new MessageComponent("Test", MessageColor.BLUE);
 		assertEquals("The chat color should match", ChatColor.BLUE, messageComponent.getChatColor());
 		assertEquals("The new line object should be equal", new MessageComponent("\n").getClassicMessage(), messageComponent.getNewLineComponent().getClassicMessage());
+		TestObjects.setBukkitVersion("1_12_R1");
+		assertEquals("The message component should be equal", messageComponent, messageComponent.achievementTooltip(Achievement.BREW_POTION));
 		Gson gson = new Gson();
 		List<MessageComponent> message = MessageComponent.fromJsonArray(gson.fromJson("[{\"text\":\"test\"}]", JsonArray.class));
 		assertEquals("The amount of message components should match", 1, message.size());
