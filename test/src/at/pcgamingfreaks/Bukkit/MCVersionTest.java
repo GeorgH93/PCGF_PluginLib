@@ -61,4 +61,24 @@ public class MCVersionTest
 		assertTrue("The version should match", MCVersion.MC_1_8.olderThan(MCVersion.MC_1_9));
 		assertFalse("The version should not match", MCVersion.MC_1_8.olderThan(MCVersion.MC_1_8));
 	}
+
+	@Test
+	public void testUnknownVersion()
+	{
+		assertTrue(MCVersion.UNKNOWN.isSame(MCVersion.UNKNOWN));
+		assertFalse(MCVersion.isOlderOrEqualThan(MCVersion.UNKNOWN));
+		assertFalse(MCVersion.isOlderThan(MCVersion.UNKNOWN));
+		assertFalse(MCVersion.isNewerOrEqualThan(MCVersion.UNKNOWN));
+		assertFalse(MCVersion.isNewerThan(MCVersion.UNKNOWN));
+		assertFalse(MCVersion.is(MCVersion.UNKNOWN));
+		assertFalse(MCVersion.UNKNOWN.isSame(MCVersion.MC_1_7));
+		assertTrue(MCVersion.UNKNOWN.olderOrEqualThan(MCVersion.UNKNOWN));
+		assertFalse(MCVersion.UNKNOWN.olderThan(MCVersion.UNKNOWN));
+		assertTrue(MCVersion.UNKNOWN.newerOrEqualThan(MCVersion.UNKNOWN));
+		assertFalse(MCVersion.UNKNOWN.newerThan(MCVersion.UNKNOWN));
+		assertFalse(MCVersion.UNKNOWN.olderOrEqualThan(MCVersion.MC_1_7));
+		assertFalse(MCVersion.UNKNOWN.olderThan(MCVersion.MC_1_7));
+		assertFalse(MCVersion.UNKNOWN.newerOrEqualThan(MCVersion.MC_1_7));
+		assertFalse(MCVersion.UNKNOWN.newerThan(MCVersion.MC_1_7));
+	}
 }

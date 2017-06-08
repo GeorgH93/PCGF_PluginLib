@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -111,22 +111,22 @@ public enum MCVersion
 
 	public boolean newerThan(MCVersion other)
 	{
-		return this.versionID > other.versionID;
+		return this.versionID > other.versionID && other != UNKNOWN;
 	}
 
 	public boolean newerOrEqualThan(MCVersion other)
 	{
-		return this.versionID >= other.versionID;
+		return isSame(other) || newerThan(other);
 	}
 
 	public boolean olderThan(MCVersion other)
 	{
-		return this.versionID < other.versionID;
+		return this.versionID < other.versionID && this != UNKNOWN;
 	}
 
 	public boolean olderOrEqualThan(MCVersion other)
 	{
-		return this.versionID <= other.versionID;
+		return isSame(other) || olderThan(other);
 	}
 
 	public static boolean is(MCVersion other)
@@ -136,22 +136,22 @@ public enum MCVersion
 
 	public static boolean isNewerThan(MCVersion other)
 	{
-		return CURRENT_VERSION.versionID > other.versionID;
+		return CURRENT_VERSION.versionID > other.versionID && other != UNKNOWN;
 	}
 
 	public static boolean isNewerOrEqualThan(MCVersion other)
 	{
-		return CURRENT_VERSION.versionID >= other.versionID;
+		return is(other) || isNewerThan(other);
 	}
 
 	public static boolean isOlderThan(MCVersion other)
 	{
-		return CURRENT_VERSION.versionID < other.versionID;
+		return CURRENT_VERSION.versionID < other.versionID && CURRENT_VERSION != UNKNOWN;
 	}
 
 	public static boolean isOlderOrEqualThan(MCVersion other)
 	{
-		return CURRENT_VERSION.versionID <= other.versionID;
+		return is(other) || isOlderThan(other);
 	}
 
 	public static @Nullable MCVersion getFromServerVersion(@NotNull String serverVersion)
