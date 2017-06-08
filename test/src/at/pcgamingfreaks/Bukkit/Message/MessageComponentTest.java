@@ -66,6 +66,7 @@ public class MessageComponentTest
 		assertEquals("The new line object should be equal", new MessageComponent("\n").getClassicMessage(), messageComponent.getNewLineComponent().getClassicMessage());
 		TestObjects.setBukkitVersion("1_12_R1");
 		assertEquals("The message component should be equal", messageComponent, messageComponent.achievementTooltip(Achievement.BREW_POTION));
+		TestObjects.setBukkitVersion("1_8_R1");
 		Gson gson = new Gson();
 		List<MessageComponent> message = MessageComponent.fromJsonArray(gson.fromJson("[{\"text\":\"test\"}]", JsonArray.class));
 		assertEquals("The amount of message components should match", 1, message.size());

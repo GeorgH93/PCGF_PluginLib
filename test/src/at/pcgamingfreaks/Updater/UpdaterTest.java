@@ -542,6 +542,7 @@ public class UpdaterTest
 		assertFalse("The version check should return false", getUpdater("1.0").versionCheck(null));
 	}
 
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Test
 	public void testDownload() throws Exception
 	{
@@ -585,11 +586,24 @@ public class UpdaterTest
 		result.set(updater, UpdateResult.NO_UPDATE);
 		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
+		File mockedFile = spy(new File(System.getProperty("user.dir"), "Test-ZIP.zip"));
+		doReturn(false).when(mockedFile).delete();
+		whenNew(File.class).withAnyArguments().thenReturn(mockedFile);
+		download.invoke(updater, mockedURL, "Test-ZIP.zip", 0);
+		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
 		PowerMockito.doReturn(mockedInputStream).when(mockedConnection).getInputStream();
 		doReturn("123").when(mockedUpdateProvider).getLatestChecksum();
 		result.set(updater, UpdateResult.NO_UPDATE);
 		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
+		doThrow(new RequestTypeNotAvailableException("")).when(mockedUpdateProvider).getLatestChecksum();
+		result.set(updater, UpdateResult.NO_UPDATE);
+		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
+		assertEquals("The update result should be correct", UpdateResult.NO_UPDATE, result.get(updater));
+		doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestChecksum();
+		result.set(updater, UpdateResult.NO_UPDATE);
+		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
+		assertEquals("The update result should be correct", UpdateResult.FAIL_NO_VERSION_FOUND, result.get(updater));
 		TestUtils.setUnaccessible(updateFolder, updater, true);
 		TestUtils.setUnaccessible(announceDownload, updater, true);
 		TestUtils.setUnaccessible(updateProvider, updater, true);
