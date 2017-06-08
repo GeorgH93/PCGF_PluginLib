@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.PluginLib.Bukkit;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Updater;
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
@@ -26,6 +27,7 @@ import at.pcgamingfreaks.StringUtils;
 import at.pcgamingfreaks.Updater.UpdateProviders.AlwaysUpdateProvider;
 import at.pcgamingfreaks.Version;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,6 +52,11 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 			this.getLogger().warning(ConsoleColor.RED + "Failed to load config! Can't start up!" + ConsoleColor.RESET);
 			this.setEnabled(false);
 			return;
+		}
+
+		if(MCVersion.is(MCVersion.UNKNOWN))
+		{
+			this.getLogger().warning(ConsoleColor.RED + "You are using an unknown version of Minecraft! Please check for updates! (Your MC version: " + Bukkit.getVersion() + ") " + ConsoleColor.RESET);
 		}
 
 		this.databaseConnectionPool = DatabaseConnectionPoolBase.startPool(this.config, this.getLogger(), this.getDataFolder());
