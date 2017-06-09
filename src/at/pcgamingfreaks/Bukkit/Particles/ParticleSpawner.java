@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -138,7 +138,7 @@ public abstract class ParticleSpawner
 	 */
 	public static ParticleSpawner getParticleSpawner()
 	{
-		if (MCVersion.isOlderThan(MCVersion.MC_1_8) && MCVersion.isNewerThan(MCVersion.UNKNOWN))
+		if (MCVersion.isOlderThan(MCVersion.MC_1_8))
 		{
 			return new ParticleSpawnerBukkit_1_7();
 		}
