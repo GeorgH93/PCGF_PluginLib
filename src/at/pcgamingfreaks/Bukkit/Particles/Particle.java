@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2017 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@ package at.pcgamingfreaks.Bukkit.Particles;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,15 +85,15 @@ public enum Particle
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	ITEM_CRACK      ("iconcrack",       "ITEM_CRACK",   MCVersion.MC_1_8),
+	ITEM_CRACK      ("iconcrack",       "ITEM_CRACK",   MCVersion.MC_1_8, ItemStack.class),
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	BLOCK_CRACK     ("blockcrack",      "BLOCK_CRACK",  MCVersion.MC_1_8),
+	BLOCK_CRACK     ("blockcrack",      "BLOCK_CRACK",  MCVersion.MC_1_8, MaterialData.class),
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	BLOCK_DUST      ("blockdust",       "BLOCK_DUST",   MCVersion.MC_1_8),
+	BLOCK_DUST      ("blockdust",       "BLOCK_DUST",   MCVersion.MC_1_8, MaterialData.class),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
@@ -111,7 +113,7 @@ public enum Particle
 	/**
 	 * Only for Minecraft 1.10 and newer!
 	 */
-	FALLING_DUST    ("fallingdust",     "FALLING_DUST", MCVersion.MC_1_10),
+	FALLING_DUST    ("fallingdust",     "FALLING_DUST",     MCVersion.MC_1_10, MaterialData.class),
 	/**
 	 * Only for Minecraft 1.11 and newer!
 	 */
@@ -134,6 +136,7 @@ public enum Particle
 	//private final int parameterCount;
 	private final String oldName, name;
 	private final Enum<?> nmsEnumParticle;
+	private final Class<?> dataType;
 	private final MCVersion minVersion;
 
 	Particle(String oldName)
@@ -153,23 +156,21 @@ public enum Particle
 
 	Particle(String oldName, String name, MCVersion minVersion)
 	{
+		this(oldName, name, minVersion, Void.class);
+	}
+
+	Particle(String oldName, String name, MCVersion minVersion, Class<?> dataType)
+	{
 		this.name = name;
 		this.oldName = oldName;
 		this.minVersion = minVersion;
-		//int paramCount = 0;
 		Enum<?> nmsEnum = null;
 		if(MCVersion.isNewerOrEqualThan(minVersion))
 		{
 			nmsEnum = NMSReflection.getNMSEnum("EnumParticle." + name);
-			/*try
-			{
-				//noinspection ConstantConditions
-				paramCount = (int) NMSReflection.getNMSMethod("EnumParticle", "d").invoke(nmsEnum);
-			}
-			catch(Exception ignored) {}*/
 		}
 		this.nmsEnumParticle = nmsEnum;
-		//this.parameterCount = paramCount;
+		this.dataType = dataType;
 	}
 
 	public @NotNull String getOldName()
@@ -197,10 +198,14 @@ public enum Particle
 		return minVersion;
 	}
 
-	/*public int getParameterCount()
+	/**
+	 * Returns the required data type for the particle.
+	 * @return The required data type.
+	 */
+	public Class<?> getDataType()
 	{
-		return this.parameterCount;
-	}*/
+		return dataType;
+	}
 
 	public static @Nullable Particle getFrom(org.bukkit.Particle bukkitParticle)
 	{

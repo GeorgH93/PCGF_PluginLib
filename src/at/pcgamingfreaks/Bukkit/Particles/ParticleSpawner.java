@@ -20,22 +20,51 @@ package at.pcgamingfreaks.Bukkit.Particles;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 public abstract class ParticleSpawner
 {
+	/*
+	 * Spawns a single material based particle.
+	 * Only for Minecraft 1.8 and newer!
+	 *
+	 * @param location     the location where the effect should be spawned
+	 * @param type         the type of the effect that should be spawned
+	 * @param particleData the data (material) of the particle
+	 * @param visibleRange the range that the effect will be visible
+	 */
+	/*public void spawnParticle(Location location, Particle type, Object particleData, double visibleRange)
+	{
+		spawnParticle(location, type, particleData, visibleRange, 1, 0, 0, 0, 0);
+	}*/
+
 	/**
 	 * Spawns a single material based particle.
 	 * Only for Minecraft 1.8 and newer!
 	 *
 	 * @param location     the location where the effect should be spawned
 	 * @param type         the type of the effect that should be spawned
-	 * @param material     the material of the particle
+	 * @param itemStack    the item of the particle
 	 * @param visibleRange the range that the effect will be visible
 	 */
-	public void spawnParticle(Location location, Particle type, Material material, double visibleRange)
+	public void spawnParticle(Location location, Particle type, ItemStack itemStack, double visibleRange)
 	{
-		spawnParticle(location, type, material, visibleRange, 1, 0, 0, 0, 0);
+		spawnParticle(location, type, itemStack, visibleRange, 1, 0, 0, 0, 0);
+	}
+
+	/**
+	 * Spawns a single material based particle.
+	 * Only for Minecraft 1.8 and newer!
+	 *
+	 * @param location     the location where the effect should be spawned
+	 * @param type         the type of the effect that should be spawned
+	 * @param materialData the material of the particle
+	 * @param visibleRange the range that the effect will be visible
+	 */
+	public void spawnParticle(Location location, Particle type, MaterialData materialData, double visibleRange)
+	{
+		spawnParticle(location, type, materialData, visibleRange, 1, 0, 0, 0, 0);
 	}
 
 	/**
@@ -44,42 +73,7 @@ public abstract class ParticleSpawner
 	 *
 	 * @param location     the location where the effect should be spawned
 	 * @param type         the type of the effect that should be spawned
-	 * @param material     the material of the particle
-	 * @param visibleRange the range that the effect will be visible
-	 * @param count        the amount of particles that should be spawned
-	 * @param offsetX      is added to the X position after being multiplied by random.nextGaussian() to spread the particles out
-	 * @param offsetY      is added to the Y position after being multiplied by random.nextGaussian() to spread the particles out
-	 * @param offsetZ      is added to the Z position after being multiplied by random.nextGaussian() to spread the particles out
-	 * @param speed        the speed the particles are moving with
-	 */
-	public void spawnParticle(Location location, Particle type, Material material, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
-	{
-		spawnParticle(location, type, material, 0, visibleRange, count, offsetX, offsetY, offsetZ, speed);
-	}
-
-	/**
-	 * Spawns a single material based particle.
-	 * Only for Minecraft 1.8 and newer!
-	 *
-	 * @param location     the location where the effect should be spawned
-	 * @param type         the type of the effect that should be spawned
-	 * @param material     the material of the particle
-	 * @param materialData the material data of the particle
-	 * @param visibleRange the range that the effect will be visible
-	 */
-	public void spawnParticle(Location location, Particle type, Material material, int materialData, double visibleRange)
-	{
-		spawnParticle(location, type, material, materialData, visibleRange, 1, 0, 0, 0, 0);
-	}
-
-	/**
-	 * Spawns a group of material based particles.
-	 * Only for Minecraft 1.8 and newer!
-	 *
-	 * @param location     the location where the effect should be spawned
-	 * @param type         the type of the effect that should be spawned
-	 * @param material     the material of the particle
-	 * @param materialData the material data of the particle
+	 * @param particleData the data (material) of the particle, please use the right type for the particle (Particle.getDataType)
 	 * @param visibleRange the range that the effect will be visible
 	 * @param count        the amount of particles that should be spawned
 	 * @param offsetX      is added to the X position after being multiplied by random.nextGaussian() to spread the particles out
@@ -88,21 +82,38 @@ public abstract class ParticleSpawner
 	 * @param speed        the speed the particles are moving with
 	 */
 	@SuppressWarnings("deprecation")
-	public void spawnParticle(Location location, Particle type, Material material, int materialData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
+	public void spawnParticle(Location location, Particle type, Object particleData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
 		int[] data;
-		switch(type)
+		if(type.getDataType().equals(ItemStack.class))
 		{
-			case ITEM_CRACK: data = new int[] { material.getId(), materialData }; break;
-			case BLOCK_CRACK: data = new int[] { material.getId() + 4096 * materialData }; break;
-			case BLOCK_DUST: data = new int[] { material.getId() }; break;
-			case FALLING_DUST: data = new int[] { material.getId() }; break;
-			default: data = new int[] {};
+			if(particleData == null || !(particleData instanceof ItemStack))
+			{
+				data = new int[]{0,0};
+			}
+			else
+			{
+				ItemStack its = (ItemStack) particleData;
+				data = new int[] { its.getType().getId(), its.getDurability() };
+			}
 		}
+		else if(type.getDataType().equals(ItemStack.class))
+		{
+			if(particleData == null || (!(particleData instanceof MaterialData) && !(particleData instanceof ItemStack)))
+			{
+				data = new int[]{0};
+			}
+			else
+			{
+				MaterialData matData = (particleData instanceof MaterialData) ? (MaterialData) particleData : ((ItemStack) particleData).getData();
+				data = new int[] { matData.getItemTypeId() + (((int)matData.getData()) << 12) };
+			}
+		}
+		else data = new int[0];
 		spawnParticle(location, type, visibleRange, count, offsetX, offsetY, offsetZ, speed, data);
 	}
 
-	protected void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data) {}
+	protected abstract void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data);
 
 	/**
 	 * Spawns a single particle.

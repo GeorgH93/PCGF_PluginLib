@@ -29,6 +29,9 @@ class ParticleSpawnerBukkit_1_7 extends ParticleSpawnerBukkit
 {
 	private static final Constructor PACKET_CONSTRUCTOR = NMSReflection.getConstructor(NMSReflection.getNMSClass("PacketPlayOutWorldParticles"), String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
 
+	@Override
+	protected void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data) {}
+
 	public void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
 		Validate.isTrue(type.getMinVersion().olderOrEqualThan(MCVersion.MC_1_7_10), "The %s particle is not available in your minecraft version!", type.getName());
