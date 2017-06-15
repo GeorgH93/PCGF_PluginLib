@@ -97,7 +97,7 @@ public abstract class ParticleSpawner
 				data = new int[] { its.getType().getId(), its.getDurability() };
 			}
 		}
-		else if(type.getDataType().equals(ItemStack.class))
+		else if(type.getDataType().equals(MaterialData.class))
 		{
 			if(particleData == null || (!(particleData instanceof MaterialData) && !(particleData instanceof ItemStack)))
 			{

@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
@@ -27,6 +28,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -66,31 +69,48 @@ public class ParticleSpawnerTest
 	}
 
 	@Test
-	public void testSpawnParticle() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException
+	public void testSpawnParticle() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, NoSuchFieldException
 	{
-		//TODO fix me
-		/*World mockedWorld = mock(World.class);
+		World mockedWorld = mock(World.class);
 		Location mockedLocation = spy(new Location(mockedWorld, 10.0, 20.0, 30.0));
 		ParticleSpawner effect = new ParticleSpawnerBukkit_1_7();
-		Method spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, Material.class, double.class);
-		spawnParticle.invoke(effect, mockedLocation, Particle.ITEM_CRACK, Material.ACACIA_DOOR, 100.0);
+		Method spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, MaterialData.class, double.class);
+		spawnParticle.invoke(effect, mockedLocation, Particle.ITEM_CRACK, new MaterialData(Material.ACACIA_DOOR), 100.0);
 		verifyStatic(times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
-		spawnParticle.invoke(effect, mockedLocation, Particle.BLOCK_DUST, Material.REDSTONE_COMPARATOR_ON, 300.0);
+		spawnParticle.invoke(effect, mockedLocation, Particle.BLOCK_DUST, new MaterialData(Material.REDSTONE_COMPARATOR_ON), 300.0);
 		verifyStatic(times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
-		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, Material.ACTIVATOR_RAIL, 200.0);
+		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new MaterialData(Material.ACTIVATOR_RAIL), 200.0);
 		verifyStatic(times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
-		spawnParticle.invoke(effect, mockedLocation, Particle.EXPLOSION, Material.TNT, 10.0);
+		spawnParticle.invoke(effect, mockedLocation, Particle.EXPLOSION, new MaterialData(Material.TNT), 10.0);
 		verifyStatic(times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
-		ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, Material.class, int.class, double.class).invoke(effect, mockedLocation, Particle.BLOCK_CRACK, Material.DIAMOND, 5, 100.0);
+		spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, double.class);
+		spawnParticle.invoke(effect, mockedLocation, Particle.SLIME, 10.0);
 		verifyStatic(times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
-		ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, double.class).invoke(effect, mockedLocation, Particle.DRIP_LAVA, 20.0);
+		spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, ItemStack.class, double.class);
+		spawnParticle.invoke(effect, mockedLocation, Particle.ITEM_CRACK, new ItemStack(Material.ACTIVATOR_RAIL, 10), 10.0);
 		verifyStatic(times(0));
-		Utils.sendPacket(any(Player.class), anyObject());*/
+		Utils.sendPacket(any(Player.class), anyObject());
+		spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, Object.class, double.class, int.class, float.class, float.class, float.class, float.class);
+		spawnParticle.invoke(effect, mockedLocation, Particle.ITEM_CRACK, null, 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
+		verifyStatic(times(0));
+		Utils.sendPacket(any(Player.class), anyObject());
+		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, null, 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
+		verifyStatic(times(0));
+		Utils.sendPacket(any(Player.class), anyObject());
+		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new MaterialData(Material.TNT), 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
+		verifyStatic(times(0));
+		Utils.sendPacket(any(Player.class), anyObject());
+		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new ItemStack(Material.TNT, 20), 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
+		verifyStatic(times(0));
+		Utils.sendPacket(any(Player.class), anyObject());
+		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new TestBukkitPlayer(), 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
+		verifyStatic(times(0));
+		Utils.sendPacket(any(Player.class), anyObject());
 	}
 
 	@Test
