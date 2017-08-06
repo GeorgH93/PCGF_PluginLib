@@ -24,6 +24,7 @@ import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
 import org.bukkit.Bukkit;
+import org.bukkit.material.MaterialData;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,5 +71,7 @@ public class ParticleTest
 		assertEquals("The min version should match", MCVersion.MC_1_9, Particle.DAMAGE_INDICATOR.getMinVersion());
 		assertEquals("The Particle object should match", Particle.FALLING_DUST, Particle.getFrom(org.bukkit.Particle.FALLING_DUST));
 		assertNull("The enum of the enum constant should be null", Particle.EXPLOSION.getEnum());
+		assertEquals("The data type should match", MaterialData.class, Particle.FALLING_DUST.getDataType());
+		assertEquals("The data type should match", Void.class, Particle.SPIT.getDataType());
 	}
 }

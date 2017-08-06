@@ -35,20 +35,19 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class, Utils.class })
@@ -102,5 +101,15 @@ public class ParticleSpawnerBukkit_1_7Test
 		modifiers.set(packetConstructorField, packetConstructorField.getModifiers() | Modifier.FINAL);
 		packetConstructorField.setAccessible(false);
 		modifiers.setAccessible(false);
+	}
+
+	@Test
+	public void testProtectedSpawnParticle() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
+	{
+		ParticleSpawnerBukkit_1_7 particleSpawner = new ParticleSpawnerBukkit_1_7();
+		Method spawnParticle = ParticleSpawnerBukkit_1_7.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, double.class, int.class, float.class, float.class, float.class, float.class, int[].class);
+		spawnParticle.setAccessible(true);
+		spawnParticle.invoke(particleSpawner, null, null, 0.0f, 0, 0.0f, 0.0f, 0.0f, 0.0f, null);
+		spawnParticle.setAccessible(false);
 	}
 }
