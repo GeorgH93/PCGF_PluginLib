@@ -24,7 +24,7 @@ import java.util.Date;
 
 public class DateUtils
 {
-	public static final byte YEAR = 0, MONTH = 1, DAY = 2, HOUR = 3, MINUTE = 4, SECOND = 5;
+	public static final byte YEAR = 0, MONTH = 1, DAY = 2, HOUR = 3, MINUTE = 4, SECOND = 5, TOTAL_DAYS = 6;
 	private static final int[] types = new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH };
 
 	public static int[] timeSpan(long time)
@@ -92,12 +92,11 @@ public class DateUtils
 	private static int[] timeSpan(long from, @Nullable Calendar fromDate, long to, @Nullable Calendar toDate, boolean fastMode)
 	{
 		long totalDiffSeconds = ((to > from) ? (to - from) : (from - to)) / 1000L;
-		int[] diff = new int[] { -1, -1, -1, 0, 0, 0 };
+		int[] diff = new int[] { -1, -1, -1, 0, 0, 0, (int) ((totalDiffSeconds) / 86400L) };
 		if(fastMode)
 		{
-			diff[DAY] = (int) ((totalDiffSeconds) / 86400L);
-			diff[YEAR] = diff[DAY] / 365;
-			diff[DAY] -= diff[YEAR] * 365;
+			diff[YEAR] = diff[TOTAL_DAYS] / 365;
+			diff[DAY] = diff[TOTAL_DAYS] - diff[YEAR] * 365;
 			diff[MONTH] = (int)(diff[DAY] / (365/12.0));
 			diff[DAY] -= diff[MONTH] * (365/12.0);
 		}
