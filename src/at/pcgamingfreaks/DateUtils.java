@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks;
 
+import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Calendar;
@@ -26,7 +28,9 @@ public class DateUtils
 {
 	public static final byte YEAR = 0, MONTH = 1, DAY = 2, HOUR = 3, MINUTE = 4, SECOND = 5, TOTAL_DAYS = 6;
 	private static final int[] types = new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH };
+	private static String[] timeUnitNames = new String[] { "year", "years", "month", "months", "day", "days", "hour", "hours", "minute", "minutes", "second", "seconds" };
 
+	//region TimeSpan methods
 	public static int[] timeSpan(long time)
 	{
 		return timeSpan(time, false);
@@ -135,6 +139,35 @@ public class DateUtils
 		diff[SECOND] = secondsOnDay % 60;
 
 		return diff;
+	}
+	//endregion
+	//endregion
+
+	//region TimeSpanToString methods
+	public static String timeSpanToString(@NotNull int[] timeSpan)
+	{
+		return timeSpanToString(timeSpan, timeUnitNames);
+	}
+
+	public static String timeSpanToString(@NotNull int[] timeSpan, @NotNull String[] unitNames)
+	{
+		Validate.notNull(timeSpan);
+		Validate.notNull(unitNames);
+		Validate.isTrue(timeSpan.length > 5);
+		Validate.isTrue(unitNames.length == 12);
+
+		StringBuilder stringBuilder = new StringBuilder();
+		for(int i = 0; i < TOTAL_DAYS; i++)
+		{
+			if(timeSpan[i] > 0 || (i == SECOND && stringBuilder.length() == 0))
+			{
+				if(stringBuilder.length() > 0) stringBuilder.append(' ');
+				stringBuilder.append(timeSpan[i]);
+				stringBuilder.append(' ');
+				stringBuilder.append((timeSpan[i] == 1) ? unitNames[i*2] : unitNames[i*2+1]);
+			}
+		}
+		return stringBuilder.toString();
 	}
 	//endregion
 }

@@ -17,16 +17,24 @@
 
 package at.pcgamingfreaks;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class DateUtilsTest
 {
 	private static final long TIME1 = 1501948524000L, TIME2 = 1470412524000L, TIME3 = TIME2 + 1000L;
+
+	@BeforeClass
+	public static void prepareTestData()
+	{
+		new DateUtils();
+	}
 
 	@Test
 	public void testTimeSpanLong()
@@ -79,5 +87,13 @@ public class DateUtilsTest
 		cal2.set(Calendar.DAY_OF_MONTH, 1);
 		assertArrayEquals(new int[] { 0, 1, 1, 0, 0, 0, 29 }, DateUtils.timeSpan(cal1, cal2));
 		assertArrayEquals(new int[] { 0, 0, 29, 0, 0, 0, 29 }, DateUtils.timeSpan(cal1, cal2, true));
+	}
+
+	@Test
+	public void testTimeSpanToString()
+	{
+		assertEquals("1 year", DateUtils.timeSpanToString(new int[] { 1, 0, 0, 0, 0, 0, 365 }));
+		assertEquals("11 months 30 days 23 hours 59 minutes 59 seconds", DateUtils.timeSpanToString(new int[] { 0, 11, 30, 23, 59, 59, 364 }));
+		assertEquals("0 seconds", DateUtils.timeSpanToString(new int[] { 0, 0, 0, 0, 0, 0, 0 }));
 	}
 }
