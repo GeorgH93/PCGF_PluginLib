@@ -13,6 +13,9 @@ Database:
     #The max amount of connections to the database the connection pool will open.
     # To high numbers may cause your SQL server to run out of connections, to low numbers may cause an negative impact on performance when a lot of plugins are using the pool.
     MaxConnections: 4
+    # Allows to set the connection properties.
+    # Properties: ["useSSL=false"]
+    Properties: []
 
 Misc:
   # You may want to disable automatic updates if you have plugins that require a certain version of this library.
