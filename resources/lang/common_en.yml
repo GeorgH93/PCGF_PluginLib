@@ -1,0 +1,40 @@
+# This file contains common translation
+
+Date:
+  Days:
+    Monday: Monday
+    Tuesday: Tuesday
+    Wednesday: Wednesday
+    Thursday: Thursday
+    Friday: Friday
+    Saturday: Saturday
+    Sunday: Sunday
+  Month:
+    January: January
+    February: February
+    March: March
+    April: April
+    May: May
+    June: June
+    July: July
+    August: August
+    September: September
+    October: October
+    November: November
+    December: December
+  Units:
+    Year: year
+    Years: years
+    Month: month
+    Months: months
+    Day: day
+    Days: days
+    Hour: hour
+    Hours: hours
+    Minute: minute
+    Minutes: minutes
+    Second: second
+    Seconds: seconds
+
+
+Version: 1
