@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks;
 
+import at.pcgamingfreaks.Calendar.TimeSpan;
+
 import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +66,8 @@ public class Utils
 		Validate.notNull(logger, "The logger must not be null.");
 		if (System.getProperty("java.version").startsWith("1.7"))
 		{
-			logger.warning(ConsoleColor.RED + "You are still using Java 1.7. Java 1.7 is EOL for over a year now! You should really update to Java 1.8!" + ConsoleColor.RESET);
+			TimeSpan ts = new TimeSpan(1430438401000L, true);
+			logger.warning(ConsoleColor.RED + "You are still using Java 1.7. The support end of Java 1.7 was " + ts.getYears() + " years and " + ts.getMonths() + " months ago! You should really update to Java 1.8!" + ConsoleColor.RESET);
 			logger.info(ConsoleColor.YELLOW + "For now this plugin will still work fine with Java 1.7 but no warranty that this won't change in the future." + ConsoleColor.RESET);
 			blockThread(pauseTime);
 		}
