@@ -17,18 +17,15 @@
 
 package at.pcgamingfreaks.PluginLib.Bukkit;
 
+import at.pcgamingfreaks.*;
 import at.pcgamingfreaks.Bukkit.Language;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Updater;
 import at.pcgamingfreaks.Calendar.TimeSpan;
-import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
-import at.pcgamingfreaks.Reflection;
-import at.pcgamingfreaks.StringUtils;
 import at.pcgamingfreaks.Updater.UpdateProviders.AlwaysUpdateProvider;
-import at.pcgamingfreaks.Version;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -75,17 +72,19 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 		new ItemNameResolver(this);
 
 		Language commonLanguage = new Language(this, 1, 1, File.separator + "lang", "common_");
-		String[] unitNames = new String[] { commonLanguage.get("Date.Units.Year"), commonLanguage.get("Date.Units.Years"), commonLanguage.get("Date.Units.Month"), commonLanguage.get("Date.Units.Months"),
-		                                    commonLanguage.get("Date.Units.Day"), commonLanguage.get("Date.Units.Days"), commonLanguage.get("Date.Units.Hour"), commonLanguage.get("Date.Units.Hours"),
-		                                    commonLanguage.get("Date.Units.Minute"), commonLanguage.get("Date.Units.Minutes"), commonLanguage.get("Date.Units.Second"), commonLanguage.get("Date.Units.Seconds") };
-		try
+		commonLanguage.load("en", LanguageUpdateMethod.UPGRADE);
+		if(commonLanguage.isLoaded())
 		{
-			//noinspection ConstantConditions
-			Reflection.getField(TimeSpan.class, "timeUnitNames").set(null, unitNames);
-		}
-		catch(IllegalAccessException e)
-		{
-			e.printStackTrace();
+			String[] unitNames = new String[] { commonLanguage.get("Date.Units.Year"), commonLanguage.get("Date.Units.Years"), commonLanguage.get("Date.Units.Month"), commonLanguage.get("Date.Units.Months"), commonLanguage.get("Date.Units.Day"), commonLanguage.get("Date.Units.Days"), commonLanguage.get("Date.Units.Hour"), commonLanguage.get("Date.Units.Hours"), commonLanguage.get("Date.Units.Minute"), commonLanguage.get("Date.Units.Minutes"), commonLanguage.get("Date.Units.Second"), commonLanguage.get("Date.Units.Seconds") };
+			try
+			{
+				//noinspection ConstantConditions
+				Reflection.getField(TimeSpan.class, "timeUnitNames").set(null, unitNames);
+			}
+			catch(IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		instance = this;
