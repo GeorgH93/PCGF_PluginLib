@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -67,7 +67,23 @@ public class Utils
 		if (System.getProperty("java.version").startsWith("1.7"))
 		{
 			TimeSpan ts = new TimeSpan(1430438401000L, true);
-			logger.warning(ConsoleColor.RED + "You are still using Java 1.7. The support end of Java 1.7 was " + ts.getYears() + " years and " + ts.getMonths() + " months ago! You should really update to Java 1.8!" + ConsoleColor.RESET);
+			StringBuilder msgBuilder = new StringBuilder(ConsoleColor.RED.toString());
+			msgBuilder.append("You are still using Java 1.7. The support end of Java 1.7 was ");
+			msgBuilder.append(ts.getYears());
+			msgBuilder.append(" year");
+			if(ts.getYears() > 1) msgBuilder.append('s');
+			msgBuilder.append(' ');
+			if(ts.getMonths() > 0)
+			{
+				msgBuilder.append("and ");
+				msgBuilder.append(ts.getMonths());
+				msgBuilder.append(" month");
+				if(ts.getMonths() > 1) msgBuilder.append('s');
+				msgBuilder.append(' ');
+			}
+			msgBuilder.append(" ago! You should really update to Java 1.8!");
+			msgBuilder.append(ConsoleColor.RESET.toString());
+			logger.warning(msgBuilder.toString());
 			logger.info(ConsoleColor.YELLOW + "For now this plugin will still work fine with Java 1.7 but no warranty that this won't change in the future." + ConsoleColor.RESET);
 			blockThread(pauseTime);
 		}
