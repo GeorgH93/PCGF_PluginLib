@@ -19,11 +19,14 @@ package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.Calendar.TimeSpan;
 
+import com.google.common.io.ByteStreams;
+
 import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.*;
 import java.util.logging.Logger;
 
 public class Utils
@@ -154,5 +157,47 @@ public class Utils
 	public static boolean inRange(@NotNull Player player1, @NotNull Player player2, double maxDistance, @NotNull String bypassPermission)
 	{
 		return player1.hasPermission(bypassPermission) || player2.hasPermission(bypassPermission) || inRange(player1, player2, maxDistance);
+	}
+
+	/**
+	 * Extracts a file from a loaded .jar file.
+	 *
+	 * @param pluginClass The class of the plugin that want's to extract a file.
+	 * @param logger      The logger to be used for messages.
+	 * @param inJarPath   The files path in the jar file.
+	 * @param targetFile  The file where the content should be extracted to.
+	 * @return True if the file has been extracted successful, false if not.
+	 */
+	public static boolean extractFile(Class<?> pluginClass, Logger logger, String inJarPath, File targetFile)
+	{
+		try
+		{
+			if(targetFile.exists() && !targetFile.delete())
+			{
+				logger.info("Failed to delete old file (" + targetFile.toString() + ").");
+			}
+			File parentFile = targetFile.getParentFile();
+			if(!parentFile.exists() && !parentFile.mkdirs())
+			{
+				logger.info("Failed creating directory's! Expected path: " + parentFile.toString());
+			}
+			if(!targetFile.createNewFile())
+			{
+				logger.info("Failed create new file (" + targetFile.toString() + ").");
+			}
+			try(InputStream is = pluginClass.getResourceAsStream(inJarPath); OutputStream os = new FileOutputStream(targetFile))
+			{
+				ByteStreams.copy(is, os);
+				os.flush();
+			}
+			logger.info("File \"" + inJarPath + "\" extracted successfully!");
+			return true;
+		}
+		catch (IOException | NullPointerException e)
+		{
+			logger.warning("Failed to extract file \"" + inJarPath + "\"!");
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

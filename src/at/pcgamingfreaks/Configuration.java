@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2017 GeorgH93
+ *   Copyright (C) 2014-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,24 +20,17 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YAMLInvalidContentException;
 import at.pcgamingfreaks.yaml.YAMLKeyNotFoundException;
-import at.pcgamingfreaks.yaml.YAMLNotInitializedException;
-
-import com.google.common.io.ByteStreams;
 
 import java.io.*;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-public class Configuration
+public class Configuration extends YamlFileManager
 {
-	protected final Logger logger; // The logger instance of the using plugin
-	protected YAML config = null;  // The yaml config instance of the configuration
 	protected String languageKey = "Language", languageUpdateKey = "LanguageUpdateMode"; // Allow to change the keys for the language and the language update mode setting
 
-	private final String configPath, inJarPrefix;
-	private final int expectedVersion, upgradeThreshold;
-	private final File configFile, configBaseDir;
-
+	//region constructors
+	//region alternative constructors
 	/**
 	 * @param logger  The logger instance of the plugin
 	 * @param baseDir The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
@@ -94,35 +87,17 @@ public class Configuration
 	{
 		this(logger, baseDir, version, upgradeThreshold, path, inJarPrefix, null);
 	}
+	//endregion
 
 	private Configuration(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String inJarPrefix, YAML oldConfig)
 	{
-		this.logger = logger;
-		configBaseDir = baseDir;
-		this.upgradeThreshold = upgradeThreshold;
-		expectedVersion = version;
-		configPath = path;
-		this.inJarPrefix = inJarPrefix;
-		configFile = new File(baseDir, configPath);
+		super(logger, baseDir, version, upgradeThreshold, null, path, inJarPrefix, oldConfig);
 		if(oldConfig == null)
 		{
-			loadConfig();
-		}
-		else
-		{
-			config = oldConfig;
+			load();
 		}
 	}
-
-	/**
-	 * Checks if the config is loaded or not
-	 *
-	 * @return true if the config is loaded, false if not
-	 */
-	public boolean isLoaded()
-	{
-		return config != null;
-	}
+	//endregion
 
 	/**
 	 * Reloads the config file
@@ -132,89 +107,20 @@ public class Configuration
 		loadConfig();
 	}
 
-	/**
-	 * Allows inheriting classes to implement own code for the config upgrade
-	 * If no special code is implemented all keys will be copied 1:1 into the new config file
-	 *
-	 * @param oldConfiguration the old config file
-	 */
-	protected void doUpgrade(Configuration oldConfiguration)
-	{
-		logger.info("No custom config upgrade code implemented! Copying all data from old config to new one.");
-		for(String key : config.getKeys(true))
-		{
-			if(oldConfiguration.config.isSet(key))
-			{
-				if(key.equals("Version"))
-					continue;
-				config.set(key, oldConfiguration.config.getString(key, null));
-			}
-		}
-	}
-
-	/**
-	 * Allows inheriting classes to implement code for the config update
-	 */
-	protected void doUpdate()
-	{
-		logger.info("No config update code implemented! Just updating version!");
-	}
-
-	/**
-	 * Allows inheriting classes to implement code for setting config values in new created config files
-	 *
-	 * @return if values in the config have been changed
-	 */
-	protected boolean newConfigCreated()
-	{
-		return false;
-	}
-
-	/**
-	 * Saves all changes in the configuration to the file.
-	 *
-	 * @throws FileNotFoundException If the file the config should be saved to does not exist.
-	 */
-	public void saveConfig() throws FileNotFoundException
-	{
-		try
-		{
-			config.save(configFile);
-		}
-		catch(YAMLNotInitializedException e) // It should not happen, but you never know
-		{
-			e.printStackTrace();
-		}
-	}
-
 	private void loadConfig()
 	{
 		try
 		{
-			if(!configFile.exists() || configFile.length() == 0)
+			if(!yamlFile.exists() || yamlFile.length() == 0)
 			{
 				logger.info("No config found. Create new one ...");
-				if(!configBaseDir.exists() && !configBaseDir.mkdir())
-				{
-					logger.warning("Couldn't create directory. " + configBaseDir.toString());
-				}
-				try(InputStream is = getClass().getResourceAsStream("/" + inJarPrefix + configPath); OutputStream os = new FileOutputStream(configFile))
-				{
-					ByteStreams.copy(is, os);
-					os.flush();
-				}
-				catch(NullPointerException | IOException e)
-				{
-					logger.warning(ConsoleColor.RED + "Failed to extract configuration!" + ConsoleColor.RESET);
-					return;
-				}
-				logger.info("Configuration extracted successfully!");
-				config = new YAML(configFile);
+				extractFile();
+				yaml = new YAML(yamlFile);
 				if(newConfigCreated())
 				{
 					try
 					{
-						saveConfig();
+						save();
 					}
 					catch(FileNotFoundException e)
 					{
@@ -224,77 +130,14 @@ public class Configuration
 			}
 			else
 			{
-				config = new YAML(configFile);
-				updateConfig();
+				yaml = new YAML(yamlFile);
+				update();
 			}
 		}
 		catch(IOException | YAMLInvalidContentException | NoSuchElementException e)
 		{
 			logger.warning(ConsoleColor.RED + "Failed to read the config file! Please check it!" + ConsoleColor.RESET);
 			e.printStackTrace();
-		}
-	}
-
-	private boolean updateConfig()
-	{
-		if(expectedVersion > getVersion())
-		{
-			if(upgradeThreshold > 0 && getVersion() < upgradeThreshold)
-			{
-				logger.info("Configuration Version: " + getVersion() + " => Configuration outdated! Upgrading ...");
-				upgradeConfig();
-			}
-			else
-			{
-				logger.info("Configuration Version: " + getVersion() + " => Configuration outdated! Updating ...");
-				doUpdate();
-				config.set("Version", expectedVersion);
-			}
-			try
-			{
-				saveConfig();
-				logger.info("Configuration has been updated.");
-				return true;
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-				config = null;
-			}
-		}
-		if(expectedVersion < getVersion())
-		{
-			logger.info("Configuration File Version newer than expected!");
-		}
-		return false;
-	}
-
-	private void upgradeConfig()
-	{
-		try
-		{
-			int oldVersion = getVersion();
-			File oldConfig = new File(configFile + ".old_v" + oldVersion);
-			if(oldConfig.exists() && !oldConfig.delete())
-			{
-				logger.warning("Failed to delete old config backup!");
-			}
-			if(!configFile.renameTo(oldConfig))
-			{
-				logger.warning("Failed to rename old config! Could not do upgrade!");
-				return;
-			}
-			YAML oldYAML = config;
-			loadConfig();
-			if(isLoaded())
-			{
-				doUpgrade(new Configuration(logger, configBaseDir, oldVersion, -1, configPath + ".old_v" + oldVersion, inJarPrefix, oldYAML));
-			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			config = null;
 		}
 	}
 
@@ -306,7 +149,7 @@ public class Configuration
 	 */
 	public YAML getConfig()
 	{
-		return config;
+		return yaml;
 	}
 
 	/**
@@ -319,7 +162,7 @@ public class Configuration
 	 */
 	public int getInt(String path) throws YAMLKeyNotFoundException, NumberFormatException
 	{
-		return config.getInt(path);
+		return yaml.getInt(path);
 	}
 
 	/**
@@ -331,7 +174,7 @@ public class Configuration
 	 */
 	public int getInt(String path, int returnOnNotFound)
 	{
-		return config.getInt(path, returnOnNotFound);
+		return yaml.getInt(path, returnOnNotFound);
 	}
 
 	/**
@@ -344,7 +187,7 @@ public class Configuration
 	 */
 	public double getDouble(String path) throws YAMLKeyNotFoundException, NumberFormatException
 	{
-		return config.getDouble(path);
+		return yaml.getDouble(path);
 	}
 
 	/**
@@ -356,7 +199,7 @@ public class Configuration
 	 */
 	public double getDouble(String path, double returnOnNotFound)
 	{
-		return config.getDouble(path, returnOnNotFound);
+		return yaml.getDouble(path, returnOnNotFound);
 	}
 
 	/**
@@ -368,7 +211,7 @@ public class Configuration
 	 */
 	public String getString(String path) throws YAMLKeyNotFoundException
 	{
-		return config.getString(path);
+		return yaml.getString(path);
 	}
 
 	/**
@@ -380,7 +223,7 @@ public class Configuration
 	 */
 	public String getString(String path, String returnOnNotFound)
 	{
-		return config.getString(path, returnOnNotFound);
+		return yaml.getString(path, returnOnNotFound);
 	}
 
 	/**
@@ -392,7 +235,7 @@ public class Configuration
 	 */
 	public boolean getBool(String path) throws YAMLKeyNotFoundException
 	{
-		return config.getBoolean(path);
+		return yaml.getBoolean(path);
 	}
 
 	/**
@@ -404,24 +247,7 @@ public class Configuration
 	 */
 	public boolean getBool(String path, boolean returnOnNotFound)
 	{
-		return config.getBoolean(path, returnOnNotFound);
-	}
-
-	/**
-	 * Gets the version of the configuration.
-	 *
-	 * @return The version of the configuration. -1 if there is no or an invalid "Version" value in the configuration file.
-	 */
-	public int getVersion()
-	{
-		try
-		{
-			return config.getInt("Version");
-		}
-		catch(Exception ignored)
-		{
-			return -1;
-		}
+		return yaml.getBoolean(path, returnOnNotFound);
 	}
 	//endregion
 
@@ -433,7 +259,7 @@ public class Configuration
 	 */
 	public String getLanguage()
 	{
-		return config.getString(languageKey, "en");
+		return yaml.getString(languageKey, "en");
 	}
 
 	/**
@@ -441,18 +267,18 @@ public class Configuration
 	 *
 	 * @return The update method for the language file.
 	 */
-	public LanguageUpdateMethod getLanguageUpdateMode()
+	public YamlFileUpdateMethod getLanguageUpdateMode()
 	{
-		String mode = config.getString(languageUpdateKey, "upgrade");
+		String mode = yaml.getString(languageUpdateKey, "upgrade");
 		try
 		{
-			return LanguageUpdateMethod.valueOf(mode.toUpperCase());
+			return YamlFileUpdateMethod.valueOf(mode.toUpperCase());
 		}
 		catch(IllegalArgumentException ignored)
 		{
 			logger.warning("Failed to read \"" + languageUpdateKey + "\" config option (Invalid value: " + mode + "). Using default value (\"upgrade\").");
 		}
-		return LanguageUpdateMethod.UPGRADE;
+		return YamlFileUpdateMethod.UPGRADE;
 	}
 	//endregion
 
@@ -465,7 +291,7 @@ public class Configuration
 	 */
 	public void set(String path, String value)
 	{
-		config.set(path, value);
+		yaml.set(path, value);
 	}
 
 	/**
@@ -476,7 +302,7 @@ public class Configuration
 	 */
 	public void set(String path, int value)
 	{
-		config.set(path, value);
+		yaml.set(path, value);
 	}
 
 	/**
@@ -487,7 +313,7 @@ public class Configuration
 	 */
 	public void set(String path, double value)
 	{
-		config.set(path, value);
+		yaml.set(path, value);
 	}
 
 	/**
@@ -498,7 +324,7 @@ public class Configuration
 	 */
 	public void set(String path, boolean value)
 	{
-		config.set(path, value);
+		yaml.set(path, value);
 	}
 	//endregion
 }

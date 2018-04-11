@@ -26,8 +26,8 @@ public class LanguageUpdateMethodTest
 	@Test
 	public void testLanguageUpdateMethods()
 	{
-		assertNotNull("The update method should be found", LanguageUpdateMethod.UPDATE);
-		assertNotNull("The upgrade method should be found", LanguageUpdateMethod.UPGRADE);
-		assertNotNull("The overwrite method should be found", LanguageUpdateMethod.OVERWRITE);
+		assertNotNull("The update method should be found", YamlFileUpdateMethod.UPDATE);
+		assertNotNull("The upgrade method should be found", YamlFileUpdateMethod.UPGRADE);
+		assertNotNull("The overwrite method should be found", YamlFileUpdateMethod.OVERWRITE);
 	}
 }

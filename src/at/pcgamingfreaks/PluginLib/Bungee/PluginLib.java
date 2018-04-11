@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ public final class PluginLib extends Plugin implements PluginLibrary
 		}
 
 		Language commonLanguage = new at.pcgamingfreaks.Bungee.Language(this, 1, File.separator + "lang", "common_");
-		commonLanguage.load("en", LanguageUpdateMethod.UPGRADE);
+		commonLanguage.load("en", YamlFileUpdateMethod.UPGRADE);
 		if(commonLanguage.isLoaded())
 		{
 			String[] unitNames = new String[] { commonLanguage.get("Date.Units.Year"), commonLanguage.get("Date.Units.Years"), commonLanguage.get("Date.Units.Month"), commonLanguage.get("Date.Units.Months"), commonLanguage.get("Date.Units.Day"), commonLanguage.get("Date.Units.Days"), commonLanguage.get("Date.Units.Hour"), commonLanguage.get("Date.Units.Hours"), commonLanguage.get("Date.Units.Minute"), commonLanguage.get("Date.Units.Minutes"), commonLanguage.get("Date.Units.Second"), commonLanguage.get("Date.Units.Seconds") };

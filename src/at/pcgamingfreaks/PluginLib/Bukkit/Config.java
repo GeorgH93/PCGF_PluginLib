@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.Configuration;
-import at.pcgamingfreaks.LanguageUpdateMethod;
+import at.pcgamingfreaks.YamlFileUpdateMethod;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,17 +31,17 @@ final class Config extends Configuration
 		languageUpdateKey = "Language.UpdateMode";
 	}
 
-	public LanguageUpdateMethod getItemLangUpdateMode()
+	public YamlFileUpdateMethod getItemLangUpdateMode()
 	{
-		String mode = config.getString("Language.ItemUpdateMode", "overwrite");
+		String mode = yaml.getString("Language.ItemUpdateMode", "overwrite");
 		try
 		{
-			return LanguageUpdateMethod.valueOf(mode.toUpperCase());
+			return YamlFileUpdateMethod.valueOf(mode.toUpperCase());
 		}
 		catch(IllegalArgumentException ignored)
 		{
 			logger.warning("Failed to read \"Language.ItemUpdateMode\" config option (Invalid value: " + mode + "). Using default value (\"overwrite\").");
 		}
-		return LanguageUpdateMethod.UPDATE;
+		return YamlFileUpdateMethod.UPDATE;
 	}
 }

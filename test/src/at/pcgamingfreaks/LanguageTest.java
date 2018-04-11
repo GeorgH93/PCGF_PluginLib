@@ -163,7 +163,7 @@ public class LanguageTest
 		expectedVersion.set(language, ++version);
 		assertFalse("The language file should not be updated when an error occurs", (Boolean) updateLang.invoke(language));
 		doCallRealMethod().when(language).save();
-		Field updateMode = TestUtils.setAccessible(Language.class, language, "updateMode", LanguageUpdateMethod.OVERWRITE);
+		Field updateMode = TestUtils.setAccessible(Language.class, language, "updateMode", YamlFileUpdateMethod.OVERWRITE);
 		PowerMockito.doNothing().when(language, "extractLangFile");
 		PowerMockito.doNothing().when(language, "loadLang");
 		expectedVersion.set(language, ++version);
@@ -175,7 +175,7 @@ public class LanguageTest
 		upgradeThreshold.set(language, 2);
 		expectedVersion.set(language, ++version);
 		assertTrue("The language file should be updated", (Boolean) updateLang.invoke(language));
-		updateMode.set(language, LanguageUpdateMethod.UPGRADE);
+		updateMode.set(language, YamlFileUpdateMethod.UPGRADE);
 		expectedVersion.set(language, ++version);
 		assertFalse("The language file should not be upgraded because the file could not be found", (Boolean) updateLang.invoke(language));
 		File mockedFile = mock(File.class);
@@ -205,10 +205,10 @@ public class LanguageTest
 	{
 		File userDir = new File(System.getProperty("user.dir"));
 		Language language = PowerMockito.spy(new Language(mockedLogger, userDir, 1));
-		language.load("en", LanguageUpdateMethod.UPDATE);
+		language.load("en", YamlFileUpdateMethod.UPDATE);
 		language.set("Language.NewValue", "NEW");
 		Language oldLanguage = PowerMockito.spy(new Language(mockedLogger, userDir, 1));
-		oldLanguage.load("en", LanguageUpdateMethod.UPDATE);
+		oldLanguage.load("en", YamlFileUpdateMethod.UPDATE);
 		oldLanguage.set("Language.Lang1", "TEST");
 		Method doUpgrade = Language.class.getDeclaredMethod("doUpgrade", Language.class);
 		doUpgrade.setAccessible(true);
@@ -234,7 +234,7 @@ public class LanguageTest
 	{
 		File userDir = new File(System.getProperty("user.dir"));
 		Language language = new Language(mockedLogger, userDir, 1);
-		language.load("en", LanguageUpdateMethod.UPDATE);
+		language.load("en", YamlFileUpdateMethod.UPDATE);
 		Method getMessage = Language.class.getDeclaredMethod("getMessage", boolean.class, String.class);
 		getMessage.setAccessible(true);
 		Field messageClasses = TestUtils.setAccessible(Language.class, language, "messageClasses", null);

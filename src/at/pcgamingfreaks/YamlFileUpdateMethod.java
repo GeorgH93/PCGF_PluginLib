@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks;
 
-public enum LanguageUpdateMethod
+public enum YamlFileUpdateMethod
 {
 	UPDATE,
 	UPGRADE,
