@@ -20,7 +20,6 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 
 import org.apache.commons.lang3.Validate;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,52 +106,20 @@ public class Utils
 	}
 
 	/**
-	 * This function calculates the distance between two players.
-	 * Unlike Bukkit's built in function this will not cause an exception if the players aren't in the same world but return {@link Double#POSITIVE_INFINITY}.
+	 * Checks if an array contains an certain value
 	 *
-	 * @param player1 The first player.
-	 * @param player2 The second player.
-	 * @return The distance between the players. {@link Double#POSITIVE_INFINITY} if the players aren't in the same world.
+	 * @param array The array that should be checked
+	 * @param data  The data that should be searched for in the array
+	 * @param <T>   The class of the array and data
+	 * @return True if the data is contained within the array, false if not
 	 */
-	public static double getDistance(@NotNull Player player1, @NotNull Player player2)
+	public static <T> boolean arrayContains(@NotNull T[] array, @Nullable T data)
 	{
-		if(player1.equals(player2))
+		Validate.notNull(array);
+		for(T element : array)
 		{
-			return 0;
+			if(element.equals(data)) return true;
 		}
-		if(player1.getWorld().getName().equalsIgnoreCase(player2.getWorld().getName()))
-		{
-			return player1.getLocation().distance(player2.getLocation());
-		}
-		return Double.POSITIVE_INFINITY;
-	}
-
-	/**
-	 * Checks if two players are within a certain range from each other.
-	 *
-	 * @param player1 The first player.
-	 * @param player2 The second player.
-	 * @param maxDistance The max distance between the two players. Negative values will always return true.
-	 * @return True if the players are within the given range, false if not.
-	 */
-	public static boolean inRange(@NotNull Player player1, @NotNull Player player2, double maxDistance)
-	{
-		if(maxDistance < 0) return true;
-		double distance = getDistance(player1, player2);
-		return (maxDistance == 0 && distance != Double.POSITIVE_INFINITY) || distance <= maxDistance;
-	}
-
-	/**
-	 * Checks if two players are within a certain range from each other.
-	 *
-	 * @param player1 The first player.
-	 * @param player2 The second player.
-	 * @param maxDistance The max distance between the two players. Negative values will always return true.
-	 * @param bypassPermission If one of the players has the permission this function will return true.
-	 * @return True if the players are within the given range, false if not.
-	 */
-	public static boolean inRange(@NotNull Player player1, @NotNull Player player2, double maxDistance, @NotNull String bypassPermission)
-	{
-		return player1.hasPermission(bypassPermission) || player2.hasPermission(bypassPermission) || inRange(player1, player2, maxDistance);
+		return false;
 	}
 }
