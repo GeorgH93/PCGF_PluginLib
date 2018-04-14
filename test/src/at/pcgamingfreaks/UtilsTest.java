@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks;
 
+import at.pcgamingfreaks.Calendar.TimeSpan;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -30,9 +32,8 @@ import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 public class UtilsTest
 {
@@ -92,7 +93,7 @@ public class UtilsTest
 	}
 
 	@Test
-	public void testWarnOnJava7()
+	public void testWarnOnJava7() throws Exception
 	{
 		final int[] logCount = new int[] { 0, 0 };
 		Logger mockLogger = mock(Logger.class);
@@ -120,11 +121,16 @@ public class UtilsTest
 		Utils.warnOnJava_1_7(mockLogger, 1);
 		long stopTime = System.currentTimeMillis(), elapsedTime = stopTime - startTime;
 		assertTrue("The elapsed time should match the given second", elapsedTime > 900 && elapsedTime < 1100);
+		assertEquals("There should be one message in the warning log", 1, logCount[0]);
+		assertEquals("There should be one message in the info log", 1, logCount[1]);
+		TimeSpan mockedTimeSpan = new TimeSpan(1430438403000L, true);
+		whenNew(TimeSpan.class).withAnyArguments().thenReturn(mockedTimeSpan);
+		Utils.warnOnJava_1_7(mockLogger);
+		assertEquals("There should be a second message in the warning log now", 2, logCount[0]);
+		assertEquals("There should be a second message in the info log now", 2, logCount[1]);
 		System.setProperty("java.version", "1.8");
 		Utils.warnOnJava_1_7(mockLogger);
 		System.setProperty("java.version", javaVersion);
-		assertEquals("There should be one message in the warning log", 1, logCount[0]);
-		assertEquals("There should be one message in the info log", 1, logCount[1]);
 	}
 
 	@Test
