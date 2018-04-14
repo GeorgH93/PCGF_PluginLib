@@ -40,30 +40,11 @@ public class UtilsTest
 	private static final byte[] byteArray1 = new byte[] { 0x01, 0x02, 0x03 }, byteArray2 = new byte[] { (byte) 0xFD, (byte) 0xDA, 0x11 };
 	@SuppressWarnings("SpellCheckingInspection")
 	private static final String final1 = "010203", final2 = "fdda11";
-	private static final World WORLD_1 = Mockito.mock(World.class), WORLD_2 = Mockito.mock(World.class);
-	private static final Player PLAYER1 = Mockito.mock(Player.class), PLAYER2 = Mockito.mock(Player.class), PLAYER3 = Mockito.mock(Player.class), PLAYER4 = Mockito.mock(Player.class);
 
 	@BeforeClass
 	public static void prepareTestData()
 	{
 		new Utils();
-		doReturn("Lobby").when(WORLD_1).getName();
-		doReturn("Survival").when(WORLD_2).getName();
-		doReturn(false).when(PLAYER1).hasPermission("bypass.rangelimit");
-		doReturn(false).when(PLAYER2).hasPermission("bypass.rangelimit");
-		doReturn(false).when(PLAYER3).hasPermission("bypass.rangelimit");
-		doReturn(true) .when(PLAYER4).hasPermission("bypass.rangelimit");
-		doReturn(WORLD_1).when(PLAYER1).getWorld();
-		doReturn(WORLD_1).when(PLAYER2).getWorld();
-		doReturn(WORLD_2).when(PLAYER3).getWorld();
-		doReturn(WORLD_2).when(PLAYER4).getWorld();
-		Location locationPlayer1 = new Location(WORLD_1, 100, 200, 300);
-		Location locationPlayer2 = new Location(WORLD_1, 300, 200, 300);
-		Location locationPlayer3 = new Location(WORLD_2, 300, 200, 300);
-		doReturn(locationPlayer1).when(PLAYER1).getLocation();
-		doReturn(locationPlayer2).when(PLAYER2).getLocation();
-		doReturn(locationPlayer3).when(PLAYER3).getLocation();
-		doReturn(locationPlayer3).when(PLAYER4).getLocation();
 	}
 	
 	@Test
@@ -134,31 +115,10 @@ public class UtilsTest
 	}
 
 	@Test
-	public void testGetDistance()
+	public void testArrayContains()
 	{
-		assertEquals(200, Utils.getDistance(PLAYER1, PLAYER2), 0.1);
-		assertEquals(Double.POSITIVE_INFINITY, Utils.getDistance(PLAYER3, PLAYER2), 0);
-		assertEquals(0, Utils.getDistance(PLAYER1, PLAYER1), 0);
-	}
-
-	@Test
-	public void testInRange()
-	{
-		assertTrue(Utils.inRange(PLAYER1, PLAYER2, -1.0));
-		assertTrue(Utils.inRange(PLAYER1, PLAYER4, -1.0));
-		assertTrue(Utils.inRange(PLAYER1, PLAYER2, 0));
-		assertTrue(Utils.inRange(PLAYER1, PLAYER2, 300));
-		assertFalse(Utils.inRange(PLAYER1, PLAYER4, 1.0));
-		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 1.0));
-		assertFalse(Utils.inRange(PLAYER1, PLAYER2, 1.0));
-		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 0));
-		assertTrue(Utils.inRange(PLAYER1, PLAYER2, -1.0, "bypass.rangelimit"));
-		assertTrue(Utils.inRange(PLAYER1, PLAYER4, -1.0, "bypass.rangelimit"));
-		assertTrue(Utils.inRange(PLAYER1, PLAYER4, 1.0, "bypass.rangelimit"));
-		assertTrue(Utils.inRange(PLAYER1, PLAYER2, 0, "bypass.rangelimit"));
-		assertTrue(Utils.inRange(PLAYER1, PLAYER2, 300, "bypass.rangelimit"));
-		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 1.0, "bypass.rangelimit"));
-		assertFalse(Utils.inRange(PLAYER1, PLAYER2, 1.0, "bypass.rangelimit"));
-		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 0, "bypass.rangelimit"));
+		Integer[] data = new Integer[] { 1, 3, 8 };
+		assertTrue(Utils.arrayContains(data, 3));
+		assertFalse(Utils.arrayContains(data, 2));
 	}
 }

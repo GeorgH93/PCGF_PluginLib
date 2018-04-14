@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -47,6 +48,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -57,6 +60,8 @@ public class UtilsTest
 {
 	@SuppressWarnings("SpellCheckingInspection")
 	private static TestBukkitServer server = new TestBukkitServer();
+	private static final World WORLD_1 = Mockito.mock(World.class), WORLD_2 = Mockito.mock(World.class);
+	private static final Player PLAYER1 = Mockito.mock(Player.class), PLAYER2 = Mockito.mock(Player.class), PLAYER3 = Mockito.mock(Player.class), PLAYER4 = Mockito.mock(Player.class);
 
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
@@ -65,6 +70,23 @@ public class UtilsTest
 		Bukkit.setServer(server);
 		TestObjects.initNMSReflection();
 		TestUtils.initReflection();
+		doReturn("Lobby").when(WORLD_1).getName();
+		doReturn("Survival").when(WORLD_2).getName();
+		doReturn(false).when(PLAYER1).hasPermission("bypass.rangelimit");
+		doReturn(false).when(PLAYER2).hasPermission("bypass.rangelimit");
+		doReturn(false).when(PLAYER3).hasPermission("bypass.rangelimit");
+		doReturn(true) .when(PLAYER4).hasPermission("bypass.rangelimit");
+		doReturn(WORLD_1).when(PLAYER1).getWorld();
+		doReturn(WORLD_1).when(PLAYER2).getWorld();
+		doReturn(WORLD_2).when(PLAYER3).getWorld();
+		doReturn(WORLD_2).when(PLAYER4).getWorld();
+		Location locationPlayer1 = new Location(WORLD_1, 100, 200, 300);
+		Location locationPlayer2 = new Location(WORLD_1, 300, 200, 300);
+		Location locationPlayer3 = new Location(WORLD_2, 300, 200, 300);
+		doReturn(locationPlayer1).when(PLAYER1).getLocation();
+		doReturn(locationPlayer2).when(PLAYER2).getLocation();
+		doReturn(locationPlayer3).when(PLAYER3).getLocation();
+		doReturn(locationPlayer3).when(PLAYER4).getLocation();
 	}
 
 	@Before
@@ -166,5 +188,26 @@ public class UtilsTest
 		playerPingField.set(null, null);
 		assertEquals("The Ping field should not be found", -1, Utils.getPing(player));
 		TestUtils.setUnaccessible(playerPingField, null, true);
+	}
+
+	@Test
+	public void testInRange()
+	{
+		assertTrue(Utils.inRange(PLAYER1, PLAYER2, -1.0));
+		assertTrue(Utils.inRange(PLAYER1, PLAYER4, -1.0));
+		assertTrue(Utils.inRange(PLAYER1, PLAYER2, 0));
+		assertTrue(Utils.inRange(PLAYER1, PLAYER2, 300));
+		assertFalse(Utils.inRange(PLAYER1, PLAYER4, 1.0));
+		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 1.0));
+		assertFalse(Utils.inRange(PLAYER1, PLAYER2, 1.0));
+		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 0));
+		assertTrue(Utils.inRange(PLAYER1, PLAYER2, -1.0, "bypass.rangelimit"));
+		assertTrue(Utils.inRange(PLAYER1, PLAYER4, -1.0, "bypass.rangelimit"));
+		assertTrue(Utils.inRange(PLAYER1, PLAYER4, 1.0, "bypass.rangelimit"));
+		assertTrue(Utils.inRange(PLAYER1, PLAYER2, 0, "bypass.rangelimit"));
+		assertTrue(Utils.inRange(PLAYER1, PLAYER2, 300, "bypass.rangelimit"));
+		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 1.0, "bypass.rangelimit"));
+		assertFalse(Utils.inRange(PLAYER1, PLAYER2, 1.0, "bypass.rangelimit"));
+		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 0, "bypass.rangelimit"));
 	}
 }

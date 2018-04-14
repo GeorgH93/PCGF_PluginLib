@@ -124,10 +124,11 @@ public class Utils extends at.pcgamingfreaks.Utils
 
 	/**
 	 * Calculates the distance between two players
+	 * Unlike Bukkit's built in function this will not cause an exception if the players aren't in the same world but return {@link Double#POSITIVE_INFINITY}
 	 *
 	 * @param player1 The first player
 	 * @param player2 The second player
-	 * @return The distance between the two players in meter/blocks. Double.POSITIVE_INFINITY if they aren't in the same world.
+	 * @return The distance between the players. {@link Double#POSITIVE_INFINITY} if the players aren't in the same world
 	 */
 	public static double getDistance(@NotNull Player player1, @NotNull Player player2)
 	{
@@ -142,6 +143,35 @@ public class Utils extends at.pcgamingfreaks.Utils
 			return player1.getLocation().distance(player2.getLocation());
 		}
 		return Double.POSITIVE_INFINITY;
+	}
+
+	/**
+	 * Checks if two players are within a certain range from each other.
+	 *
+	 * @param player1 The first player.
+	 * @param player2 The second player.
+	 * @param maxDistance The max distance between the two players. Negative values will always return true.
+	 * @return True if the players are within the given range, false if not.
+	 */
+	public static boolean inRange(@NotNull Player player1, @NotNull Player player2, double maxDistance)
+	{
+		if(maxDistance < 0) return true;
+		double distance = getDistance(player1, player2);
+		return (maxDistance == 0 && distance != Double.POSITIVE_INFINITY) || distance <= maxDistance;
+	}
+
+	/**
+	 * Checks if two players are within a certain range from each other.
+	 *
+	 * @param player1 The first player.
+	 * @param player2 The second player.
+	 * @param maxDistance The max distance between the two players. Negative values will always return true.
+	 * @param bypassPermission If one of the players has the permission this function will return true.
+	 * @return True if the players are within the given range, false if not.
+	 */
+	public static boolean inRange(@NotNull Player player1, @NotNull Player player2, double maxDistance, @NotNull String bypassPermission)
+	{
+		return player1.hasPermission(bypassPermission) || player2.hasPermission(bypassPermission) || inRange(player1, player2, maxDistance);
 	}
 
 	/**
