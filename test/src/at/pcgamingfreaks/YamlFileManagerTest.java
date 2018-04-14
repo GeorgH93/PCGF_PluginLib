@@ -31,6 +31,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
@@ -151,11 +152,12 @@ public class YamlFileManagerTest
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
 		doNothing().when(testFileManager).validate();
 		TestUtils.initReflection();
-		TestUtils.setAccessible(YamlFileManager.class, testFileManager, "yamlFile", mockedFile);
+		Field yamlFileField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "yamlFile", mockedFile);
 		YAML mockedYAML = mock(YAML.class);
 		whenNew(YAML.class).withAnyArguments().thenReturn(mockedYAML);
 		testFileManager.load();
 		assertEquals("No warning should be shown", 0, warnCount[0]);
+		TestUtils.setUnaccessible(yamlFileField, testFileManager, false);
 	}
 
 	@Test
@@ -188,23 +190,25 @@ public class YamlFileManagerTest
 		testFileManager.validate();
 		assertEquals("There should be no warning in the log", 0, count[0]);
 		TestUtils.initReflection();
-		TestUtils.setAccessible(YamlFileManager.class, testFileManager, "extracted", true);
+		Field extractedField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "extracted", true);
 		testFileManager.validate();
 		assertEquals("There should be one warning in the log", 1, count[0]);
 		doReturn(500).when(testFileManager).getVersion();
 		testFileManager.validate();
 		assertEquals("There should be one info in the log", 1, count[1]);
-		TestUtils.setAccessible(YamlFileManager.class, testFileManager, "updateMode", YamlFileUpdateMethod.UPGRADE);
+		Field updateModeField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "updateMode", YamlFileUpdateMethod.UPGRADE);
 		testFileManager.validate();
 		doReturn(1).when(testFileManager).getVersion();
 		testFileManager.validate();
 		assertEquals("There should be new info in the log", 2, count[1]);
-		TestUtils.setAccessible(YamlFileManager.class, testFileManager, "updateMode", YamlFileUpdateMethod.OVERWRITE);
+		updateModeField.set(testFileManager, YamlFileUpdateMethod.OVERWRITE);
 		testFileManager.validate();
 		assertEquals("There should be no new info in the log in overwrite mode when the file has been extracted", 2, count[1]);
-		TestUtils.setAccessible(YamlFileManager.class, testFileManager, "extracted", false);
+		extractedField.set(testFileManager, false);
 		testFileManager.validate();
 		assertEquals("There should be new info in the log in overwrite mode", 3, count[1]);
+		TestUtils.setUnaccessible(extractedField, testFileManager, false);
+		TestUtils.setUnaccessible(updateModeField, testFileManager, false);
 	}
 
 	@Test
@@ -237,10 +241,11 @@ public class YamlFileManagerTest
 		assertEquals("One warning should be written out", 1, count[0]);
 		assertEquals("Info should be written out on update", 1, count[1]);
 		TestUtils.initReflection();
-		TestUtils.setAccessible(YamlFileManager.class, testFileManager, "yaml", mockedYAML);
+		Field yamlField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "yaml", mockedYAML);
 		testFileManager.update();
 		assertEquals("No warning should be written out", 1, count[0]);
 		assertEquals("Info should be written out on update", 3, count[1]);
+		TestUtils.setUnaccessible(yamlField, testFileManager, false);
 	}
 
 	@SuppressWarnings("ResultOfMethodCallIgnored")
@@ -281,7 +286,7 @@ public class YamlFileManagerTest
 		assertEquals("Two warnings should be written out", warnings, count[0]);
 		assertEquals("Info should be written out on no upgrade", ++infos, count[1]);
 		TestUtils.initReflection();
-		TestUtils.setAccessible(YamlFileManager.class, testFileManager, "yamlFile", mockedFile);
+		Field yamlFileField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "yamlFile", mockedFile);
 		doReturn(true).when(mockedFile).delete();
 		testFileManager.upgrade();
 		assertEquals("A warning should be written out", ++warnings, count[0]);
@@ -293,7 +298,7 @@ public class YamlFileManagerTest
 		doReturn(true).when(mockedFile).renameTo(any(File.class));
 		YAML mockedYAML = mock(YAML.class);
 		doNothing().when(mockedYAML).set(anyString(), anyString());
-		TestUtils.setAccessible(YamlFileManager.class, testFileManager, "yaml", mockedYAML);
+		Field yamlField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "yaml", mockedYAML);
 		testFileManager.upgrade();
 		infos += 3;
 		assertEquals("No warning should be written out", warnings, count[0]);
@@ -308,5 +313,7 @@ public class YamlFileManagerTest
 		infos += 2;
 		assertEquals("No warning should be written out", warnings, count[0]);
 		assertEquals("Much info should be written out on no upgrade", infos, count[1]);
+		TestUtils.setUnaccessible(yamlFileField, testFileManager, false);
+		TestUtils.setUnaccessible(yamlField, testFileManager, false);
 	}
 }
