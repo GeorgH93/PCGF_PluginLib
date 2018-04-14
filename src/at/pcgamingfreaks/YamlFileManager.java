@@ -143,6 +143,10 @@ public class YamlFileManager
 			}
 			yaml = new YAML(yamlFile);
 			validate();
+			if(extracted && newConfigCreated())
+			{
+				save();
+			}
 		}
 		catch(Exception e)
 		{

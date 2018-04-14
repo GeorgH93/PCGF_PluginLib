@@ -34,7 +34,10 @@ import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -43,7 +46,6 @@ import java.util.logging.Logger;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
@@ -128,34 +130,6 @@ public class ConfigurationTest
 		assertFalse("No new configuration has been created, therefore false should be returned", configuration.newConfigCreated());
 	}
 
-	@Test
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-	@PrepareForTest({ ByteStreams.class, Configuration.class })
-	public void testSaveError() throws Exception
-	{
-		final int[] loggerObject = { 0 };
-		mockStatic(ByteStreams.class);
-		when(ByteStreams.copy(any(FileInputStream.class), any(FileOutputStream.class))).thenReturn((long) 0);
-		Logger mockedLogger = mock(Logger.class);
-		YAML mockedYAML = mock(YAML.class);
-		whenNew(YAML.class).withArguments(File.class).thenReturn(mockedYAML);
-		Configuration configuration = spy(new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1, 10, "NOT_HERE.cfg"));
-		new File("NOT_HERE.cfg").delete();
-		doReturn(true).when(configuration).newConfigCreated();
-		doThrow(new FileNotFoundException()).when(configuration).save();
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				loggerObject[0]++;
-				return null;
-			}
-		}).when(mockedLogger).warning(anyString());
-		configuration.reload();
-		assertEquals("The error should be logged", 1, loggerObject[0]);
-	}
-
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Test
 	public void testLoadConfig() throws Exception
@@ -198,6 +172,10 @@ public class ConfigurationTest
 		YAML mockedYAML = mock(YAML.class);
 		whenNew(YAML.class).withAnyArguments().thenReturn(mockedYAML);
 		doNothing().when(mockedYAML).load(any(File.class));
+		configuration.load();
+		assertNotEquals("Info should be written", 0, count[1]);
+		assertEquals("No warning should be written", 1, count[0]);
+		doReturn(false).when(mockedFile).exists();
 		configuration.load();
 		assertNotEquals("Info should be written", 0, count[1]);
 		assertEquals("No warning should be written", 1, count[0]);

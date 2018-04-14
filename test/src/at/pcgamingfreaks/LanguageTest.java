@@ -29,6 +29,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -42,12 +43,14 @@ import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Language.class, YAML.class })
+@PrepareForTest({ Language.class, Utils.class, YAML.class })
 public class LanguageTest
 {
 	private static Logger mockedLogger;
@@ -146,6 +149,21 @@ public class LanguageTest
 		Configuration mockedConfig = mock(Configuration.class);
 		doReturn("").when(mockedConfig).getLanguage();
 		language.load(mockedConfig);
+		assertNotNull("The language object should not be null", language);
+	}
+
+	@Test
+	public void testExtract() throws NoSuchFieldException, IllegalAccessException
+	{
+		mockStatic(Utils.class);
+		given(Utils.extractFile(Matchers.<Class<?>>any(), any(Logger.class), anyString(), any(File.class))).willReturn(false);
+		File userDir = new File(System.getProperty("user.dir"));
+		Language language = new Language(mockedLogger, userDir, 1);
+		Field languageField = TestUtils.setAccessible(Language.class, language, "language", "de");
+		language.extractFile();
+		languageField.set(language, "en");
+		language.extractFile();
+		TestUtils.setUnaccessible(languageField, language, false);
 		assertNotNull("The language object should not be null", language);
 	}
 

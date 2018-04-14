@@ -151,12 +151,20 @@ public class YamlFileManagerTest
 		}).when(mockedLogger).warning(anyString());
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
 		doNothing().when(testFileManager).validate();
+		doNothing().when(testFileManager).save();
 		TestUtils.initReflection();
 		Field yamlFileField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "yamlFile", mockedFile);
 		YAML mockedYAML = mock(YAML.class);
 		whenNew(YAML.class).withAnyArguments().thenReturn(mockedYAML);
 		testFileManager.load();
 		assertEquals("No warning should be shown", 0, warnCount[0]);
+		Field extractedField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "extracted", true);
+		testFileManager.load();
+		assertEquals("No warning should be shown", 0, warnCount[0]);
+		doReturn(true).when(testFileManager).newConfigCreated();
+		testFileManager.load();
+		assertEquals("No warning should be shown", 0, warnCount[0]);
+		TestUtils.setUnaccessible(extractedField, testFileManager, false);
 		TestUtils.setUnaccessible(yamlFileField, testFileManager, false);
 	}
 

@@ -18,11 +18,9 @@
 package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.yaml.YAML;
-import at.pcgamingfreaks.yaml.YAMLInvalidContentException;
 import at.pcgamingfreaks.yaml.YAMLKeyNotFoundException;
 
-import java.io.*;
-import java.util.NoSuchElementException;
+import java.io.File;
 import java.util.logging.Logger;
 
 public class Configuration extends YamlFileManager
@@ -104,41 +102,7 @@ public class Configuration extends YamlFileManager
 	 */
 	public void reload()
 	{
-		loadConfig();
-	}
-
-	private void loadConfig()
-	{
-		try
-		{
-			if(!yamlFile.exists() || yamlFile.length() == 0)
-			{
-				logger.info("No config found. Create new one ...");
-				extractFile();
-				yaml = new YAML(yamlFile);
-				if(newConfigCreated())
-				{
-					try
-					{
-						save();
-					}
-					catch(FileNotFoundException e)
-					{
-						logger.warning(ConsoleColor.RED + "Failed to save the config cause the file does not exist! Has it been deleted?" + ConsoleColor.RESET);
-					}
-				}
-			}
-			else
-			{
-				yaml = new YAML(yamlFile);
-				update();
-			}
-		}
-		catch(IOException | YAMLInvalidContentException | NoSuchElementException e)
-		{
-			logger.warning(ConsoleColor.RED + "Failed to read the config file! Please check it!" + ConsoleColor.RESET);
-			e.printStackTrace();
-		}
+		load();
 	}
 
 	//region General getter
