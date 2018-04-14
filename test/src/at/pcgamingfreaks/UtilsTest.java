@@ -19,15 +19,16 @@ package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.Calendar.TimeSpan;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
@@ -35,6 +36,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Utils.class)
 public class UtilsTest
 {
 	private static final byte[] byteArray1 = new byte[] { 0x01, 0x02, 0x03 }, byteArray2 = new byte[] { (byte) 0xFD, (byte) 0xDA, 0x11 };
@@ -120,5 +123,34 @@ public class UtilsTest
 		Integer[] data = new Integer[] { 1, 3, 8 };
 		assertTrue(Utils.arrayContains(data, 3));
 		assertFalse(Utils.arrayContains(data, 2));
+	}
+
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	@Test
+	public void testExtract() throws Exception
+	{
+		final int[] logCount = new int[] { 0 };
+		Logger mockedLogger = mock(Logger.class);
+		doAnswer(new Answer<Void>()
+		{
+			@Override
+			public Void answer(InvocationOnMock invocationOnMock) throws Throwable
+			{
+				logCount[0]++;
+				return null;
+			}
+		}).when(mockedLogger).info(anyString());
+		File mockedFile = mock(File.class);
+		doReturn(true).when(mockedFile).exists();
+		doReturn(false).when(mockedFile).delete();
+		doReturn(false).when(mockedFile).createNewFile();
+		File parentFile = mock(File.class);
+		doReturn(parentFile).when(mockedFile).getParentFile();
+		doReturn(false).when(parentFile).exists();
+		doReturn(false).when(parentFile).mkdirs();
+		FileOutputStream mockedFileStream = mock(FileOutputStream.class);
+		whenNew(FileOutputStream.class).withAnyArguments().thenReturn(mockedFileStream);
+		Utils.extractFile(UtilsTest.class, mockedLogger, "", mockedFile);
+		assertEquals("There should be all info messages in the log", 4, logCount[0]);
 	}
 }
