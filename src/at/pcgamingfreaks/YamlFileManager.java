@@ -115,6 +115,11 @@ public class YamlFileManager
 	//endregion
 
 	//region handling file ops (load, save, update, upgrade, create)
+	public YAML getYaml()
+	{
+		return yaml;
+	}
+
 	/**
 	 * Saves all changes to the file.
 	 *
