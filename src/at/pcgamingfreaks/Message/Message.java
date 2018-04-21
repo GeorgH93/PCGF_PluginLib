@@ -23,6 +23,7 @@ import at.pcgamingfreaks.StringUtils;
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.Validate;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -147,7 +148,7 @@ public abstract class Message<T extends Message, PLAYER, COMMAND_SENDER>
 	 * @param replacement The string which would replace the found expression.
 	 * @return            This message instance (for chaining).
 	 */
-	public @NotNull T replaceAll(@NotNull String regex, @NotNull String replacement)
+	public @NotNull T replaceAll(@NotNull @Language("RegExp") String regex, @NotNull String replacement)
 	{
 		json = json.replaceAll(regex, replacement);
 		fallback = fallback.replaceAll(regex, replacement);
