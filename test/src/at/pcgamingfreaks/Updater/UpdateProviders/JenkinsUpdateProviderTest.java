@@ -89,8 +89,8 @@ public class JenkinsUpdateProviderTest
 		assertEquals("The invalid query should return a failure", UpdateResult.FAIL_FILE_NOT_FOUND, updater.query());
 		assertEquals("A warning should be shown", ++currentWarnings, counts[0]);
 		updater = new JenkinsUpdateProvider("ci.pcgamingfreaks.at", "PluginLib", "", mockedLogger);
-		assertEquals("The invalid query should return a failure", UpdateResult.FAIL_NO_VERSION_FOUND, updater.query());
-		assertEquals("A warning should be shown", ++currentWarnings, counts[0]);
+		assertEquals("The query should be successful", UpdateResult.SUCCESS, updater.query());
+		assertEquals("No warning should be shown", currentWarnings, counts[0]);
 		updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", "", mockedLogger);
 		assertEquals("The query should be successful", UpdateResult.SUCCESS, updater.query());
 		assertEquals("No warning should be shown", currentWarnings, counts[0]);

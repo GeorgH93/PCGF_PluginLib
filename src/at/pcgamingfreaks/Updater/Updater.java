@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2017 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -171,6 +171,7 @@ public abstract class Updater
 			{
 				case HttpURLConnection.HTTP_MOVED_PERM:
 				case HttpURLConnection.HTTP_MOVED_TEMP:
+				case HttpURLConnection.HTTP_SEE_OTHER:
 					if(movedCount == 5) // Prevents endless loops
 					{
 						logger.warning("Target url moved more than 5 times. Abort.");
@@ -244,10 +245,10 @@ public abstract class Updater
 			e.printStackTrace();
 			result = UpdateResult.FAIL_NO_VERSION_FOUND;
 		}
-		catch(IOException ignored)
+		catch(IOException e)
 		{
 			logger.warning("The auto-updater tried to download a new update, but was unsuccessful.");
-			ignored.printStackTrace();
+			e.printStackTrace();
 			result = UpdateResult.FAIL_DOWNLOAD;
 		}
 		catch(NoSuchAlgorithmException ignored) {}
@@ -350,7 +351,7 @@ public abstract class Updater
 						result = UpdateResult.UPDATE_AVAILABLE;
 						try
 						{
-							if(updateProvider.provideDownloadURL() && updateProvider.getLatestFileURL() != null)
+							if(updateProvider.provideDownloadURL())
 							{
 								download(updateProvider.getLatestFileURL(), (updateProvider.getLatestVersionFileName().toLowerCase().endsWith(".zip")) ? updateProvider.getLatestVersionFileName() : targetFileName);
 								if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.provideDependencies() && updateProvider.getLatestDependencies() != null)

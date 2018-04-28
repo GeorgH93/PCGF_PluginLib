@@ -33,18 +33,22 @@ import org.jetbrains.annotations.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("RedundantThrows")
 public class JenkinsUpdateProvider extends AbstractOnlineProvider
 {
 	private static final Pattern VERSION_PATTERN = Pattern.compile(".*-(?<version>" + Version.VERSION_STING_FORMAT + ")\\.(jar|zip)");
-	private static final String API_FILTER = "tree=artifacts[*]{0,1},fingerprint[hash]{0,1},number,url,fullDisplayName,changeSet[items[comment]]";
+	private static final String API_FILTER = "tree=artifacts[*]{0,1},fingerprint[hash]{0,1},number,timestamp,url,fullDisplayName,changeSet[items[comment]]";
 
 	private final String host, token;
 	private final URL url;
@@ -91,10 +95,23 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 		if(url == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 		try
 		{
-			URLConnection connection = url.openConnection();
-			connection.setConnectTimeout(TIMEOUT);
-			connection.addRequestProperty(PROPERTY_USER_AGENT, USER_AGENT);
-			connection.setDoOutput(true);
+			HttpURLConnection connection = null;
+			int status = 0, failed = 0;
+			URL targetUrl = url;
+			while(status != HttpURLConnection.HTTP_OK) // To handel http redirection responses
+			{
+				if(++failed >= 5) return UpdateResult.FAIL_FILE_NOT_FOUND; // To prevent endless redirection loops
+				connection = (HttpURLConnection) targetUrl.openConnection();
+				connection.setConnectTimeout(TIMEOUT);
+				connection.setInstanceFollowRedirects(true);
+				connection.addRequestProperty(PROPERTY_USER_AGENT, USER_AGENT);
+				connection.setDoOutput(true);
+				status = connection.getResponseCode();
+				if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER)
+				{
+					targetUrl = new URL(connection.getHeaderField("Location"));
+				}
+			}
 
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream())))
 			{
@@ -124,7 +141,16 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 					Matcher matcher = VERSION_PATTERN.matcher(result.getFileName());
 					if(matcher.matches())
 					{
-						result.setVersion(new Version(matcher.group("version") + "-b" + object.getAsJsonPrimitive("number").getAsString()));
+						StringBuilder versionBuilder = new StringBuilder(matcher.group("version"));
+						versionBuilder.append("-T");
+						Date buildTime = new Date(object.getAsJsonPrimitive("timestamp").getAsLong());
+						//noinspection SpellCheckingInspection
+						SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+						format.setTimeZone(TimeZone.getTimeZone("UTC"));
+						versionBuilder.append(format.format(buildTime));
+						versionBuilder.append("-b");
+						versionBuilder.append(object.getAsJsonPrimitive("number").getAsString());
+						result.setVersion(new Version(versionBuilder.toString()));
 						lastResult = result;
 					}
 				}
