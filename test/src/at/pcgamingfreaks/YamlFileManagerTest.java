@@ -61,13 +61,6 @@ public class YamlFileManagerTest
 	}
 
 	@Test
-	public void testGetInvalidVersion()
-	{
-		YamlFileManager testFileManager = new YamlFileManager(null, null, 20, 15, "", null, "", null);
-		assertEquals("The file version should match", -1, testFileManager.getVersion());
-	}
-
-	@Test
 	public void testDoUpgrade() throws YAMLInvalidContentException
 	{
 		final int[] infoCount = { 0 };
@@ -243,6 +236,7 @@ public class YamlFileManagerTest
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
 		doNothing().when(testFileManager).doUpdate();
 		doNothing().when(testFileManager).save();
+		doReturn(-1).when(testFileManager).getVersion();
 		YAML mockedYAML = mock(YAML.class);
 		doNothing().when(mockedYAML).set(anyString(), anyString());
 		testFileManager.update();
@@ -283,6 +277,7 @@ public class YamlFileManagerTest
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
 		doNothing().when(testFileManager).load();
 		doNothing().when(testFileManager).save();
+		doReturn(-1).when(testFileManager).getVersion();
 		testFileManager.upgrade();
 		assertEquals("A warning should be written out", ++warnings, count[0]);
 		assertEquals("Info should be written out on no upgrade", ++infos, count[1]);

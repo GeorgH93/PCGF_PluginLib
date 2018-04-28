@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017 GeorgH93
+ *   Copyright (C) 2017, 2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 					result.setChecksum(object.getAsJsonArray("fingerprint").get(0).getAsJsonObject().getAsJsonPrimitive("hash").getAsString());
 					//region read the changelog
 					JsonArray items = object.getAsJsonObject("changeSet").getAsJsonArray("items");
-					StringBuilder stringBuilder = new StringBuilder("");
+					StringBuilder stringBuilder = new StringBuilder();
 					for(int i = 0; i < items.size(); i++)
 					{
 						if(i > 0) stringBuilder.append("\n");

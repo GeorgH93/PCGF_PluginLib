@@ -65,14 +65,7 @@ public class YamlFileManager
 	 */
 	public int getVersion()
 	{
-		try
-		{
-			return yaml.getInt("Version");
-		}
-		catch(Exception ignored)
-		{
-			return -1;
-		}
+		return yaml.getInt("Version", -1);
 	}
 
 	//region file handling stuff for inheriting classes

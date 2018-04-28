@@ -152,6 +152,7 @@ public class Utils
 			{
 				logger.info("Failed create new file (" + targetFile.toString() + ").");
 			}
+			if(!inJarPath.startsWith("/")) inJarPath = "/" + inJarPath;
 			try(InputStream is = pluginClass.getResourceAsStream(inJarPath); OutputStream os = new FileOutputStream(targetFile))
 			{
 				ByteStreams.copy(is, os);

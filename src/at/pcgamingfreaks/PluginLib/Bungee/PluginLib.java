@@ -24,7 +24,7 @@ import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
-import at.pcgamingfreaks.Updater.UpdateProviders.AlwaysUpdateProvider;
+import at.pcgamingfreaks.Updater.UpdateProviders.JenkinsUpdateProvider;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -35,8 +35,6 @@ import java.io.File;
 
 public final class PluginLib extends Plugin implements PluginLibrary
 {
-	private static final String URL = "https://ci.pcgamingfreaks.at/job/PluginLib/lastSuccessfulBuild/artifact/target/PluginLib-1.0-SNAPSHOT.jar";
-
 	private static PluginLibrary instance = null;
 
 	private Configuration config;
@@ -58,7 +56,7 @@ public final class PluginLib extends Plugin implements PluginLibrary
 
 		if(this.config.getBool("Misc.AutoUpdate", true))
 		{
-			Updater updater = new Updater(this, true, new AlwaysUpdateProvider(URL));
+			Updater updater = new Updater(this, true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
 			updater.update();
 		}
 
@@ -89,7 +87,7 @@ public final class PluginLib extends Plugin implements PluginLibrary
 		Updater updater = null;
 		if(this.config.getBool("Misc.AutoUpdate", true))
 		{
-			updater = new Updater(this, true, new AlwaysUpdateProvider(URL));
+			updater = new Updater(this, true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
 			updater.update();
 		}
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.close();
