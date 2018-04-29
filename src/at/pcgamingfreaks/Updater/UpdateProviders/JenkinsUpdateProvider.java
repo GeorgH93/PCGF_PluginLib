@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.ConsoleColor;
+import at.pcgamingfreaks.StringUtils;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
 
@@ -27,6 +28,7 @@ import com.google.gson.JsonParser;
 
 import net.md_5.bungee.api.ChatColor;
 
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,9 +50,9 @@ import java.util.regex.Pattern;
 public class JenkinsUpdateProvider extends AbstractOnlineProvider
 {
 	private static final Pattern VERSION_PATTERN = Pattern.compile(".*-(?<version>" + Version.VERSION_STING_FORMAT + ")\\.(jar|zip)");
-	private static final String API_FILTER = "tree=artifacts[*]{0,1},fingerprint[hash]{0,1},number,timestamp,url,fullDisplayName,changeSet[items[comment]]";
+	private static final String API_FILTER = "tree=artifacts[*],fingerprint[hash],number,timestamp,url,fullDisplayName,changeSet[items[comment]]";
 
-	private final String host, token;
+	private final String host, token, artifactSearchRegex;
 	private final URL url;
 	private UpdateFile lastResult = null;
 
@@ -59,7 +61,17 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 		this(host, job, null, logger);
 	}
 
-	public JenkinsUpdateProvider(@NotNull String host, @NotNull String job, @Nullable String token, @NotNull  Logger logger)
+	public JenkinsUpdateProvider(@NotNull String host, @NotNull String job, @NotNull Logger logger, @Nullable @Language("RegExp") String artifactSearchRegex)
+	{
+		this(host, job, null, logger, artifactSearchRegex);
+	}
+
+	public JenkinsUpdateProvider(@NotNull String host, @NotNull String job, @Nullable String token, @NotNull Logger logger)
+	{
+		this(host, job, token, logger, null);
+	}
+
+	public JenkinsUpdateProvider(@NotNull String host, @NotNull String job, @Nullable String token, @NotNull Logger logger, @Nullable @Language("RegExp") String artifactSearchRegex)
 	{
 		super(logger);
 		StringBuilder urlBuilder = new StringBuilder((host.contains("://") ? "" : "http://"));
@@ -87,6 +99,7 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 		this.url = url;
 		this.host = host;
 		this.token = token;
+		this.artifactSearchRegex = artifactSearchRegex;
 	}
 
 	@Override
@@ -119,15 +132,28 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 				try
 				{
 					UpdateFile result = new UpdateFile();
-
 					JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
 					JsonArray artifacts = object.getAsJsonArray("artifacts");
-					JsonObject firstArtifacts = artifacts.get(0).getAsJsonObject();
-					String relativePath = firstArtifacts.getAsJsonPrimitive("relativePath").getAsString();
-					result.setFileName(firstArtifacts.getAsJsonPrimitive("fileName").getAsString());
+					int artifactId = -1;
+					String filename = "", relativePath = "";
+					for(int i = 0; i < artifacts.size(); i++)
+					{
+						JsonObject artifact = artifacts.get(i).getAsJsonObject();
+						filename = artifact.getAsJsonPrimitive("fileName").getAsString();
+						relativePath = artifact.getAsJsonPrimitive("relativePath").getAsString();
+						if(artifactSearchRegex != null)
+						{
+							if(!filename.matches(artifactSearchRegex)) continue;
+						}
+						else if(StringUtils.containsIgnoreCase(filename, "javadoc") || StringUtils.containsIgnoreCase(filename, "sources")) continue; // Filter away javadoc and sources
+						artifactId = i;
+						break; // There was a valid artifact found, no reason to check the others
+					}
+					if(artifactId < 0) return UpdateResult.FAIL_FILE_NOT_FOUND;
+					result.setFileName(filename);
 					result.setName(object.getAsJsonPrimitive("fullDisplayName").getAsString());
 					result.setDownloadURL(new URL(object.getAsJsonPrimitive("url").getAsString() + "artifact/" + relativePath));
-					result.setChecksum(object.getAsJsonArray("fingerprint").get(0).getAsJsonObject().getAsJsonPrimitive("hash").getAsString());
+					result.setChecksum(object.getAsJsonArray("fingerprint").get(artifactId).getAsJsonObject().getAsJsonPrimitive("hash").getAsString());
 					//region read the changelog
 					JsonArray items = object.getAsJsonObject("changeSet").getAsJsonArray("items");
 					StringBuilder stringBuilder = new StringBuilder();
