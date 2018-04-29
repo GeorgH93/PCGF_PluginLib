@@ -26,8 +26,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import net.md_5.bungee.api.ChatColor;
-
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,10 +36,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +48,8 @@ import java.util.regex.Pattern;
 public class JenkinsUpdateProvider extends AbstractOnlineProvider
 {
 	private static final Pattern VERSION_PATTERN = Pattern.compile(".*-(?<version>" + Version.VERSION_STING_FORMAT + ")\\.(jar|zip)");
-	private static final String API_FILTER = "tree=artifacts[*],fingerprint[hash],number,timestamp,url,fullDisplayName,changeSet[items[comment]]";
+	private static final String API_FILTER = "tree=artifacts[relativePath,fileName],fingerprint[hash],number,timestamp,url,fullDisplayName,changeSet[items[comment]]";
+	private static final String[] IGNORE_ARTIFACTS = { "javadoc", "sources" };
 
 	private final String host, token, artifactSearchRegex;
 	private final URL url;
@@ -126,7 +125,7 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 				}
 			}
 
-			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream())))
+			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
 			{
 				//TODO deserialize the response and add the reading for the version history
 				try
@@ -145,7 +144,7 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 						{
 							if(!filename.matches(artifactSearchRegex)) continue;
 						}
-						else if(StringUtils.containsIgnoreCase(filename, "javadoc") || StringUtils.containsIgnoreCase(filename, "sources")) continue; // Filter away javadoc and sources
+						else if(StringUtils.containsIgnoreCase(filename, IGNORE_ARTIFACTS)) continue;
 						artifactId = i;
 						break; // There was a valid artifact found, no reason to check the others
 					}
@@ -180,10 +179,9 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 						lastResult = result;
 					}
 				}
-				catch(Exception e)
+				catch(Exception ignored)
 				{
-					logger.warning(ConsoleColor.RED + "Failed to parse the result from the server!" + ChatColor.RESET);
-					e.printStackTrace();
+					logger.warning(ConsoleColor.RED + "Failed to parse the result from the server!" + ConsoleColor.RESET);
 					return UpdateResult.FAIL_NO_VERSION_FOUND;
 				}
 			}
@@ -202,14 +200,13 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 					logger.severe(ConsoleColor.RED + "The jenkins server rejected the provided token!" + ConsoleColor.RESET);
 					logger.severe(ConsoleColor.RED + "Please double-check your configuration to ensure it is correct." + ConsoleColor.RESET);
 				}
-				logger.log(Level.SEVERE, null, e);
 				return UpdateResult.FAIL_API_KEY;
 			}
 			else
 			{
 				logger.severe(ConsoleColor.RED + "The updater could not contact " + host + " to check for updates!" + ConsoleColor.RESET);
 				logger.severe(ConsoleColor.RED + "If this is the first time you are seeing this message, the site may be experiencing temporary downtime." + ConsoleColor.RESET);
-				logger.log(Level.SEVERE, null, e);
+				logger.severe(ConsoleColor.RED + "Message: " + e.getMessage() + " " + ConsoleColor.RESET);
 				return UpdateResult.FAIL_SERVER_OFFLINE;
 			}
 		}

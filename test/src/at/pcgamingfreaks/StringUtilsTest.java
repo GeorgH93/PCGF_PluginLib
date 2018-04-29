@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -196,5 +196,13 @@ public class StringUtilsTest
 	{
 		assertEquals("The messages should match", DISABLED_MESSAGE, StringUtils.getPluginDisabledMessage("TestPlugin v1.2"));
 		assertEquals("The messages should match", DISABLED_MESSAGE, StringUtils.getPluginDisabledMessage("TestPlugin", new Version("v1.2")));
+	}
+
+	@Test
+	public void testContainsIgnoreCase()
+	{
+		String testText = "some text to check";
+		assertTrue(StringUtils.containsIgnoreCase(testText, "an", "text"));
+		assertFalse(StringUtils.containsIgnoreCase(testText, "an", "tree"));
 	}
 }

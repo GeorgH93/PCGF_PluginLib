@@ -138,7 +138,10 @@ public final class UUIDConverter
 			{
 				System.out.println("You have reached the request limit of the Mojang api! Please retry later!");
 			}
-			e.printStackTrace();
+			else
+			{
+				e.printStackTrace();
+			}
 		}
 		catch(Exception e)
 		{

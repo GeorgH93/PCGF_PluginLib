@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2017 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -145,6 +145,18 @@ public class StringUtils
 		Validate.notNull(string);
 		Validate.notNull(searchFor);
 		return string.toLowerCase().contains(searchFor.toLowerCase());
+	}
+
+	public static boolean containsIgnoreCase(@NotNull String string, @NotNull String... searchFor)
+	{
+		Validate.notNull(string);
+		Validate.notNull(searchFor);
+		string = string.toLowerCase();
+		for(String s : searchFor)
+		{
+			if(string.contains(s.toLowerCase())) return true;
+		}
+		return false;
 	}
 
 	/**

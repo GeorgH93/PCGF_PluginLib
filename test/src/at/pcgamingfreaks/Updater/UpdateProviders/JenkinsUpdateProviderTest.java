@@ -108,7 +108,7 @@ public class JenkinsUpdateProviderTest
 		TestUtils.setUnaccessible(tokenField, updater, true);
 		PowerMockito.doThrow(new IOException("")).when(mockedURL).openConnection();
 		assertEquals("The query should return a offline message", UpdateResult.FAIL_SERVER_OFFLINE, updater.query());
-		currentSevere += 2;
+		currentSevere += 3;
 		assertEquals("The logger should log the error", currentSevere, counts[1]);
 		TestUtils.setUnaccessible(urlField, updater, true);
 	}

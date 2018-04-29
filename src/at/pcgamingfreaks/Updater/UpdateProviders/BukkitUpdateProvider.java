@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2017 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -30,11 +30,13 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("RedundantThrows")
 public class BukkitUpdateProvider extends AbstractOnlineProvider
 {
 	//region static stuff
@@ -80,7 +82,7 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 			connection.addRequestProperty(PROPERTY_USER_AGENT, USER_AGENT);
 			connection.setDoOutput(true);
 
-			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream())))
+			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
 			{
 				DevBukkitVersion[] devBukkitVersions = GSON.fromJson(reader, DevBukkitVersion[].class);
 				if(devBukkitVersions == null || devBukkitVersions.length == 0)
