@@ -114,6 +114,15 @@ public class UtilsTest
 		assertEquals("There should be a second message in the info log now", 2, logCount[1]);
 		System.setProperty("java.version", "1.8");
 		Utils.warnOnJava_1_7(mockLogger);
+		System.setProperty("java.version", "1.7");
+		mockedTimeSpan = mock(TimeSpan.class);
+		doReturn(5).when(mockedTimeSpan).getYears();
+		doReturn(5).when(mockedTimeSpan).getMonths();
+		whenNew(TimeSpan.class).withAnyArguments().thenReturn(mockedTimeSpan);
+		Utils.warnOnJava_1_7(mockLogger);
+		doReturn(1).when(mockedTimeSpan).getYears();
+		doReturn(1).when(mockedTimeSpan).getMonths();
+		Utils.warnOnJava_1_7(mockLogger);
 		System.setProperty("java.version", javaVersion);
 	}
 

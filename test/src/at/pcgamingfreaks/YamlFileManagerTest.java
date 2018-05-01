@@ -49,6 +49,7 @@ public class YamlFileManagerTest
 	{
 		YamlFileManager testFileManager = new YamlFileManager(null, null, 20, 15, "", null, "", new YAML());
 		assertNotNull("The YamlFileManager should not be null", testFileManager);
+		assertNotNull("The YAML object should not be null", testFileManager.getYaml());
 	}
 
 	@Test
