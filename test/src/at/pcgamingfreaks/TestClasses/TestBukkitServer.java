@@ -17,14 +17,14 @@
 
 package at.pcgamingfreaks.TestClasses;
 
-import com.avaje.ebean.config.ServerConfig;
-
 import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -101,10 +101,7 @@ public class TestBukkitServer implements Server
 		}
 
 		@Override
-		public Plugin loadPlugin(File file) throws InvalidPluginException, InvalidDescriptionException, UnknownDependencyException
-		{
-			return null;
-		}
+		public Plugin loadPlugin(File file) throws InvalidPluginException, InvalidDescriptionException, UnknownDependencyException { return null; }
 
 		@Override
 		public Plugin[] loadPlugins(File file)
@@ -221,12 +218,6 @@ public class TestBukkitServer implements Server
 			return serverVersion;
 		}
 		return "1.2.3-TestBukkit";
-	}
-
-	@Override
-	public Player[] _INVALID_getOnlinePlayers()
-	{
-		return new Player[0];
 	}
 
 	@Override
@@ -440,6 +431,9 @@ public class TestBukkitServer implements Server
 	public void reload() {}
 
 	@Override
+	public void reloadData() { }
+
+	@Override
 	public Logger getLogger()
 	{
 		return Logger.getLogger("TestBukkitServerLogger");
@@ -455,13 +449,7 @@ public class TestBukkitServer implements Server
 	public void savePlayers() {}
 
 	@Override
-	public boolean dispatchCommand(CommandSender commandSender, String s) throws CommandException
-	{
-		return false;
-	}
-
-	@Override
-	public void configureDbConfig(ServerConfig serverConfig) {}
+	public boolean dispatchCommand(CommandSender commandSender, String s) throws CommandException { return false; }
 
 	@Override
 	public boolean addRecipe(Recipe recipe)
@@ -617,22 +605,13 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public Inventory createInventory(InventoryHolder inventoryHolder, InventoryType inventoryType, String s)
-	{
-		return null;
-	}
+	public Inventory createInventory(InventoryHolder inventoryHolder, InventoryType inventoryType, String s) { return null; }
 
 	@Override
-	public Inventory createInventory(InventoryHolder inventoryHolder, int i) throws IllegalArgumentException
-	{
-		return null;
-	}
+	public Inventory createInventory(InventoryHolder inventoryHolder, int i) throws IllegalArgumentException { return null; }
 
 	@Override
-	public Inventory createInventory(InventoryHolder inventoryHolder, int i, String s) throws IllegalArgumentException
-	{
-		return null;
-	}
+	public Inventory createInventory(InventoryHolder inventoryHolder, int i, String s) throws IllegalArgumentException { return null; }
 
 	@Override
 	public Merchant createMerchant(String s)
@@ -707,16 +686,10 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public CachedServerIcon loadServerIcon(File file) throws Exception
-	{
-		return null;
-	}
+	public CachedServerIcon loadServerIcon(File file) throws Exception { return null; }
 
 	@Override
-	public CachedServerIcon loadServerIcon(BufferedImage bufferedImage) throws Exception
-	{
-		return null;
-	}
+	public CachedServerIcon loadServerIcon(BufferedImage bufferedImage) throws Exception { return null; }
 
 	@Override
 	public void setIdleTimeout(int i) {}
@@ -738,6 +711,15 @@ public class TestBukkitServer implements Server
 	{
 		return null;
 	}
+
+	@Override
+	public Entity getEntity(UUID uuid) { return null; }
+
+	@Override
+	public Advancement getAdvancement(NamespacedKey namespacedKey) { return null; }
+
+	@Override
+	public Iterator<Advancement> advancementIterator() { return null; }
 
 	@SuppressWarnings("deprecation")
 	@Override

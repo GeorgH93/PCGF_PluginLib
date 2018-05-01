@@ -341,7 +341,6 @@ public class UpdaterTest
 				assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result);
 			}
 		});
-		shouldHaveUpdateResponses++;
 		updater.update();
 		TestUtils.setUnaccessible(result, updater, true);
 		TestUtils.setUnaccessible(downloadDependencies, updater, true);

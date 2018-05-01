@@ -354,7 +354,7 @@ public abstract class Updater
 							if(updateProvider.provideDownloadURL())
 							{
 								download(updateProvider.getLatestFileURL(), (updateProvider.getLatestVersionFileName().toLowerCase().endsWith(".zip")) ? updateProvider.getLatestVersionFileName() : targetFileName);
-								if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.provideDependencies() && updateProvider.getLatestDependencies() != null)
+								if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.provideDependencies())
 								{
 									for(UpdateProvider.UpdateFile update : updateProvider.getLatestDependencies())
 									{

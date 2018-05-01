@@ -20,9 +20,12 @@ package at.pcgamingfreaks.TestClasses;
 import at.pcgamingfreaks.TestClasses.NMS.EntityPlayer;
 
 import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
+import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.*;
@@ -242,10 +245,7 @@ public class TestBukkitPlayer implements Player
 	public void setStatistic(Statistic statistic, int i) throws IllegalArgumentException {}
 
 	@Override
-	public int getStatistic(Statistic statistic) throws IllegalArgumentException
-	{
-		return 0;
-	}
+	public int getStatistic(Statistic statistic) throws IllegalArgumentException { return 0; }
 
 	@Override
 	public void incrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {}
@@ -254,10 +254,7 @@ public class TestBukkitPlayer implements Player
 	public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {}
 
 	@Override
-	public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException
-	{
-		return 0;
-	}
+	public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException { return 0; }
 
 	@Override
 	public void incrementStatistic(Statistic statistic, Material material, int i) throws IllegalArgumentException {}
@@ -275,10 +272,7 @@ public class TestBukkitPlayer implements Player
 	public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {}
 
 	@Override
-	public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException
-	{
-		return 0;
-	}
+	public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException { return 0; }
 
 	@Override
 	public void incrementStatistic(Statistic statistic, EntityType entityType, int i) throws IllegalArgumentException {}
@@ -398,9 +392,6 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public void setBanned(boolean b) {}
-
-	@Override
 	public boolean isWhitelisted()
 	{
 		return false;
@@ -458,7 +449,13 @@ public class TestBukkitPlayer implements Player
 	public void hidePlayer(Player player) {}
 
 	@Override
+	public void hidePlayer(Plugin plugin, Player player) { }
+
+	@Override
 	public void showPlayer(Player player) {}
+
+	@Override
+	public void showPlayer(Plugin plugin, Player player) { }
 
 	@Override
 	public boolean canSee(Player player)
@@ -486,6 +483,12 @@ public class TestBukkitPlayer implements Player
 	{
 		return null;
 	}
+
+	@Override
+	public double getHeight() { return 0; }
+
+	@Override
+	public double getWidth() { return 0; }
 
 	@Override
 	public boolean isOnGround()
@@ -591,6 +594,15 @@ public class TestBukkitPlayer implements Player
 	{
 		return false;
 	}
+
+	@Override
+	public List<Entity> getPassengers() { return null; }
+
+	@Override
+	public boolean addPassenger(Entity entity) { return false; }
+
+	@Override
+	public boolean removePassenger(Entity entity) { return false; }
 
 	@Override
 	public boolean isEmpty()
@@ -746,6 +758,9 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
+	public PistonMoveReaction getPistonMoveReaction() { return null; }
+
+	@Override
 	public boolean isFlying()
 	{
 		return false;
@@ -777,6 +792,9 @@ public class TestBukkitPlayer implements Player
 
 	@Override
 	public void setResourcePack(String s) {}
+
+	@Override
+	public void setResourcePack(String s, byte[] bytes) { }
 
 	@Override
 	public Scoreboard getScoreboard()
@@ -858,6 +876,12 @@ public class TestBukkitPlayer implements Player
 
 	@Override
 	public <T> void spawnParticle(Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, T t) {}
+
+	@Override
+	public AdvancementProgress getAdvancementProgress(Advancement advancement) { return null; }
+
+	@Override
+	public String getLocale() { return null; }
 
 	@Override
 	public Map<String, Object> serialize()
@@ -956,6 +980,15 @@ public class TestBukkitPlayer implements Player
 	public void setItemOnCursor(ItemStack itemStack) {}
 
 	@Override
+	public boolean hasCooldown(Material material) { return false; }
+
+	@Override
+	public int getCooldown(Material material) { return 0; }
+
+	@Override
+	public void setCooldown(Material material, int i) { }
+
+	@Override
 	public boolean isSleeping()
 	{
 		return false;
@@ -995,6 +1028,18 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
+	public Entity getShoulderEntityLeft() { return null; }
+
+	@Override
+	public void setShoulderEntityLeft(Entity entity) { }
+
+	@Override
+	public Entity getShoulderEntityRight() { return null; }
+
+	@Override
+	public void setShoulderEntityRight(Entity entity) { }
+
+	@Override
 	public double getEyeHeight()
 	{
 		return 0;
@@ -1013,31 +1058,13 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public List<Block> getLineOfSight(HashSet<Byte> hashSet, int i)
-	{
-		return null;
-	}
-
-	@Override
 	public List<Block> getLineOfSight(Set<Material> set, int i)
 	{
 		return null;
 	}
 
 	@Override
-	public Block getTargetBlock(HashSet<Byte> hashSet, int i)
-	{
-		return null;
-	}
-
-	@Override
 	public Block getTargetBlock(Set<Material> set, int i)
-	{
-		return null;
-	}
-
-	@Override
-	public List<Block> getLastTwoTargetBlocks(HashSet<Byte> hashSet, int i)
 	{
 		return null;
 	}
@@ -1082,16 +1109,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public int _INVALID_getLastDamage()
-	{
-		return 0;
-	}
-
-	@Override
 	public void setLastDamage(double v) {}
-
-	@Override
-	public void _INVALID_setLastDamage(int i) {}
 
 	@Override
 	public int getNoDamageTicks()
@@ -1184,10 +1202,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public Entity getLeashHolder() throws IllegalStateException
-	{
-		return null;
-	}
+	public Entity getLeashHolder() throws IllegalStateException { return null; }
 
 	@Override
 	public boolean setLeashHolder(Entity entity)
@@ -1232,13 +1247,7 @@ public class TestBukkitPlayer implements Player
 	public void damage(double v) {}
 
 	@Override
-	public void _INVALID_damage(int i) {}
-
-	@Override
 	public void damage(double v, Entity entity) {}
-
-	@Override
-	public void _INVALID_damage(int i, Entity entity) {}
 
 	@Override
 	public double getHealth()
@@ -1247,16 +1256,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public int _INVALID_getHealth()
-	{
-		return 0;
-	}
-
-	@Override
 	public void setHealth(double v) {}
-
-	@Override
-	public void _INVALID_setHealth(int i) {}
 
 	@Override
 	public double getMaxHealth()
@@ -1265,16 +1265,7 @@ public class TestBukkitPlayer implements Player
 	}
 
 	@Override
-	public int _INVALID_getMaxHealth()
-	{
-		return 0;
-	}
-
-	@Override
 	public void setMaxHealth(double v) {}
-
-	@Override
-	public void _INVALID_setMaxHealth(int i) {}
 
 	@Override
 	public void resetMaxHealth() {}
