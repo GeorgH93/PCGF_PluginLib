@@ -26,14 +26,14 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-public class AbstractOnlineProviderTest
+public class BaseOnlineProviderTest
 {
 	@Test
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public void testGetLatestReleaseType() throws NotSuccessfullyQueriedException
 	{
 		//noinspection ConstantConditions
-		AbstractOnlineProvider provider = mock(JenkinsUpdateProvider.class);
+		BaseOnlineProvider provider = mock(JenkinsUpdateProvider.class);
 		Version mockedVersion = mock(Version.class);
 		doReturn(true).when(mockedVersion).isPreRelease();
 		doReturn("Minecraft-1.11.2-invalid").when(mockedVersion).toString();

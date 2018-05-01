@@ -247,7 +247,7 @@ public class UpdaterTest
 		doReturn(true).when(updater).versionCheck((Version) anyObject());
 		updater.update(updaterResponse);
 		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
-		doReturn("test.zip").when(mockedUpdateProvider).getLatestVersionFileName();
+		doReturn("test.zip").when(mockedUpdateProvider).getLatestFileName();
 		updater.update(updaterResponse);
 		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
 		doReturn(true).when(mockedUpdateProvider).provideDownloadURL();
@@ -281,7 +281,7 @@ public class UpdaterTest
 			}
 		});
 		shouldHaveUpdateResponses++;
-		doReturn("").when(mockedUpdateProvider).getLatestVersionFileName();
+		doReturn("").when(mockedUpdateProvider).getLatestFileName();
 		doAnswer(new Answer()
 		{
 			@Override

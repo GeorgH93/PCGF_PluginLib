@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -40,7 +40,11 @@ public enum ReleaseType
 	 */
 	SNAPSHOT,
 	/**
-	 * A build of unknown type. This is used when we can't categorize the found build.
+    * A "release candidate" build.
+    */
+	RC,
+	/**
+	 * A build of unknown type. This is used when the build can not be categorized.
 	 */
 	UNKNOWN
 }

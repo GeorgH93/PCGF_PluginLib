@@ -45,7 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("RedundantThrows")
-public class JenkinsUpdateProvider extends AbstractOnlineProvider
+public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 {
 	private static final Pattern VERSION_PATTERN = Pattern.compile(".*-(?<version>" + Version.VERSION_STING_FORMAT + ")\\.(jar|zip)");
 	private static final String API_FILTER = "tree=artifacts[relativePath,fileName],fingerprint[hash],number,timestamp,url,fullDisplayName,changeSet[items[comment]]";
@@ -53,7 +53,6 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 
 	private final String host, token, artifactSearchRegex;
 	private final URL url;
-	private UpdateFile lastResult = null;
 
 	public JenkinsUpdateProvider(@NotNull String host, @NotNull String job, @NotNull Logger logger)
 	{
@@ -107,29 +106,13 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 		if(url == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 		try
 		{
-			HttpURLConnection connection = null;
-			int status = 0, failed = 0;
-			URL targetUrl = url;
-			while(status != HttpURLConnection.HTTP_OK) // To handel http redirection responses
-			{
-				if(++failed >= 5) return UpdateResult.FAIL_FILE_NOT_FOUND; // To prevent endless redirection loops
-				connection = (HttpURLConnection) targetUrl.openConnection();
-				connection.setConnectTimeout(TIMEOUT);
-				connection.setInstanceFollowRedirects(true);
-				connection.addRequestProperty(PROPERTY_USER_AGENT, USER_AGENT);
-				connection.setDoOutput(true);
-				status = connection.getResponseCode();
-				if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER)
-				{
-					targetUrl = new URL(connection.getHeaderField("Location"));
-				}
-			}
-
+			HttpURLConnection connection = connect(url);
+			if(connection == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
 			{
-				//TODO deserialize the response and add the reading for the version history
 				try
 				{
+					//TODO deserialize the response and add the reading for the version history
 					UpdateFile result = new UpdateFile();
 					JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
 					JsonArray artifacts = object.getAsJsonArray("artifacts");
@@ -204,49 +187,14 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 			}
 			else
 			{
-				logger.severe(ConsoleColor.RED + "The updater could not contact " + host + " to check for updates!" + ConsoleColor.RESET);
-				logger.severe(ConsoleColor.RED + "If this is the first time you are seeing this message, the site may be experiencing temporary downtime." + ConsoleColor.RESET);
-				logger.severe(ConsoleColor.RED + "Message: " + e.getMessage() + " " + ConsoleColor.RESET);
+				logErrorOffline(host, e.getMessage());
 				return UpdateResult.FAIL_SERVER_OFFLINE;
 			}
 		}
 		return UpdateResult.SUCCESS;
 	}
 
-	@Override
-	public @NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException
-	{
-		return getLatestVersion().toString();
-	}
-
-	@Override
-	public @NotNull Version getLatestVersion() throws NotSuccessfullyQueriedException
-	{
-		if(lastResult == null) { throw new NotSuccessfullyQueriedException(); }
-		return lastResult.getVersion();
-	}
-
-	@Override
-	public @NotNull URL getLatestFileURL() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
-	{
-		if(lastResult == null) { throw new NotSuccessfullyQueriedException(); }
-		return lastResult.getDownloadURL();
-	}
-
-	@Override
-	public @NotNull String getLatestVersionFileName() throws NotSuccessfullyQueriedException
-	{
-		if(lastResult == null) { throw new NotSuccessfullyQueriedException(); }
-		return lastResult.getFileName();
-	}
-
-	@Override
-	public @NotNull String getLatestName() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
-	{
-		if(lastResult == null) { throw new NotSuccessfullyQueriedException(); }
-		return lastResult.getName();
-	}
-
+	//region getter for the latest version
 	@Override
 	public @NotNull String getLatestMinecraftVersion() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
@@ -277,15 +225,11 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 	public @NotNull UpdateFile[] getUpdateHistory() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		//TODO add it!
-		throw new RequestTypeNotAvailableException("This provider does not provide an update history.");
+		throw new RequestTypeNotAvailableException("The jenkins API does not provide an update history.");
 	}
+	//endregion
 
-	@Override
-	public boolean provideDownloadURL()
-	{
-		return true;
-	}
-
+	//region provider property's
 	@Override
 	public boolean provideMinecraftVersion()
 	{
@@ -315,4 +259,5 @@ public class JenkinsUpdateProvider extends AbstractOnlineProvider
 	{
 		return false;
 	}
+	//endregion
 }

@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -37,7 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("RedundantThrows")
-public class BukkitUpdateProvider extends AbstractOnlineProvider
+public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 {
 	//region static stuff
 	private static final String HOST = "https://api.curseforge.com/servermods/files?projectIds=";
@@ -48,7 +49,6 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 	private final String apiKey;
 	private final URL url;
 
-	private UpdateFile lastResult = null;
 	private UpdateFile[] lastHistory = null;
 
 	public BukkitUpdateProvider(int projectID, @NotNull Logger logger)
@@ -66,7 +66,7 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 		{
 			url = new URL(HOST + projectID);
 		}
-		catch(MalformedURLException ignored) {}
+		catch(MalformedURLException ignored) {} //Should never happen
 		this.url = url;
 	}
 
@@ -76,12 +76,8 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 		if(url == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 		try
 		{
-			URLConnection connection = url.openConnection();
-			connection.setConnectTimeout(TIMEOUT);
-			if(apiKey != null) connection.addRequestProperty("X-API-Key", apiKey);
-			connection.addRequestProperty(PROPERTY_USER_AGENT, USER_AGENT);
-			connection.setDoOutput(true);
-
+			URLConnection connection = connect(url);
+			if(connection == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
 			{
 				DevBukkitVersion[] devBukkitVersions = GSON.fromJson(reader, DevBukkitVersion[].class);
@@ -137,22 +133,20 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 			}
 			else
 			{
-				logger.severe(ConsoleColor.RED + "The updater could not contact dev.bukkit.org to check for updates!" + ConsoleColor.RESET);
-				logger.severe(ConsoleColor.RED + "If this is the first time you are seeing this message, the site may be experiencing temporary downtime." + ConsoleColor.RESET);
-				logger.log(Level.SEVERE, null, e);
+				logErrorOffline("dev.bukkit.org", e.getMessage());
 				return UpdateResult.FAIL_SERVER_OFFLINE;
 			}
 		}
 		return UpdateResult.SUCCESS;
 	}
 
-	//region provider property's
 	@Override
-	public boolean provideDownloadURL()
+	protected void setConnectionParameter(HttpURLConnection connection)
 	{
-		return true;
+		if(apiKey != null) connection.addRequestProperty("X-API-Key", apiKey);
 	}
 
+	//region provider property's
 	@Override
 	public boolean provideMinecraftVersion()
 	{
@@ -185,39 +179,6 @@ public class BukkitUpdateProvider extends AbstractOnlineProvider
 	//endregion
 
 	//region getter for the latest version
-	@Override
-	public @NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException
-	{
-		return getLatestVersion().toString();
-	}
-
-	@Override
-	public @NotNull Version getLatestVersion() throws NotSuccessfullyQueriedException
-	{
-		if(lastResult == null) throw new NotSuccessfullyQueriedException();
-		return lastResult.getVersion();
-	}
-
-	public @NotNull String getLatestVersionFileName() throws NotSuccessfullyQueriedException
-	{
-		if(lastResult == null) throw new NotSuccessfullyQueriedException();
-		return lastResult.getFileName();
-	}
-
-	@Override
-	public @NotNull URL getLatestFileURL() throws NotSuccessfullyQueriedException
-	{
-		if(lastResult == null) throw new NotSuccessfullyQueriedException();
-		return lastResult.getDownloadURL();
-	}
-
-	@Override
-	public @NotNull String getLatestName() throws NotSuccessfullyQueriedException
-	{
-		if(lastResult == null) throw new NotSuccessfullyQueriedException();
-		return lastResult.getName();
-	}
-
 	@Override
 	public @NotNull String getLatestMinecraftVersion() throws NotSuccessfullyQueriedException
 	{

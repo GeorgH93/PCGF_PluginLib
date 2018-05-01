@@ -28,6 +28,7 @@ import at.pcgamingfreaks.yaml.YAML;
 import com.google.common.io.ByteStreams;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -335,7 +336,7 @@ public abstract class Updater
 		update(null);
 	}
 
-	public void update(final UpdaterResponse response)
+	public void update(@Nullable final UpdaterResponse response)
 	{
 		if(result == UpdateResult.DISABLED) return;
 		runAsync(new Runnable()
@@ -353,7 +354,7 @@ public abstract class Updater
 						{
 							if(updateProvider.provideDownloadURL())
 							{
-								download(updateProvider.getLatestFileURL(), (updateProvider.getLatestVersionFileName().toLowerCase().endsWith(".zip")) ? updateProvider.getLatestVersionFileName() : targetFileName);
+								download(updateProvider.getLatestFileURL(), (updateProvider.getLatestFileName().toLowerCase().endsWith(".zip")) ? updateProvider.getLatestFileName() : targetFileName);
 								if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.provideDependencies())
 								{
 									for(UpdateProvider.UpdateFile update : updateProvider.getLatestDependencies())

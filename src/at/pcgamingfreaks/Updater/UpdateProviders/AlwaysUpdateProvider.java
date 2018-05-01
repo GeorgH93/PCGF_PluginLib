@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2017 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import java.net.URL;
  * The file to download is specified in the constructor.
  * This provider should only be used for preview builds that will always download the newest build from a ci server.
  */
+@SuppressWarnings("RedundantThrows")
 public class AlwaysUpdateProvider implements UpdateProvider
 {
 	private URL downloadUrl = null;
@@ -98,7 +99,7 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	}
 
 	@Override
-	public @NotNull String getLatestVersionFileName() throws NotSuccessfullyQueriedException
+	public @NotNull String getLatestFileName() throws NotSuccessfullyQueriedException
 	{
 		return fileName;
 	}

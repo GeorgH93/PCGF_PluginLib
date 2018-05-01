@@ -119,7 +119,7 @@ public class BukkitUpdateProviderTest
 		Gson mockedGson = PowerMockito.mock(Gson.class);
 		PowerMockito.doReturn(Array.newInstance(versionClass, 0)).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
 		whenNew(Gson.class).withAnyArguments().thenReturn(mockedGson);
-		Field gsonField = TestUtils.setAccessible(AbstractOnlineProvider.class, null, "GSON", mockedGson);
+		Field gsonField = TestUtils.setAccessible(BaseOnlineProvider.class, null, "GSON", mockedGson);
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
@@ -179,11 +179,11 @@ public class BukkitUpdateProviderTest
 	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestVersionFileName() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
 	{
-		getProvider().getLatestVersionFileName();
+		getProvider().getLatestFileName();
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestName() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	public void testGetLatestName() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
 		getProvider().getLatestName();
 	}
@@ -207,7 +207,7 @@ public class BukkitUpdateProviderTest
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestFileURLWithError() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	public void testGetLatestFileURLWithError() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
 		getProvider().getLatestFileURL();
 	}
@@ -225,13 +225,13 @@ public class BukkitUpdateProviderTest
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestNameException() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	public void testGetLatestNameException() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
 		getProvider().getLatestName();
 	}
 
 	@Test
-	public void testGetLatestNameSuccess() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	public void testGetLatestNameSuccess() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
 		getProvider().query();
 		assertNotNull("The latest name should not be null", getLoggedProvider().getLatestName());

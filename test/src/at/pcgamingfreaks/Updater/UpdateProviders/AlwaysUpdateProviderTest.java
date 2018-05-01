@@ -57,7 +57,7 @@ public class AlwaysUpdateProviderTest
 	@Test
 	public void testGetLatestVersionFileName() throws Exception
 	{
-		assertEquals("The file name should match", "file.jar", provider.getLatestVersionFileName());
+		assertEquals("The file name should match", "file.jar", provider.getLatestFileName());
 	}
 
 	@Test

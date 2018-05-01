@@ -66,7 +66,7 @@ public interface UpdateProvider
 	 * @return latest version's file name.
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
-	@NotNull String getLatestVersionFileName() throws NotSuccessfullyQueriedException;
+	@NotNull String getLatestFileName() throws NotSuccessfullyQueriedException;
 
 	/**
 	 * Get the latest version's name (such as "Project v1.0").

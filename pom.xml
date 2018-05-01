@@ -176,6 +176,12 @@
 				<directory>resources</directory>
 				<filtering>true</filtering>
 			</resource>
+			<resource>
+				<directory>./</directory>
+				<includes>
+					<include>LICENSE</include>
+				</includes>
+			</resource>
 		</resources>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test/src</testSourceDirectory>

@@ -182,7 +182,7 @@ public class JenkinsUpdateProviderTest
 	{
 		Logger mockedLogger = mock(Logger.class);
 		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
-		updater.getLatestVersionFileName();
+		updater.getLatestFileName();
 	}
 
 	@Test
@@ -191,7 +191,7 @@ public class JenkinsUpdateProviderTest
 		Logger mockedLogger = mock(Logger.class);
 		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
 		updater.query();
-		assertNotNull("The latest version file name should not be null", updater.getLatestVersionFileName());
+		assertNotNull("The latest version file name should not be null", updater.getLatestFileName());
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
