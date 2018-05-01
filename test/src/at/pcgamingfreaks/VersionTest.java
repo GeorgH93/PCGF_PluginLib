@@ -659,4 +659,12 @@ public class VersionTest
 		Version version = new Version("1.11.2-snapshot");
 		assertTrue("The version should be a pre release version", version.isPreRelease());
 	}
+
+	@Test
+	public void testGetBuildParameterWithError()
+	{
+		String versionString = "1.2-b1" + Long.MAX_VALUE;
+		Version version = new Version(versionString);
+		assertEquals("The version string should match", versionString, version.toString());
+	}
 }
