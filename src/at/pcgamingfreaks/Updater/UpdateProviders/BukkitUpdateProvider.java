@@ -30,7 +30,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,7 +75,7 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 		if(url == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 		try
 		{
-			URLConnection connection = connect(url);
+			HttpURLConnection connection = connect(url);
 			if(connection == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
 			{
@@ -121,6 +120,7 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 					}
 				}
 			}
+			connection.disconnect();
 		}
 		catch(final IOException e)
 		{

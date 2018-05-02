@@ -168,6 +168,7 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 					return UpdateResult.FAIL_NO_VERSION_FOUND;
 				}
 			}
+			connection.disconnect();
 		}
 		catch(final IOException e)
 		{

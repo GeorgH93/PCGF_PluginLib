@@ -76,13 +76,13 @@ public abstract class Updater
 		this.targetFileName = targetFileName;
 
 		//region Check if updater is disabled globally
-		// We check if there is a gravity updater config and if updating is globally disabled. We don't create it if it doesn't exists!
-		final File gravityUpdaterConfigFile = new File(pluginsFolder, "Updater" + File.separator + "config.yml");
-		if(gravityUpdaterConfigFile.exists())
+		// Check if there is a updater config and if updating is globally disabled.
+		final File updaterConfigFile = new File(pluginsFolder, "Updater" + File.separator + "config.yml");
+		if(updaterConfigFile.exists())
 		{
 			try
 			{
-				YAML gravityUpdaterGlobalConfig = new YAML(gravityUpdaterConfigFile);
+				YAML gravityUpdaterGlobalConfig = new YAML(updaterConfigFile);
 				if(gravityUpdaterGlobalConfig.getBoolean("disable", false))
 				{
 					result = UpdateResult.DISABLED;
@@ -363,14 +363,6 @@ public abstract class Updater
 									}
 									result = (result == UpdateResult.SUCCESS) ? UpdateResult.SUCCESS : UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED;
 								}
-								if(response != null) runSync(new Runnable()
-								{
-									@Override
-									public void run()
-									{
-										response.onDone(result);
-									}
-								});
 							}
 						}
 						catch(Exception e)
@@ -378,7 +370,19 @@ public abstract class Updater
 							e.printStackTrace();
 						}
 					}
+					else
+					{
+						result = UpdateResult.NO_UPDATE;
+					}
 				}
+				if(response != null) runSync(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						response.onDone(result);
+					}
+				});
 			}
 		});
 	}
