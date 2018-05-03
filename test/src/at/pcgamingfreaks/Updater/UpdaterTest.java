@@ -23,6 +23,7 @@ import at.pcgamingfreaks.Updater.UpdateProviders.NotSuccessfullyQueriedException
 import at.pcgamingfreaks.Updater.UpdateProviders.RequestTypeNotAvailableException;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 import at.pcgamingfreaks.Utils;
+import at.pcgamingfreaks.Version;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -223,8 +224,7 @@ public class UpdaterTest
 	@Test
 	public void testUpdate() throws NoSuchFieldException, IllegalAccessException, RequestTypeNotAvailableException, NotSuccessfullyQueriedException, InterruptedException, MalformedURLException
 	{
-		//TODO fixme
-		/*int shouldHaveUpdateResponses = 0;
+		int shouldHaveUpdateResponses = 0;
 		final int[] updateResponses = { 0 };
 		final Updater.UpdaterResponse updaterResponse = new Updater.UpdaterResponse()
 		{
@@ -239,21 +239,21 @@ public class UpdaterTest
 		doReturn(UpdateResult.DISABLED).when(mockedUpdateProvider).query();
 		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
 		updater.update(updaterResponse);
-		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
+		assertEquals("There should be an update response", ++shouldHaveUpdateResponses, updateResponses[0]);
 		final Field result = TestUtils.setAccessible(Updater.class, updater, "result", UpdateResult.NO_UPDATE);
 		doReturn(UpdateResult.SUCCESS).when(mockedUpdateProvider).query();
 		doReturn(false).when(mockedUpdateProvider).provideDownloadURL();
 		doReturn(null).when(updater).getRemoteVersion();
 		doReturn(true).when(updater).versionCheck((Version) anyObject());
 		updater.update(updaterResponse);
-		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
+		assertEquals("There should be an update response", ++shouldHaveUpdateResponses, updateResponses[0]);
 		doReturn("test.zip").when(mockedUpdateProvider).getLatestFileName();
 		updater.update(updaterResponse);
-		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
+		assertEquals("There should be an update response", ++shouldHaveUpdateResponses, updateResponses[0]);
 		doReturn(true).when(mockedUpdateProvider).provideDownloadURL();
 		doReturn(null).when(mockedUpdateProvider).getLatestFileURL();
 		updater.update(updaterResponse);
-		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
+		assertEquals("There should be an update response", ++shouldHaveUpdateResponses, updateResponses[0]);
 		doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestFileURL();
 		updater.update();
 		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
@@ -346,8 +346,7 @@ public class UpdaterTest
 		TestUtils.setUnaccessible(downloadDependencies, updater, true);
 		TestUtils.setUnaccessible(updateProvider, updater, true);
 		Thread.sleep(100);
-		assertEquals("The onDone method should be called as often as given", shouldHaveUpdateResponses, updateResponses[0]);
-		*/
+		assertEquals("The onDone method should be called as often as given", ++shouldHaveUpdateResponses, updateResponses[0]);
 	}
 
 	@Test
@@ -386,7 +385,8 @@ public class UpdaterTest
 			}
 		}).when(mockedEnumeration).hasMoreElements();
 		doReturn(mockedZipEntry).when(mockedEnumeration).nextElement();
-		doAnswer(new Answer() {
+		doAnswer(new Answer()
+		{
 			@Override
 			public Enumeration answer(InvocationOnMock invocationOnMock) throws Throwable
 			{
@@ -428,6 +428,7 @@ public class UpdaterTest
 		assertEquals("The exception should be the correct one", SecurityException.class, exception.getClass());
 		MockRepository.remove(FileOutputStream.class);
 		whenNew(BufferedOutputStream.class).withAnyArguments().thenThrow(new IllegalArgumentException());
+		exception = null;
 		try
 		{
 			updater.unzip(file);
@@ -439,6 +440,7 @@ public class UpdaterTest
 		assertNotNull("An exception should be thrown", exception);
 		assertEquals("The exception should be the correct one", IllegalArgumentException.class, exception.getClass());
 		doThrow(new IllegalStateException()).when(mockedZipFile).getInputStream(any(ZipEntry.class));
+		exception = null;
 		try
 		{
 			updater.unzip(file);
@@ -454,6 +456,7 @@ public class UpdaterTest
 		doThrow(new IOException()).when(mockedZipFile).close();
 		updater.unzip(file);
 		whenNew(ZipFile.class).withAnyArguments().thenReturn(null);
+		exception = null;
 		try
 		{
 			updater.unzip(file);
