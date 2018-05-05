@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,6 +32,11 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 	private final JavaPlugin plugin;
 	private Thread thread;
 
+	/**
+	 * This constructor is deprecated an should be replaced with a generic on.
+	 * The BukkitUpdateProvider instance should be created manually.
+	 */
+	@Deprecated
 	public Updater(JavaPlugin plugin, File file, boolean announceDownloadProgress, int bukkitPluginID)
 	{
 		this(plugin, file, announceDownloadProgress, new BukkitUpdateProvider(bukkitPluginID, plugin.getLogger()));
