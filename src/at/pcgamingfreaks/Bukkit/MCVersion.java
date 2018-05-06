@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2017 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -74,7 +74,9 @@ public enum MCVersion
 	MC_1_11_2(41, "1_11"),
 	MC_NMS_1_11_R1(41, "1_11"),
 	MC_1_12(51, "1_12"),
-	MC_NMS_1_12_R1(51, "1_12");
+	MC_NMS_1_12_R1(51, "1_12"),
+	MC_1_13(61, "1_13"),
+	MC_NMS_1_13_R1(61, "1_13");
 
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new ConcurrentHashMap<>();
 
