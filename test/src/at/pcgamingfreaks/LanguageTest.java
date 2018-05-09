@@ -167,6 +167,16 @@ public class LanguageTest
 		assertNotNull("The language object should not be null", language);
 	}
 
+	@Test
+	public void testPropertyGetters()
+	{
+		File userDir = new File(System.getProperty("user.dir"));
+		Language language = new Language(mockedLogger, userDir, 1);
+		language.load("de", "overwrite");
+		assertEquals("Unknown", language.getAuthor());
+		assertEquals("de", language.getLanguage());
+	}
+
 	@AfterClass
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static void cleanupTestData()

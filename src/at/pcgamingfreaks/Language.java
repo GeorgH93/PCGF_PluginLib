@@ -228,6 +228,18 @@ public class Language extends YamlFileManager
 		return msg;
 	}
 
+	//region language file property getters
+	public String getLanguage()
+	{
+		return getLang().getString("Language", language);
+	}
+
+	public String getAuthor()
+	{
+		return getLang().getString("Author", "Unknown");
+	}
+	//endregion
+
 	//region helper class
 	/**
 	 * Ignore this class, it's just a helper class for some internal stuff
