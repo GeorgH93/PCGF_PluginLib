@@ -26,6 +26,7 @@ import java.io.File;
 /**
  * This class allows to translate minecraft items names.
  */
+@Deprecated
 public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameResolver
 {
 	//region static stuff
@@ -42,7 +43,7 @@ public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameRes
 	 */
 	ItemNameResolver(@NotNull PluginLib plugin)
 	{
-		super(new Language(plugin, -1, File.separator + "lang", "items_"), plugin.getLogger());
+		super(new Language(plugin, 1, File.separator + "lang", "items_"), plugin.getLogger());
 		instance = this;
 	}
 }

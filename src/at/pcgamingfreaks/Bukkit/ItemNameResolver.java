@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import at.pcgamingfreaks.YamlFileUpdateMethod;
+
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -47,6 +49,7 @@ public class ItemNameResolver
 	{
 		langReader = language;
 		logger.info("Loading item translations ...");
+		if(!langReader.isLoaded()) langReader.load("en", YamlFileUpdateMethod.UPGRADE);
 		int translationCount = load();
 		logger.info("Finished loading item translations for " + translationCount + " items.");
 	}
