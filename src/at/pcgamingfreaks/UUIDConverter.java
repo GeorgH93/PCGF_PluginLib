@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2017 GeorgH93
+ *   Copyright (C) 2014-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -332,7 +332,7 @@ public final class UUIDConverter
 			return UUID_CACHE.get(name);
 		}
 		String uuid = null;
-		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + at.getTime() : "")).openStream(), "UTF-8")))
+		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + (at.getTime()/1000L) : "")).openStream(), "UTF-8")))
 		{
 			uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).getAsString();
 			if(uuid != null && (at == null || at.after(new Date(System.currentTimeMillis() - 1000L*24*3600* 30))))
@@ -342,13 +342,13 @@ public final class UUIDConverter
 		}
 		catch(MalformedURLException e) // There is something going wrong!
 		{
-			System.out.println("Failed to get uuid cause of a malformed url!\n Name: \"" + name + "\" Date: " + ((at != null) ? "?at=" + at.getTime() : "null"));
+			System.out.println("Failed to get uuid cause of a malformed url!\n Name: \"" + name + "\" Date: " + ((at != null) ? "?at=" + at.getTime()/1000L : "null"));
 			e.printStackTrace();
 		}
 		catch(IOException e)
 		{
 			System.out.println("Looks like there is a problem with the connection with mojang. Please retry later.");
-			if(e.getMessage().contains("HTTP response code: 429")) //TODO: more reliable detection
+			if(e.getMessage().contains("HTTP response code: 429"))
 			{
 				System.out.println("You have reached the request limit of the mojang api! Please retry later!");
 			}
@@ -362,12 +362,12 @@ public final class UUIDConverter
 			}
 			else if(at.getTime() == 0) // If it's not his first name maybe it's his current name
 			{
-				System.out.println("Unable to get UUID for: " + name + " at " + at.getTime() + "! Trying without date!");
+				System.out.println("Unable to get UUID for: " + name + " at 0! Trying without date!");
 				uuid = getOnlineUUID(name, null);
 			}
 			else // If we cant get the player with the date he was here last time it's likely that it is his first name
 			{
-				System.out.println("Unable to get UUID for: " + name + " at " + at.getTime() + "! Trying at=0!");
+				System.out.println("Unable to get UUID for: " + name + " at " + at.getTime()/1000L + "! Trying at=0!");
 				uuid = getOnlineUUID(name, new Date(0));
 			}
 			//e.printStackTrace();
