@@ -21,6 +21,7 @@ import at.pcgamingfreaks.*;
 import at.pcgamingfreaks.Bukkit.Language;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Updater;
+import at.pcgamingfreaks.Bukkit.ItemNameResolver;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
@@ -41,6 +42,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 	private Config config;
 	private Version version;
 	private DatabaseConnectionPoolBase databaseConnectionPool;
+	private ItemNameResolver itemNameResolver;
 
 	@Override
 	public void onEnable()
@@ -67,7 +69,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 			updater.update();
 		}
 
-		new ItemNameResolver(this);
+		itemNameResolver = new at.pcgamingfreaks.PluginLib.Bukkit.ItemNameResolver(this);
 
 		Language commonLanguage = new Language(this, 1, 1, File.separator + "lang", "common_");
 		commonLanguage.load("en", YamlFileUpdateMethod.UPGRADE);
@@ -123,7 +125,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 
 	public @NotNull ItemNameResolver getItemNameResolver()
 	{
-		return ItemNameResolver.getInstance();
+		return itemNameResolver;
 	}
 
 	Config getConfiguration()

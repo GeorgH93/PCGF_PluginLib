@@ -17,8 +17,6 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import at.pcgamingfreaks.YamlFileUpdateMethod;
-
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -35,29 +33,13 @@ import java.util.logging.Logger;
 public class ItemNameResolver
 {
 	private final Map<Material, Map<Short, String>> names = new HashMap<>();
-	private final Language langReader;
 
-	private ItemNameResolver()
+	public ItemNameResolver load(@NotNull Language language, @NotNull Logger logger)
 	{
-		langReader = null;
-	}
-
-	/**
-	 * Packet local so that only the lib itself can create an instance.
-	 */
-	public ItemNameResolver(@NotNull Language language, @NotNull Logger logger)
-	{
-		langReader = language;
+		if(!language.isLoaded()) return this;
 		logger.info("Loading item translations ...");
-		if(!langReader.isLoaded()) langReader.load("en", YamlFileUpdateMethod.UPGRADE);
-		int translationCount = load();
-		logger.info("Finished loading item translations for " + translationCount + " items.");
-	}
-
-	private int load()
-	{
 		int translationCount = 0;
-		for(String key : langReader.getLang().getKeys(true))
+		for(String key : language.getLang().getKeys(true))
 		{
 			String material = key, suffix = "";
 			short dataValue = -1;
@@ -71,9 +53,9 @@ public class ItemNameResolver
 					dataValue = Short.parseShort(components[1]);
 				}
 				catch(NumberFormatException ignored) {}
-				if(langReader.getLang().getBoolean(material + ".appendDefault", false))
+				if(language.getLang().getBoolean(material + ".appendDefault", false))
 				{
-					suffix = langReader.getLang().getString(material, "");
+					suffix = language.getLang().getString(material, "");
 				}
 			}
 			if(material.contains(":"))
@@ -86,9 +68,9 @@ public class ItemNameResolver
 					dataValue = Short.parseShort(components[1]);
 				}
 				catch(NumberFormatException ignored) {}
-				if(langReader.getLang().getBoolean(material + ".appendDefault", false))
+				if(language.getLang().getBoolean(material + ".appendDefault", false))
 				{
-					suffix = langReader.getLang().getString(material, langReader.getLang().getString(material + ".default", ""));
+					suffix = language.getLang().getString(material, language.getLang().getString(material + ".default", ""));
 				}
 			}
 			Material mat = Material.matchMaterial(material);
@@ -96,10 +78,11 @@ public class ItemNameResolver
 			{
 				names.put(mat, new HashMap<Short, String>());
 			}
-			names.get(mat).put(dataValue, langReader.get(key) + suffix);
+			names.get(mat).put(dataValue, language.get(key) + suffix);
 			translationCount++;
 		}
-		return translationCount;
+		logger.info("Finished loading item translations for " + translationCount + " items.");
+		return this;
 	}
 
 	/**

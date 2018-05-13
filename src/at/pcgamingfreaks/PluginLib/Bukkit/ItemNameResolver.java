@@ -18,15 +18,16 @@
 package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.Language;
+import at.pcgamingfreaks.YamlFileUpdateMethod;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * This class allows to translate minecraft items names.
  */
-@Deprecated
 public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameResolver
 {
 	//region static stuff
@@ -43,7 +44,17 @@ public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameRes
 	 */
 	ItemNameResolver(@NotNull PluginLib plugin)
 	{
-		super(new Language(plugin, 1, File.separator + "lang", "items_"), plugin.getLogger());
+		super();
 		instance = this;
+		Language itemNameLanguage = new Language(plugin, 1, File.separator + "lang", "items_");
+		itemNameLanguage.load("en", YamlFileUpdateMethod.UPGRADE);
+		super.load(itemNameLanguage, plugin.getLogger());
+	}
+
+	@Override
+	public at.pcgamingfreaks.Bukkit.ItemNameResolver load(@NotNull Language language, @NotNull Logger logger)
+	{
+		// Prevents other plugins from loading item names in the shared ItemNameResolver
+		return this;
 	}
 }
