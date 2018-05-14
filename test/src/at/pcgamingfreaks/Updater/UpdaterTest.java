@@ -132,12 +132,12 @@ public class UpdaterTest
 	@Test
 	public void testBukkitUpdateProviderProperties()
 	{
-		assertFalse(bukkitProvider.provideChangelog());
-		assertFalse(bukkitProvider.provideDependencies());
-		assertTrue(bukkitProvider.provideDownloadURL());
+		assertFalse(bukkitProvider.providesChangelog());
+		assertFalse(bukkitProvider.providesDependencies());
+		assertTrue(bukkitProvider.providesDownloadURL());
 		assertTrue(bukkitProvider.provideMD5Checksum());
-		assertTrue(bukkitProvider.provideMinecraftVersion());
-		assertTrue(bukkitProvider.provideUpdateHistory());
+		assertTrue(bukkitProvider.providesMinecraftVersion());
+		assertTrue(bukkitProvider.providesUpdateHistory());
 	}
 
 	@SuppressWarnings("SpellCheckingInspection")
@@ -242,7 +242,7 @@ public class UpdaterTest
 		assertEquals("There should be an update response", ++shouldHaveUpdateResponses, updateResponses[0]);
 		final Field result = TestUtils.setAccessible(Updater.class, updater, "result", UpdateResult.NO_UPDATE);
 		doReturn(UpdateResult.SUCCESS).when(mockedUpdateProvider).query();
-		doReturn(false).when(mockedUpdateProvider).provideDownloadURL();
+		doReturn(false).when(mockedUpdateProvider).providesDownloadURL();
 		doReturn(null).when(updater).getRemoteVersion();
 		doReturn(true).when(updater).versionCheck((Version) anyObject());
 		updater.update(updaterResponse);
@@ -250,7 +250,7 @@ public class UpdaterTest
 		doReturn("test.zip").when(mockedUpdateProvider).getLatestFileName();
 		updater.update(updaterResponse);
 		assertEquals("There should be an update response", ++shouldHaveUpdateResponses, updateResponses[0]);
-		doReturn(true).when(mockedUpdateProvider).provideDownloadURL();
+		doReturn(true).when(mockedUpdateProvider).providesDownloadURL();
 		doReturn(null).when(mockedUpdateProvider).getLatestFileURL();
 		updater.update(updaterResponse);
 		assertEquals("There should be an update response", ++shouldHaveUpdateResponses, updateResponses[0]);
@@ -258,7 +258,7 @@ public class UpdaterTest
 		updater.update();
 		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
 		doReturn(new URL("http://www.test.xyz")).when(mockedUpdateProvider).getLatestFileURL();
-		doReturn(true).when(mockedUpdateProvider).provideDependencies();
+		doReturn(true).when(mockedUpdateProvider).providesDependencies();
 		UpdateProvider.UpdateFile updateFile = new UpdateProvider.UpdateFile(new URL("http://www.test.download.link"), "DepFile", new Version("1.0"), "", "", "", "");
 		doReturn(new UpdateProvider.UpdateFile[] { updateFile }).when(mockedUpdateProvider).getLatestDependencies();
 		Field downloadDependencies = TestUtils.setAccessible(Updater.class, updater, "downloadDependencies", true);
@@ -312,7 +312,7 @@ public class UpdaterTest
 			}
 		});
 		shouldHaveUpdateResponses++;
-		doReturn(false).when(mockedUpdateProvider).provideDependencies();
+		doReturn(false).when(mockedUpdateProvider).providesDependencies();
 		updater.update(new Updater.UpdaterResponse()
 		{
 			@Override
@@ -571,7 +571,7 @@ public class UpdaterTest
 		doReturn(HttpURLConnection.HTTP_OK).when(mockedConnection).getResponseCode();
 		Field announceDownload = TestUtils.setAccessible(Updater.class, updater, "announceDownloadProgress", false);
 		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
-		doReturn(false).when(mockedUpdateProvider).provideMD5Checksum();
+		doReturn(ChecksumType.NONE).when(mockedUpdateProvider).providesChecksum();
 		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
 		result.set(updater, UpdateResult.NO_UPDATE);
 		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
@@ -585,7 +585,7 @@ public class UpdaterTest
 		assertEquals("The update result should be correct", UpdateResult.SUCCESS, result.get(updater));
 		mockStatic(Utils.class);
 		PowerMockito.doReturn("abc").when(Utils.class, "byteArrayToHex", (Object) any(byte[].class));
-		doReturn(true).when(mockedUpdateProvider).provideMD5Checksum();
+		doReturn(ChecksumType.MD5).when(mockedUpdateProvider).providesChecksum();
 		result.set(updater, UpdateResult.NO_UPDATE);
 		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));

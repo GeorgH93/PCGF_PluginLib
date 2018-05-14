@@ -42,7 +42,7 @@ public abstract class BaseOnlineProviderWithDownload extends BaseOnlineProvider
 	//endregion
 
 	@Override
-	public final boolean provideDownloadURL()
+	public final boolean providesDownloadURL()
 	{
 		return true;
 	}

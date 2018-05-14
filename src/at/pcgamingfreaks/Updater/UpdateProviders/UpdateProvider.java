@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2017 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
+import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
@@ -134,17 +135,41 @@ public interface UpdateProvider
 	//endregion
 
 	//region provider property's
+	//region old provider property's
+	@Deprecated
 	boolean provideDownloadURL();
 
+	@Deprecated
 	boolean provideMinecraftVersion();
 
+	@Deprecated
 	boolean provideChangelog();
 
+	@Deprecated
 	boolean provideMD5Checksum();
 
+	@Deprecated
 	boolean provideUpdateHistory();
 
+	@Deprecated
 	boolean provideDependencies();
+	//endregion
+	boolean providesDownloadURL();
+
+	boolean providesMinecraftVersion();
+
+	boolean providesChangelog();
+
+	/**
+	 * Checks if the provider provides a checksum.
+	 *
+	 * @return The type of the checksum. ChecksumType.None if the provider doesn't provide a checksum.
+	 */
+	@NotNull ChecksumType providesChecksum();
+
+	boolean providesUpdateHistory();
+
+	boolean providesDependencies();
 	//endregion
 
 	class UpdateFile

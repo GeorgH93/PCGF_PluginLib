@@ -17,10 +17,12 @@
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
+import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
@@ -34,14 +36,16 @@ import java.net.URL;
 @SuppressWarnings("RedundantThrows")
 public class AlwaysUpdateProvider implements UpdateProvider
 {
-	private URL downloadUrl = null;
-	private String fileName;
-	private ReleaseType releaseType;
+	private final URL downloadUrl;
+	private final String fileName;
+	private final ReleaseType releaseType;
 
+	//region constructors
 	/**
 	 * @param url The url to the file that should be downloaded.
 	 */
-	public AlwaysUpdateProvider(@NotNull String url)
+	@Deprecated
+	public AlwaysUpdateProvider(@NonNls String url)
 	{
 		this(url, "file.jar");
 	}
@@ -50,7 +54,8 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param url      The url to the file that should be downloaded.
 	 * @param fileName The name of the file.
 	 */
-	public AlwaysUpdateProvider(@NotNull String url, String fileName)
+	@Deprecated
+	public AlwaysUpdateProvider(@NonNls String url, String fileName)
 	{
 		this(url, fileName, ReleaseType.RELEASE);
 	}
@@ -60,19 +65,55 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param fileName    The name of the file.
 	 * @param releaseType The release type.
 	 */
-	public AlwaysUpdateProvider(@NotNull String url, String fileName, ReleaseType releaseType)
+	@Deprecated
+	public AlwaysUpdateProvider(@NonNls String url, String fileName, ReleaseType releaseType)
 	{
 		this.releaseType = releaseType;
 		this.fileName = fileName;
+		URL dlURL = null;
 		try
 		{
-			downloadUrl = new URL(url);
+			dlURL = new URL(url);
 		}
 		catch(MalformedURLException e)
 		{
 			e.printStackTrace();
 		}
+		downloadUrl = dlURL;
 	}
+
+	/**
+	 * @param url The url to the file that should be downloaded.
+	 */
+	@Deprecated
+	public AlwaysUpdateProvider(@NotNull URL url)
+	{
+		this(url, "file.jar");
+	}
+
+	/**
+	 * @param url      The url to the file that should be downloaded.
+	 * @param fileName The name of the file.
+	 */
+	@Deprecated
+	public AlwaysUpdateProvider(@NotNull URL url, String fileName)
+	{
+		this(url, fileName, ReleaseType.RELEASE);
+	}
+
+	/**
+	 * @param url         The url to the file that should be downloaded.
+	 * @param fileName    The name of the file.
+	 * @param releaseType The release type.
+	 */
+	@Deprecated
+	public AlwaysUpdateProvider(@NotNull URL url, String fileName, ReleaseType releaseType)
+	{
+		this.releaseType = releaseType;
+		this.fileName = fileName;
+		this.downloadUrl = url;
+	}
+	//endregion
 
 	@Override
 	public @NotNull UpdateResult query()
@@ -95,6 +136,7 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	@Override
 	public @NotNull URL getLatestFileURL() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
+		if(downloadUrl == null) throw new RequestTypeNotAvailableException("The URL used to create the provider was not valid!");
 		return downloadUrl;
 	}
 
@@ -147,39 +189,85 @@ public class AlwaysUpdateProvider implements UpdateProvider
 		throw new RequestTypeNotAvailableException("This provider does not provide an update history.");
 	}
 
+	//region provider property's
 	@Override
-	public boolean provideDownloadURL()
+	public boolean providesDownloadURL()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean provideMinecraftVersion()
+	public boolean providesMinecraftVersion()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean provideChangelog()
+	public boolean providesChangelog()
 	{
 		return false;
 	}
 
+	@Override
+	public @NotNull ChecksumType providesChecksum()
+	{
+		return ChecksumType.NONE;
+	}
+
+	@Override
+	public boolean providesUpdateHistory()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean providesDependencies()
+	{
+		return false;
+	}
+
+	//region old provider property's
+	@Deprecated
+	@Override
+	public boolean provideDownloadURL()
+	{
+		return providesDownloadURL();
+	}
+
+	@Deprecated
+	@Override
+	public boolean provideMinecraftVersion()
+	{
+		return providesMinecraftVersion();
+	}
+
+	@Deprecated
+	@Override
+	public boolean provideChangelog()
+	{
+		return providesChangelog();
+	}
+
+	@Deprecated
 	@Override
 	public boolean provideMD5Checksum()
 	{
 		return false;
 	}
 
+	@Deprecated
 	@Override
 	public boolean provideUpdateHistory()
 	{
-		return false;
+		return providesUpdateHistory();
 	}
 
+	@Deprecated
 	@Override
 	public boolean provideDependencies()
 	{
-		return false;
+		return providesDependencies();
 	}
+	//endregion
+	//endregion
 }

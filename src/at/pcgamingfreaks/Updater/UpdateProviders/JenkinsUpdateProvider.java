@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
 
@@ -232,31 +233,31 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 
 	//region provider property's
 	@Override
-	public boolean provideMinecraftVersion()
+	public boolean providesMinecraftVersion()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean provideChangelog()
+	public boolean providesChangelog()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean provideMD5Checksum()
+	public @NotNull ChecksumType providesChecksum()
 	{
-		return true;
+		return ChecksumType.MD5;
 	}
 
 	@Override
-	public boolean provideUpdateHistory()
+	public boolean providesUpdateHistory()
 	{
 		return false; // TODO
 	}
 
 	@Override
-	public boolean provideDependencies()
+	public boolean providesDependencies()
 	{
 		return false;
 	}

@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.ConsoleColor;
+import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
 
@@ -148,31 +149,31 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 
 	//region provider property's
 	@Override
-	public boolean provideMinecraftVersion()
+	public boolean providesMinecraftVersion()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean provideChangelog()
+	public boolean providesChangelog()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean provideMD5Checksum()
+	public @NotNull ChecksumType providesChecksum()
+	{
+		return ChecksumType.MD5;
+	}
+
+	@Override
+	public boolean providesUpdateHistory()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean provideUpdateHistory()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean provideDependencies()
+	public boolean providesDependencies()
 	{
 		return false;
 	}

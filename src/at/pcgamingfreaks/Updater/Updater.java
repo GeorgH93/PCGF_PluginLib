@@ -35,7 +35,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -186,8 +185,8 @@ public abstract class Updater
 			long fileLength = connection.getContentLengthLong();
 			int count, percent, percentHelper = -1;
 			File downloadFile = new File(updateFolder.getAbsolutePath() + File.separator + fileName);
-			MessageDigest md5HashGenerator = updateProvider.provideMD5Checksum() ? MessageDigest.getInstance("MD5") : null;
-			try(InputStream inputStream = (md5HashGenerator != null) ? new DigestInputStream(new BufferedInputStream(connection.getInputStream()), md5HashGenerator) : new BufferedInputStream(url.openStream());
+			MessageDigest hashGenerator = updateProvider.providesChecksum().getInstanceOrNull();
+			try(InputStream inputStream = (hashGenerator != null) ? new DigestInputStream(new BufferedInputStream(connection.getInputStream()), hashGenerator) : new BufferedInputStream(url.openStream());
 			    FileOutputStream outputStream = new FileOutputStream(downloadFile))
 			{
 				byte[] buffer = new byte[BUFFER_SIZE];
@@ -210,9 +209,9 @@ public abstract class Updater
 				outputStream.flush();
 			}
 			connection.disconnect();
-			if(md5HashGenerator != null)
+			if(hashGenerator != null)
 			{
-				String MD5Download = Utils.byteArrayToHex(md5HashGenerator.digest()).toLowerCase(), MD5Target = updateProvider.getLatestChecksum().toLowerCase();
+				String MD5Download = Utils.byteArrayToHex(hashGenerator.digest()).toLowerCase(), MD5Target = updateProvider.getLatestChecksum().toLowerCase();
 				if(!MD5Download.equals(MD5Target))
 				{
 					logger.warning("The auto-updater was able to download the file, but the checksum did not match! Delete file.");
@@ -252,7 +251,6 @@ public abstract class Updater
 			e.printStackTrace();
 			result = UpdateResult.FAIL_DOWNLOAD;
 		}
-		catch(NoSuchAlgorithmException ignored) {}
 	}
 
 	/**
@@ -352,10 +350,10 @@ public abstract class Updater
 						result = UpdateResult.UPDATE_AVAILABLE;
 						try
 						{
-							if(updateProvider.provideDownloadURL())
+							if(updateProvider.providesDownloadURL())
 							{
 								download(updateProvider.getLatestFileURL(), (updateProvider.getLatestFileName().toLowerCase().endsWith(".zip")) ? updateProvider.getLatestFileName() : targetFileName);
-								if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.provideDependencies())
+								if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.providesDependencies())
 								{
 									for(UpdateProvider.UpdateFile update : updateProvider.getLatestDependencies())
 									{

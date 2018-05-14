@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
+import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
@@ -31,7 +32,7 @@ public class AlwaysUpdateProviderTest
 	private final AlwaysUpdateProvider provider = new AlwaysUpdateProvider(URL);
 
 	@Test
-	public void testQuery() throws Exception
+	public void testQuery()
 	{
 		assertEquals("The result should match", UpdateResult.SUCCESS, provider.query());
 	}
@@ -45,7 +46,7 @@ public class AlwaysUpdateProviderTest
 	@Test
 	public void testGetLatestVersion() throws Exception
 	{
-		assertTrue("The version should match", new Version(Integer.MAX_VALUE + "." + Integer.MAX_VALUE).equals(provider.getLatestVersion()));
+		assertEquals("The version should match", new Version(Integer.MAX_VALUE + "." + Integer.MAX_VALUE), provider.getLatestVersion());
 	}
 
 	@Test
@@ -139,44 +140,44 @@ public class AlwaysUpdateProviderTest
 	}
 
 	@Test
-	public void testProvideDownloadURL() throws Exception
+	public void testProvidesDownloadURL()
 	{
-		assertTrue("The download URL should be provided", provider.provideDownloadURL());
+		assertTrue("The download URL should be provided", provider.providesDownloadURL());
 	}
 
 	@Test
-	public void testProvideMinecraftVersion() throws Exception
+	public void testProvidesMinecraftVersion()
 	{
-		assertFalse("The Minecraft version should not be provided", provider.provideMinecraftVersion());
+		assertFalse("The Minecraft version should not be provided", provider.providesMinecraftVersion());
 	}
 
 	@Test
-	public void testProvideChangelog() throws Exception
+	public void testProvidesChangelog()
 	{
-		assertFalse("The changelog should not be provided", provider.provideChangelog());
+		assertFalse("The changelog should not be provided", provider.providesChangelog());
 	}
 
 	@Test
-	public void testProvideMD5Checksum() throws Exception
+	public void testProvideChecksum()
 	{
 		assertFalse("The MD5 checksum should not be provided", provider.provideMD5Checksum());
 	}
 
 	@Test
-	public void testProvideUpdateHistory() throws Exception
+	public void testProvidesChecksum()
 	{
-		assertFalse("The update history should not be provided", provider.provideUpdateHistory());
+		assertEquals("The provider should not provide a checksum", ChecksumType.NONE, provider.providesChecksum());
 	}
 
 	@Test
-	public void testProvideDependencies() throws Exception
+	public void testProvidesUpdateHistory()
 	{
-		assertFalse("The dependencies should not be provided", provider.provideDependencies());
+		assertFalse("The update history should not be provided", provider.providesUpdateHistory());
 	}
 
 	@Test
-	public void testWithInvalidURL() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	public void testProvidesDependencies()
 	{
-		assertNull("An invalid URL should throw an exception and therefore not lead to a download URL object", new AlwaysUpdateProvider("x://invalid-path").getLatestFileURL());
+		assertFalse("The dependencies should not be provided", provider.providesDependencies());
 	}
 }

@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.TestClasses.TestUtils;
+import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 
 import com.google.gson.JsonIOException;
@@ -274,12 +275,13 @@ public class JenkinsUpdateProviderTest
 	{
 		//noinspection ConstantConditions
 		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", null);
-		assertTrue("The JenkinsUpdateProvider should provide a download URL", updater.provideDownloadURL());
-		assertTrue("The JenkinsUpdateProvider should provide a changelog", updater.provideChangelog());
+		assertTrue("The JenkinsUpdateProvider should provide a download URL", updater.providesDownloadURL());
+		assertTrue("The JenkinsUpdateProvider should provide a changelog", updater.providesChangelog());
 		assertTrue("The JenkinsUpdateProvider should provide a checksum", updater.provideMD5Checksum());
+		assertEquals("The JenkinsUpdateProvider should provide a MD5 checksum", ChecksumType.MD5, updater.providesChecksum());
 		updater = (JenkinsUpdateProvider) JenkinsUpdateProvider.class.getDeclaredConstructors()[0].newInstance(new IndicateReloadClass());
-		assertFalse("The JenkinsUpdateProvider should not provide a Minecraft version", updater.provideMinecraftVersion());
-		assertFalse("The JenkinsUpdateProvider should not provide a update history", updater.provideUpdateHistory());
-		assertFalse("The JenkinsUpdateProvider should not provide dependencies", updater.provideDependencies());
+		assertFalse("The JenkinsUpdateProvider should not provide a Minecraft version", updater.providesMinecraftVersion());
+		assertFalse("The JenkinsUpdateProvider should not provide a update history", updater.providesUpdateHistory());
+		assertFalse("The JenkinsUpdateProvider should not provide dependencies", updater.providesDependencies());
 	}
 }

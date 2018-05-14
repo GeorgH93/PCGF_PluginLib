@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.ConsoleColor;
+import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Version;
 
@@ -97,4 +98,49 @@ abstract class BaseOnlineProvider implements UpdateProvider
 	}
 
 	protected void setConnectionParameter(HttpURLConnection connection) {}
+
+
+	//region old provider property's
+	@Deprecated
+	@Override
+	public boolean provideDownloadURL()
+	{
+		return providesDownloadURL();
+	}
+
+	@Deprecated
+	@Override
+	public boolean provideMinecraftVersion()
+	{
+		return providesMinecraftVersion();
+	}
+
+	@Deprecated
+	@Override
+	public boolean provideChangelog()
+	{
+		return providesChangelog();
+	}
+
+	@Deprecated
+	@Override
+	public boolean provideMD5Checksum()
+	{
+		return providesChecksum() == ChecksumType.MD5;
+	}
+
+	@Deprecated
+	@Override
+	public boolean provideUpdateHistory()
+	{
+		return providesUpdateHistory();
+	}
+
+	@Deprecated
+	@Override
+	public boolean provideDependencies()
+	{
+		return providesDependencies();
+	}
+	//endregion
 }
