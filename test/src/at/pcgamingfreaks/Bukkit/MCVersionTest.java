@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -80,5 +81,25 @@ public class MCVersionTest
 		assertFalse(MCVersion.UNKNOWN.olderThan(MCVersion.MC_1_7));
 		assertFalse(MCVersion.UNKNOWN.newerOrEqualThan(MCVersion.MC_1_7));
 		assertFalse(MCVersion.UNKNOWN.newerThan(MCVersion.MC_1_7));
+	}
+
+	@Test
+	public void testGetMainMinecraftVersion()
+	{
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7_1.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7_2.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7_3.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7_4.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7_5.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7_6.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7_7.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7_8.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7_9.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_1_7_10.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_NMS_1_7_R1.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_NMS_1_7_R2.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_NMS_1_7_R3.getMainMinecraftVersion());
+		assertEquals(MCVersion.MC_1_7, MCVersion.MC_NMS_1_7_R4.getMainMinecraftVersion());
 	}
 }

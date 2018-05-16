@@ -31,52 +31,52 @@ public enum MCVersion
 {
 	UNKNOWN(0, ""),
 	MC_1_7(1, "1_7"),
-	MC_1_7_1(1, "1_7"),
-	MC_1_7_2(1, "1_7"),
-	MC_1_7_3(1, "1_7"),
-	MC_1_7_4(1, "1_7"),
-	MC_NMS_1_7_R1(1, "1_7"),
-	MC_1_7_5(2, "1_7"),
-	MC_1_7_6(2, "1_7"),
-	MC_1_7_7(2, "1_7"),
-	MC_NMS_1_7_R2(2, "1_7"),
-	MC_1_7_8(3, "1_7"),
-	MC_1_7_9(3, "1_7"),
-	MC_NMS_1_7_R3(3, "1_7"),
-	MC_1_7_10(4, "1_7"),
-	MC_NMS_1_7_R4(4, "1_7"),
+	MC_1_7_1(1, "1_7", MC_1_7),
+	MC_1_7_2(1, "1_7", MC_1_7),
+	MC_1_7_3(1, "1_7", MC_1_7),
+	MC_1_7_4(1, "1_7", MC_1_7),
+	MC_NMS_1_7_R1(1, "1_7", MC_1_7),
+	MC_1_7_5(2, "1_7", MC_1_7),
+	MC_1_7_6(2, "1_7", MC_1_7),
+	MC_1_7_7(2, "1_7", MC_1_7),
+	MC_NMS_1_7_R2(2, "1_7", MC_1_7),
+	MC_1_7_8(3, "1_7", MC_1_7),
+	MC_1_7_9(3, "1_7", MC_1_7),
+	MC_NMS_1_7_R3(3, "1_7", MC_1_7),
+	MC_1_7_10(4, "1_7", MC_1_7),
+	MC_NMS_1_7_R4(4, "1_7", MC_1_7),
 	MC_1_8(11, "1_8"),
-	MC_1_8_1(11, "1_8"),
-	MC_1_8_2(11, "1_8"),
-	MC_NMS_1_8_R1(11, "1_8"),
-	MC_1_8_3(12, "1_8"),
-	MC_1_8_4(12, "1_8"),
-	MC_1_8_5(12, "1_8"),
-	MC_1_8_6(12, "1_8"),
-	MC_1_8_7(12, "1_8"),
-	MC_NMS_1_8_R2(12, "1_8"),
-	MC_1_8_8(13, "1_8"),
-	MC_1_8_9(13, "1_8"),
-	MC_NMS_1_8_R3(13, "1_8"),
+	MC_1_8_1(11, "1_8", MC_1_8),
+	MC_1_8_2(11, "1_8", MC_1_8),
+	MC_NMS_1_8_R1(11, "1_8", MC_1_8),
+	MC_1_8_3(12, "1_8", MC_1_8),
+	MC_1_8_4(12, "1_8", MC_1_8),
+	MC_1_8_5(12, "1_8", MC_1_8),
+	MC_1_8_6(12, "1_8", MC_1_8),
+	MC_1_8_7(12, "1_8", MC_1_8),
+	MC_NMS_1_8_R2(12, "1_8", MC_1_8),
+	MC_1_8_8(13, "1_8", MC_1_8),
+	MC_1_8_9(13, "1_8", MC_1_8),
+	MC_NMS_1_8_R3(13, "1_8", MC_1_8),
 	MC_1_9(21, "1_9"),
-	MC_1_9_1(21, "1_9"),
-	MC_1_9_2(21, "1_9"),
-	MC_NMS_1_9_R1(21, "1_9"),
-	MC_1_9_3(21, "1_9"),
-	MC_1_9_4(21, "1_9"),
-	MC_NMS_1_9_R2(22, "1_9"),
+	MC_1_9_1(21, "1_9", MC_1_9),
+	MC_1_9_2(21, "1_9", MC_1_9),
+	MC_NMS_1_9_R1(21, "1_9", MC_1_9),
+	MC_1_9_3(21, "1_9", MC_1_9),
+	MC_1_9_4(21, "1_9", MC_1_9),
+	MC_NMS_1_9_R2(22, "1_9", MC_1_9),
 	MC_1_10(31, "1_10"),
-	MC_1_10_1(31, "1_10"),
-	MC_1_10_2(31, "1_10"),
-	MC_NMS_1_10_R1(31, "1_10"),
+	MC_1_10_1(31, "1_10", MC_1_10),
+	MC_1_10_2(31, "1_10", MC_1_10),
+	MC_NMS_1_10_R1(31, "1_10", MC_1_10),
 	MC_1_11(41, "1_11"),
-	MC_1_11_1(41, "1_11"),
-	MC_1_11_2(41, "1_11"),
+	MC_1_11_1(41, "1_11", MC_1_11),
+	MC_1_11_2(41, "1_11", MC_1_11),
 	MC_NMS_1_11_R1(41, "1_11"),
 	MC_1_12(51, "1_12"),
-	MC_NMS_1_12_R1(51, "1_12"),
+	MC_NMS_1_12_R1(51, "1_12", MC_1_12),
 	MC_1_13(61, "1_13"),
-	MC_NMS_1_13_R1(61, "1_13");
+	MC_NMS_1_13_R1(61, "1_13", MC_1_12);
 
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new ConcurrentHashMap<>();
 
@@ -99,11 +99,25 @@ public enum MCVersion
 
 	private final int versionID;
 	private final String identifier;
+	private final MCVersion mainVersion;
 
 	MCVersion(int versionID, String mainVersionString)
 	{
 		this.versionID = versionID;
 		this.identifier = mainVersionString + "_R" + versionID % 10;
+		this.mainVersion = this;
+	}
+
+	MCVersion(int versionID, String mainVersionString, MCVersion mainVersion)
+	{
+		this.versionID = versionID;
+		this.identifier = mainVersionString + "_R" + versionID % 10;
+		this.mainVersion = mainVersion;
+	}
+
+	public MCVersion getMainMinecraftVersion()
+	{
+		return mainVersion;
 	}
 
 	public boolean isSame(MCVersion other)
