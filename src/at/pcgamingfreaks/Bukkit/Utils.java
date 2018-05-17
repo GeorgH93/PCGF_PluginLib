@@ -21,7 +21,9 @@ import at.pcgamingfreaks.ConsoleColor;
 
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -217,5 +219,36 @@ public class Utils extends at.pcgamingfreaks.Utils
 			}
 		}
 		return -1;
+	}
+
+	/**
+	 * Drops the content of an inventory.
+	 * The inventory will be cleared after it has been dropped successful.
+	 *
+	 * @param inventory The inventory to be dropped
+	 * @param location The location the inventory should be dropped to
+	 */
+	public static void dropInventory(@NotNull Inventory inventory, @NotNull Location location)
+	{
+		dropInventory(inventory, location, true);
+	}
+
+	/**
+	 * Drops the content of an inventory.
+	 *
+	 * @param inventory The inventory to be dropped
+	 * @param location The location the inventory should be dropped to
+	 * @param clearInventory Defines if the inventory should be cleared after dropping it or not
+	 */
+	public static void dropInventory(@NotNull Inventory inventory, @NotNull Location location, boolean clearInventory)
+	{
+		for(ItemStack i : inventory.getContents())
+		{
+			if(i != null)
+			{
+				location.getWorld().dropItemNaturally(location, i);
+			}
+		}
+		if(clearInventory) inventory.clear();
 	}
 }
