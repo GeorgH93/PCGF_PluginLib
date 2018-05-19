@@ -42,12 +42,13 @@ public interface UpdateProvider
 	 * @return The latest version string.
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
+	@Deprecated
 	@NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException;
 
 	/**
 	 * Gets the latest version's version (such as 1.32)
 	 *
-	 * @return The latest version string.
+	 * @return The latest version.
 	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
 	 */
 	@NotNull Version getLatestVersion() throws NotSuccessfullyQueriedException;

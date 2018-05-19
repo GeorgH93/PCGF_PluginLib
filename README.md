@@ -9,11 +9,13 @@ A small library to reduce the code for some stuff commonly used in plugins.
 * UUID converter
 * Auto-updater
     * Supports multiple sites for checking and downloading of updates
+        * spigotmc.org (checking + downloading)
         * dev.bukkit.org (checking + downloading)
         * Jenkins build servers (checking + downloading)
         * Static URL (downloading)
 * JSON message handling
 * Collections of useful functions
+* Option to share database connection pool between multiple plugins
 
 ### Bukkit only:
 * Particles handler
