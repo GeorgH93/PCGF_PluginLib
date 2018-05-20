@@ -99,6 +99,12 @@ abstract class BaseOnlineProvider implements UpdateProvider
 
 	protected void setConnectionParameter(HttpURLConnection connection) {}
 
+	@Deprecated
+	@Override
+	public @NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException
+	{
+		return getLatestVersion().toString();
+	}
 
 	//region old provider property's
 	@Deprecated
