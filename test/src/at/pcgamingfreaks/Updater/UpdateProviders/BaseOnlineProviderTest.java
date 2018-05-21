@@ -32,7 +32,6 @@ public class BaseOnlineProviderTest
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public void testGetLatestReleaseType() throws NotSuccessfullyQueriedException
 	{
-		//noinspection ConstantConditions
 		BaseOnlineProvider provider = mock(JenkinsUpdateProvider.class);
 		Version mockedVersion = mock(Version.class);
 		doReturn(true).when(mockedVersion).isPreRelease();
@@ -41,6 +40,8 @@ public class BaseOnlineProviderTest
 		assertEquals("The release type should be unknown", ReleaseType.UNKNOWN, provider.getLatestReleaseType());
 		doReturn("Minecraft-1.11.2-snapshot").when(mockedVersion).toString();
 		assertEquals("The release type should be snapshot", ReleaseType.SNAPSHOT, provider.getLatestReleaseType());
+		doReturn("Minecraft-1.11.2-rc").when(mockedVersion).toString();
+		assertEquals("The release type should be rc", ReleaseType.RC, provider.getLatestReleaseType());
 		doReturn("Minecraft-1.11.2-beta").when(mockedVersion).toString();
 		assertEquals("The release type should be beta", ReleaseType.BETA, provider.getLatestReleaseType());
 		doReturn("Minecraft-1.11.2-alpha").when(mockedVersion).toString();

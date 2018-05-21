@@ -24,6 +24,9 @@ import at.pcgamingfreaks.Version;
 
 import org.junit.Test;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import static org.junit.Assert.*;
 
 public class AlwaysUpdateProviderTest
@@ -179,5 +182,23 @@ public class AlwaysUpdateProviderTest
 	public void testProvidesDependencies()
 	{
 		assertFalse("The dependencies should not be provided", provider.providesDependencies());
+	}
+
+	@Test(expected = RequestTypeNotAvailableException.class)
+	public void testMalformedURL() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		AlwaysUpdateProvider updateProvider = new AlwaysUpdateProvider("malformed.url");
+		updateProvider.getLatestFileURL();
+	}
+
+	@Test
+	public void testDeprecatedMethods() throws MalformedURLException
+	{
+		AlwaysUpdateProvider updateProvider = new AlwaysUpdateProvider(new URL("https://www.google.com"));
+		assertTrue("A download URL should be provided", updateProvider.provideDownloadURL());
+		assertFalse("A Minecraft version should not be provided", updateProvider.provideMinecraftVersion());
+		assertFalse("A changelog should not be provided", updateProvider.provideChangelog());
+		assertFalse("A update history should not be provided", updateProvider.provideUpdateHistory());
+		assertFalse("Dependencies should not be provided", updateProvider.provideDependencies());
 	}
 }

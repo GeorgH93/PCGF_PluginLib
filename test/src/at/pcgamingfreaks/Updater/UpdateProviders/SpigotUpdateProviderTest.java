@@ -18,16 +18,26 @@
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.UpdateResult;
+import at.pcgamingfreaks.Version;
 
 import com.google.common.base.Supplier;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,9 +45,11 @@ import java.util.logging.Logger;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ BaseOnlineProvider.class, SpigotUpdateProvider.class, URL.class })
 public class SpigotUpdateProviderTest
 {
 	private static final int PLUGIN_ID_EXT = 19286, PLUGIN_ID_HOSTED = 15584;
@@ -53,18 +65,9 @@ public class SpigotUpdateProviderTest
 		return new SpigotUpdateProvider(PLUGIN_ID_EXT, null);
 	}
 
-	private SpigotUpdateProvider getLoggedProvider()
-	{
-		Logger mockedLogger = mock(Logger.class);
-		SpigotUpdateProvider spigotUpdateProvider = new SpigotUpdateProvider(PLUGIN_ID_EXT, mockedLogger);
-		spigotUpdateProvider.query();
-		return spigotUpdateProvider;
-	}
-
 	@Test
 	public void testQueryExt() throws Exception
 	{
-		int expectedWarning = 0, expectedSevere = 0;
 		final int[] loggerCalls = new int[] { 0, 0 };
 		Logger mockedLogger = mock(Logger.class);
 		doAnswer(new Answer()
@@ -140,6 +143,62 @@ public class SpigotUpdateProviderTest
 		assertEquals("http://api.spiget.org/v2/resources/" + PLUGIN_ID_HOSTED + "/download", sup.getLatestFileURL().getProtocol() + "://" + sup.getLatestFileURL().getHost() + sup.getLatestFileURL().getPath());
 		assertEquals(PLUGIN_ID_HOSTED + ".jar", sup.getLatestFileName());
 		assertEquals("MobMerge", sup.getLatestName());
+	}
+
+	@Test
+	public void testQueryFail() throws Exception
+	{
+		SpigotUpdateProvider updateProvider = spy(getProvider());
+		URL mockedURL = PowerMockito.mock(URL.class);
+		final HttpURLConnection mockedHttpURLConnection = spy(new HttpURLConnection(mockedURL)
+		{
+			@Override
+			public void connect() throws IOException { }
+
+			@Override
+			public void disconnect() { }
+
+			@Override
+			public boolean usingProxy() { return false; }
+		});
+		PowerMockito.doReturn(mockedHttpURLConnection).when(mockedURL).openConnection();
+		doReturn(HttpURLConnection.HTTP_MOVED_TEMP).when(mockedHttpURLConnection).getResponseCode();
+		whenNew(URL.class).withAnyArguments().thenReturn(mockedURL);
+		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
+		doReturn(HttpURLConnection.HTTP_SEE_OTHER).when(mockedHttpURLConnection).getResponseCode();
+		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
+		PowerMockito.doThrow(new IOException()).when(mockedURL).openConnection();
+		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
+		final int[] connectionCount = { 0 };
+		doAnswer(new Answer() {
+			@Override
+			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
+			{
+				if (connectionCount[0]++ == 0)
+				{
+					return mockedHttpURLConnection;
+				}
+				return null;
+			}
+		}).when(updateProvider).connect(any(URL.class));
+		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
+	}
+
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+	@Test
+	public void testLastResult() throws NoSuchFieldException, IllegalAccessException, RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		TestUtils.initReflection();
+		String minecraftVersion = "Minecraft-1.12.2";
+		Version version = new Version("v1.12.2");
+		SpigotUpdateProvider updateProvider = getProvider();
+		UpdateProvider.UpdateFile updateFile = mock(UpdateProvider.UpdateFile.class);
+		doReturn(version).when(updateFile).getVersion();
+		doReturn(minecraftVersion).when(updateFile).getGameVersion();
+		Field lastResultField = TestUtils.setAccessible(SpigotUpdateProvider.class, updateProvider, "lastResult", updateFile);
+		assertEquals("The version should match", version, updateProvider.getLatestVersion());
+		assertEquals("The Minecraft version should match", minecraftVersion, updateProvider.getLatestMinecraftVersion());
+		TestUtils.setUnaccessible(lastResultField, updateProvider, false);
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
@@ -240,6 +299,17 @@ public class SpigotUpdateProviderTest
 	public void testProvidesDependencies()
 	{
 		assertFalse(getProvider().providesDependencies());
+	}
+
+	@Test
+	public void testDeprecatedMethods()
+	{
+		assertFalse(getProvider().provideDownloadURL());
+		assertTrue(getProvider().provideMinecraftVersion());
+		assertFalse(getProvider().provideChangelog());
+		assertFalse(getProvider().provideMD5Checksum());
+		assertFalse(getProvider().provideUpdateHistory());
+		assertFalse(getProvider().provideDependencies());
 	}
 	//endregion
 }

@@ -75,7 +75,7 @@ abstract class BaseOnlineProvider implements UpdateProvider
 		HttpURLConnection connection = null;
 		int status = 0, redirects = 0;
 		URL targetUrl = url;
-		while(status != HttpURLConnection.HTTP_OK) // To handel http redirection responses
+		while(status != HttpURLConnection.HTTP_OK) // To handle http redirection responses
 		{
 			if(++redirects >= 5) return null; // To prevent endless redirection loops
 			connection = (HttpURLConnection) targetUrl.openConnection();
