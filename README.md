@@ -27,13 +27,6 @@ A small library to reduce the code for some stuff commonly used in plugins.
 * [Marriage Master](https://www.spigotmc.org/resources/19273/) (V2.0 and newer)
 * [Minepacks](https://www.spigotmc.org/resources/19286/) (V2.0 and newer)
 
-## Links:
-* [Build Server ![Build Status](https://ci.pcgamingfreaks.at/job/PluginLib/badge/icon)](https://ci.pcgamingfreaks.at/job/PluginLib/)
-* [Code Coverage ![Coverage Status](https://coveralls.io/repos/github/GeorgH93/Bukkit_Bungee_PluginLib/badge.svg)](https://coveralls.io/github/GeorgH93/Bukkit_Bungee_PluginLib)
-* [Javadoc](https://ci.pcgamingfreaks.at/job/PluginLib/javadoc/)
-* Spigot
-* Dev Bukkit
-
 ## Adding it to your plugin
 The library can be added in two ways to your plugin.
 1. Requiring it to be installed as a plugin (will be published on dev.bukkit.org and spigotmc.org soon)
@@ -57,7 +50,13 @@ The library can be added in two ways to your plugin.
 </dependency>
 ```
 
-### Shading the library into your plugin
+### Requiring the library to be installed as a standalone plugin
+Add `PCGF_PluginLib` as a dependency for your Bukkit/Spigot or BungeeCord plugin.
+The users will have to install the library as a plugin. Download: https://ci.pcgamingfreaks.at/job/PluginLib/
+
+### Shading the library into your plugin with maven
+By adding the library to your plugin through shading it will require more memory (if multiple plugins using the library are installed) and some features (DB connection sharing, translation sharing) will not be available.
+The recommended shading settings:
 ```xml
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -88,4 +87,11 @@ The library can be added in two ways to your plugin.
     </executions>
 </plugin>
 ```
-Do not shade this library into your plugin without relocation!!!
+**Do not shade this library into your plugin without relocation!!!**
+
+## Links:
+* [Build Server ![Build Status](https://ci.pcgamingfreaks.at/job/PluginLib/badge/icon)](https://ci.pcgamingfreaks.at/job/PluginLib/)
+* [Code Coverage ![Coverage Status](https://coveralls.io/repos/github/GeorgH93/Bukkit_Bungee_PluginLib/badge.svg)](https://coveralls.io/github/GeorgH93/Bukkit_Bungee_PluginLib)
+* [Javadoc](https://ci.pcgamingfreaks.at/job/PluginLib/javadoc/)
+* Spigot (TBA)
+* Dev Bukkit (TBA)
