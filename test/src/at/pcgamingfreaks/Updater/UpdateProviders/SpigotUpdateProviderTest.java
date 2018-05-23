@@ -25,7 +25,6 @@ import at.pcgamingfreaks.Version;
 
 import com.google.common.base.Supplier;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
@@ -53,11 +52,6 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class SpigotUpdateProviderTest
 {
 	private static final int PLUGIN_ID_EXT = 19286, PLUGIN_ID_HOSTED = 15584;
-
-	@Before
-	public void setUp() throws Exception
-	{
-	}
 
 	private SpigotUpdateProvider getProvider()
 	{
@@ -107,36 +101,7 @@ public class SpigotUpdateProviderTest
 	@Test
 	public void testQueryHosted() throws Exception
 	{
-		int expectedWarning = 0, expectedSevere = 0;
-		final int[] loggerCalls = new int[] { 0, 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				loggerCalls[0]++;
-				return null;
-			}
-		}).when(mockedLogger).warning(anyString());
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				loggerCalls[1]++;
-				return null;
-			}
-		}).when(mockedLogger).severe(anyString());
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				loggerCalls[1]++;
-				return null;
-			}
-		}).when(mockedLogger).log(any(Level.class), String.valueOf(any(Supplier.class)), any(Throwable.class));
 		SpigotUpdateProvider sup = new SpigotUpdateProvider(PLUGIN_ID_HOSTED, mockedLogger);
 		assertEquals(UpdateResult.SUCCESS, sup.query());
 		assertTrue(sup.providesDownloadURL());
@@ -211,12 +176,6 @@ public class SpigotUpdateProviderTest
 	public void testGetLatestName() throws Exception
 	{
 		getProvider().getLatestName();
-	}
-
-	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestVersionAsString() throws Exception
-	{
-		getProvider().getLatestVersionAsString();
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
@@ -299,17 +258,6 @@ public class SpigotUpdateProviderTest
 	public void testProvidesDependencies()
 	{
 		assertFalse(getProvider().providesDependencies());
-	}
-
-	@Test
-	public void testDeprecatedMethods()
-	{
-		assertFalse(getProvider().provideDownloadURL());
-		assertTrue(getProvider().provideMinecraftVersion());
-		assertFalse(getProvider().provideChangelog());
-		assertFalse(getProvider().provideMD5Checksum());
-		assertFalse(getProvider().provideUpdateHistory());
-		assertFalse(getProvider().provideDependencies());
 	}
 	//endregion
 }

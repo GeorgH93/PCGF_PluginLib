@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bungee;
 
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.Updater.UpdateProviders.BukkitUpdateProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +55,7 @@ public class UpdaterTest
 	@Test
 	public void testUpdater()
 	{
-		Updater updater = new Updater(TestObjects.getPlugin(), false, 2);
+		Updater updater = new Updater(TestObjects.getPlugin(), false, new BukkitUpdateProvider(2, TestObjects.getPlugin().getLogger()));
 		assertEquals("The author should match", "", updater.getAuthor());
 		when(updater.getAuthor()).thenReturn("MarkusWME");
 		assertEquals("The author should match", "MarkusWME", updater.getAuthor());

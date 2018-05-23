@@ -135,7 +135,6 @@ public class UpdaterTest
 		assertFalse(bukkitProvider.providesChangelog());
 		assertFalse(bukkitProvider.providesDependencies());
 		assertTrue(bukkitProvider.providesDownloadURL());
-		assertTrue(bukkitProvider.provideMD5Checksum());
 		assertTrue(bukkitProvider.providesMinecraftVersion());
 		assertTrue(bukkitProvider.providesUpdateHistory());
 	}
@@ -378,7 +377,7 @@ public class UpdaterTest
 		doAnswer(new Answer()
 		{
 			@Override
-			public Boolean answer(InvocationOnMock invocationOnMock) throws Throwable
+			public Boolean answer(InvocationOnMock invocationOnMock)
 			{
 				hasMore[0] = !hasMore[0];
 				return hasMore[0];
@@ -388,7 +387,7 @@ public class UpdaterTest
 		doAnswer(new Answer()
 		{
 			@Override
-			public Enumeration answer(InvocationOnMock invocationOnMock) throws Throwable
+			public Enumeration answer(InvocationOnMock invocationOnMock)
 			{
 				hasMore[0] = false;
 				return mockedEnumeration;
@@ -501,31 +500,6 @@ public class UpdaterTest
 		result.setAccessible(false);
 		//noinspection ResultOfMethodCallIgnored
 		new File("plugins/updater/config.yml").delete();
-	}
-
-	@Test
-	public void testGetVersionAsString() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
-	{
-		Updater updater = getUpdater("1.0");
-		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
-		doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestVersionAsString();
-		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
-		assertNull("The version result should be null", updater.getRemoteVersion());
-		TestUtils.setUnaccessible(updateProvider, updater, true);
-	}
-
-	@Test
-	public void testGetRemoteVersionAsString() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
-	{
-		String version = "v1.8";
-		Updater updater = getUpdater("1.0");
-		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
-		doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestVersionAsString();
-		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
-		assertNull("The version result should be null", updater.getRemoteVersionAsString());
-		doReturn(version).when(mockedUpdateProvider).getLatestVersionAsString();
-		assertEquals("The version result should match", version, updater.getRemoteVersionAsString());
-		TestUtils.setUnaccessible(updateProvider, updater, true);
 	}
 
 	@Test

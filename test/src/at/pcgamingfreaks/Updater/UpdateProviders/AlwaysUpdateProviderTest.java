@@ -24,9 +24,6 @@ import at.pcgamingfreaks.Version;
 
 import org.junit.Test;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import static org.junit.Assert.*;
 
 public class AlwaysUpdateProviderTest
@@ -38,12 +35,6 @@ public class AlwaysUpdateProviderTest
 	public void testQuery()
 	{
 		assertEquals("The result should match", UpdateResult.SUCCESS, provider.query());
-	}
-
-	@Test
-	public void testGetLatestVersionAsString() throws Exception
-	{
-		assertEquals("The version strings should match", Integer.MAX_VALUE + "." + Integer.MAX_VALUE, provider.getLatestVersionAsString());
 	}
 
 	@Test
@@ -161,12 +152,6 @@ public class AlwaysUpdateProviderTest
 	}
 
 	@Test
-	public void testProvideChecksum()
-	{
-		assertFalse("The MD5 checksum should not be provided", provider.provideMD5Checksum());
-	}
-
-	@Test
 	public void testProvidesChecksum()
 	{
 		assertEquals("The provider should not provide a checksum", ChecksumType.NONE, provider.providesChecksum());
@@ -189,16 +174,5 @@ public class AlwaysUpdateProviderTest
 	{
 		AlwaysUpdateProvider updateProvider = new AlwaysUpdateProvider("malformed.url");
 		updateProvider.getLatestFileURL();
-	}
-
-	@Test
-	public void testDeprecatedMethods() throws MalformedURLException
-	{
-		AlwaysUpdateProvider updateProvider = new AlwaysUpdateProvider(new URL("https://www.google.com"));
-		assertTrue("A download URL should be provided", updateProvider.provideDownloadURL());
-		assertFalse("A Minecraft version should not be provided", updateProvider.provideMinecraftVersion());
-		assertFalse("A changelog should not be provided", updateProvider.provideChangelog());
-		assertFalse("A update history should not be provided", updateProvider.provideUpdateHistory());
-		assertFalse("Dependencies should not be provided", updateProvider.provideDependencies());
 	}
 }

@@ -134,12 +134,6 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 	}
 
 	@Override
-	public @NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException
-	{
-		return getLatestVersion().toString();
-	}
-
-	@Override
 	public @NotNull Version getLatestVersion() throws NotSuccessfullyQueriedException
 	{
 		if(lastResult == null) throw new NotSuccessfullyQueriedException();

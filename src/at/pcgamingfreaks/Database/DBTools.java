@@ -550,13 +550,30 @@ public class DBTools
 	 * @param connection The connection used for the query.
 	 * @param query The query to execute.
 	 * @param args The arguments used for the query.
+	 * @throws SQLException If there was a problem executing the SQL statement
 	 */
-	public static void runStatement(final @NotNull Connection connection, final @NotNull @Language("SQL") String query, final @Nullable Object... args)
+	public static void runStatement(final @NotNull Connection connection, final @NotNull @Language("SQL") String query, final @Nullable Object... args) throws SQLException
 	{
 		try(PreparedStatement preparedStatement = connection.prepareStatement(query))
 		{
 			setParameters(preparedStatement, args);
 			preparedStatement.execute();
+		}
+	}
+
+	/**
+	 * Creates an {@link PreparedStatement} form the {@link Connection}, fills it with the data given and executes it.
+	 * This method is not async! And the connection is not closed after it is done!
+	 *
+	 * @param connection The connection used for the query.
+	 * @param query The query to execute.
+	 * @param args The arguments used for the query.
+	 */
+	public static void runStatementWithoutException(final @NotNull Connection connection, final @NotNull @Language("SQL") String query, final @Nullable Object... args)
+	{
+		try
+		{
+			runStatement(connection, query, args);
 		}
 		catch(SQLException e)
 		{

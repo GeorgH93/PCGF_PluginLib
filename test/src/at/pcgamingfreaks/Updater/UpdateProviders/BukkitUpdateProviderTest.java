@@ -38,7 +38,6 @@ import java.io.Reader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,7 +56,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class BukkitUpdateProviderTest
 {
 	@BeforeClass
-	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException, InvocationTargetException, InstantiationException
+	public static void prepareTestData() throws NoSuchFieldException
 	{
 		TestUtils.initReflection();
 	}
@@ -72,7 +71,7 @@ public class BukkitUpdateProviderTest
 		doAnswer(new Answer()
 		{
 			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
+			public Object answer(InvocationOnMock invocationOnMock)
 			{
 				loggerCalls[0]++;
 				return null;
@@ -81,7 +80,7 @@ public class BukkitUpdateProviderTest
 		doAnswer(new Answer()
 		{
 			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
+			public Object answer(InvocationOnMock invocationOnMock)
 			{
 				loggerCalls[1]++;
 				return null;
@@ -90,7 +89,7 @@ public class BukkitUpdateProviderTest
 		doAnswer(new Answer()
 		{
 			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
+			public Object answer(InvocationOnMock invocationOnMock)
 			{
 				loggerCalls[1]++;
 				return null;
@@ -153,13 +152,7 @@ public class BukkitUpdateProviderTest
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestVersionAsString() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
-	{
-		getProvider().getLatestVersionAsString();
-	}
-
-	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestVersion() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	public void testGetLatestVersion() throws NotSuccessfullyQueriedException
 	{
 		getProvider().getLatestVersion();
 	}
@@ -177,79 +170,79 @@ public class BukkitUpdateProviderTest
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestVersionFileName() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	public void testGetLatestVersionFileName() throws NotSuccessfullyQueriedException
 	{
 		getProvider().getLatestFileName();
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestName() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException, RequestTypeNotAvailableException
+	public void testGetLatestName() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
 		getProvider().getLatestName();
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestChecksum() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	public void testGetLatestChecksum() throws NotSuccessfullyQueriedException
 	{
 		getProvider().getLatestChecksum();
 	}
 
 	@Test(expected = RequestTypeNotAvailableException.class)
-	public void testGetLatestChangelog() throws NoSuchFieldException, IllegalAccessException, RequestTypeNotAvailableException
+	public void testGetLatestChangelog() throws RequestTypeNotAvailableException
 	{
 		getProvider().getLatestChangelog();
 	}
 
 	@Test(expected = RequestTypeNotAvailableException.class)
-	public void testGetLatestDependencies() throws NoSuchFieldException, IllegalAccessException, RequestTypeNotAvailableException
+	public void testGetLatestDependencies() throws RequestTypeNotAvailableException
 	{
 		getProvider().getLatestDependencies();
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestFileURLWithError() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException, RequestTypeNotAvailableException
+	public void testGetLatestFileURLWithError() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
 		getProvider().getLatestFileURL();
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestMinecraftVersionWithError() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	public void testGetLatestMinecraftVersionWithError() throws NotSuccessfullyQueriedException
 	{
 		getProvider().getLatestMinecraftVersion();
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestReleaseTypeWithError() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException
+	public void testGetLatestReleaseTypeWithError() throws NotSuccessfullyQueriedException
 	{
 		getProvider().getLatestReleaseType();
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestNameException() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException, RequestTypeNotAvailableException
+	public void testGetLatestNameException() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
 		getProvider().getLatestName();
 	}
 
 	@Test
-	public void testGetLatestNameSuccess() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException, RequestTypeNotAvailableException
+	public void testGetLatestNameSuccess() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
 		getProvider().query();
 		assertNotNull("The latest name should not be null", getLoggedProvider().getLatestName());
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetUpdateHistoryException() throws NoSuchFieldException, IllegalAccessException, RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	public void testGetUpdateHistoryException() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		getProvider().getUpdateHistory();
 	}
 
 	@Test
-	public void testGetUpdateHistorySuccess() throws NoSuchFieldException, IllegalAccessException, NotSuccessfullyQueriedException, RequestTypeNotAvailableException
+	public void testGetUpdateHistorySuccess() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
 		assertNotNull("The latest name should not be null", getLoggedProvider().getUpdateHistory());
 	}
 
-	private BukkitUpdateProvider getProvider() throws NoSuchFieldException, IllegalAccessException
+	private BukkitUpdateProvider getProvider()
 	{
 		//noinspection ConstantConditions
 		return new BukkitUpdateProvider(74734, null);

@@ -37,15 +37,6 @@ public interface UpdateProvider
 
 	//region getter for the latest version
 	/**
-	 * Gets the latest version's version name (such as "1.32")
-	 *
-	 * @return The latest version string.
-	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
-	 */
-	@Deprecated
-	@NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException;
-
-	/**
 	 * Gets the latest version's version (such as 1.32)
 	 *
 	 * @return The latest version.
@@ -136,25 +127,6 @@ public interface UpdateProvider
 	//endregion
 
 	//region provider property's
-	//region old provider property's
-	@Deprecated
-	boolean provideDownloadURL();
-
-	@Deprecated
-	boolean provideMinecraftVersion();
-
-	@Deprecated
-	boolean provideChangelog();
-
-	@Deprecated
-	boolean provideMD5Checksum();
-
-	@Deprecated
-	boolean provideUpdateHistory();
-
-	@Deprecated
-	boolean provideDependencies();
-	//endregion
 	boolean providesDownloadURL();
 
 	boolean providesMinecraftVersion();

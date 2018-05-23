@@ -85,7 +85,6 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	/**
 	 * @param url The url to the file that should be downloaded.
 	 */
-	@Deprecated
 	public AlwaysUpdateProvider(@NotNull URL url)
 	{
 		this(url, "file.jar");
@@ -95,7 +94,6 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param url      The url to the file that should be downloaded.
 	 * @param fileName The name of the file.
 	 */
-	@Deprecated
 	public AlwaysUpdateProvider(@NotNull URL url, String fileName)
 	{
 		this(url, fileName, ReleaseType.RELEASE);
@@ -106,7 +104,6 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param fileName    The name of the file.
 	 * @param releaseType The release type.
 	 */
-	@Deprecated
 	public AlwaysUpdateProvider(@NotNull URL url, String fileName, ReleaseType releaseType)
 	{
 		this.releaseType = releaseType;
@@ -122,15 +119,9 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	}
 
 	@Override
-	public @NotNull String getLatestVersionAsString() throws NotSuccessfullyQueriedException
-	{
-		return Integer.MAX_VALUE + "." + Integer.MAX_VALUE;
-	}
-
-	@Override
 	public @NotNull Version getLatestVersion() throws NotSuccessfullyQueriedException
 	{
-		return new Version(getLatestVersionAsString());
+		return new Version(Integer.MAX_VALUE + "." + Integer.MAX_VALUE);
 	}
 
 	@Override
@@ -225,49 +216,5 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	{
 		return false;
 	}
-
-	//region old provider property's
-	@Deprecated
-	@Override
-	public boolean provideDownloadURL()
-	{
-		return providesDownloadURL();
-	}
-
-	@Deprecated
-	@Override
-	public boolean provideMinecraftVersion()
-	{
-		return providesMinecraftVersion();
-	}
-
-	@Deprecated
-	@Override
-	public boolean provideChangelog()
-	{
-		return providesChangelog();
-	}
-
-	@Deprecated
-	@Override
-	public boolean provideMD5Checksum()
-	{
-		return false;
-	}
-
-	@Deprecated
-	@Override
-	public boolean provideUpdateHistory()
-	{
-		return providesUpdateHistory();
-	}
-
-	@Deprecated
-	@Override
-	public boolean provideDependencies()
-	{
-		return providesDependencies();
-	}
-	//endregion
 	//endregion
 }

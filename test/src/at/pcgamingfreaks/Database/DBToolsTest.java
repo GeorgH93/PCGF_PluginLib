@@ -797,16 +797,16 @@ public class DBToolsTest
 	}
 
 	@Test
-	public void testRunStatement() throws SQLException
+	public void testRunStatementWithoutException() throws SQLException
 	{
 		PreparedStatement mockedPreparedStatement = mock(PreparedStatement.class);
 		doReturn(mockedPreparedStatement).when(mockedConnection).prepareStatement(anyString());
-		DBTools.runStatement(mockedConnection, "SELECT * FROM table WHERE id = ? AND name = ?", 3, "TEST");
+		DBTools.runStatementWithoutException(mockedConnection, "SELECT * FROM table WHERE id = ? AND name = ?", 3, "TEST");
 		verify(mockedPreparedStatement, times(1)).execute();
-		DBTools.runStatement(mockedConnection, "SELECT * FROM table WHERE id = ? AND name = ?", (Object) null);
+		DBTools.runStatementWithoutException(mockedConnection, "SELECT * FROM table WHERE id = ? AND name = ?", (Object) null);
 		verify(mockedPreparedStatement, times(2)).execute();
 		doThrow(new SQLException()).when(mockedConnection).prepareStatement(anyString());
-		DBTools.runStatement(mockedConnection, "SELECT * FROM table WHERE id = ? AND name = ?", 3, "TEST");
+		DBTools.runStatementWithoutException(mockedConnection, "SELECT * FROM table WHERE id = ? AND name = ?", 3, "TEST");
 		verify(mockedPreparedStatement, times(2)).execute();
 	}
 }

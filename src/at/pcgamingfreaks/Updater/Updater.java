@@ -192,7 +192,7 @@ public abstract class Updater
 				byte[] buffer = new byte[BUFFER_SIZE];
 				if(announceDownloadProgress)
 				{
-					logger.info("Start downloading update: " + updateProvider.getLatestVersionAsString());
+					logger.info("Start downloading update: " + updateProvider.getLatestVersion().toString());
 				}
 				long downloaded = 0;
 				while((count = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1)
@@ -309,21 +309,6 @@ public abstract class Updater
 		try
 		{
 			return updateProvider.getLatestVersion();
-		}
-		catch(NotSuccessfullyQueriedException ignored) {}
-		return null;
-	}
-
-	/**
-	 * Gets the latest remote version of the last query.
-	 *
-	 * @return The latest remote version of the last query. Null if there wasn't a successful query before.
-	 */
-	protected String getRemoteVersionAsString()
-	{
-		try
-		{
-			return updateProvider.getLatestVersionAsString();
 		}
 		catch(NotSuccessfullyQueriedException ignored) {}
 		return null;

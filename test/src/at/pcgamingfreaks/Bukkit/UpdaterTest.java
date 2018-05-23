@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.TestClasses.TestObjects;
 import at.pcgamingfreaks.TestClasses.TestUtils;
+import at.pcgamingfreaks.Updater.UpdateProviders.BukkitUpdateProvider;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -81,7 +82,7 @@ public class UpdaterTest
 	};
 
 	@BeforeClass
-	public static void prepareTestData() throws Exception
+	public static void prepareTestData()
 	{
 		File updateFolder = new File("plugins/updates");
 		//noinspection ResultOfMethodCallIgnored
@@ -95,7 +96,7 @@ public class UpdaterTest
 		whenNew(at.pcgamingfreaks.Updater.Updater.class).withAnyArguments().thenAnswer(new Answer<Object>()
 		{
 			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
+			public Object answer(InvocationOnMock invocationOnMock)
 			{
 				return null;
 			}
@@ -112,7 +113,7 @@ public class UpdaterTest
 	@Test
 	public void testUpdater() throws Exception
 	{
-		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, 74734);
+		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, new BukkitUpdateProvider(74734, TestObjects.getJavaPlugin().getLogger()));
 		assertNotNull("The updater should not be null", updater);
 		updater.runSync(syncRunnable);
 		assertEquals("The runnable status text should match", "SYNC", runnableStatus);
@@ -130,7 +131,7 @@ public class UpdaterTest
 		when(mockedPluginDescription.getAuthors()).thenAnswer(new Answer<List<String>>()
 		{
 			@Override
-			public List<String> answer(InvocationOnMock invocationOnMock) throws Throwable
+			public List<String> answer(InvocationOnMock invocationOnMock)
 			{
 				List<String> authorList = new ArrayList<>();
 				authorList.add("MarkusWME");
@@ -175,7 +176,7 @@ public class UpdaterTest
 	public void testWaitForAsync() throws Exception
 	{
 		TestUtils.initReflection();
-		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, 74734);
+		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, new BukkitUpdateProvider(74734, TestObjects.getJavaPlugin().getLogger()));
 		final Thread mockedThread = new Thread(new Runnable()
 		{
 			@Override

@@ -128,23 +128,6 @@ public class JenkinsUpdateProviderTest
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
-	public void testGetLatestVersionAsStringFailure() throws NotSuccessfullyQueriedException
-	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
-		updater.getLatestVersionAsString();
-	}
-
-	@Test
-	public void testGetLatestVersionAsStringSuccess() throws NotSuccessfullyQueriedException
-	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
-		updater.query();
-		assertNotNull("The latest version string should not be null", updater.getLatestVersionAsString());
-	}
-
-	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestVersionFailure() throws NotSuccessfullyQueriedException
 	{
 		Logger mockedLogger = mock(Logger.class);
@@ -277,7 +260,6 @@ public class JenkinsUpdateProviderTest
 		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", null);
 		assertTrue("The JenkinsUpdateProvider should provide a download URL", updater.providesDownloadURL());
 		assertTrue("The JenkinsUpdateProvider should provide a changelog", updater.providesChangelog());
-		assertTrue("The JenkinsUpdateProvider should provide a checksum", updater.provideMD5Checksum());
 		assertEquals("The JenkinsUpdateProvider should provide a MD5 checksum", ChecksumType.MD5, updater.providesChecksum());
 		updater = (JenkinsUpdateProvider) JenkinsUpdateProvider.class.getDeclaredConstructors()[0].newInstance(new IndicateReloadClass());
 		assertFalse("The JenkinsUpdateProvider should not provide a Minecraft version", updater.providesMinecraftVersion());

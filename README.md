@@ -46,7 +46,7 @@ The library can be added in two ways to your plugin.
 <dependency>
  	<groupId>at.pcgamingfreaks</groupId>
  	<artifactId>PluginLib</artifactId>
- 	<version>1.0.1-SNAPSHOT</version>
+ 	<version>1.0.2-SNAPSHOT</version>
 </dependency>
 ```
 

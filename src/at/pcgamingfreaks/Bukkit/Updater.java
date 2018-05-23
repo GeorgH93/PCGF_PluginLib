@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import at.pcgamingfreaks.Updater.UpdateProviders.BukkitUpdateProvider;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 
 import org.bukkit.Bukkit;
@@ -31,16 +30,6 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 {
 	private final JavaPlugin plugin;
 	private Thread thread;
-
-	/**
-	 * This constructor is deprecated an should be replaced with a generic on.
-	 * The BukkitUpdateProvider instance should be created manually.
-	 */
-	@Deprecated
-	public Updater(JavaPlugin plugin, File file, boolean announceDownloadProgress, int bukkitPluginID)
-	{
-		this(plugin, file, announceDownloadProgress, new BukkitUpdateProvider(bukkitPluginID, plugin.getLogger()));
-	}
 
 	public Updater(JavaPlugin plugin, File file, boolean announceDownloadProgress, UpdateProvider updateProvider)
 	{

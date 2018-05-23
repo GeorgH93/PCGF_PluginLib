@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks.Bungee;
 
-import at.pcgamingfreaks.Updater.UpdateProviders.BukkitUpdateProvider;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 
 import net.md_5.bungee.api.plugin.Plugin;
@@ -27,16 +26,6 @@ import org.jetbrains.annotations.NotNull;
 public class Updater extends at.pcgamingfreaks.Updater.Updater
 {
 	private final Plugin plugin;
-
-	/**
-	 * This constructor is deprecated an should be replaced with a generic on.
-	 * The BukkitUpdateProvider instance should be created manually.
-	 */
-	@Deprecated
-	public Updater(Plugin plugin, boolean announceDownloadProgress, int bukkitPluginID)
-	{
-		this(plugin, announceDownloadProgress, new BukkitUpdateProvider(bukkitPluginID, plugin.getLogger()));
-	}
 
 	public Updater(Plugin plugin, boolean announceDownloadProgress, UpdateProvider updateProvider)
 	{
