@@ -11,6 +11,7 @@ A small library to reduce the code for some stuff commonly used in plugins.
     * Supports multiple sites for checking and downloading of updates
         * spigotmc.org (checking + downloading)
         * dev.bukkit.org (checking + downloading)
+        * GitHub (checking + downloading)
         * Jenkins build servers (checking + downloading)
         * Static URL (downloading)
 * JSON message handling
