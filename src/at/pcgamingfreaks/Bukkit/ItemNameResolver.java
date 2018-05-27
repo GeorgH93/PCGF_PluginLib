@@ -43,24 +43,9 @@ public class ItemNameResolver
 		{
 			String material = key, suffix = "";
 			short dataValue = -1;
-			if(key.contains("."))
+			if(key.contains(".") || key.contains(":"))
 			{
-				String[] components = key.split("\\.");
-				material = components[0];
-				if(components[1].equals("appendDefault")) continue;
-				try
-				{
-					dataValue = Short.parseShort(components[1]);
-				}
-				catch(NumberFormatException ignored) {}
-				if(language.getLang().getBoolean(material + ".appendDefault", false))
-				{
-					suffix = language.getLang().getString(material, "");
-				}
-			}
-			if(material.contains(":"))
-			{
-				String[] components = material.split(":");
+				String[] components = key.split("[.:]");
 				material = components[0];
 				if(components[1].equals("appendDefault")) continue;
 				try
