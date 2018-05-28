@@ -24,6 +24,9 @@ import at.pcgamingfreaks.Version;
 
 import org.junit.Test;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import static org.junit.Assert.*;
 
 public class AlwaysUpdateProviderTest
@@ -174,5 +177,12 @@ public class AlwaysUpdateProviderTest
 	{
 		AlwaysUpdateProvider updateProvider = new AlwaysUpdateProvider("malformed.url");
 		updateProvider.getLatestFileURL();
+	}
+
+	@Test
+	public void testAlwaysUpdateProvider() throws MalformedURLException, NotSuccessfullyQueriedException
+	{
+		AlwaysUpdateProvider updateProvider = new AlwaysUpdateProvider(new URL("http://this.is.a.url/"));
+		assertEquals("The release type should match", ReleaseType.RELEASE, updateProvider.getLatestReleaseType());
 	}
 }
