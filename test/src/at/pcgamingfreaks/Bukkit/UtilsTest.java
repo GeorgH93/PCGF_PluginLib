@@ -18,14 +18,11 @@
 package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.TestClasses.*;
 import at.pcgamingfreaks.TestClasses.NMS.EntityPlayer;
 import at.pcgamingfreaks.TestClasses.NMS.IChatBaseComponent;
 import at.pcgamingfreaks.TestClasses.NMS.PacketPlayOutChat;
 import at.pcgamingfreaks.TestClasses.NMS.PlayerConnection;
-import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
-import at.pcgamingfreaks.TestClasses.TestBukkitServer;
-import at.pcgamingfreaks.TestClasses.TestObjects;
-import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -75,7 +72,7 @@ public class UtilsTest
 		doReturn(false).when(PLAYER1).hasPermission("bypass.rangelimit");
 		doReturn(false).when(PLAYER2).hasPermission("bypass.rangelimit");
 		doReturn(false).when(PLAYER3).hasPermission("bypass.rangelimit");
-		doReturn(true) .when(PLAYER4).hasPermission("bypass.rangelimit");
+		doReturn(true).when(PLAYER4).hasPermission("bypass.rangelimit");
 		doReturn(WORLD_1).when(PLAYER1).getWorld();
 		doReturn(WORLD_1).when(PLAYER2).getWorld();
 		doReturn(WORLD_2).when(PLAYER3).getWorld();
@@ -209,5 +206,13 @@ public class UtilsTest
 		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 1.0, "bypass.rangelimit"));
 		assertFalse(Utils.inRange(PLAYER1, PLAYER2, 1.0, "bypass.rangelimit"));
 		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 0, "bypass.rangelimit"));
+		assertTrue(Utils.inRange(PLAYER4, PLAYER3, 0, "bypass.rangelimit"));
+	}
+
+	@Test
+	public void testDropInventory()
+	{
+		Utils.dropInventory(new TestInventory(), new Location(WORLD_1, 0.0, 1.0, 2.0));
+		Utils.dropInventory(new TestInventory(), new Location(WORLD_1, 0.0, 1.0, 2.0), false);
 	}
 }

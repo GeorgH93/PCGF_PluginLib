@@ -50,7 +50,7 @@ public class TimeSpanTest
 		assertArrayEquals(new int[] { 0, 11, 30, 23, 59, 59, 364 }, new TimeSpan(date1, date3).getArray());
 		assertArrayEquals(new int[] { 1, 0, 0, 0, 0, 0, 365 }, new TimeSpan(date2, date1).getArray());
 		assertArrayEquals(new int[] { 0, 11, 30, 23, 59, 59, 364 }, new TimeSpan(date3, date1).getArray());
-		assertArrayEquals(new int[] { 0, 0, 0, 0, 0, 1, 0}, new TimeSpan(new Date(System.currentTimeMillis() - 1000L)).getArray());
+		assertArrayEquals(new int[] { 0, 0, 0, 0, 0, 1, 0 }, new TimeSpan(new Date(System.currentTimeMillis() - 1000L)).getArray());
 		assertArrayEquals(new int[] { 0, 0, 0, 0, 0, 1, 0 }, new TimeSpan(new Date(System.currentTimeMillis() - 1000L), true).getArray());
 		assertArrayEquals(new int[] { 1, 0, 0, 0, 0, 0, 365 }, new TimeSpan(date1, date2, true).getArray());
 		assertArrayEquals(new int[] { 0, 11, 29, 23, 59, 59, 364 }, new TimeSpan(date1, date3, true).getArray());
@@ -64,14 +64,14 @@ public class TimeSpanTest
 		cal2.setTimeInMillis(TIME2);
 		cal3.setTimeInMillis(TIME3);
 		assertArrayEquals(new int[] { 1, 0, 0, 0, 0, 0, 365 }, new TimeSpan(cal1, cal2).getArray());
-		assertArrayEquals(new int[] { 0, 11, 30, 23, 59, 59, 364}, new TimeSpan(cal1, cal3).getArray());
+		assertArrayEquals(new int[] { 0, 11, 30, 23, 59, 59, 364 }, new TimeSpan(cal1, cal3).getArray());
 		assertArrayEquals(new int[] { 1, 0, 0, 0, 0, 0, 365 }, new TimeSpan(cal2, cal1).getArray());
 		assertArrayEquals(new int[] { 0, 11, 30, 23, 59, 59, 364 }, new TimeSpan(cal3, cal1).getArray());
 		calNow.setTimeInMillis(System.currentTimeMillis() - 1000L);
 		assertArrayEquals(new int[] { 0, 0, 0, 0, 0, 1, 0 }, new TimeSpan(calNow).getArray());
 		assertArrayEquals(new int[] { 0, 0, 0, 0, 0, 1, 0 }, new TimeSpan(calNow, true).getArray());
 		assertArrayEquals(new int[] { 1, 0, 0, 0, 0, 0, 365 }, new TimeSpan(cal1, cal2, true).getArray());
-		assertArrayEquals(new int[] { 0, 11, 29, 23, 59, 59, 364}, new TimeSpan(cal1, cal3, true).getArray());
+		assertArrayEquals(new int[] { 0, 11, 29, 23, 59, 59, 364 }, new TimeSpan(cal1, cal3, true).getArray());
 		cal1.set(Calendar.YEAR, 2017);
 		cal1.set(Calendar.MONTH, Calendar.JANUARY);
 		cal1.set(Calendar.DAY_OF_MONTH, 31);
@@ -88,6 +88,12 @@ public class TimeSpanTest
 		assertEquals("1 year", new TimeSpan(TIME1, TIME2, true).toString());
 		assertEquals("11 months 30 days 23 hours 59 minutes 59 seconds", new TimeSpan(TIME3, TIME1).toString());
 		assertEquals("0 seconds", new TimeSpan(0, 0, true).toString());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testTimeSpanToStringWithError()
+	{
+		new TimeSpan(0, 0, true).toString(new String[] {});
 	}
 
 	@Test

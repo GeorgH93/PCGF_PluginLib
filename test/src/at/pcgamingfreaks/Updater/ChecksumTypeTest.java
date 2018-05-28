@@ -23,24 +23,27 @@ import static org.junit.Assert.*;
 
 public class ChecksumTypeTest
 {
-
 	@Test
 	public void testIsSupported() throws Exception
 	{
+		assertTrue("The hashing algorithm should be supported", ChecksumType.MD5.isSupported());
 	}
 
 	@Test
 	public void testGetAlgorithm() throws Exception
 	{
+		assertEquals("The hashing algorithm should be MD5", "MD5", ChecksumType.MD5.getAlgorithm());
 	}
 
 	@Test
 	public void testGetInstance() throws Exception
 	{
+		assertNotNull("The instance should not be null", ChecksumType.MD5.getInstance());
 	}
 
 	@Test
 	public void testGetInstanceOrNull() throws Exception
 	{
+		assertNull("The algorithm should not be supported", ChecksumType.NONE.getInstanceOrNull());
 	}
 }
