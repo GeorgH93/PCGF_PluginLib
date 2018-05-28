@@ -98,6 +98,7 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 					result.setName(projectRepo);
 					JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
 					JsonArray assets = object.getAsJsonArray("assets");
+					boolean foundDl = false;
 					for(int i = 0; i < assets.size(); i++)
 					{
 						JsonObject asset = assets.get(i).getAsJsonObject();
@@ -106,13 +107,14 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 						{
 							result.setFileName(name);
 							result.setDownloadURL(new URL(asset.get("browser_download_url").getAsString()));
-							break;
+							foundDl = true;
 						}
 						else if(assetMD5Pattern.matcher(name).matches())
 						{
 							result.setChecksum(getMD5FromUrl(asset.get("browser_download_url").getAsString()));
 						}
 					}
+					if(!foundDl) return UpdateResult.FAIL_FILE_NOT_FOUND;
 					result.setVersion(new Version(object.get("tag_name").getAsString()));
 					lastResult = result;
 				}
