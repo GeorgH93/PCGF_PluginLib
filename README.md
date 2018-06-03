@@ -80,7 +80,7 @@ The recommended shading settings:
                 <relocations>
                     <relocation>
                         <pattern>at.pcgamingfreaks</pattern>
-                        <shadedPattern>at.pcgamingfreaks.MinePacks.libs.at.pcgamingfreaks</shadedPattern>
+                        <shadedPattern>your_package.libs.at.pcgamingfreaks</shadedPattern>
                     </relocation>
                 </relocations>
             </configuration>
@@ -88,6 +88,7 @@ The recommended shading settings:
     </executions>
 </plugin>
 ```
+Replace `your_package` with the package of your plugin.
 **Do not shade this library into your plugin without relocation!!!**
 
 ## Links:
