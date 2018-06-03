@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -161,5 +161,22 @@ public class UtilsTest
 		whenNew(FileOutputStream.class).withAnyArguments().thenReturn(mockedFileStream);
 		Utils.extractFile(UtilsTest.class, mockedLogger, "", mockedFile);
 		assertEquals("There should be all info messages in the log", 4, logCount[0]);
+	}
+
+	@Test
+	public void testTryParse()
+	{
+		assertEquals(1, Utils.tryParse("1", 2));
+		assertEquals(2, Utils.tryParse("1a", 2));
+		assertEquals((byte) 1, Utils.tryParse("1", (byte) 2));
+		assertEquals((byte) 2, Utils.tryParse("1a", (byte) 2));
+		assertEquals((short) 1, Utils.tryParse("1", (short) 2));
+		assertEquals((short) 2, Utils.tryParse("1a", (short) 2));
+		assertEquals((long) 1, Utils.tryParse("1", (long) 2));
+		assertEquals((long) 2, Utils.tryParse("1a", (long) 2));
+		assertEquals(1.0f, Utils.tryParse("1.0", 2.0f), 0);
+		assertEquals(2.0f, Utils.tryParse("1.0a", 2.0f), 0);
+		assertEquals(1.0, Utils.tryParse("1.0", 2.0), 0);
+		assertEquals(2.0, Utils.tryParse("1.0a", 2.0), 0);
 	}
 }

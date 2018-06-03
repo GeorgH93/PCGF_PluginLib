@@ -168,4 +168,106 @@ public class Utils
 		}
 		return false;
 	}
+
+	/**
+	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 *
+	 * @param string The string that should be parsed.
+	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
+	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
+	 */
+	public static byte tryParse(String string, byte fallbackValue)
+	{
+		try
+		{
+			return Byte.parseByte(string);
+		}
+		catch (NumberFormatException ignored) {}
+		return fallbackValue;
+	}
+
+	/**
+	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 *
+	 * @param string The string that should be parsed.
+	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
+	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
+	 */
+	public static short tryParse(String string, short fallbackValue)
+	{
+		try
+		{
+			return Short.parseShort(string);
+		}
+		catch (NumberFormatException ignored) {}
+		return fallbackValue;
+	}
+
+	/**
+	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 *
+	 * @param string The string that should be parsed.
+	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
+	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
+	 */
+	public static int tryParse(String string, int fallbackValue)
+	{
+		try
+		{
+			return Integer.parseInt(string);
+		}
+		catch (NumberFormatException ignored) {}
+		return fallbackValue;
+	}
+
+	/**
+	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 *
+	 * @param string The string that should be parsed.
+	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
+	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
+	 */
+	public static long tryParse(String string, long fallbackValue)
+	{
+		try
+		{
+			return Long.parseLong(string);
+		}
+		catch (NumberFormatException ignored) {}
+		return fallbackValue;
+	}
+
+	/**
+	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 *
+	 * @param string The string that should be parsed.
+	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
+	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
+	 */
+	public static float tryParse(String string, float fallbackValue)
+	{
+		try
+		{
+			return Float.parseFloat(string);
+		}
+		catch (NumberFormatException ignored) {}
+		return fallbackValue;
+	}
+
+	/**
+	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 *
+	 * @param string The string that should be parsed.
+	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
+	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
+	 */
+	public static double tryParse(String string, double fallbackValue)
+	{
+		try
+		{
+			return Double.parseDouble(string);
+		}
+		catch (NumberFormatException ignored) {}
+		return fallbackValue;
+	}
 }
