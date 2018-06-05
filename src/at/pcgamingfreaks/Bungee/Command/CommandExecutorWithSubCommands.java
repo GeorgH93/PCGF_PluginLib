@@ -15,7 +15,7 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Command;
+package at.pcgamingfreaks.Bungee.Command;
 
 public class CommandExecutorWithSubCommands extends CommandExecutorWithSubCommandsGeneric<SubCommand>
 {}

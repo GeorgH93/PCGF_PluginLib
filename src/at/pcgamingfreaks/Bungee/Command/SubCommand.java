@@ -15,7 +15,17 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Command;
+package at.pcgamingfreaks.Bungee.Command;
 
-public class CommandExecutorWithSubCommands extends CommandExecutorWithSubCommandsGeneric<SubCommand>
-{}
+import net.md_5.bungee.api.CommandSender;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public abstract class SubCommand extends at.pcgamingfreaks.Command.SubCommand<CommandSender>
+{
+	public SubCommand(@NotNull String name, @NotNull String description, @Nullable String permission, @Nullable String... aliases)
+	{
+		super(name, description, permission, aliases);
+	}
+}
