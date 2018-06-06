@@ -231,7 +231,7 @@ public class Language extends YamlFileManager
 	//region language file property getters
 	public String getLanguage()
 	{
-		return getLang().getString("Language", language);
+		return getLang().getString("LanguageName", language);
 	}
 
 	public String getAuthor()
