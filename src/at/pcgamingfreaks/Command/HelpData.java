@@ -37,9 +37,9 @@ public class HelpData
 	 */
 	public HelpData(@NotNull String translatedSubCommand, @Nullable String parameter, @NotNull String description)
 	{
-		this.translatedSubCommand = translatedSubCommand;
-		this.parameter = (parameter == null) ? "" : parameter;
-		this.description = description;
+		setTranslatedSubCommand(translatedSubCommand);
+		setParameter(parameter);
+		setDescription(description);
 	}
 
 	/**
