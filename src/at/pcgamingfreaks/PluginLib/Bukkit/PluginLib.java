@@ -95,15 +95,17 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 	public void onDisable()
 	{
 		instance = null;
-		Updater updater = null;
-		if(this.config.getBool("Misc.AutoUpdate", true))
-		{
-			updater = new Updater(this, this.getFile(), true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
-			updater.update();
-		}
+		Updater updater =  (this.config.getBool("Misc.AutoUpdate", true)) ? update(null) : null;
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.close();
 		if(updater != null) updater.waitForAsyncOperation();
 		this.getLogger().info(StringUtils.getPluginDisabledMessage(this.getDescription().getFullName()));
+	}
+
+	public @NotNull Updater update(@Nullable at.pcgamingfreaks.Updater.Updater.UpdaterResponse responseCallback)
+	{
+		Updater updater = new Updater(this, this.getFile(), true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
+		updater.update(responseCallback);
+		return updater;
 	}
 
 	public static PluginLibrary getInstance()
