@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Command;
 
+import at.pcgamingfreaks.Message.MessageClickEvent;
+
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 public class HelpData
 {
 	private String translatedSubCommand, parameter, description;
+	private MessageClickEvent.ClickEventAction clickAction;
 
 	/**
 	 * Creates a new instance of the {@link HelpData} object to store the data for the sub-command.
@@ -37,9 +40,23 @@ public class HelpData
 	 */
 	public HelpData(@NotNull String translatedSubCommand, @Nullable String parameter, @NotNull String description)
 	{
+		this(translatedSubCommand, parameter, description, MessageClickEvent.ClickEventAction.SUGGEST_COMMAND);
+	}
+
+	/**
+	 * Creates a new instance of the {@link HelpData} object to store the data for the sub-command.
+	 *
+	 * @param translatedSubCommand The translated name of the sub-command.
+	 * @param parameter The parameters to be displayed. null or "" for no parameters.
+	 * @param description The description of the sub-command.
+	 * @param clickAction The action that should be executed when the help line of the command is pressed.
+	 */
+	public HelpData(@NotNull String translatedSubCommand, @Nullable String parameter, @NotNull String description, MessageClickEvent.ClickEventAction clickAction)
+	{
 		setTranslatedSubCommand(translatedSubCommand);
 		setParameter(parameter);
 		setDescription(description);
+		setClickAction(clickAction);
 	}
 
 	/**
@@ -83,6 +100,11 @@ public class HelpData
 		this.description = description;
 	}
 
+	public void setClickAction(MessageClickEvent.ClickEventAction clickAction)
+	{
+		this.clickAction = clickAction;
+	}
+
 	/**
 	 * Gets the translated name of the sub-command.
 	 *
@@ -102,5 +124,10 @@ public class HelpData
 	{
 		Validate.notEmpty(translatedSubCommand, "The sub command must not be null or empty.");
 		this.translatedSubCommand = translatedSubCommand;
+	}
+
+	public MessageClickEvent.ClickEventAction getClickAction()
+	{
+		return clickAction;
 	}
 }
