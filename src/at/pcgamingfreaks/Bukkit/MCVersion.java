@@ -94,7 +94,16 @@ public enum MCVersion
 				MCVersion.NMS_VERSION_MAP.put(version.identifier, version);
 			}
 		}
-		CURRENT_VERSION = getFromServerVersion(NMSReflection.getVersion());
+		MCVersion currentVersion = UNKNOWN;
+		try
+		{
+			currentVersion = getFromServerVersion(NMSReflection.getVersion());
+		}
+		catch(Throwable ignored)
+		{
+			System.out.println("Failed to obtain server version!");
+		}
+		CURRENT_VERSION = currentVersion;
 	}
 
 	private final int versionID;
