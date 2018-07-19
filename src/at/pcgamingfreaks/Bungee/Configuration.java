@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2015 GeorgH93
+ *   Copyright (C) 2014-2016, 2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -60,7 +60,19 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 */
 	public Configuration(Plugin plugin, int version, int upgradeThreshold, String path)
 	{
-		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, "bungee_");
+		this(plugin, version, upgradeThreshold, path, "bungee_");
+	}
+
+	/**
+	 * @param plugin           the instance of the plugin
+	 * @param version          current version of the config
+	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
+	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 * @param inJarPrefix      the prefix for the config file within the jar (e.g.: bungee_)
+	 */
+	public Configuration(Plugin plugin, int version, int upgradeThreshold, String path, String inJarPrefix)
+	{
+		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, inJarPrefix);
 		this.plugin = plugin;
 	}
 }

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2015 GeorgH93
+ *   Copyright (C) 2014-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@ public class Language extends at.pcgamingfreaks.Language
 	}
 
 	/**
-	 * @param plugin  the instance of the plugin
-	 * @param version the current version of the language file
+	 * @param plugin  The instance of the plugin
+	 * @param version The current version of the language file
 	 */
 	public Language(Plugin plugin, int version)
 	{
@@ -48,14 +48,26 @@ public class Language extends at.pcgamingfreaks.Language
 	}
 
 	/**
-	 * @param plugin  the instance of the plugin
-	 * @param version the current version of the language file
-	 * @param path    the sub-folder for the language file
-	 * @param prefix  the prefix for the language file
+	 * @param plugin  The instance of the plugin
+	 * @param version The current version of the language file
+	 * @param path    The sub-folder for the language file
+	 * @param prefix  The prefix for the language file
 	 */
 	public Language(Plugin plugin, int version, String path, String prefix)
 	{
-		super(plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, "bungee_");
+		this(plugin, version, path, prefix, prefix);
+	}
+
+	/**
+	 * @param plugin      The instance of the plugin
+	 * @param version     The current version of the language file
+	 * @param path        The sub-folder for the language file
+	 * @param prefix      The prefix for the language file
+	 * @param inJarPrefix The prefix for the language file within the jar (e.g.: bungee_)
+	 */
+	public Language(Plugin plugin, int version, String path, String prefix, String inJarPrefix)
+	{
+		super(plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, inJarPrefix);
 		this.plugin = plugin;
 	}
 
