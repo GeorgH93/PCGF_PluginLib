@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2014-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -34,7 +34,8 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 	private static final Class<?> CLASS_NBT_COMPRESSED_STREAM_TOOLS = NMSReflection.getNMSClass("NBTCompressedStreamTools");
 	private static final Class<?> CLASS_CRAFT_ITEM_STACK            = NMSReflection.getOBCClass("inventory.CraftItemStack");
 	private static final Class<?> CLASS_NMS_ITEM_STACK              = NMSReflection.getNMSClass("ItemStack");
-	private static final Constructor<?> CONSTRUCTOR_NMS_ITEM_STACK  = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11)) ? NMSReflection.getConstructor(CLASS_NMS_ITEM_STACK, CLASS_NBT_TAG_COMPOUND) : null;
+	private static final Constructor<?> CONSTRUCTOR_NMS_ITEM_STACK  = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11) && MCVersion.isOlderThan(MCVersion.MC_1_13)) ? NMSReflection.getConstructor(CLASS_NMS_ITEM_STACK, CLASS_NBT_TAG_COMPOUND) : null;
+	private static final Method METHOD_CONSTRUCT_NMS_ITEM_STACK = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13)) ? NMSReflection.getMethod(CLASS_NMS_ITEM_STACK, "a", CLASS_NBT_TAG_COMPOUND) : null;
 	private static final Method METHOD_NBT_TAG_C_SET_INT  = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "setInt", String.class, int.class);
 	private static final Method METHOD_NBT_COMP_STEAM_A   = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", CLASS_NBT_TAG_COMPOUND, OutputStream.class);
 	private static final Method METHOD_NBT_TAG_C_SET2     = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "set", String.class, NMSReflection.getNMSClass("NBTBase"));
@@ -58,7 +59,7 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 	public ItemStack[] deserialize(byte[] data)
 	{
 		if(METHOD_NBT_COMP_STREAM_A2 == null || METHOD_GET_INT == null || METHOD_HAS_KEY_OF_TYPE == null || METHOD_AS_BUKKIT_COPY == null || METHOD_GET_COMPOUND == null ||
-				(METHOD_CREATE_STACK == null && CONSTRUCTOR_NMS_ITEM_STACK == null))
+				(METHOD_CREATE_STACK == null && CONSTRUCTOR_NMS_ITEM_STACK == null && METHOD_CONSTRUCT_NMS_ITEM_STACK == null))
 		{
 			System.out.println("It seems like the system wasn't able to find the some of the Bukkit/Minecraft classes and functions.\n" +
 					"Is the plugin up-to-date and compatible with the used server version?\nBukkit Version: " + Bukkit.getVersion());
@@ -76,9 +77,13 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 					{
 						Object compound = METHOD_GET_COMPOUND.invoke(localNBTTagCompound, String.valueOf(i));
 						Object nbtStack;
-						if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11))
+						if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11) && MCVersion.isOlderThan(MCVersion.MC_1_13))
 						{
 							nbtStack = CONSTRUCTOR_NMS_ITEM_STACK.newInstance(compound);
+						}
+						else if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13))
+						{
+							nbtStack = METHOD_CONSTRUCT_NMS_ITEM_STACK.invoke(null, compound);
 						}
 						else
 						{
@@ -146,6 +151,6 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 
 	public static boolean isMCVersionCompatible()
 	{
-		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_12_R1);
+		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_13_R1);
 	}
 }
