@@ -70,15 +70,15 @@ public class NBTItemStackSerializerTest
 		TestUtils.setUnaccessible(field, null, true);
 		//noinspection SpellCheckingInspection
 		field = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "METHOD_AS_BUKKIT_COPY", null);
-		assertNull("Deserialized data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
+		assertNotNull("Deserialized data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
 		TestUtils.setUnaccessible(field, null, true);
 		field = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "METHOD_GET_COMPOUND", null);
-		assertNull("Deserialized data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
+		assertNull("Deserialized data should not be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
 		TestUtils.setUnaccessible(field, null, true);
 		field = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "METHOD_CREATE_STACK", null);
-		assertNull("Deserialized data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
+		assertNotNull("Deserialized data should not be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
 		Field field2 = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "CONSTRUCTOR_NMS_ITEM_STACK", NMSReflection.getConstructor(at.pcgamingfreaks.TestClasses.NMS.ItemStack.class, NBTTagCompound.class));
-		assertNull("Deserialized data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
+		assertNotNull("Deserialized data should not be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
 		TestUtils.setUnaccessible(field, null, true);
 		TestUtils.setUnaccessible(field2, null, true);
 		TestObjects.setBukkitVersion("1_11");
