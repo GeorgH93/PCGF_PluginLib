@@ -30,55 +30,57 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum MCVersion
 {
 	UNKNOWN(0, ""),
-	MC_1_7(1, "1_7"),
-	MC_1_7_1(1, "1_7", MC_1_7),
-	MC_1_7_2(1, "1_7", MC_1_7),
-	MC_1_7_3(1, "1_7", MC_1_7),
-	MC_1_7_4(1, "1_7", MC_1_7),
-	MC_NMS_1_7_R1(1, "1_7", MC_1_7),
-	MC_1_7_5(2, "1_7", MC_1_7),
-	MC_1_7_6(2, "1_7", MC_1_7),
-	MC_1_7_7(2, "1_7", MC_1_7),
-	MC_NMS_1_7_R2(2, "1_7", MC_1_7),
-	MC_1_7_8(3, "1_7", MC_1_7),
-	MC_1_7_9(3, "1_7", MC_1_7),
-	MC_NMS_1_7_R3(3, "1_7", MC_1_7),
-	MC_1_7_10(4, "1_7", MC_1_7),
-	MC_NMS_1_7_R4(4, "1_7", MC_1_7),
-	MC_1_8(11, "1_8"),
-	MC_1_8_1(11, "1_8", MC_1_8),
-	MC_1_8_2(11, "1_8", MC_1_8),
-	MC_NMS_1_8_R1(11, "1_8", MC_1_8),
-	MC_1_8_3(12, "1_8", MC_1_8),
-	MC_1_8_4(12, "1_8", MC_1_8),
-	MC_1_8_5(12, "1_8", MC_1_8),
-	MC_1_8_6(12, "1_8", MC_1_8),
-	MC_1_8_7(12, "1_8", MC_1_8),
-	MC_NMS_1_8_R2(12, "1_8", MC_1_8),
-	MC_1_8_8(13, "1_8", MC_1_8),
-	MC_1_8_9(13, "1_8", MC_1_8),
-	MC_NMS_1_8_R3(13, "1_8", MC_1_8),
-	MC_1_9(21, "1_9"),
-	MC_1_9_1(21, "1_9", MC_1_9),
-	MC_1_9_2(21, "1_9", MC_1_9),
-	MC_NMS_1_9_R1(21, "1_9", MC_1_9),
-	MC_1_9_3(22, "1_9", MC_1_9),
-	MC_1_9_4(22, "1_9", MC_1_9),
-	MC_NMS_1_9_R2(22, "1_9", MC_1_9),
-	MC_1_10(31, "1_10"),
-	MC_1_10_1(31, "1_10", MC_1_10),
-	MC_1_10_2(31, "1_10", MC_1_10),
-	MC_NMS_1_10_R1(31, "1_10", MC_1_10),
-	MC_1_11(41, "1_11"),
-	MC_1_11_1(41, "1_11", MC_1_11),
-	MC_1_11_2(41, "1_11", MC_1_11),
-	MC_NMS_1_11_R1(41, "1_11"),
-	MC_1_12(51, "1_12"),
-	MC_1_12_1(51, "1_12"),
-	MC_1_12_2(51, "1_12"),
-	MC_NMS_1_12_R1(51, "1_12", MC_1_12),
-	MC_1_13(61, "1_13"),
-	MC_NMS_1_13_R1(61, "1_13", MC_1_12);
+	MC_1_7(11, "1_7"),
+	MC_1_7_1(11, "1_7", MC_1_7),
+	MC_1_7_2(11, "1_7", MC_1_7),
+	MC_1_7_3(11, "1_7", MC_1_7),
+	MC_1_7_4(11, "1_7", MC_1_7),
+	MC_NMS_1_7_R1(11, "1_7", MC_1_7),
+	MC_1_7_5(12, "1_7", MC_1_7),
+	MC_1_7_6(12, "1_7", MC_1_7),
+	MC_1_7_7(12, "1_7", MC_1_7),
+	MC_NMS_1_7_R2(12, "1_7", MC_1_7),
+	MC_1_7_8(13, "1_7", MC_1_7),
+	MC_1_7_9(13, "1_7", MC_1_7),
+	MC_NMS_1_7_R3(13, "1_7", MC_1_7),
+	MC_1_7_10(14, "1_7", MC_1_7),
+	MC_NMS_1_7_R4(14, "1_7", MC_1_7),
+	MC_1_8(21, "1_8"),
+	MC_1_8_1(21, "1_8", MC_1_8),
+	MC_1_8_2(21, "1_8", MC_1_8),
+	MC_NMS_1_8_R1(21, "1_8", MC_1_8),
+	MC_1_8_3(22, "1_8", MC_1_8),
+	MC_1_8_4(22, "1_8", MC_1_8),
+	MC_1_8_5(22, "1_8", MC_1_8),
+	MC_1_8_6(22, "1_8", MC_1_8),
+	MC_1_8_7(22, "1_8", MC_1_8),
+	MC_NMS_1_8_R2(22, "1_8", MC_1_8),
+	MC_1_8_8(23, "1_8", MC_1_8),
+	MC_1_8_9(23, "1_8", MC_1_8),
+	MC_NMS_1_8_R3(23, "1_8", MC_1_8),
+	MC_1_9(31, "1_9"),
+	MC_1_9_1(31, "1_9", MC_1_9),
+	MC_1_9_2(31, "1_9", MC_1_9),
+	MC_NMS_1_9_R1(31, "1_9", MC_1_9),
+	MC_1_9_3(32, "1_9", MC_1_9),
+	MC_1_9_4(32, "1_9", MC_1_9),
+	MC_NMS_1_9_R2(32, "1_9", MC_1_9),
+	MC_1_10(41, "1_10"),
+	MC_1_10_1(41, "1_10", MC_1_10),
+	MC_1_10_2(41, "1_10", MC_1_10),
+	MC_NMS_1_10_R1(41, "1_10", MC_1_10),
+	MC_1_11(51, "1_11"),
+	MC_1_11_1(51, "1_11", MC_1_11),
+	MC_1_11_2(51, "1_11", MC_1_11),
+	MC_NMS_1_11_R1(51, "1_11"),
+	MC_1_12(61, "1_12"),
+	MC_1_12_1(61, "1_12"),
+	MC_1_12_2(61, "1_12"),
+	MC_NMS_1_12_R1(61, "1_12", MC_1_12),
+	MC_1_13(71, "1_13"),
+	MC_NMS_1_13_R1(71, "1_13", MC_1_12),
+	MC_1_14(81, "1_14"),
+	MC_NMS_1_14_R1(81, "1_14", MC_1_12);
 
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new ConcurrentHashMap<>();
 
@@ -126,7 +128,7 @@ public enum MCVersion
 		this.mainVersion = mainVersion;
 	}
 
-	public MCVersion getMainMinecraftVersion()
+	public MCVersion getMajorMinecraftVersion()
 	{
 		return mainVersion;
 	}
@@ -154,6 +156,32 @@ public enum MCVersion
 	public boolean olderOrEqualThan(MCVersion other)
 	{
 		return isSame(other) || olderThan(other);
+	}
+
+	/**
+	 * Checks weather the given version is from the same major MC version.
+	 * e.g. MC 1.7.2 and MC 1.7.10 are both MC 1.7 and will result in true.
+	 * while MC 1.7.10 and MC 1.8.8 are MC 1.7 and MC 1.8 and will therefor result in false.
+	 *
+	 * @param other The other version to compare with
+	 * @return True if both are from the same major MC version. false if not.
+	 */
+	public boolean isSameMajorVersion(MCVersion other)
+	{
+		return this.versionID / 10 == other.versionID / 10;
+	}
+
+	/**
+	 * Checks weather the given version is from the same major MC version as the currently running server version.
+	 * e.g. MC 1.7.2 and MC 1.7.10 are both MC 1.7 and will result in true.
+	 * while MC 1.7.10 and MC 1.8.8 are MC 1.7 and MC 1.8 and will therefor result in false.
+	 *
+	 * @param other The other version to compare with
+	 * @return True if both are from the same major MC version. false if not.
+	 */
+	public static boolean isAny(MCVersion other)
+	{
+		return CURRENT_VERSION.isSameMajorVersion(other);
 	}
 
 	public static boolean is(MCVersion other)
