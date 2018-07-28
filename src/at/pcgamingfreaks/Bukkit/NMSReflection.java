@@ -52,14 +52,14 @@ public class NMSReflection extends Reflection
 
 	public static @Nullable Method getNMSMethod(@NotNull String className, @NotNull String name, @Nullable Class<?>... args)
 	{
-		Class<?> clazz = getOBCClass(className);
-		return (clazz == null) ? null : getMethod(getNMSClass(className), name, args);
+		Class<?> clazz = getNMSClass(className);
+		return (clazz == null) ? null : getMethod(clazz, name, args);
 	}
 
 	public static @Nullable Field getNMSField(@NotNull String className, @NotNull String name)
 	{
-		Class<?> clazz = getOBCClass(className);
-		return (clazz == null) ? null : getField(getNMSClass(className), name);
+		Class<?> clazz = getNMSClass(className);
+		return (clazz == null) ? null : getField(clazz, name);
 	}
 
 	public static @Nullable Enum<?> getNMSEnum(@NotNull String enumClassAndEnumName)
@@ -94,7 +94,7 @@ public class NMSReflection extends Reflection
 	public static @Nullable Field getOBCField(@NotNull String className, @NotNull String name)
 	{
 		Class<?> clazz = getOBCClass(className);
-		return (clazz == null) ? null : getField(getOBCClass(className), name);
+		return (clazz == null) ? null : getField(clazz, name);
 	}
 
 	public static @Nullable Object getHandle(@NotNull Object obj)
