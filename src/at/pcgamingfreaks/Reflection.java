@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2016, 2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,23 +17,28 @@
 
 package at.pcgamingfreaks;
 
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class Reflection
 {
-	public static void setStaticField(Class clazz, String field, Object value)
+	public static void setStaticField(@NotNull Class clazz, @NonNls String field, @Nullable Object value)
 	{
+		//noinspection ConstantConditions
 		setStaticField(getField(clazz, field), value);
 	}
 
-	public static void setStaticField(Field field, Object value)
+	public static void setStaticField(@NotNull Field field, @Nullable Object value)
 	{
 		setValue(field, (Object) null, value);
 	}
 
-	public static void setValue(Field field, Object instance, Object value)
+	public static void setValue(@NotNull Field field, @Nullable Object instance, @Nullable Object value)
 	{
 		try
 		{
@@ -47,15 +52,13 @@ public class Reflection
 		}
 	}
 
-	public static void setValue(Object instance, String fieldName, Object value) throws Exception
+	public static void setValue(@NotNull Object instance, @NonNls String fieldName, @Nullable Object value) throws Exception
 	{
-		Field field = instance.getClass().getDeclaredField(fieldName);
-		field.setAccessible(true);
-		field.set(instance, value);
+		setValue(instance.getClass().getDeclaredField(fieldName), instance, value);
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static Enum<?> getEnum(String enumFullName)
+	public static @Nullable Enum<?> getEnum(@NonNls String enumFullName)
 	{
 		String[] x = enumFullName.split("\\.(?=[^.]+$)");
 		if(x.length == 2)
@@ -72,7 +75,7 @@ public class Reflection
 		return null;
 	}
 
-	public static Enum<?> getEnum(Class clazz, String enumName)
+	public static @Nullable Enum<?> getEnum(@NotNull Class clazz, @NonNls String enumName)
 	{
 		try
 		{
@@ -85,7 +88,7 @@ public class Reflection
 		return null;
 	}
 
-	public static Field getField(Class<?> clazz, String name)
+	public static @Nullable Field getField(@NotNull Class<?> clazz, @NonNls String name)
 	{
 		try
 		{
@@ -100,7 +103,7 @@ public class Reflection
 		return null;
 	}
 
-	public static Field getFieldIncludeParents(Class<?> clazz, String name)
+	public static @Nullable Field getFieldIncludeParents(@NotNull Class<?> clazz, @NonNls String name)
 	{
 		try
 		{
@@ -122,7 +125,7 @@ public class Reflection
 		return null;
 	}
 
-	public static Method getMethod(Class<?> clazz, String name, Class<?>... args)
+	public static @Nullable Method getMethod(@NotNull Class<?> clazz, @NonNls String name, @Nullable Class<?>... args)
 	{
 		Method method = null;
 		try
@@ -137,7 +140,7 @@ public class Reflection
 		return method;
 	}
 
-	public static Method getMethodIncludeParents(Class<?> clazz, String name, Class<?>... args)
+	public static @Nullable Method getMethodIncludeParents(@NotNull Class<?> clazz, @NonNls String name, @Nullable Class<?>... args)
 	{
 		Method method = null;
 		try
@@ -159,7 +162,7 @@ public class Reflection
 		return method;
 	}
 
-	public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... args)
+	public static @Nullable Constructor<?> getConstructor(@NotNull Class<?> clazz, @Nullable Class<?>... args)
 	{
 		try
 		{
@@ -172,21 +175,13 @@ public class Reflection
 		return null;
 	}
 
-	public static boolean classListEqual(Class<?>[] l1, Class<?>[] l2)
+	public static boolean classListEqual(@NotNull Class<?>[] l1, @NotNull Class<?>[] l2)
 	{
-		boolean equal = true;
-		if(l1.length != l2.length)
-		{
-			return false;
-		}
+		if(l1.length != l2.length) return false;
 		for(int i = 0; i < l1.length; i++)
 		{
-			if(l1[i] != l2[i])
-			{
-				equal = false;
-				break;
-			}
+			if(l1[i] != l2[i]) return false;
 		}
-		return equal;
+		return true;
 	}
 }
