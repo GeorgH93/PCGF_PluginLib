@@ -27,17 +27,37 @@ import java.lang.reflect.Method;
 
 public class Reflection
 {
+	/**
+	 * Sets the value of a static field.
+	 *
+	 * @param clazz The class in which the field is located.
+	 * @param field The name of field to be set.
+	 * @param value The value to be set.
+	 */
 	public static void setStaticField(@NotNull Class clazz, @NonNls String field, @Nullable Object value)
 	{
 		//noinspection ConstantConditions
 		setStaticField(getField(clazz, field), value);
 	}
 
+	/**
+	 * Sets the value of a static field.
+	 *
+	 * @param field The field to be set.
+	 * @param value The value to be set.
+	 */
 	public static void setStaticField(@NotNull Field field, @Nullable Object value)
 	{
 		setValue(field, (Object) null, value);
 	}
 
+	/**
+	 * Sets the value of a field.
+	 *
+	 * @param field The field to be set.
+	 * @param instance The object instance to be edited. Null for static field.
+	 * @param value The value to be set.
+	 */
 	public static void setValue(@NotNull Field field, @Nullable Object instance, @Nullable Object value)
 	{
 		try
@@ -52,11 +72,24 @@ public class Reflection
 		}
 	}
 
+	/**
+	 * Sets the value of a field.
+	 *
+	 * @param instance The object instance to be edited.
+	 * @param fieldName The name of field to be set.
+	 * @param value The value to be set.
+	 */
 	public static void setValue(@NotNull Object instance, @NonNls String fieldName, @Nullable Object value) throws Exception
 	{
 		setValue(instance.getClass().getDeclaredField(fieldName), instance, value);
 	}
 
+	/**
+	 * Gets an enum reference.
+	 *
+	 * @param enumFullName The full path to the enum.
+	 * @return The enum reference. Null if it was not found.
+	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static @Nullable Enum<?> getEnum(@NonNls String enumFullName)
 	{
@@ -75,6 +108,13 @@ public class Reflection
 		return null;
 	}
 
+	/**
+	 * Gets an enum reference.
+	 *
+	 * @param clazz The enum class.
+	 * @param enumName The name of the enum.
+	 * @return The enum reference. Null if it was not found.
+	 */
 	public static @Nullable Enum<?> getEnum(@NotNull Class clazz, @NonNls String enumName)
 	{
 		try
@@ -88,6 +128,13 @@ public class Reflection
 		return null;
 	}
 
+	/**
+	 * Gets a field reference from an class.
+	 *
+	 * @param clazz The class containing the field.
+	 * @param name The name of the field.
+	 * @return The field reference. Null if it was not found.
+	 */
 	public static @Nullable Field getField(@NotNull Class<?> clazz, @NonNls String name)
 	{
 		try
@@ -103,6 +150,13 @@ public class Reflection
 		return null;
 	}
 
+	/**
+	 * Gets a field reference from a class or one of it's parent classes.
+	 *
+	 * @param clazz The class that should be searched.
+	 * @param name The name of the field.
+	 * @return The field reference. Null if it was not found.
+	 */
 	public static @Nullable Field getFieldIncludeParents(@NotNull Class<?> clazz, @NonNls String name)
 	{
 		try
@@ -125,6 +179,14 @@ public class Reflection
 		return null;
 	}
 
+	/**
+	 * Gets a method reference from a class.
+	 *
+	 * @param clazz The class containing the method.
+	 * @param name The name of the method.
+	 * @param args The types of the parameters of the method.
+	 * @return The method reference. Null if it was not found.
+	 */
 	public static @Nullable Method getMethod(@NotNull Class<?> clazz, @NonNls String name, @Nullable Class<?>... args)
 	{
 		Method method = null;
@@ -140,6 +202,14 @@ public class Reflection
 		return method;
 	}
 
+	/**
+	 * Gets a method reference from a class or one of it's parent classes.
+	 *
+	 * @param clazz The class that should be searched for the method.
+	 * @param name The name of the method.
+	 * @param args The types of the parameters of the method.
+	 * @return The method reference. Null if it was not found.
+	 */
 	public static @Nullable Method getMethodIncludeParents(@NotNull Class<?> clazz, @NonNls String name, @Nullable Class<?>... args)
 	{
 		Method method = null;
@@ -162,6 +232,13 @@ public class Reflection
 		return method;
 	}
 
+	/**
+	 * Gets the constructor reference of a class.
+	 *
+	 * @param clazz The class containing the constructor.
+	 * @param args The types of the parameters of the constructor.
+	 * @return The constructor reference.
+	 */
 	public static @Nullable Constructor<?> getConstructor(@NotNull Class<?> clazz, @Nullable Class<?>... args)
 	{
 		try
@@ -175,6 +252,13 @@ public class Reflection
 		return null;
 	}
 
+	/**
+	 * Compares if two class lists are equal.
+	 *
+	 * @param l1 The first array containing classes.
+	 * @param l2 The second array containing classes.
+	 * @return True if they are the same. False if they are not.
+	 */
 	public static boolean classListEqual(@NotNull Class<?>[] l1, @NotNull Class<?>[] l2)
 	{
 		if(l1.length != l2.length) return false;
