@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks;
 
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +33,7 @@ public class Reflection
 	 * @param field The name of field to be set.
 	 * @param value The value to be set.
 	 */
-	public static void setStaticField(@NotNull Class clazz, @NonNls String field, @Nullable Object value)
+	public static void setStaticField(@NotNull Class clazz, @NotNull String field, @Nullable Object value)
 	{
 		//noinspection ConstantConditions
 		setStaticField(getField(clazz, field), value);
@@ -79,7 +78,7 @@ public class Reflection
 	 * @param fieldName The name of field to be set.
 	 * @param value The value to be set.
 	 */
-	public static void setValue(@NotNull Object instance, @NonNls String fieldName, @Nullable Object value) throws Exception
+	public static void setValue(@NotNull Object instance, @NotNull String fieldName, @Nullable Object value) throws Exception
 	{
 		setValue(instance.getClass().getDeclaredField(fieldName), instance, value);
 	}
@@ -91,7 +90,7 @@ public class Reflection
 	 * @return The enum reference. Null if it was not found.
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static @Nullable Enum<?> getEnum(@NonNls String enumFullName)
+	public static @Nullable Enum<?> getEnum(@NotNull String enumFullName)
 	{
 		String[] x = enumFullName.split("\\.(?=[^.]+$)");
 		if(x.length == 2)
@@ -115,7 +114,7 @@ public class Reflection
 	 * @param enumName The name of the enum.
 	 * @return The enum reference. Null if it was not found.
 	 */
-	public static @Nullable Enum<?> getEnum(@NotNull Class clazz, @NonNls String enumName)
+	public static @Nullable Enum<?> getEnum(@NotNull Class clazz, @NotNull String enumName)
 	{
 		try
 		{
@@ -129,13 +128,13 @@ public class Reflection
 	}
 
 	/**
-	 * Gets a field reference from an class.
+	 * Gets a field reference from a class.
 	 *
 	 * @param clazz The class containing the field.
 	 * @param name The name of the field.
 	 * @return The field reference. Null if it was not found.
 	 */
-	public static @Nullable Field getField(@NotNull Class<?> clazz, @NonNls String name)
+	public static @Nullable Field getField(@NotNull Class<?> clazz, @NotNull String name)
 	{
 		try
 		{
@@ -157,7 +156,7 @@ public class Reflection
 	 * @param name The name of the field.
 	 * @return The field reference. Null if it was not found.
 	 */
-	public static @Nullable Field getFieldIncludeParents(@NotNull Class<?> clazz, @NonNls String name)
+	public static @Nullable Field getFieldIncludeParents(@NotNull Class<?> clazz, @NotNull String name)
 	{
 		try
 		{
@@ -187,7 +186,7 @@ public class Reflection
 	 * @param args The types of the parameters of the method.
 	 * @return The method reference. Null if it was not found.
 	 */
-	public static @Nullable Method getMethod(@NotNull Class<?> clazz, @NonNls String name, @Nullable Class<?>... args)
+	public static @Nullable Method getMethod(@NotNull Class<?> clazz, @NotNull String name, @Nullable Class<?>... args)
 	{
 		Method method = null;
 		try
@@ -210,7 +209,7 @@ public class Reflection
 	 * @param args The types of the parameters of the method.
 	 * @return The method reference. Null if it was not found.
 	 */
-	public static @Nullable Method getMethodIncludeParents(@NotNull Class<?> clazz, @NonNls String name, @Nullable Class<?>... args)
+	public static @Nullable Method getMethodIncludeParents(@NotNull Class<?> clazz, @NotNull String name, @Nullable Class<?>... args)
 	{
 		Method method = null;
 		try
@@ -237,7 +236,7 @@ public class Reflection
 	 *
 	 * @param clazz The class containing the constructor.
 	 * @param args The types of the parameters of the constructor.
-	 * @return The constructor reference.
+	 * @return The constructor reference. Null if it was not found.
 	 */
 	public static @Nullable Constructor<?> getConstructor(@NotNull Class<?> clazz, @Nullable Class<?>... args)
 	{

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2016, 2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -37,6 +37,12 @@ public class NMSReflection extends Reflection
 		return BUKKIT_VERSION;
 	}
 
+	/**
+	 * Gets an net.minecraft.server class reference.
+	 *
+	 * @param className The name of the class.
+	 * @return The class reference. Null if it was not found.
+	 */
 	public static @Nullable Class<?> getNMSClass(@NotNull String className)
 	{
 		try
@@ -50,12 +56,27 @@ public class NMSReflection extends Reflection
 		return null;
 	}
 
+	/**
+	 * Gets a method reference from a net.minecraft.server class.
+	 *
+	 * @param className The name of the class.
+	 * @param name The name of the method.
+	 * @param args The types of the parameters of the method.
+	 * @return The method reference. Null if it was not found.
+	 */
 	public static @Nullable Method getNMSMethod(@NotNull String className, @NotNull String name, @Nullable Class<?>... args)
 	{
 		Class<?> clazz = getNMSClass(className);
 		return (clazz == null) ? null : getMethod(clazz, name, args);
 	}
 
+	/**
+	 * Gets a field reference from a net.minecraft.server class.
+	 *
+	 * @param className The name of the class.
+	 * @param name The name of the field.
+	 * @return The field reference. Null if it was not found.
+	 */
 	public static @Nullable Field getNMSField(@NotNull String className, @NotNull String name)
 	{
 		Class<?> clazz = getNMSClass(className);
@@ -72,6 +93,12 @@ public class NMSReflection extends Reflection
 		return getEnum(NMS_CLASS_PATH + enumClass + "." + enumName);
 	}
 
+	/**
+	 * Gets an org.bukkit.craftbukkit class reference.
+	 *
+	 * @param className The name of the class.
+	 * @return The class reference. Null if it was not found.
+	 */
 	public static @Nullable Class<?> getOBCClass(@NotNull String className)
 	{
 		try
@@ -85,12 +112,27 @@ public class NMSReflection extends Reflection
 		return null;
 	}
 
+	/**
+	 * Gets a method reference from an org.bukkit.craftbukkit class.
+	 *
+	 * @param className The name of the class.
+	 * @param name The name of the method.
+	 * @param args The types of the parameters of the method.
+	 * @return The method reference. Null if it was not found.
+	 */
 	public static @Nullable Method getOBCMethod(@NotNull String className, @NotNull String name, @Nullable Class<?>... args)
 	{
 		Class<?> clazz = getOBCClass(className);
 		return (clazz == null) ? null : getMethod(clazz, name, args);
 	}
 
+	/**
+	 * Gets a field reference from an org.bukkit.craftbukkit class.
+	 *
+	 * @param className The name of the class.
+	 * @param name The name of the field.
+	 * @return The field reference. Null if it was not found.
+	 */
 	public static @Nullable Field getOBCField(@NotNull String className, @NotNull String name)
 	{
 		Class<?> clazz = getOBCClass(className);
