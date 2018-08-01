@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks.Updater;
 
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +42,7 @@ public enum ChecksumType
 		algorithm = null;
 	}
 
-	ChecksumType(@NonNls String algorithm)
+	ChecksumType(@NotNull String algorithm)
 	{
 		this.algorithm = algorithm;
 		boolean ok = false;
@@ -59,21 +58,42 @@ public enum ChecksumType
 		supported = ok;
 	}
 
+	/**
+	 * Checks if the system supports the checksum type.
+	 *
+	 * @return True if the checksum type is supported. False if not.
+	 */
 	public boolean isSupported()
 	{
 		return supported;
 	}
 
-	public String getAlgorithm()
+	/**
+	 * The algorithm for the {@see java.security.MessageDigest} hash provider.
+	 *
+	 * @return The algorithm name. Null for the NONE checksum type.
+	 */
+	public @Nullable String getAlgorithm()
 	{
 		return algorithm;
 	}
 
+	/**
+	 * Gets an instance of the {@see java.security.MessageDigest} hash provider.
+	 *
+	 * @return The instance of the hash provider.
+	 * @throws NoSuchAlgorithmException If the algorithm is not available on the system.
+	 */
 	public @NotNull MessageDigest getInstance() throws NoSuchAlgorithmException
 	{
 		return MessageDigest.getInstance(algorithm);
 	}
 
+	/**
+	 * Gets an instance of the {@see java.security.MessageDigest} hash provider.
+	 *
+	 * @return The instance of the hash provider. Null if the algorithm is not available on the system.
+	 */
 	public @Nullable MessageDigest getInstanceOrNull()
 	{
 		if(!supported) return null;
