@@ -31,20 +31,20 @@ import java.util.logging.Logger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ BaseOnlineProviderWithDownload.class, GitHubUpdateProvider.class, URL.class })
 public class GitHubUpdateProviderTest
 {
+	private final Logger logger = Logger.getLogger("GitHubUpdateProviderTest");
+
 	@Test
 	public void testQuery()
 	{
-		Logger mockedLogger = mock(Logger.class);
-		GitHubUpdateProvider updateProvider = new GitHubUpdateProvider("MarkusWME", "Minecraft-Fly-Mod", mockedLogger);
+		GitHubUpdateProvider updateProvider = new GitHubUpdateProvider("MarkusWME", "Minecraft-Fly-Mod", logger);
 		assertEquals("The update result should match", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
-		updateProvider = new GitHubUpdateProvider("MarkusWME", "Minecraft-Fly-Mod", "Minecraft-Fly-Mod", ".*\\.litemod", ".*\\.litemod", mockedLogger);
+		updateProvider = new GitHubUpdateProvider("MarkusWME", "Minecraft-Fly-Mod", "Minecraft-Fly-Mod", ".*\\.litemod", ".*\\.litemod", logger);
 		assertEquals("The update result should match", UpdateResult.SUCCESS, updateProvider.query());
 	}
 
@@ -52,19 +52,17 @@ public class GitHubUpdateProviderTest
 	@Test
 	public void testQueryWithInvalidRepository() throws Exception
 	{
-		Logger mockedLogger = mock(Logger.class);
-		GitHubUpdateProvider updateProvider = new GitHubUpdateProvider("GeorgH93", "TelePlusPlus", mockedLogger);
+		GitHubUpdateProvider updateProvider = new GitHubUpdateProvider("GeorgH93", "TelePlusPlus", logger);
 		assertEquals("The update result should match", UpdateResult.FAIL_SERVER_OFFLINE, updateProvider.query());
 		whenNew(URL.class).withArguments(anyString()).thenThrow(new MalformedURLException());
-		updateProvider = new GitHubUpdateProvider("GeorgH93", "TelePlusPlus", mockedLogger);
+		updateProvider = new GitHubUpdateProvider("GeorgH93", "TelePlusPlus", logger);
 		assertEquals("The update result should match", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
 	}
 
 	@Test
 	public void testUpdateProviderProperties() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		GitHubUpdateProvider updateProvider = new GitHubUpdateProvider("GeorgH93", "TelePlusPlus", mockedLogger);
+		GitHubUpdateProvider updateProvider = new GitHubUpdateProvider("GeorgH93", "TelePlusPlus", logger);
 		assertEquals("The latest changelog should match", "", updateProvider.getLatestChangelog());
 		assertFalse("The Minecraft version should not be provided", updateProvider.providesMinecraftVersion());
 		assertFalse("The changelog should currently not be provided", updateProvider.providesChangelog());
