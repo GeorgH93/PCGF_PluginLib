@@ -30,7 +30,7 @@ public class YamlFileManager
 	protected final String inJarPrefix, path;
 	protected final int expectedVersion, upgradeThreshold;
 	protected final File baseDir;
-	protected String file, fileDescription = "config"; // Used to allow customisation of log messages based on what the yaml file is used for
+	protected String file, fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
 	protected YAML yaml;
 	protected File yamlFile;
 	protected YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.UPDATE;
@@ -46,6 +46,12 @@ public class YamlFileManager
 		this.baseDir = (path != null) ? new File(baseDir, path) : baseDir;
 		if(file != null) this.yamlFile = new File(this.baseDir, file);
 		if(oldConfig != null) yaml = oldConfig;
+	}
+
+	protected void setFileDescription(String description)
+	{
+		fileDescription = description;
+		fileDescriptionCapitalized = description.substring(0, 1).toUpperCase() + description.substring(1);
 	}
 
 	/**
@@ -176,15 +182,19 @@ public class YamlFileManager
 				update();
 			}
 		}
-		if(expectedVersion < getVersion())
+		else if(expectedVersion < getVersion())
 		{
-			logger.info(fileDescription + " file version newer than expected! Expected: " + expectedVersion + ". Is: " + getVersion());
+			logger.info(fileDescriptionCapitalized + " file version newer than expected! Expected: " + expectedVersion + ". Is: " + getVersion());
+		}
+		else
+		{
+			logger.info(ConsoleColor.GREEN + fileDescriptionCapitalized + " file successfully loaded." + ConsoleColor.RESET);
 		}
 	}
 
 	protected void update()
 	{
-		logger.info(fileDescription + " version: " + getVersion() + " => " + fileDescription + " outdated! Updating ...");
+		logger.info(fileDescriptionCapitalized + " version: " + getVersion() + " => " + fileDescriptionCapitalized + " outdated! Updating ...");
 		try
 		{
 			doUpdate();
@@ -202,7 +212,7 @@ public class YamlFileManager
 
 	protected void upgrade()
 	{
-		logger.info(fileDescription + " version: " + getVersion() + " => " + fileDescription + " outdated! Upgrading ...");
+		logger.info(fileDescriptionCapitalized + " version: " + getVersion() + " => " + fileDescriptionCapitalized + " outdated! Upgrading ...");
 		try
 		{
 			int oldVersion = getVersion();

@@ -114,7 +114,7 @@ public class Language extends YamlFileManager
 	{
 		super(logger, baseDir, version, upgradeThreshold, path, prefix, "/lang/" + inJarPrefix, yaml);
 		this.prefix = prefix;
-		this.fileDescription = "language";
+		setFileDescription("language");
 	}
 	//endregion
 
