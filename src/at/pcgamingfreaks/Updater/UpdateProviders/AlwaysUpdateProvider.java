@@ -22,7 +22,6 @@ import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
 
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
@@ -31,7 +30,7 @@ import java.net.URL;
 /**
  * An update provider that returns an very high version so that the file gets downloaded every time.
  * The file to download is specified in the constructor.
- * This provider should only be used for preview builds that will always download the newest build from a ci server.
+ * This provider should only be used for preview builds that will always download the newest build from a server.
  */
 @SuppressWarnings("RedundantThrows")
 public class AlwaysUpdateProvider implements UpdateProvider
@@ -45,7 +44,7 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param url The url to the file that should be downloaded.
 	 */
 	@Deprecated
-	public AlwaysUpdateProvider(@NonNls String url)
+	public AlwaysUpdateProvider(@NotNull String url)
 	{
 		this(url, "file.jar");
 	}
@@ -55,7 +54,7 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param fileName The name of the file.
 	 */
 	@Deprecated
-	public AlwaysUpdateProvider(@NonNls String url, String fileName)
+	public AlwaysUpdateProvider(@NotNull String url, String fileName)
 	{
 		this(url, fileName, ReleaseType.RELEASE);
 	}
@@ -66,7 +65,7 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param releaseType The release type.
 	 */
 	@Deprecated
-	public AlwaysUpdateProvider(@NonNls String url, String fileName, ReleaseType releaseType)
+	public AlwaysUpdateProvider(@NotNull String url, String fileName, ReleaseType releaseType)
 	{
 		this.releaseType = releaseType;
 		this.fileName = fileName;

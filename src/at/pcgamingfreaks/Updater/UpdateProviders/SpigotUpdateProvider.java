@@ -24,7 +24,6 @@ import at.pcgamingfreaks.Version;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -36,7 +35,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 /**
- * This update provider allows to query spigotmc.org for plugin updates
+ * This update provider allows to query spigotmc.org for plugin updates.
+ * Only plugins hosted on spigotmc.org can be downloaded automatically. Plugins hosted externally, that are only listed on spigotmc.org will only provide metadata.
  */
 @SuppressWarnings("RedundantThrows")
 public class SpigotUpdateProvider extends BaseOnlineProvider
@@ -65,7 +65,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 	 * @param logger The logger used for outputs
 	 * @param filename Spigot doesn't provide a filename. This parameter can be used to allow files like .zip to be downloaded correctly
 	 */
-	public SpigotUpdateProvider(int projectId, @NotNull Logger logger, @NonNls String filename)
+	public SpigotUpdateProvider(int projectId, @NotNull Logger logger, @NotNull String filename)
 	{
 		super(logger);
 		this.filename = filename;
