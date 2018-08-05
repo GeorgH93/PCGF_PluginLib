@@ -119,4 +119,12 @@ public class MCVersionTest
 		assertTrue(MCVersion.isAny(MCVersion.MC_1_8_8));
 		assertFalse(MCVersion.isAny(MCVersion.MC_1_7_10));
 	}
+
+	@Test
+	public void testUUIDsSupportFlag()
+	{
+		assertFalse(MCVersion.MC_1_7.areUUIDsSupported());
+		assertTrue(MCVersion.MC_1_8.areUUIDsSupported());
+		assertTrue(MCVersion.isUUIDsSupportAvailable());
+	}
 }

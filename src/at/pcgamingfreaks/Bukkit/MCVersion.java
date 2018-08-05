@@ -30,11 +30,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum MCVersion
 {
 	UNKNOWN(0, ""),
-	MC_1_7(11, "1_7"),
-	MC_1_7_1(11, "1_7", MC_1_7),
-	MC_1_7_2(11, "1_7", MC_1_7),
-	MC_1_7_3(11, "1_7", MC_1_7),
-	MC_1_7_4(11, "1_7", MC_1_7),
+	MC_1_7(11, "1_7", false),
+	MC_1_7_1(11, "1_7", MC_1_7, false),
+	MC_1_7_2(11, "1_7", MC_1_7, false),
+	MC_1_7_3(11, "1_7", MC_1_7, false),
+	MC_1_7_4(11, "1_7", MC_1_7, false),
 	MC_NMS_1_7_R1(11, "1_7", MC_1_7),
 	MC_1_7_5(12, "1_7", MC_1_7),
 	MC_1_7_6(12, "1_7", MC_1_7),
@@ -113,24 +113,42 @@ public enum MCVersion
 	private final int versionID;
 	private final String identifier;
 	private final MCVersion mainVersion;
+	private final boolean supportsUUIDs;
 
 	MCVersion(int versionID, String mainVersionString)
+	{
+		this(versionID, mainVersionString, true);
+	}
+
+	MCVersion(int versionID, String mainVersionString, boolean supportsUUIDs)
 	{
 		this.versionID = versionID;
 		this.identifier = mainVersionString + "_R" + versionID % 10;
 		this.mainVersion = this;
+		this.supportsUUIDs = supportsUUIDs;
 	}
 
 	MCVersion(int versionID, String mainVersionString, MCVersion mainVersion)
 	{
+		this(versionID, mainVersionString, mainVersion, true);
+	}
+
+	MCVersion(int versionID, String mainVersionString, MCVersion mainVersion, boolean supportsUUIDs)
+	{
 		this.versionID = versionID;
 		this.identifier = mainVersionString + "_R" + versionID % 10;
 		this.mainVersion = mainVersion;
+		this.supportsUUIDs = supportsUUIDs;
 	}
 
 	public MCVersion getMajorMinecraftVersion()
 	{
 		return mainVersion;
+	}
+
+	public boolean areUUIDsSupported()
+	{
+		return supportsUUIDs;
 	}
 
 	public boolean isSame(MCVersion other)
@@ -208,6 +226,8 @@ public enum MCVersion
 	{
 		return is(other) || isOlderThan(other);
 	}
+
+	public static boolean isUUIDsSupportAvailable() { return CURRENT_VERSION.areUUIDsSupported(); }
 
 	public static @Nullable MCVersion getFromServerVersion(@NotNull String serverVersion)
 	{
