@@ -23,6 +23,8 @@ import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -40,7 +42,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param plugin  The instance of the plugin
 	 * @param version The current version of the language file
 	 */
-	public Language(JavaPlugin plugin, int version)
+	public Language(@NotNull JavaPlugin plugin, int version)
 	{
 		this(plugin, version, -1);
 	}
@@ -51,7 +53,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param path    The sub-folder for the language file
 	 * @param prefix  The prefix for the language file
 	 */
-	public Language(JavaPlugin plugin, int version, String path, String prefix)
+	public Language(@NotNull JavaPlugin plugin, int version, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, -1, path, prefix, prefix);
 	}
@@ -61,7 +63,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param version          The current version of the language file
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
 	 */
-	public Language(JavaPlugin plugin, int version, int upgradeThreshold)
+	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, File.separator + "lang", "");
 	}
@@ -73,7 +75,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param path             The sub-folder for the language file
 	 * @param prefix           The prefix for the language file
 	 */
-	public Language(JavaPlugin plugin, int version, int upgradeThreshold, String path, String prefix)
+	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, upgradeThreshold, path, prefix, prefix);
 	}
@@ -86,7 +88,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param prefix           The prefix for the language file
 	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bukkit_)
 	 */
-	public Language(JavaPlugin plugin, int version, int upgradeThreshold, String path, String prefix, String inJarPrefix)
+	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, inJarPrefix);
 		this.plugin = plugin;
@@ -99,17 +101,17 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @return returns the language data
 	 */
 	@Override
-	public String getTranslated(String path)
+	public @NotNull String getTranslated(@NotNull String path)
 	{
 		return ChatColor.translateAlternateColorCodes('&', get(path));
 	}
 
-	public Message getMessage(String path)
+	public @NotNull Message getMessage(@NotNull String path)
 	{
 		return getMessage(path, true);
 	}
 
-	public Message getMessage(String path, boolean escapeStringFormatCharacters)
+	public @NotNull Message getMessage(@NotNull String path, boolean escapeStringFormatCharacters)
 	{
 		if(MCVersion.isOlderThan(MCVersion.MC_1_8))
 		{
@@ -119,6 +121,8 @@ public class Language extends at.pcgamingfreaks.Language
 		}
 		else
 		{
+			// Only returns null when the messageClasses variable is not set correctly. It is set in this class so this will not return null.
+			//noinspection ConstantConditions
 			return super.getMessage(escapeStringFormatCharacters, path);
 		}
 	}

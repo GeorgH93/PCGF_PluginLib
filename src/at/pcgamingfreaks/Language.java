@@ -20,6 +20,9 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.yaml.YAML;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -41,7 +44,7 @@ public class Language extends YamlFileManager
 	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
 	 * @param version the current version of the language file
 	 */
-	public Language(Logger logger, File baseDir, int version)
+	public Language(@NotNull Logger logger, @NotNull File baseDir, int version)
 	{
 		this(logger, baseDir, version, File.separator + "lang", "");
 	}
@@ -52,7 +55,7 @@ public class Language extends YamlFileManager
 	 * @param version          The current version of the language file
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
 	 */
-	public Language(Logger logger, File baseDir, int version, int upgradeThreshold)
+	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold)
 	{
 		this(logger, baseDir, version, upgradeThreshold, File.separator + "lang", "");
 	}
@@ -64,7 +67,7 @@ public class Language extends YamlFileManager
 	 * @param path    The sub-folder for the language file
 	 * @param prefix  The prefix for the language file
 	 */
-	public Language(Logger logger, File baseDir, int version, String path, String prefix)
+	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path, @NotNull String prefix)
 	{
 		this(logger, baseDir, version, path, prefix, "");
 	}
@@ -77,7 +80,7 @@ public class Language extends YamlFileManager
 	 * @param path             The sub-folder for the language file
 	 * @param prefix           The prefix for the language file
 	 */
-	public Language(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String prefix)
+	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix)
 	{
 		this(logger, baseDir, version, upgradeThreshold, path, prefix, "");
 	}
@@ -90,7 +93,7 @@ public class Language extends YamlFileManager
 	 * @param prefix      the prefix for the language file
 	 * @param inJarPrefix the prefix for the language file within the jar (e.g.: bungee_)
 	 */
-	public Language(Logger logger, File baseDir, int version, String path, String prefix, String inJarPrefix)
+	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		this(logger, baseDir, version, -1, path, prefix, inJarPrefix);
 	}
@@ -104,13 +107,13 @@ public class Language extends YamlFileManager
 	 * @param prefix           The prefix for the language file
 	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bungee_)
 	 */
-	public Language(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String prefix, String inJarPrefix)
+	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		this(logger, baseDir, version, upgradeThreshold, path, prefix, inJarPrefix, null);
 	}
 	//endregion
 
-	private Language(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String prefix, String inJarPrefix, YAML yaml)
+	private Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix, @Nullable YAML yaml)
 	{
 		super(logger, baseDir, version, upgradeThreshold, path, prefix, "/lang/" + inJarPrefix, yaml);
 		this.prefix = prefix;
@@ -122,12 +125,12 @@ public class Language extends YamlFileManager
 	 * @param path the path to the searched language value
 	 * @return returns the language data
 	 */
-	public String get(String path)
+	public @NotNull String get(@NotNull String path)
 	{
 		return yaml.getString("Language." + path, "§cMessage not found!");
 	}
 
-	protected void set(String path, String value)
+	protected void set(@NotNull String path, @NotNull String value)
 	{
 		yaml.set(path, value);
 	}
@@ -140,7 +143,7 @@ public class Language extends YamlFileManager
 		load(language, updateMode);
 	}
 
-	public boolean load(Configuration config)
+	public boolean load(@NotNull Configuration config)
 	{
 		return load(config.getLanguage(), config.getLanguageUpdateMode());
 	}
@@ -152,7 +155,7 @@ public class Language extends YamlFileManager
 	 * @param updateMode how the language file should be updated
 	 * @return True if it's loaded successfully. False if not.
 	 */
-	public boolean load(String language, String updateMode)
+	public boolean load(@NotNull String language, @NotNull String updateMode)
 	{
 		return load(language, (updateMode.equalsIgnoreCase("overwrite")) ? YamlFileUpdateMethod.OVERWRITE : YamlFileUpdateMethod.UPDATE);
 	}
@@ -164,7 +167,7 @@ public class Language extends YamlFileManager
 	 * @param updateMode how the language file should be updated
 	 * @return True if it's loaded successfully. False if not.
 	 */
-	public boolean load(String language, YamlFileUpdateMethod updateMode)
+	public boolean load(@NotNull String language, @NotNull YamlFileUpdateMethod updateMode)
 	{
 		this.language = language;
 		this.updateMode = updateMode;
@@ -183,17 +186,17 @@ public class Language extends YamlFileManager
 		extracted = true;
 	}
 
-	public YAML getLang()
+	public @Nullable YAML getLang()
 	{
 		return yaml;
 	}
 
-	public String getTranslated(String path)
+	public @NotNull String getTranslated(@NotNull String path)
 	{
 		return get(path);
 	}
 
-	protected <T extends Message> T getMessage(boolean escapeStringFormatCharacters, String path)
+	protected @Nullable <T extends Message> T getMessage(boolean escapeStringFormatCharacters, @NotNull String path)
 	{
 		if(messageClasses == null)
 		{
@@ -229,13 +232,15 @@ public class Language extends YamlFileManager
 	}
 
 	//region language file property getters
-	public String getLanguage()
+	public @NotNull String getLanguage()
 	{
+		//noinspection ConstantConditions
 		return getLang().getString("LanguageName", language);
 	}
 
-	public String getAuthor()
+	public @NotNull String getAuthor()
 	{
+		//noinspection ConstantConditions
 		return getLang().getString("Author", "Unknown");
 	}
 	//endregion
@@ -244,7 +249,7 @@ public class Language extends YamlFileManager
 	/**
 	 * Ignore this class, it's just a helper class for some internal stuff
 	 */
-	public static class MessageClassesReflectionDataHolder
+	protected static class MessageClassesReflectionDataHolder
 	{
 		public MessageClassesReflectionDataHolder(Constructor messageConstructor, Method setSendMethod, Method getMetadataFromJsonMethod, Class enumType)
 		{

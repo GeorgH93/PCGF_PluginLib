@@ -20,6 +20,9 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YAMLKeyNotFoundException;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -34,7 +37,7 @@ public class Configuration extends YamlFileManager
 	 * @param baseDir The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
 	 * @param version current version of the config
 	 */
-	public Configuration(Logger logger, File baseDir, int version)
+	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version)
 	{
 		this(logger, baseDir, version, -1, "config.yml");
 	}
@@ -45,7 +48,7 @@ public class Configuration extends YamlFileManager
 	 * @param version The current version of the config
 	 * @param path    The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(Logger logger, File baseDir, int version, String path)
+	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path)
 	{
 		this(logger, baseDir, version, -1, path);
 	}
@@ -56,7 +59,7 @@ public class Configuration extends YamlFileManager
 	 * @param version          The current version of the config
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
-	public Configuration(Logger logger, File baseDir, int version, int upgradeThreshold)
+	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold)
 	{
 		this(logger, baseDir, version, upgradeThreshold, "config.yml");
 	}
@@ -68,7 +71,7 @@ public class Configuration extends YamlFileManager
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(Logger logger, File baseDir, int version, int upgradeThreshold, String path)
+	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path)
 	{
 		this(logger, baseDir, version, upgradeThreshold, path, "");
 	}
@@ -81,13 +84,13 @@ public class Configuration extends YamlFileManager
 	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 * @param inJarPrefix      The prefix for the file in the jar (e.g. bungee_)
 	 */
-	public Configuration(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String inJarPrefix)
+	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix)
 	{
 		this(logger, baseDir, version, upgradeThreshold, path, inJarPrefix, null);
 	}
 	//endregion
 
-	private Configuration(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String inJarPrefix, YAML oldConfig)
+	private Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix, @Nullable YAML oldConfig)
 	{
 		super(logger, baseDir, version, upgradeThreshold, null, path, inJarPrefix, oldConfig);
 		if(oldConfig == null)
@@ -111,7 +114,7 @@ public class Configuration extends YamlFileManager
 	 *
 	 * @return The configuration instance
 	 */
-	public YAML getConfig()
+	public @Nullable YAML getConfig()
 	{
 		return yaml;
 	}
@@ -124,7 +127,7 @@ public class Configuration extends YamlFileManager
 	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
 	 * @throws NumberFormatException When the value on the given position can't be converted to an {@link Integer}
 	 */
-	public int getInt(String path) throws YAMLKeyNotFoundException, NumberFormatException
+	public int getInt(@NotNull String path) throws YAMLKeyNotFoundException, NumberFormatException
 	{
 		return yaml.getInt(path);
 	}
@@ -136,7 +139,7 @@ public class Configuration extends YamlFileManager
 	 * @param returnOnNotFound The value returned if the key was not found.
 	 * @return The {@link Integer} value from the configuration file.
 	 */
-	public int getInt(String path, int returnOnNotFound)
+	public int getInt(@NotNull String path, int returnOnNotFound)
 	{
 		return yaml.getInt(path, returnOnNotFound);
 	}
@@ -149,7 +152,7 @@ public class Configuration extends YamlFileManager
 	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
 	 * @throws NumberFormatException When the value on the given position can't be converted to an {@link Double}
 	 */
-	public double getDouble(String path) throws YAMLKeyNotFoundException, NumberFormatException
+	public double getDouble(@NotNull String path) throws YAMLKeyNotFoundException, NumberFormatException
 	{
 		return yaml.getDouble(path);
 	}
@@ -161,7 +164,7 @@ public class Configuration extends YamlFileManager
 	 * @param returnOnNotFound The value returned if the key was not found.
 	 * @return The {@link Double} value from the configuration file.
 	 */
-	public double getDouble(String path, double returnOnNotFound)
+	public double getDouble(@NotNull String path, double returnOnNotFound)
 	{
 		return yaml.getDouble(path, returnOnNotFound);
 	}
@@ -173,7 +176,7 @@ public class Configuration extends YamlFileManager
 	 * @return The {@link String} value from the configuration file.
 	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
 	 */
-	public String getString(String path) throws YAMLKeyNotFoundException
+	public @NotNull String getString(@NotNull String path) throws YAMLKeyNotFoundException
 	{
 		return yaml.getString(path);
 	}
@@ -185,7 +188,7 @@ public class Configuration extends YamlFileManager
 	 * @param returnOnNotFound The value returned if the key was not found.
 	 * @return The {@link String} value from the configuration file.
 	 */
-	public String getString(String path, String returnOnNotFound)
+	public @Nullable String getString(@NotNull String path, @Nullable String returnOnNotFound)
 	{
 		return yaml.getString(path, returnOnNotFound);
 	}
@@ -197,7 +200,7 @@ public class Configuration extends YamlFileManager
 	 * @return The {@link Boolean} value from the configuration file.
 	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
 	 */
-	public boolean getBool(String path) throws YAMLKeyNotFoundException
+	public boolean getBool(@NotNull String path) throws YAMLKeyNotFoundException
 	{
 		return yaml.getBoolean(path);
 	}
@@ -209,7 +212,7 @@ public class Configuration extends YamlFileManager
 	 * @param returnOnNotFound The value returned if the key was not found.
 	 * @return The {@link Boolean} value from the configuration file.
 	 */
-	public boolean getBool(String path, boolean returnOnNotFound)
+	public boolean getBool(@NotNull String path, boolean returnOnNotFound)
 	{
 		return yaml.getBoolean(path, returnOnNotFound);
 	}
@@ -221,7 +224,7 @@ public class Configuration extends YamlFileManager
 	 *
 	 * @return The language to use.
 	 */
-	public String getLanguage()
+	public @NotNull String getLanguage()
 	{
 		return yaml.getString(languageKey, "en");
 	}
@@ -231,7 +234,7 @@ public class Configuration extends YamlFileManager
 	 *
 	 * @return The update method for the language file.
 	 */
-	public YamlFileUpdateMethod getLanguageUpdateMode()
+	public @NotNull YamlFileUpdateMethod getLanguageUpdateMode()
 	{
 		String mode = yaml.getString(languageUpdateKey, "upgrade");
 		try
@@ -253,7 +256,7 @@ public class Configuration extends YamlFileManager
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
 	 */
-	public void set(String path, String value)
+	public void set(@NotNull String path, @NotNull String value)
 	{
 		yaml.set(path, value);
 	}
@@ -264,7 +267,7 @@ public class Configuration extends YamlFileManager
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
 	 */
-	public void set(String path, int value)
+	public void set(@NotNull String path, int value)
 	{
 		yaml.set(path, value);
 	}
@@ -275,7 +278,7 @@ public class Configuration extends YamlFileManager
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
 	 */
-	public void set(String path, double value)
+	public void set(@NotNull String path, double value)
 	{
 		yaml.set(path, value);
 	}
@@ -286,7 +289,7 @@ public class Configuration extends YamlFileManager
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
 	 */
-	public void set(String path, boolean value)
+	public void set(@NotNull String path, boolean value)
 	{
 		yaml.set(path, value);
 	}

@@ -23,6 +23,12 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
+/**
+ * API to spawn particles.
+ * This particle API is compatible with MC versions 1.7 to 1.12.
+ * Bukkit has a particle api build in now, please use that if you don't need support for very old MC versions!
+ */
+@Deprecated
 public abstract class ParticleSpawner
 {
 	/*

@@ -20,22 +20,29 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YAMLNotInitializedException;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.*;
 import java.util.logging.Logger;
 
+/**
+ * Handles YAML files.
+ */
 public class YamlFileManager
 {
-	protected boolean extracted = false; // Flag to check whether the file has been extracted or not. It is used to prevent endless loops when the file version in the jar is outdated.
 	protected final Logger logger; // The logger instance of the using plugin
 	protected final String inJarPrefix, path;
 	protected final int expectedVersion, upgradeThreshold;
 	protected final File baseDir;
-	protected String file, fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
-	protected YAML yaml;
-	protected File yamlFile;
-	protected YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.UPDATE;
+	protected boolean extracted = false; // Flag to check whether the file has been extracted or not. It is used to prevent endless loops when the file version in the jar is outdated.
+	protected String file;
+	protected YAML yaml; // The object holding the parsed content of the yaml file
+	protected File yamlFile; // The loaded yaml file
+	protected YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.UPDATE; // Defines the update behavior for yaml files
+	private String fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
 
-	YamlFileManager(Logger logger, File baseDir, int version, int upgradeThreshold, String path, String file, String inJarPrefix, YAML oldConfig)
+	YamlFileManager(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @Nullable String file, @NotNull String inJarPrefix, @Nullable YAML oldConfig)
 	{
 		this.path = path;
 		this.file = file;
@@ -48,7 +55,16 @@ public class YamlFileManager
 		if(oldConfig != null) yaml = oldConfig;
 	}
 
-	protected void setFileDescription(String description)
+	/**
+	 * Allows to set the description/purpose of the yaml file.
+	 * Will be used to clarify log messages.
+	 * e.g.:
+	 *  "Failed to load [fileDescription] file!"
+	 *  "[fileDescriptionCapitalized] file successfully loaded."
+	 *
+	 * @param description The description of the file (e.g.: config or language). Should be all lowercase (the capitalized version will be automatically created).
+	 */
+	protected void setFileDescription(@NotNull String description)
 	{
 		fileDescription = description;
 		fileDescriptionCapitalized = description.substring(0, 1).toUpperCase() + description.substring(1);
@@ -81,7 +97,7 @@ public class YamlFileManager
 	 *
 	 * @param oldYamlFile the old yaml file
 	 */
-	protected void doUpgrade(YamlFileManager oldYamlFile)
+	protected void doUpgrade(@NotNull YamlFileManager oldYamlFile)
 	{
 		logger.info("No custom " + fileDescription + " upgrade code implemented! Copying all data from old file to new one.");
 		for(String key : yaml.getKeys())
@@ -114,7 +130,7 @@ public class YamlFileManager
 	//endregion
 
 	//region handling file ops (load, save, update, upgrade, create)
-	public YAML getYaml()
+	public @Nullable YAML getYaml()
 	{
 		return yaml;
 	}

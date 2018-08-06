@@ -19,6 +19,9 @@ package at.pcgamingfreaks.Bungee;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public class Configuration extends at.pcgamingfreaks.Configuration
 {
 	protected Plugin plugin;
@@ -27,7 +30,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param plugin  the instance of the plugin
 	 * @param version current version of the config
 	 */
-	public Configuration(Plugin plugin, int version)
+	public Configuration(@NotNull Plugin plugin, int version)
 	{
 		this(plugin, version, -1, "config.yml");
 	}
@@ -37,7 +40,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param version current version of the config
 	 * @param path    the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(Plugin plugin, int version, String path)
+	public Configuration(@NotNull Plugin plugin, int version, @Nullable String path)
 	{
 		this(plugin, version, -1, path);
 	}
@@ -47,7 +50,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param version          current version of the config
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
-	public Configuration(Plugin plugin, int version, int upgradeThreshold)
+	public Configuration(@NotNull Plugin plugin, int version, int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, "config.yml");
 	}
@@ -58,7 +61,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(Plugin plugin, int version, int upgradeThreshold, String path)
+	public Configuration(@NotNull Plugin plugin, int version, int upgradeThreshold, @Nullable String path)
 	{
 		this(plugin, version, upgradeThreshold, path, "bungee_");
 	}
@@ -70,7 +73,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 * @param inJarPrefix      the prefix for the config file within the jar (e.g.: bungee_)
 	 */
-	public Configuration(Plugin plugin, int version, int upgradeThreshold, String path, String inJarPrefix)
+	public Configuration(@NotNull Plugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, inJarPrefix);
 		this.plugin = plugin;

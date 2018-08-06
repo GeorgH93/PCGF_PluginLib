@@ -26,6 +26,9 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 
 public class Language extends at.pcgamingfreaks.Language
@@ -42,7 +45,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param plugin  The instance of the plugin
 	 * @param version The current version of the language file
 	 */
-	public Language(Plugin plugin, int version)
+	public Language(@NotNull Plugin plugin, int version)
 	{
 		this(plugin, version, File.separator + "lang", "");
 	}
@@ -53,7 +56,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param path    The sub-folder for the language file
 	 * @param prefix  The prefix for the language file
 	 */
-	public Language(Plugin plugin, int version, String path, String prefix)
+	public Language(@NotNull Plugin plugin, int version, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, path, prefix, prefix);
 	}
@@ -65,19 +68,19 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param prefix      The prefix for the language file
 	 * @param inJarPrefix The prefix for the language file within the jar (e.g.: bungee_)
 	 */
-	public Language(Plugin plugin, int version, String path, String prefix, String inJarPrefix)
+	public Language(@NotNull Plugin plugin, int version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, inJarPrefix);
 		this.plugin = plugin;
 	}
 
 	// Getter
-	public String getString(String option)
+	public @NotNull String getString(@NotNull String option)
 	{
 		return ChatColor.translateAlternateColorCodes('&', get(option));
 	}
 
-	public BaseComponent[] getReady(String option)
+	public @NotNull BaseComponent[] getReady(@NotNull String option)
 	{
 		return TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', get(option)));
 	}
@@ -89,40 +92,20 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @return returns the language data
 	 */
 	@Override
-	public String getTranslated(String path)
+	public @NotNull String getTranslated(@NotNull String path)
 	{
 		return ChatColor.translateAlternateColorCodes('&', get(path));
 	}
 
-	public Message getMessage(String path)
+	public @NotNull Message getMessage(@NotNull String path)
 	{
 		return getMessage(path, true);
 	}
 
-	public Message getMessage(String path, boolean escapeStringFormatCharacters)
+	public @NotNull Message getMessage(@NotNull String path, boolean escapeStringFormatCharacters)
 	{
-		/*Message msg = new Message((escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path));
-		String pathSendMethod = path + PATH_ADDITION_SEND_METHOD, pathParameter = path + PATH_ADDITION_PARAMETERS;
-		if(lang.isSet(pathSendMethod))
-		{
-			msg.setSendMethod(SendMethod.valueOf(lang.getString(pathSendMethod, "CHAT").toUpperCase()));
-			if(lang.isSet(pathParameter) && msg.getSendMethod().getMetadataFromJsonMethod() != null)
-			{
-				try
-				{
-					msg.setOptionalParameters(msg.getSendMethod().getMetadataFromJsonMethod().invoke(null, lang.getString(pathParameter)));
-				}
-				catch(YAMLKeyNotFoundException ignored)
-				{
-				} // It should not occur cause we have already tested if it's there
-				catch(Exception e)
-				{
-					logger.warning("Failed generate metadata for: " + pathParameter);
-					e.printStackTrace();
-				}
-			}
-		}
-		return msg;*/
+		// Only returns null when the messageClasses variable is not set correctly. It is set in this class so this will not return null.
+		//noinspection ConstantConditions
 		return super.getMessage(escapeStringFormatCharacters, path);
 	}
 }

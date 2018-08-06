@@ -17,8 +17,9 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Configuration extends at.pcgamingfreaks.Configuration
 {
@@ -28,7 +29,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param plugin  the instance of the plugin
 	 * @param version current version of the config
 	 */
-	public Configuration(JavaPlugin plugin, int version)
+	public Configuration(@NotNull JavaPlugin plugin, int version)
 	{
 		this(plugin, version, -1, "config.yml");
 	}
@@ -38,7 +39,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param version current version of the config
 	 * @param path    the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(JavaPlugin plugin, int version, String path)
+	public Configuration(@NotNull JavaPlugin plugin, int version, @Nullable String path)
 	{
 		this(plugin, version, -1, path);
 
@@ -49,7 +50,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param version          current version of the config
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
-	public Configuration(JavaPlugin plugin, int version, int upgradeThreshold)
+	public Configuration(@NotNull JavaPlugin plugin, int version, int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, "config.yml");
 	}
@@ -60,7 +61,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(JavaPlugin plugin, int version, int upgradeThreshold, String path)
+	public Configuration(@NotNull JavaPlugin plugin, int version, int upgradeThreshold, @Nullable String path)
 	{
 		this(plugin, version, upgradeThreshold, path, "");
 	}
@@ -72,28 +73,21 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 * @param inJarPrefix      the prefix for the config file within the jar (e.g.: bungee_)
 	 */
-	public Configuration(JavaPlugin plugin, int version, int upgradeThreshold, String path, String inJarPrefix)
+	public Configuration(@NotNull JavaPlugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, inJarPrefix);
 		this.plugin = plugin;
 	}
 
 	/**
-	 * Checks if the used bukkit version supports UUIDs
+	 * Checks if the used bukkit version supports UUIDs.
+	 * This method is deprecated. Please use {@link MCVersion#isUUIDsSupportAvailable()} instead.
 	 *
 	 * @return true if the used bukkit version is uuid compatible, false if not
 	 */
+	@Deprecated
 	protected boolean isBukkitVersionUUIDCompatible()
 	{
-		try
-		{
-			String[] GameVersion = Bukkit.getBukkitVersion().split("-");
-			GameVersion = GameVersion[0].split("\\.");
-			return (Integer.parseInt(GameVersion[0]) > 1 || Integer.parseInt(GameVersion[1]) > 7 || (Integer.parseInt(GameVersion[1]) == 7 && Integer.parseInt(GameVersion[2]) > 5));
-		}
-		catch(Exception e)
-		{
-			return false;
-		}
+		return MCVersion.isUUIDsSupportAvailable();
 	}
 }

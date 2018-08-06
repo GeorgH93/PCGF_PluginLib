@@ -66,28 +66,6 @@ public class ConfigurationTest
 		assertNotNull("The configuration object should not be null", new Configuration(TestObjects.getJavaPlugin(), 1, 2));
 	}
 
-	@Test
-	@SuppressWarnings("SpellCheckingInspection")
-	public void testIsBukkitVersionUUIDCompatible() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
-	{
-		Method isBukkitVersionUUIDCompatible = Configuration.class.getDeclaredMethod("isBukkitVersionUUIDCompatible");
-		isBukkitVersionUUIDCompatible.setAccessible(true);
-		Configuration configuration = new Configuration(TestObjects.getJavaPlugin(), 1);
-		assertFalse("If the method fails false should be returned", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
-		TestBukkitServer server = new TestBukkitServer();
-		Bukkit.setServer(server);
-		assertFalse("The version should not be UUID compatible", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
-		server.serverVersion = "1.7.4";
-		assertFalse("The version should not be UUID compatible", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
-		server.serverVersion = "1.7.8";
-		assertTrue("The version should be UUID compatible", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
-		server.serverVersion = "1.8.8";
-		assertTrue("The version should be UUID compatible", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
-		server.serverVersion = "2.9.0";
-		assertTrue("The version should be UUID compatible", (Boolean) isBukkitVersionUUIDCompatible.invoke(configuration));
-		isBukkitVersionUUIDCompatible.setAccessible(false);
-	}
-
 	@AfterClass
 	public static void cleanupTestData()
 	{
