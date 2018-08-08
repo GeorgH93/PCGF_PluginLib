@@ -37,6 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -128,8 +129,18 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 		}
 		catch(IOException e)
 		{
-			logErrorOffline("api.github.com", e.getMessage());
-			return UpdateResult.FAIL_SERVER_OFFLINE;
+			if(e.getMessage().contains("HTTP response code: 403"))
+			{
+				logger.severe(ConsoleColor.RED + "api.github.com rejected the provided API key!" + ConsoleColor.RESET);
+				logger.severe(ConsoleColor.RED + "Please double-check your configuration to ensure it is correct." + ConsoleColor.RESET);
+				logger.log(Level.SEVERE, null, e);
+				return UpdateResult.FAIL_API_KEY;
+			}
+			else
+			{
+				logErrorOffline("api.github.com", e.getMessage());
+				return UpdateResult.FAIL_SERVER_OFFLINE;
+			}
 		}
 		return UpdateResult.SUCCESS;
 	}
