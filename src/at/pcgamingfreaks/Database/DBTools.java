@@ -495,11 +495,7 @@ public class DBTools
 							{
 								currentMatcher = COLUMN_TYPE_EXTRACTOR_PATTERN.matcher(tempKeyMatcher.group(3));
 								tempKeyMatcher = COLUMN_TYPE_EXTRACTOR_PATTERN.matcher(columnMatcher.group(3));
-								//noinspection ResultOfMethodCallIgnored
-								currentMatcher.find();
-								//noinspection ResultOfMethodCallIgnored
-								tempKeyMatcher.find();
-								if(currentMatcher.group(1).equalsIgnoreCase(tempKeyMatcher.group(1)))
+								if(currentMatcher.find() && tempKeyMatcher.find() && currentMatcher.group(1).equalsIgnoreCase(tempKeyMatcher.group(1)))
 								{
 									currentFlags = new LinkedList<>();
 									tempArray = currentMatcher.group(4).split("\\s+");
