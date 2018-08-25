@@ -36,8 +36,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class })
@@ -49,6 +51,18 @@ public class NBTItemStackSerializerTest
 		Bukkit.setServer(new TestBukkitServer());
 		TestObjects.initNMSReflection();
 		TestUtils.initReflection();
+	}
+
+	@Test
+	public void testWithLogger() throws NoSuchFieldException, IllegalAccessException
+	{
+		Logger mockedLogger = mock(Logger.class);
+		NBTItemStackSerializer serializer = new NBTItemStackSerializer(mockedLogger);
+		assertNotNull("The NBTItemStackSerializer should not be null", serializer);
+		Field setIntField = TestUtils.setAccessible(NBTItemStackSerializer.class, serializer, "METHOD_NBT_TAG_C_SET_INT", null);
+		serializer = new NBTItemStackSerializer(mockedLogger);
+		TestUtils.setUnaccessible(setIntField, serializer, true);
+		assertNotNull("The NBTItemStackSerializer should not be null", serializer);
 	}
 
 	@Test

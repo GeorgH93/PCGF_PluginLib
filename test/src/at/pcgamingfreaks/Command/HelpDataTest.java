@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Command;
 
+import at.pcgamingfreaks.Message.MessageClickEvent;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -34,5 +36,6 @@ public class HelpDataTest
 		assertEquals("The translated sub command should match", "Test1", helpData.getTranslatedSubCommand());
 		assertEquals("The parameter should match an empty string when null parameter has been given", "", helpData.getParameter());
 		assertEquals("The description should match", "Description1", helpData.getDescription());
+		assertEquals("The click event action should match", MessageClickEvent.ClickEventAction.SUGGEST_COMMAND, helpData.getClickAction());
 	}
 }

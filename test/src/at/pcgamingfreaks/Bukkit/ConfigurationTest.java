@@ -17,8 +17,9 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import at.pcgamingfreaks.TestClasses.TestBukkitServer;
+import at.pcgamingfreaks.TestClasses.TestBukkitConfiguration;
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,10 +33,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-import static org.junit.Assert.*;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 import static org.powermock.api.support.membermodification.MemberModifier.suppress;
 
@@ -64,6 +64,14 @@ public class ConfigurationTest
 		assertNotNull("The configuration object should not be null", new Configuration(TestObjects.getJavaPlugin(), 1));
 		assertNotNull("The configuration object should not be null", new Configuration(TestObjects.getJavaPlugin(), 1, "config.yml"));
 		assertNotNull("The configuration object should not be null", new Configuration(TestObjects.getJavaPlugin(), 1, 2));
+	}
+
+	@Test
+	public void testDeprecatedMethods() throws NoSuchFieldException
+	{
+		TestUtils.initReflection();
+		TestBukkitConfiguration configuration = new TestBukkitConfiguration(TestObjects.getJavaPlugin(), 1);
+		assertTrue("The version UUID compatibility should match", configuration.getIsBukkitVersionUUIDCompatible());
 	}
 
 	@AfterClass
