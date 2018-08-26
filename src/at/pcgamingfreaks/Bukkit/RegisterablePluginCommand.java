@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015-2016 GeorgH93
+ *   Copyright (C) 2015-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 		{
 			Field result = owningPlugin.getServer().getPluginManager().getClass().getDeclaredField("commandMap");
 			result.setAccessible(true);
-			@SuppressWarnings("unchecked")
+			@SuppressWarnings({ "unchecked", "ConstantConditions" })
 			HashMap<String, Command> knownCommands = (HashMap<String, Command>) FIELD_KNOWN_COMMANDS.get(result.get(owningPlugin.getServer().getPluginManager()));
 			knownCommands.remove(getName());
 			for (String alias : getAliases())
@@ -230,20 +230,19 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 			{
 				completions = completer.onTabComplete(sender, this, alias, args);
 			}
-			if(completions == null && executor instanceof TabCompleter)
+			else if(executor instanceof TabCompleter)
 			{
 				completions = ((TabCompleter) executor).onTabComplete(sender, this, alias, args);
 			}
 		}
 		catch(Throwable ex)
 		{
-			StringBuilder message = new StringBuilder();
-			message.append("Unhandled exception during tab completion for command '/").append(alias).append(' ');
+			StringBuilder message = new StringBuilder("Unhandled exception during tab completion for command '/").append(alias);
 			for(String arg : args)
 			{
-				message.append(arg).append(' ');
+				message.append(' ').append(arg);
 			}
-			message.deleteCharAt(message.length() - 1).append("' in plugin ").append(owningPlugin.getDescription().getFullName());
+			message.append("' in plugin ").append(owningPlugin.getDescription().getFullName());
 			throw new CommandException(message.toString(), ex);
 		}
 
