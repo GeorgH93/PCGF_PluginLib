@@ -230,7 +230,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 			{
 				completions = completer.onTabComplete(sender, this, alias, args);
 			}
-			else if(executor instanceof TabCompleter)
+			if(completions == null &&executor instanceof TabCompleter)
 			{
 				completions = ((TabCompleter) executor).onTabComplete(sender, this, alias, args);
 			}
