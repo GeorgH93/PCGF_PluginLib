@@ -30,6 +30,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
+/**
+ * Doesn't handle item format chances on MC 1.13 or newer! Use NBTItemStackSerializerGen2 instead!
+ */
+@Deprecated
+@SuppressWarnings("ConstantConditions")
 public class NBTItemStackSerializer implements ItemStackSerializer
 {
 	//region Reflection Variables
@@ -94,7 +99,7 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 						}
 						catch(Exception ignored)
 						{
-							if(logger != null) logger.warning("Failed to restore item on index: " + i + " (" + compound.toString() + ")");
+							if(logger != null) logger.warning("Failed to restore item on slot " + i + " with JSON:\n" + compound.toString());
 						}
 					}
 				}
@@ -140,6 +145,7 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 				//noinspection ConstantConditions
 				Object localNBTTagCompound = CLASS_NBT_TAG_COMPOUND.newInstance();
 				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, "size", itemStacks.length);
+				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, "DataVersion", NBTItemStackSerializerGen2.getDataVersion());
 				for(int i = 0; i < itemStacks.length; i++)
 				{
 					if(itemStacks[i] != null)

@@ -38,7 +38,7 @@ public class NMSReflection extends Reflection
 	}
 
 	/**
-	 * Gets an net.minecraft.server class reference.
+	 * Gets a net.minecraft.server class reference.
 	 *
 	 * @param className The name of the class.
 	 * @return The class reference. Null if it was not found.

@@ -27,6 +27,48 @@ import java.lang.reflect.Method;
 public class Reflection
 {
 	/**
+	 * Gets a class reference.
+	 *
+	 * @param classPath The path + name of the class.
+	 * @return The class reference. Null if it was not found.
+	 */
+	public static @Nullable Class<?> getClass(@NotNull String classPath)
+	{
+		try
+		{
+			return Class.forName(classPath);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * Gets a class reference for a class contained within another class.
+	 *
+	 * @param clazz The class in which the search should take place.
+	 * @param className The name of the class.
+	 * @return The class reference. Null if it was not found.
+	 */
+	public static @Nullable Class<?> getInnerClass(@NotNull Class clazz, @NotNull String className)
+	{
+		try
+		{
+			Class[] classes = clazz.getClasses();
+			for(Class innerClass : classes)
+			{
+				if(innerClass.getSimpleName().equals(className)) return innerClass;
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
 	 * Sets the value of a static field.
 	 *
 	 * @param clazz The class in which the field is located.
