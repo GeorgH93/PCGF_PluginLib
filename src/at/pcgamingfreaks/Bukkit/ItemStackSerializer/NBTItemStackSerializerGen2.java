@@ -54,7 +54,7 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 	private static final Method METHOD_HAS_KEY_OF_TYPE              = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "hasKeyOfType", String.class, int.class);
 	private static final Method METHOD_GET_COMPOUND                 = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "getCompound", String.class);
 	private static final Method METHOD_GET_COMPOUND_LIST            = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "getList", String.class, int.class);
-	private static final Method METHOD_GET_COMPOUND_FROM_LIST       = NMSReflection.getMethod(CLASS_NBT_TAG_LIST, "getCompound", int.class);
+	private static final Method METHOD_GET_COMPOUND_FROM_LIST       = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13)) ? NMSReflection.getMethod(CLASS_NBT_TAG_LIST, "getCompound", int.class) : NMSReflection.getMethod(CLASS_NBT_TAG_LIST, "get", int.class);
 	private static final Method METHOD_CREATE_STACK                 = (MCVersion.isOlderThan(MCVersion.MC_1_11)) ? NMSReflection.getMethod(CLASS_NMS_ITEM_STACK, "createStack", CLASS_NBT_TAG_COMPOUND) : (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13)) ? NMSReflection.getMethod(CLASS_NMS_ITEM_STACK, "a", CLASS_NBT_TAG_COMPOUND) : null;
 	private static final Method METHOD_AS_BUKKIT_COPY               = NMSReflection.getMethod(CLASS_CRAFT_ITEM_STACK, "asBukkitCopy", CLASS_NMS_ITEM_STACK);
 	private static final Method METHOD_NBT_COMP_STREAM_A2           = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", InputStream.class);
