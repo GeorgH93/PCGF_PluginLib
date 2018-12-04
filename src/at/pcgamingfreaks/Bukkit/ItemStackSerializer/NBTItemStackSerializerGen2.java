@@ -228,8 +228,9 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 	static int getDataVersion()
 	{
 		if(MCVersion.isOlderThan(MCVersion.MC_1_13)) return 1343;
+		if(MCVersion.is(MCVersion.MC_NMS_1_13_R1)) return 1519;
 		if(MCVersion.is(MCVersion.MC_NMS_1_13_R2)) return 1631;
-		return 1343;
+		return -1;
 	}
 
 	@Override
