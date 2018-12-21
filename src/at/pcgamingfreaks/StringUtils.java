@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -32,6 +33,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 public class StringUtils
 {
+	private static final Pattern PAGE_REGEX = Pattern.compile("(?<page>\\d+)(?<op>\\+\\d+|-\\d+|\\+\\+|--)?");
 	//region some useful strings
 	@SuppressWarnings("SpellCheckingInspection")
 	public static final String ALPHABET_LOWERCASE = "abcdefghijklmnopqrstuvwxyz", ALPHABET_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", NUMBERS = "0123456789", CHAT_COLORS = "0123456789abcdef";
@@ -184,6 +186,36 @@ public class StringUtils
 	public static String escapeJsonString(@NotNull String string)
 	{
 		return string.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
+	}
+
+	/**
+	 * Parses a string which represents a page number. The number will be automatically adjusted for internal use (value-1) and negative numbers will be set to 0.
+	 * It allows the number to be modified with ++ (+1), -- (-1) or +/- a number.
+	 * Expected format: \d+(\+\+|--|-\d+|\+\d+)
+	 *
+	 * @param input The string to be parsed
+	 * @return The parsed page number
+	 * @throws NumberFormatException Thrown if the string is not in the valid format.
+	 */
+	public static int parsePageNumber(String input) throws NumberFormatException
+	{
+		Matcher matcher = PAGE_REGEX.matcher(input);
+		if(matcher.matches())
+		{
+			int page = Integer.parseInt(matcher.group("page"));
+			if(matcher.group("op") != null)
+			{
+				switch(matcher.group("op"))
+				{
+					case "++": page++; break;
+					case "--": page--; break;
+					default: page += Integer.parseInt(matcher.group("op")); break;
+				}
+			}
+			if(--page < 0) page = 0; // To convert the input to a valid array range
+			return page;
+		}
+		throw new NumberFormatException("Unable to parse page number! Invalid format!");
 	}
 
 	//region Enabled / Disabled messages

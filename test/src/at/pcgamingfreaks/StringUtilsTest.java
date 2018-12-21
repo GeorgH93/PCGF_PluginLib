@@ -205,4 +205,23 @@ public class StringUtilsTest
 		assertTrue(StringUtils.containsIgnoreCase(testText, "an", "text"));
 		assertFalse(StringUtils.containsIgnoreCase(testText, "an", "tree"));
 	}
+
+	@Test
+	public void testParsePageNumber()
+	{
+		assertEquals(0, StringUtils.parsePageNumber("0"));
+		assertEquals(0, StringUtils.parsePageNumber("1--"));
+		assertEquals(0, StringUtils.parsePageNumber("1-1"));
+		assertEquals(0, StringUtils.parsePageNumber("2-2"));
+		assertEquals(0, StringUtils.parsePageNumber("1"));
+		assertEquals(0, StringUtils.parsePageNumber("0++"));
+		assertEquals(0, StringUtils.parsePageNumber("0+1"));
+		assertEquals(0, StringUtils.parsePageNumber("3-2"));
+		assertEquals(0, StringUtils.parsePageNumber("2--"));
+		assertEquals(1, StringUtils.parsePageNumber("2"));
+		assertEquals(1, StringUtils.parsePageNumber("1++"));
+		assertEquals(1, StringUtils.parsePageNumber("0+2"));
+		assertEquals(1, StringUtils.parsePageNumber("4-2"));
+		assertEquals(1, StringUtils.parsePageNumber("3--"));
+	}
 }
