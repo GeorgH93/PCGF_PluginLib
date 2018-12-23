@@ -124,6 +124,6 @@ public class ParticleSpawnerTest
 		assertEquals("The effect class should be correct", ParticleSpawnerBukkit_1_7.class, ParticleSpawner.getParticleSpawner().getClass());
 		TestObjects.setBukkitVersion("1_9_R1");
 		//noinspection ConstantConditions
-		assertEquals("The effect class should be correct", ParticleSpawnerBukkit_1_8_AndNewer.class, ParticleSpawner.getParticleSpawner().getClass());
+		assertEquals("The effect class should be correct", ParticleSpawnerBukkit_1_8_to_1_12.class, ParticleSpawner.getParticleSpawner().getClass());
 	}
 }

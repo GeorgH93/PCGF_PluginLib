@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings({ "unused", "SpellCheckingInspection" })
+@Deprecated
 public enum Particle
 {
 	EXPLOSION       ("explode",         "EXPLOSION_NORMAL"),

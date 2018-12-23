@@ -25,7 +25,8 @@ import org.bukkit.Location;
 
 import java.lang.reflect.Constructor;
 
-class ParticleSpawnerBukkit_1_8_AndNewer extends ParticleSpawnerBukkit
+@Deprecated
+class ParticleSpawnerBukkit_1_8_to_1_12 extends ParticleSpawnerBukkitNMSBase
 {
 	private static final Constructor PACKET_CONSTRUCTOR = NMSReflection.getConstructor(NMSReflection.getNMSClass("PacketPlayOutWorldParticles"), NMSReflection.getNMSClass("EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
 
@@ -47,7 +48,7 @@ class ParticleSpawnerBukkit_1_8_AndNewer extends ParticleSpawnerBukkit
 		}
 		catch(Exception e)
 		{
-			System.out.println("Unable to spawn particle " + particle.getOldName() + ". (Version 1.8 and newer)");
+			System.out.println("Unable to spawn particle " + particle.getOldName() + ". (Version 1.8 - 1.12)");
 			e.printStackTrace();
 		}
 	}

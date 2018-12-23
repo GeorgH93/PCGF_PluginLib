@@ -50,7 +50,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class, Utils.class })
 @SuppressWarnings("SpellCheckingInspection")
-public class ParticleSpawnerBukkitTest
+public class ParticleSpawnerBukkitNMSBaseTest
 {
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
@@ -69,8 +69,8 @@ public class ParticleSpawnerBukkitTest
 	@Test
 	public void testSpawnParticle() throws InvocationTargetException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException
 	{
-		ParticleSpawnerBukkit effect = new ParticleSpawnerBukkit_1_7();
-		Method spawnParticle = ParticleSpawnerBukkit.class.getDeclaredMethod("spawnParticle", Location.class, double.class, Object.class);
+		ParticleSpawnerBukkitNMSBase effect = new ParticleSpawnerBukkit_1_7();
+		Method spawnParticle = ParticleSpawnerBukkitNMSBase.class.getDeclaredMethod("spawnParticle", Location.class, double.class, Object.class);
 		spawnParticle.setAccessible(true);
 		spawnParticle.invoke(effect, null, 0.0, null);
 		verifyStatic(times(0));

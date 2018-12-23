@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,25 +17,20 @@
 
 package at.pcgamingfreaks.Bukkit.Particles;
 
-import at.pcgamingfreaks.Bukkit.Utils;
-
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
-import java.lang.reflect.InvocationTargetException;
-
-abstract class ParticleSpawnerBukkit extends ParticleSpawner
+@Deprecated
+class ParticleSpawnerBukkitAPI extends ParticleSpawner
 {
-	protected void spawnParticle(Location location, double visibleRange, Object particlePacket) throws IllegalAccessException, InvocationTargetException
+	@Override
+	public void spawnParticle(Location location, Particle type, Object particleData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
-		if(particlePacket == null) return;
-		for(Entity entity : location.getWorld().getEntities())
-		{
-			if(entity instanceof Player && entity.getLocation().getWorld().getName().equalsIgnoreCase(location.getWorld().getName()) && entity.getLocation().distance(location) < visibleRange)
-			{
-				Utils.sendPacket((Player)entity, particlePacket);
-			}
-		}
+		location.getWorld().spawnParticle(org.bukkit.Particle.valueOf(type.getName()), location, count, offsetX, offsetY, offsetZ, speed, particleData);
+	}
+
+	@Override
+	public void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
+	{
+		location.getWorld().spawnParticle(org.bukkit.Particle.valueOf(type.getName()), location, count, offsetX, offsetY, offsetZ, speed);
 	}
 }

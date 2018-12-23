@@ -53,7 +53,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class, Utils.class })
 @SuppressWarnings("SpellCheckingInspection")
-public class ParticleSpawnerBukkit_1_8_AndNewerTest
+public class ParticleSpawnerBukkit_1_8_to_1_12Test
 {
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
@@ -84,7 +84,7 @@ public class ParticleSpawnerBukkit_1_8_AndNewerTest
 		Entity mockedEntity = mock(Entity.class);
 		entities.add(mockedEntity);
 		doReturn(entities).when(mockedWorld).getEntities();
-		ParticleSpawnerBukkit_1_8_AndNewer effect = new ParticleSpawnerBukkit_1_8_AndNewer();
+		ParticleSpawnerBukkit_1_8_to_1_12 effect = new ParticleSpawnerBukkit_1_8_to_1_12();
 		effect.spawnParticle(mockedLocation, Particle.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
 		verifyStatic(times(++sendPacketCalls));
 		Utils.sendPacket(any(TestBukkitPlayer.class), anyObject());
@@ -93,7 +93,7 @@ public class ParticleSpawnerBukkit_1_8_AndNewerTest
 		Utils.sendPacket(any(TestBukkitPlayer.class), anyObject());
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
-		Field packetConstructorField = ParticleSpawnerBukkit_1_8_AndNewer.class.getDeclaredField("PACKET_CONSTRUCTOR");
+		Field packetConstructorField = ParticleSpawnerBukkit_1_8_to_1_12.class.getDeclaredField("PACKET_CONSTRUCTOR");
 		packetConstructorField.setAccessible(true);
 		modifiers.set(packetConstructorField, packetConstructorField.getModifiers() & ~Modifier.FINAL);
 		Constructor packetConstructor = (Constructor) packetConstructorField.get(null);

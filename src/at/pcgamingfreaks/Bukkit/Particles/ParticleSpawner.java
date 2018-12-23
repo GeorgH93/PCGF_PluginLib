@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2017 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import org.bukkit.material.MaterialData;
 /**
  * API to spawn particles.
  * This particle API is compatible with MC versions 1.7 to 1.12.
+ * There is will work on MC 1.13 and newer, but there will be no more testing or development going into it.
  * Bukkit has a particle api build in now, please use that if you don't need support for very old MC versions!
  */
 @Deprecated
@@ -40,10 +41,10 @@ public abstract class ParticleSpawner
 	 * @param particleData the data (material) of the particle
 	 * @param visibleRange the range that the effect will be visible
 	 */
-	/*public void spawnParticle(Location location, Particle type, Object particleData, double visibleRange)
+	public void spawnParticle(Location location, Particle type, Object particleData, double visibleRange)
 	{
 		spawnParticle(location, type, particleData, visibleRange, 1, 0, 0, 0, 0);
-	}*/
+	}
 
 	/**
 	 * Spawns a single material based particle.
@@ -87,39 +88,7 @@ public abstract class ParticleSpawner
 	 * @param offsetZ      is added to the Z position after being multiplied by random.nextGaussian() to spread the particles out
 	 * @param speed        the speed the particles are moving with
 	 */
-	@SuppressWarnings("deprecation")
-	public void spawnParticle(Location location, Particle type, Object particleData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
-	{
-		int[] data;
-		if(type.getDataType().equals(ItemStack.class))
-		{
-			if(particleData == null || !(particleData instanceof ItemStack))
-			{
-				data = new int[]{0,0};
-			}
-			else
-			{
-				ItemStack its = (ItemStack) particleData;
-				data = new int[] { its.getType().getId(), its.getDurability() };
-			}
-		}
-		else if(type.getDataType().equals(MaterialData.class))
-		{
-			if(particleData == null || (!(particleData instanceof MaterialData) && !(particleData instanceof ItemStack)))
-			{
-				data = new int[]{0};
-			}
-			else
-			{
-				MaterialData matData = (particleData instanceof MaterialData) ? (MaterialData) particleData : ((ItemStack) particleData).getData();
-				data = new int[] { matData.getItemTypeId() + (((int)matData.getData()) << 12) };
-			}
-		}
-		else data = new int[0];
-		spawnParticle(location, type, visibleRange, count, offsetX, offsetY, offsetZ, speed, data);
-	}
-
-	protected abstract void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data);
+	public abstract void spawnParticle(Location location, Particle type, Object particleData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed);
 
 	/**
 	 * Spawns a single particle.
@@ -155,17 +124,18 @@ public abstract class ParticleSpawner
 	 */
 	public static ParticleSpawner getParticleSpawner()
 	{
-		if (MCVersion.isOlderThan(MCVersion.MC_1_8))
+		if (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderThan(MCVersion.MC_1_8))
 		{
 			return new ParticleSpawnerBukkit_1_7();
 		}
-		else if (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_8))
+		else if (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_8) && MCVersion.isOlderThan(MCVersion.MC_1_13))
 		{
-			return new ParticleSpawnerBukkit_1_8_AndNewer();
+			return new ParticleSpawnerBukkit_1_8_to_1_12();
 		}
-		else
+		else if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13))
 		{
-			return null;
+			return new ParticleSpawnerBukkitAPI();
 		}
+		return null;
 	}
 }
