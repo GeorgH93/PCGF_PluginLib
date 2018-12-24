@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2017 GeorgH93
+ *   Copyright (C) 2016-2018 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -166,7 +166,7 @@ public enum Particle
 		this.oldName = oldName;
 		this.minVersion = minVersion;
 		Enum<?> nmsEnum = null;
-		if(MCVersion.isNewerOrEqualThan(minVersion))
+		if(MCVersion.isNewerOrEqualThan(minVersion) && MCVersion.isNewerOrEqualThan(MCVersion.MC_1_8) && MCVersion.isOlderThan(MCVersion.MC_1_13))
 		{
 			nmsEnum = NMSReflection.getNMSEnum("EnumParticle." + name);
 		}
