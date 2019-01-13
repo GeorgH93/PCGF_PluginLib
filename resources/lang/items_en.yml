@@ -7,726 +7,861 @@
 
 
 # For all items that are not in the file the names from the Bukkit Materials enum will be used.
-# The boolean flag appendDefault can be used to append the default name to each sub element.
-# Format:
-#                [ID or Bukkit Material Name]: [Default Name]
-#   Optional:      appendDefault: [true/false]
-#   Optional:      [Data-Value]: [Name]
 
-0: Air
-1: Stone
-  1: Granite
-  2: Polished Granite
-  3: Diorite
-  4: Polished Diorite
-  5: Andesite
-  6: Polished Andesite
-2: Grass
-3: Dirt
-  1: Coarse Dirt
-  2: Podzol
-4: Cobblestone
-5: Wood Plank
-  appendDefault: true
-  0: Oak
-  1: Spruce
-  2: Birch
-  3: Jungle
-  4: Acacia
-  5: Dark Oak
-6: Sapling
-  appendDefault: true
-  0: Oak
-  1: Spruce
-  2: Birch
-  3: Jungle
-  4: Acacia
-  5: Dark Oak
-7: Bedrock
-8: Flowing Water
-9: Still Water
-10: Flowing Lava
-11: Still Lava
-12: Sand
-  appendDefault: true
-  1: Red
-13: Gravel
-14: Gold Ore
-15: Iron Ore
-16: Coal Ore
-17: Wood
-  appendDefault: true
-  0: Oak
-  1: Spruce
-  2: Birch
-  3: Jungle
-18: Leaves
-  appendDefault: true
-  0: Oak
-  1: Spruce
-  2: Birch
-  3: Jungle
-19: Sponge
-  appendDefault: true
-  1: Wet
-20: Glass
-21: Lapis Lazuli Ore
-22: Lapis Lazuli Block
-23: Dispenser
-24: Sandstone
-  appendDefault: true
-  1: Chiseled
-  2: Smooth
-25: Note Block
-26: Bed
-27: Powered Rail
-28: Detector Rail
-29: Sticky Piston
-30: Cobweb
-31: Grass
-  0: Dead Shrub
-  1: Grass
-  2: Fern
-32: Dead Bush
-33: Piston
-34: Piston Head
-35: Wool
-  appendDefault: true
-  0: White
-  1: Orange
-  2: Magenta
-  3: Light Blue
-  4: Yellow
-  5: Lime
-  6: Pink
-  7: Gray
-  8: Light Gray
-  9: Cyan
-  10: Purple
-  11: Blue
-  12: Brown
-  13: Green
-  14: Red
-  15: Black
-37: Dandelion
-38: Flower
-  0: Poppy
-  1: Blue Orchid
-  2: Allium
-  3: Azure Bluet
-  4: Red Tulip
-  5: Orange Tulip
-  6: White Tulip
-  7: Pink Tulip
-  8: Oxeye Daisy
-39: Brown Mushroom
-40: Red Mushroom
-41: Gold Block
-42: Iron Block
-43: Double Slab
-  0: Double Stone Slab
-  1: Double Sandstone Slab
-  2: Double Wooden Slab
-  3: Double Cobblestone Slab
-  4: Double Brick Slab
-  5: Double Stone Brick Slab
-  6: Double Nether Brick Slab
-  7: Double Quartz Slab
-44: Slab
-  appendDefault: true
-  0: Stone
-  1: Sandstone
-  2: Wooden
-  3: Cobblestone
-  4: Brick
-  5: Stone Brick
-  6: Nether Brick
-  7: Quartz
-45: Bricks
-46: TNT
-47: Bookshelf
-48: Moss Stone
-49: Obsidian
-50: Torch
-51: Fire
-52: Monster Spawner
-53: Oak Wood Stairs
-54: Chest
-55: Redstone Wire
-56: Diamond Ore
-57: Diamond Block
-58: Crafting Table
-59: Wheat Crops
-60: Farmland
-61: Furnace
-62: Burning Furnace
-63: Standing Sign Block
-64: Oak Door Block
-65: Ladder
-66: Rail
-67: Cobblestone Stairs
-68: Wall-mounted Sign Block
-69: Lever
-70: Stone Pressure Plate
-71: Iron Door Block
-72: Wooden Pressure Plate
-73: Redstone Ore
-74: Glowing Redstone Ore
-75: Redstone Torch (off)
-76: Redstone Torch (on)
-77: Stone Button
-78: Snow
-79: Ice
-80: Snow Block
-81: Cactus
-82: Clay
-83: Sugar Canes
-84: Jukebox
-85: Oak Fence
-86: Pumpkin
-87: Netherrack
-88: Soul Sand
-89: Glowstone
-90: Nether Portal
-91: Jack o'Lantern
-92: Cake Block
-93: Redstone Repeater (off)
-94: Redstone Repeater (on)
-95: Stained Glass
-  appendDefault: true
-  0: White
-  1: Orange
-  2: Magenta
-  3: Light Blue
-  4: Yellow
-  5: Lime
-  6: Pink
-  7: Gray
-  8: Light
-  9: Cyan
-  10: Purple
-  11: Blue
-  12: Brown
-  13: Green
-  14: Red
-  15: Black
-96: Wooden Trapdoor
-97: Monster Egg Stone
-  0: Stone Monster Egg
-  1: Cobblestone Monster Egg
-  2: Stone Brick Monster Egg
-  3: Mossy Stone Brick Monster Egg
-  4: Cracked Stone Brick Monster Egg
-  5: Chiseled Stone Brick Monster Egg
-98: Stone Bricks
-  appendDefault: true
-  1: Mossy
-  2: Cracked
-  3: Chiseled
-99: Brown Mushroom Block
-100: Red Mushroom Block
-101: Iron Bars
-102: Glass Pane
-103: Melon Block
-104: Pumpkin Stem
-105: Melon Stem
-106: Vines
-107: Oak Fence Gate
-108: Brick Stairs
-109: Stone Brick Stairs
-110: Mycelium
-111: Lily Pad
-112: Nether Brick
-113: Nether Brick Fence
-114: Nether Brick Stairs
-115: Nether Wart
-116: Enchantment Table
-117: Brewing Stand
-118: Cauldron
-119: End Portal
-120: End Portal Frame
-121: End Stone
-122: Dragon Egg
-123: Redstone Lamp (inactive)
-124: Redstone Lamp (active)
-125: Double Wood Slap
-  0: Double Oak Wood Slab
-  1: Double Spruce Wood Slab
-  2: Double Birch Wood Slab
-  3: Double Jungle Wood Slab
-  4: Double Acacia Wood Slab
-  5: Double Dark Oak Wood Slab
-126: Wood Slab
-  appendDefault: true
-  0: Oak
-  1: Spruce
-  2: Birch
-  3: Jungle
-  4: Acacia
-  5: Dark Oak
-127: Cocoa
-128: Sandstone Stairs
-129: Emerald Ore
-130: Ender Chest
-131: Tripwire Hook
-132: Tripwire
-133: Emerald Block
-134: Spruce Wood Stairs
-135: Birch Wood Stairs
-136: Jungle Wood Stairs
-137: Command Block
-138: Beacon
-139: Cobblestone Wall
-  appendDefault: true
-  1: Mossy
-140: Flower Pot
-141: Carrots
-142: Potatoes
-143: Wooden Button
-144: Mob Head
-145: Anvil
-146: Trapped Chest
-147: Weighted Pressure Plate (light)
-148: Weighted Pressure Plate (heavy)
-149: Redstone Comparator (inactive)
-150: Redstone Comparator (active)
-151: Daylight Sensor
-152: Redstone Block
-153: Nether Quartz Ore
-154: Hopper
-155: Quartz Block
-  appendDefault: true
-  1: Chiseled
-  2: Pillar
-156: Quartz Stairs
-157: Activator Rail
-158: Dropper
-159: Stained Clay
-  appendDefault: true
-  0: White
-  1: Orange
-  2: Magenta
-  3: Light Blue
-  4: Yellow
-  5: Lime
-  6: Pink
-  7: Gray
-  8: Light Gray
-  9: Cyan
-  10: Purple
-  11: Blue
-  12: Brown
-  13: Green
-  14: Red
-  15: Black
-160: Stained Glass Pane
-  appendDefault: true
-  0: White
-  1: Orange
-  2: Magenta
-  3: Light Blue
-  4: Yellow
-  5: Lime
-  6: Pink
-  7: Gray
-  8: Light Gray
-  9: Cyan
-  10: Purple
-  11: Blue
-  12: Brown
-  13: Green
-  14: Red
-  15: Black
-161: Leaves
-  appendDefault: true
-  0: Acacia
-  1: Dark Oak
-162: Wood
-  appendDefault: true
-  0: Acacia Wood
-  1: Dark Oak Wood
-163: Acacia Wood Stairs
-164: Dark Oak Wood Stairs
-165: Slime Block
-166: Barrier
-167: Iron Trapdoor
-168: Prismarine
-  0: Prismarine
-  1: Prismarine Bricks
-  2: Dark Prismarine
-169: Sea Lantern
-170: Hay Bale
-171: Carpet
-  appendDefault: true
-  0: White
-  1: Orange
-  2: Magenta
-  3: Light Blue
-  4: Yellow
-  5: Lime
-  6: Pink
-  7: Gray
-  8: Light Gray
-  9: Cyan
-  10: Purple
-  11: Blue
-  12: Brown
-  13: Green
-  14: Red
-  15: Black
-172: Hardened Clay
-173: Block of Coal
-174: Packed Ice
-175: Flower
-  0: Sunflower
-  1: Lilac
-  2: Double Tallgrass
-  3: Large Fern
-  4: Rose Bush
-  5: Peony
-176: Free-standing Banner
-177: Wall-mounted Banner
-178: Inverted Daylight Sensor
-179: Sandstone
-  appendDefault: true
-  0: Red
-  1: Chiseled Red
-  2: Smooth Red
-180: Red Sandstone Stairs
-181: Double Red Sandstone Slab
-182: Red Sandstone Slab
-183: Spruce Fence Gate
-184: Birch Fence Gate
-185: Jungle Fence Gate
-186: Dark Oak Fence Gate
-187: Acacia Fence Gate
-188: Spruce Fence
-189: Birch Fence
-190: Jungle Fence
-191: Dark Oak Fence
-192: Acacia Fence
-193: Spruce Door Block
-194: Birch Door Block
-195: Jungle Door Block
-196: Acacia Door Block
-197: Dark Oak Door Block
-198: End Rod
-199: Chorus Plant
-200: Chorus Flower
-201: Purpur Block
-202: Purpur Pillar
-203: Purpur Stairs
-204: Purpur Double Slab
-205: Purpur Slab
-206: End Stone Bricks
-207: Beetroot Block
-208: Grass Path
-209: End Gateway
-210: Repeating Command Block
-211: Chain Command Block
-212: Frosted Ice
-213: Magma Block
-214: Nether Wart Block
-215: Red Nether Brick
-216: Bone Block
-217: Structure Void
-218: Observer
-219: White Shulker Box
-220: Orange Shulker Box
-221: Magenta Shulker Box
-222: Light Blue Shulker Box
-223: Yellow Shulker Box
-224: Lime Shulker Box
-225: Pink Shulker Box
-226: Gray Shulker Box
-227: Light Gray Shulker Box
-228: Cyan Shulker Box
-229: Purple Shulker Box
-230: Blue Shulker Box
-231: Brown Shulker Box
-232: Green Shulker Box
-233: Red Shulker Box
-234: Black Shulker Box
-255: Structure Block
-256: Iron Shovel
-257: Iron Pickaxe
-258: Iron Axe
-259: Flint and Steel
-260: Apple
-261: Bow
-262: Arrow
-263: Coal
-  1: Charcoal
-264: Diamond
-265: Iron Ingot
-266: Gold Ingot
-267: Iron Sword
-268: Wooden Sword
-269: Wooden Shovel
-270: Wooden Pickaxe
-271: Wooden Axe
-272: Stone Sword
-273: Stone Shovel
-274: Stone Pickaxe
-275: Stone Axe
-276: Diamond Sword
-277: Diamond Shovel
-278: Diamond Pickaxe
-279: Diamond Axe
-280: Stick
-281: Bowl
-282: Mushroom Stew
-283: Golden Sword
-284: Golden Shovel
-285: Golden Pickaxe
-286: Golden Axe
-287: String
-288: Feather
-289: Gunpowder
-290: Wooden Hoe
-291: Stone Hoe
-292: Iron Hoe
-293: Diamond Hoe
-294: Golden Hoe
-295: Wheat Seeds
-296: Wheat
-297: Bread
-298: Leather Helmet
-299: Leather Tunic
-300: Leather Pants
-301: Leather Boots
-302: Chainmail Helmet
-303: Chainmail Chestplate
-304: Chainmail Leggings
-305: Chainmail Boots
-306: Iron Helmet
-307: Iron Chestplate
-308: Iron Leggings
-309: Iron Boots
-310: Diamond Helmet
-311: Diamond Chestplate
-312: Diamond Leggings
-313: Diamond Boots
-314: Golden Helmet
-315: Golden Chestplate
-316: Golden Leggings
-317: Golden Boots
-318: Flint
-319: Raw Porkchop
-320: Cooked Porkchop
-321: Painting
-322: Golden Apple
-  appendDefault: true
-  1: Enchanted
-323: Sign
-324: Oak Door
-325: Bucket
-326: Water Bucket
-327: Lava Bucket
-328: Minecart
-329: Saddle
-330: Iron Door
-331: Redstone
-332: Snowball
-333: Oak Boat
-334: Leather
-335: Milk Bucket
-336: Brick
-337: Clay
-338: Sugar Canes
-339: Paper
-340: Book
-341: Slimeball
-342: Minecart with Chest
-343: Minecart with Furnace
-344: Egg
-345: Compass
-346: Fishing Rod
-347: Clock
-348: Glowstone Dust
-349: Fish
-  0: Raw Fish
-  1: Raw Salmon
-  2: Clownfish
-  3: Pufferfish
-350: Cooked Fish
-  1: Cooked Salmon
-351: Ink Sack
-  1: Rose Red
-  2: Cactus Green
-  3: Coco Beans
-  4: Lapis Lazuli
-  5: Purple Dye
-  6: Cyan Dye
-  7: Light Gray Dye
-  8: Gray Dye
-  9: Pink Dye
-  10: Lime Dye
-  11: Dandelion Yellow
-  12: Light Blue Dye
-  13: Magenta Dye
-  14: Orange Dye
-  15: Bone Meal
-352: Bone
-353: Sugar
-354: Cake
-355: Bed
-356: Redstone Repeater
-357: Cookie
-358: Map
-359: Shears
-360: Melon
-361: Pumpkin Seeds
-362: Melon Seeds
-363: Raw Beef
-364: Steak
-365: Raw Chicken
-366: Cooked Chicken
-367: Rotten Flesh
-368: Ender Pearl
-369: Blaze Rod
-370: Ghast Tear
-371: Gold Nugget
-372: Nether Wart
-373: Potion
-374: Glass Bottle
-375: Spider Eye
-376: Fermented Spider Eye
-377: Blaze Powder
-378: Magma Cream
-379: Brewing Stand
-380: Cauldron
-381: Eye of Ender
-382: Glistering Melon
-383: Spawn Egg
-  appendDefault: true
-  4: Elder Guardian
-  5: Wither Skeleton
-  6: Stray
-  23: Husk
-  27: Zombie Villager
-  28: Skeleton Horse
-  29: Zombie Horse
-  31: Donkey
-  32: Mule
-  34: Evoker
-  35: Vex
-  36: Vindicator
-  50: Creeper
-  51: Skeleton
-  52: Spider
-  54: Zombie
-  55: Slime
-  56: Ghast
-  57: Zombie Pigman
-  58: Enderman
-  59: Cave Spider
-  60: Silverfish
-  61: Blaze
-  62: Magma Cube
-  65: Bat
-  66: Witch
-  67: Endermite
-  68: Guardian
-  69: Shulker
-  90: Pig
-  91: Sheep
-  92: Cow
-  93: Chicken
-  94: Squid
-  95: Wolf
-  96: Mooshroom
-  98: Ocelot
-  100: Horse
-  101: Rabbit
-  102: Polar Bear
-  103: Llama
-  120: Villager
-384: Bottle o' Enchanting
-385: Fire Charge
-386: Book and Quill
-387: Written Book
-388: Emerald
-389: Item Frame
-390: Flower Pot
-391: Carrot
-392: Potato
-393: Baked Potato
-394: Poisonous Potato
-395: Empty Map
-396: Golden Carrot
-397: Head
-  appendDefault: true
-  0: Skeleton
-  1: Wither Skeleton
-  2: Zombie
-  3: Human
-  4: Creeper
-  5: Dragon
-398: Carrot on a Stick
-399: Nether Star
-400: Pumpkin Pie
-401: Firework Rocket
-402: Firework Star
-403: Enchanted Book
-404: Redstone Comparator
-405: Nether Brick
-406: Nether Quartz
-407: Minecart with TNT
-408: Minecart with Hopper
-409: Prismarine Shard
-410: Prismarine Crystals
-411: Raw Rabbit
-412: Cooked Rabbit
-413: Rabbit Stew
-414: Rabbit's Foot
-415: Rabbit Hide
-416: Armor Stand
-417: Iron Horse Armor
-418: Golden Horse Armor
-419: Diamond Horse Armor
-420: Lead
-421: Name Tag
-422: Minecart with Command Block
-423: Raw Mutton
-424: Cooked Mutton
-425: Banner
-427: Spruce Door
-428: Birch Door
-429: Jungle Door
-430: Acacia Door
-431: Dark Oak Door
-432: Chorus Fruit
-433: Popped Chorus Fruit
-434: Beetroot
-435: Beetroot Seeds
-436: Beetroot Soup
-437: Dragon's Breath
-438: Splash Potion
-439: Spectral Arrow
-440: Tipped Arrow
-441: Lingering Potion
-442: Shield
-443: Elytra
-444: Spruce Boat
-445: Birch Boat
-446: Jungle Boat
-447: Acacia Boat
-448: Dark Oak Boat
-449: Totem of Undying
-450: Shulker Shell
-452: Iron Nugget
-2256: 13 Disc
-2257: Cat Disc
-2258: Blocks Disc
-2259: Chirp Disc
-2260: Far Disc
-2261: Mall Disc
-2262: Mellohi Disc
-2263: Stal Disc
-2264: Strad Disc
-2265: Ward Disc
-2266: 11 Disc
-2267: Wait Disc
+Items:
+  air: "Air"
+  barrier: "Barrier"
+  stone: "Stone"
+  granite: "Granite"
+  polished_granite: "Polished Granite"
+  diorite: "Diorite"
+  polished_diorite: "Polished Diorite"
+  andesite: "Andesite"
+  polished_andesite: "Polished Andesite"
+  hay_block: "Hay Bale"
+  grass_block: "Grass Block"
+  dirt: "Dirt"
+  coarse_dirt: "Coarse Dirt"
+  podzol: "Podzol"
+  cobblestone: "Cobblestone"
+  oak_planks: "Oak Planks"
+  spruce_planks: "Spruce Planks"
+  birch_planks: "Birch Planks"
+  jungle_planks: "Jungle Planks"
+  acacia_planks: "Acacia Planks"
+  dark_oak_planks: "Dark Oak Planks"
+  oak_sapling: "Oak Sapling"
+  spruce_sapling: "Spruce Sapling"
+  birch_sapling: "Birch Sapling"
+  jungle_sapling: "Jungle Sapling"
+  acacia_sapling: "Acacia Sapling"
+  dark_oak_sapling: "Dark Oak Sapling"
+  oak_door: "Oak Door"
+  spruce_door: "Spruce Door"
+  birch_door: "Birch Door"
+  jungle_door: "Jungle Door"
+  acacia_door: "Acacia Door"
+  dark_oak_door: "Dark Oak Door"
+  bedrock: "Bedrock"
+  water: "Water"
+  lava: "Lava"
+  flowing_water: "Flowing Water"
+  flowing_lava: "Flowing Lava"
+  sand: "Sand"
+  red_sand: "Red Sand"
+  sandstone: "Sandstone"
+  chiseled_sandstone: "Chiseled Sandstone"
+  cut_sandstone: "Cut Sandstone"
+  red_sandstone: "Red Sandstone"
+  chiseled_red_sandstone: "Chiseled Red Sandstone"
+  cut_red_sandstone: "Cut Red Sandstone"
+  gravel: "Gravel"
+  gold_ore: "Gold Ore"
+  iron_ore: "Iron Ore"
+  coal_ore: "Coal Ore"
+  oak_wood: "Oak Wood"
+  spruce_wood: "Spruce Wood"
+  birch_wood: "Birch Wood"
+  jungle_wood: "Jungle Wood"
+  acacia_wood: "Acacia Wood"
+  dark_oak_wood: "Dark Oak Wood"
+  oak_log: "Oak Log"
+  spruce_log: "Spruce Log"
+  birch_log: "Birch Log"
+  jungle_log: "Jungle Log"
+  acacia_log: "Acacia Log"
+  dark_oak_log: "Dark Oak Log"
+  stripped_oak_log: "Stripped Oak Log"
+  stripped_spruce_log: "Stripped Spruce Log"
+  stripped_birch_log: "Stripped Birch Log"
+  stripped_jungle_log: "Stripped Jungle Log"
+  stripped_acacia_log: "Stripped Acacia Log"
+  stripped_dark_oak_log: "Stripped Dark Oak Log"
+  stripped_oak_wood: "Stripped Oak Wood"
+  stripped_spruce_wood: "Stripped Spruce Wood"
+  stripped_birch_wood: "Stripped Birch Wood"
+  stripped_jungle_wood: "Stripped Jungle Wood"
+  stripped_acacia_wood: "Stripped Acacia Wood"
+  stripped_dark_oak_wood: "Stripped Dark Oak Wood"
+  oak_leaves: "Oak Leaves"
+  spruce_leaves: "Spruce Leaves"
+  birch_leaves: "Birch Leaves"
+  jungle_leaves: "Jungle Leaves"
+  acacia_leaves: "Acacia Leaves"
+  dark_oak_leaves: "Dark Oak Leaves"
+  dead_bush: "Dead Bush"
+  grass: "Grass"
+  fern: "Fern"
+  sponge: "Sponge"
+  wet_sponge: "Wet Sponge"
+  glass: "Glass"
+  kelp_plant: "Kelp Plant"
+  kelp: "Kelp"
+  dried_kelp_block: "Dried Kelp Block"
+  white_stained_glass: "White Stained Glass"
+  orange_stained_glass: "Orange Stained Glass"
+  magenta_stained_glass: "Magenta Stained Glass"
+  light_blue_stained_glass: "Light Blue Stained Glass"
+  yellow_stained_glass: "Yellow Stained Glass"
+  lime_stained_glass: "Lime Stained Glass"
+  pink_stained_glass: "Pink Stained Glass"
+  gray_stained_glass: "Gray Stained Glass"
+  light_gray_stained_glass: "Light Gray Stained Glass"
+  cyan_stained_glass: "Cyan Stained Glass"
+  purple_stained_glass: "Purple Stained Glass"
+  blue_stained_glass: "Blue Stained Glass"
+  brown_stained_glass: "Brown Stained Glass"
+  green_stained_glass: "Green Stained Glass"
+  red_stained_glass: "Red Stained Glass"
+  black_stained_glass: "Black Stained Glass"
+  white_stained_glass_pane: "White Stained Glass Pane"
+  orange_stained_glass_pane: "Orange Stained Glass Pane"
+  magenta_stained_glass_pane: "Magenta Stained Glass Pane"
+  light_blue_stained_glass_pane: "Light Blue Stained Glass Pane"
+  yellow_stained_glass_pane: "Yellow Stained Glass Pane"
+  lime_stained_glass_pane: "Lime Stained Glass Pane"
+  pink_stained_glass_pane: "Pink Stained Glass Pane"
+  gray_stained_glass_pane: "Gray Stained Glass Pane"
+  light_gray_stained_glass_pane: "Light Gray Stained Glass Pane"
+  cyan_stained_glass_pane: "Cyan Stained Glass Pane"
+  purple_stained_glass_pane: "Purple Stained Glass Pane"
+  blue_stained_glass_pane: "Blue Stained Glass Pane"
+  brown_stained_glass_pane: "Brown Stained Glass Pane"
+  green_stained_glass_pane: "Green Stained Glass Pane"
+  red_stained_glass_pane: "Red Stained Glass Pane"
+  black_stained_glass_pane: "Black Stained Glass Pane"
+  glass_pane: "Glass Pane"
+  dandelion: "Dandelion"
+  poppy: "Poppy"
+  blue_orchid: "Blue Orchid"
+  allium: "Allium"
+  azure_bluet: "Azure Bluet"
+  red_tulip: "Red Tulip"
+  orange_tulip: "Orange Tulip"
+  white_tulip: "White Tulip"
+  pink_tulip: "Pink Tulip"
+  oxeye_daisy: "Oxeye Daisy"
+  sunflower: "Sunflower"
+  lilac: "Lilac"
+  tall_grass: "Tall Grass"
+  tall_seagrass: "Tall Seagrass"
+  large_fern: "Large Fern"
+  rose_bush: "Rose Bush"
+  peony: "Peony"
+  seagrass: "Seagrass"
+  sea_pickle: "Sea Pickle"
+  brown_mushroom: "Brown Mushroom"
+  red_mushroom_block: "Red Mushroom Block"
+  brown_mushroom_block: "Brown Mushroom Block"
+  mushroom_stem: "Mushroom Stem"
+  gold_block: "Block of Gold"
+  iron_block: "Block of Iron"
+  smooth_stone: "Smooth Stone"
+  smooth_sandstone: "Smooth Sandstone"
+  smooth_red_sandstone: "Smooth Red Sandstone"
+  smooth_quartz: "Smooth Quartz"
+  stone_slab: "Stone Slab"
+  sandstone_slab: "Sandstone Slab"
+  red_sandstone_slab: "Red Sandstone Slab"
+  petrified_oak_slab: "Petrified Oak Slab"
+  cobblestone_slab: "Cobblestone Slab"
+  brick_slab: "Brick Slab"
+  stone_brick_slab: "Stone Brick Slab"
+  nether_brick_slab: "Nether Brick Slab"
+  quartz_slab: "Quartz Slab"
+  oak_slab: "Oak Slab"
+  spruce_slab: "Spruce Slab"
+  birch_slab: "Birch Slab"
+  jungle_slab: "Jungle Slab"
+  acacia_slab: "Acacia Slab"
+  dark_oak_slab: "Dark Oak Slab"
+  dark_prismarine_slab: "Dark Prismarine Slab"
+  prismarine_slab: "Prismarine Slab"
+  prismarine_brick_slab: "Prismarine Brick Slab"
+  bricks: "Bricks"
+  tnt: "TNT"
+  bookshelf: "Bookshelf"
+  mossy_cobblestone: "Mossy Cobblestone"
+  obsidian: "Obsidian"
+  torch: "Torch"
+  wall_torch: "Wall Torch"
+  fire: "Fire"
+  spawner: "Spawner"
+  oak_stairs: "Oak Stairs"
+  spruce_stairs: "Spruce Stairs"
+  birch_stairs: "Birch Stairs"
+  jungle_stairs: "Jungle Stairs"
+  acacia_stairs: "Acacia Stairs"
+  dark_oak_stairs: "Dark Oak Stairs"
+  dark_prismarine_stairs: "Dark Prismarine Stairs"
+  prismarine_stairs: "Prismarine Stairs"
+  prismarine_brick_stairs: "Prismarine Brick Stairs"
+  chest: "Chest"
+  trapped_chest: "Trapped Chest"
+  redstone_wire: "Redstone Dust"
+  diamond_ore: "Diamond Ore"
+  coal_block: "Block of Coal"
+  diamond_block: "Block of Diamond"
+  crafting_table: "Crafting Table"
+  wheat: "Wheat Crops"
+  farmland: "Farmland"
+  furnace: "Furnace"
+  sign: "Sign"
+  wall_sign: "Wall Sign"
+  ladder: "Ladder"
+  rail: "Rail"
+  powered_rail: "Powered Rail"
+  activator_rail: "Activator Rail"
+  detector_rail: "Detector Rail"
+  cobblestone_stairs: "Cobblestone Stairs"
+  sandstone_stairs: "Sandstone Stairs"
+  red_sandstone_stairs: "Red Sandstone Stairs"
+  lever: "Lever"
+  stone_pressure_plate: "Stone Pressure Plate"
+  oak_pressure_plate: "Oak Pressure Plate"
+  spruce_pressure_plate: "Spruce Pressure Plate"
+  birch_pressure_plate: "Birch Pressure Plate"
+  jungle_pressure_plate: "Jungle Pressure Plate"
+  acacia_pressure_plate: "Acacia Pressure Plate"
+  dark_oak_pressure_plate: "Dark Oak Pressure Plate"
+  light_weighted_pressure_plate: "Light Weighted Pressure Plate"
+  heavy_weighted_pressure_plate: "Heavy Weighted Pressure Plate"
+  iron_door: "Iron Door"
+  redstone_ore: "Redstone Ore"
+  redstone_torch: "Redstone Torch"
+  redstone_wall_torch: "Redstone Wall Torch"
+  stone_button: "Stone Button"
+  oak_button: "Oak Button"
+  spruce_button: "Spruce Button"
+  birch_button: "Birch Button"
+  jungle_button: "Jungle Button"
+  acacia_button: "Acacia Button"
+  dark_oak_button: "Dark Oak Button"
+  snow: "Snow"
+  white_carpet: "White Carpet"
+  orange_carpet: "Orange Carpet"
+  magenta_carpet: "Magenta Carpet"
+  light_blue_carpet: "Light Blue Carpet"
+  yellow_carpet: "Yellow Carpet"
+  lime_carpet: "Lime Carpet"
+  pink_carpet: "Pink Carpet"
+  gray_carpet: "Gray Carpet"
+  light_gray_carpet: "Light Gray Carpet"
+  cyan_carpet: "Cyan Carpet"
+  purple_carpet: "Purple Carpet"
+  blue_carpet: "Blue Carpet"
+  brown_carpet: "Brown Carpet"
+  green_carpet: "Green Carpet"
+  red_carpet: "Red Carpet"
+  black_carpet: "Black Carpet"
+  ice: "Ice"
+  frosted_ice: "Frosted Ice"
+  packed_ice: "Packed Ice"
+  blue_ice: "Blue Ice"
+  cactus: "Cactus"
+  clay: "Clay"
+  white_terracotta: "White Terracotta"
+  orange_terracotta: "Orange Terracotta"
+  magenta_terracotta: "Magenta Terracotta"
+  light_blue_terracotta: "Light Blue Terracotta"
+  yellow_terracotta: "Yellow Terracotta"
+  lime_terracotta: "Lime Terracotta"
+  pink_terracotta: "Pink Terracotta"
+  gray_terracotta: "Gray Terracotta"
+  light_gray_terracotta: "Light Gray Terracotta"
+  cyan_terracotta: "Cyan Terracotta"
+  purple_terracotta: "Purple Terracotta"
+  blue_terracotta: "Blue Terracotta"
+  brown_terracotta: "Brown Terracotta"
+  green_terracotta: "Green Terracotta"
+  red_terracotta: "Red Terracotta"
+  black_terracotta: "Black Terracotta"
+  terracotta: "Terracotta"
+  sugar_cane: "Sugar Cane"
+  jukebox: "Jukebox"
+  oak_fence: "Oak Fence"
+  spruce_fence: "Spruce Fence"
+  birch_fence: "Birch Fence"
+  jungle_fence: "Jungle Fence"
+  dark_oak_fence: "Dark Oak Fence"
+  acacia_fence: "Acacia Fence"
+  oak_fence_gate: "Oak Fence Gate"
+  spruce_fence_gate: "Spruce Fence Gate"
+  birch_fence_gate: "Birch Fence Gate"
+  jungle_fence_gate: "Jungle Fence Gate"
+  dark_oak_fence_gate: "Dark Oak Fence Gate"
+  acacia_fence_gate: "Acacia Fence Gate"
+  pumpkin_stem: "Pumpkin Stem"
+  attached_pumpkin_stem: "Attached Pumpkin Stem"
+  pumpkin: "Pumpkin"
+  carved_pumpkin: "Carved Pumpkin"
+  jack_o_lantern: "Jack o'Lantern"
+  netherrack: "Netherrack"
+  soul_sand: "Soul Sand"
+  glowstone: "Glowstone"
+  nether_portal: "Nether Portal"
+  white_wool: "White Wool"
+  orange_wool: "Orange Wool"
+  magenta_wool: "Magenta Wool"
+  light_blue_wool: "Light Blue Wool"
+  yellow_wool: "Yellow Wool"
+  lime_wool: "Lime Wool"
+  pink_wool: "Pink Wool"
+  gray_wool: "Gray Wool"
+  light_gray_wool: "Light Gray Wool"
+  cyan_wool: "Cyan Wool"
+  purple_wool: "Purple Wool"
+  blue_wool: "Blue Wool"
+  brown_wool: "Brown Wool"
+  green_wool: "Green Wool"
+  red_wool: "Red Wool"
+  black_wool: "Black Wool"
+  lapis_ore: "Lapis Lazuli Ore"
+  lapis_block: "Lapis Lazuli Block"
+  dispenser: "Dispenser"
+  dropper: "Dropper"
+  note_block: "Note Block"
+  cake: "Cake"
+  bed: "Bed"
+  oak_trapdoor: "Oak Trapdoor"
+  spruce_trapdoor: "Spruce Trapdoor"
+  birch_trapdoor: "Birch Trapdoor"
+  jungle_trapdoor: "Jungle Trapdoor"
+  acacia_trapdoor: "Acacia Trapdoor"
+  dark_oak_trapdoor: "Dark Oak Trapdoor"
+  iron_trapdoor: "Iron Trapdoor"
+  cobweb: "Cobweb"
+  stone_bricks: "Stone Bricks"
+  mossy_stone_bricks: "Mossy Stone Bricks"
+  cracked_stone_bricks: "Cracked Stone Bricks"
+  chiseled_stone_bricks: "Chiseled Stone Bricks"
+  infested_stone: "Infested Stone"
+  infested_cobblestone: "Infested Cobblestone"
+  infested_stone_bricks: "Infested Stone Bricks"
+  infested_mossy_stone_bricks: "Infested Mossy Stone Bricks"
+  infested_cracked_stone_bricks: "Infested Cracked Stone Bricks"
+  infested_chiseled_stone_bricks: "Infested Chiseled Stone Bricks"
+  piston: "Piston"
+  sticky_piston: "Sticky Piston"
+  iron_bars: "Iron Bars"
+  melon: "Melon"
+  brick_stairs: "Brick Stairs"
+  stone_brick_stairs: "Stone Brick Stairs"
+  vine: "Vines"
+  nether_bricks: "Nether Bricks"
+  nether_brick_fence: "Nether Brick Fence"
+  nether_brick_stairs: "Nether Brick Stairs"
+  nether_wart: "Nether Wart"
+  cauldron: "Cauldron"
+  enchanting_table: "Enchanting Table"
+  anvil: "Anvil"
+  chipped_anvil: "Chipped Anvil"
+  damaged_anvil: "Damaged Anvil"
+  end_stone: "End Stone"
+  end_portal_frame: "End Portal Frame"
+  mycelium: "Mycelium"
+  lily_pad: "Lily Pad"
+  dragon_egg: "Dragon Egg"
+  redstone_lamp: "Redstone Lamp"
+  cocoa: "Cocoa"
+  ender_chest: "Ender Chest"
+  emerald_ore: "Emerald Ore"
+  emerald_block: "Block of Emerald"
+  redstone_block: "Block of Redstone"
+  tripwire: "Tripwire"
+  tripwire_hook: "Tripwire Hook"
+  command_block: "Command Block"
+  repeating_command_block: "Repeating Command Block"
+  chain_command_block: "Chain Command Block"
+  beacon: "Beacon"
+  cobblestone_wall: "Cobblestone Wall"
+  mossy_cobblestone_wall: "Mossy Cobblestone Wall"
+  carrots: "Carrots"
+  potatoes: "Potatoes"
+  daylight_detector: "Daylight Detector"
+  nether_quartz_ore: "Nether Quartz Ore"
+  hopper: "Hopper"
+  quartz_block: "Block of Quartz"
+  chiseled_quartz_block: "Chiseled Quartz Block"
+  quartz_pillar: "Quartz Pillar"
+  quartz_stairs: "Quartz Stairs"
+  slime_block: "Slime Block"
+  prismarine: "Prismarine"
+  prismarine_bricks: "Prismarine Bricks"
+  dark_prismarine: "Dark Prismarine"
+  sea_lantern: "Sea Lantern"
+  end_rod: "End Rod"
+  chorus_plant: "Chorus Plant"
+  chorus_flower: "Chorus Flower"
+  purpur_block: "Purpur Block"
+  purpur_pillar: "Purpur Pillar"
+  purpur_stairs: "Purpur Stairs"
+  purpur_slab: "Purpur Slab"
+  end_stone_bricks: "End Stone Bricks"
+  beetroots: "Beetroots"
+  grass_path: "Grass Path"
+  magma_block: "Magma Block"
+  nether_wart_block: "Nether Wart Block"
+  red_nether_bricks: "Red Nether Bricks"
+  bone_block: "Bone Block"
+  observer: "Observer"
+  shulker_box: "Shulker Box"
+  white_shulker_box: "White Shulker Box"
+  orange_shulker_box: "Orange Shulker Box"
+  magenta_shulker_box: "Magenta Shulker Box"
+  light_blue_shulker_box: "Light Blue Shulker Box"
+  yellow_shulker_box: "Yellow Shulker Box"
+  lime_shulker_box: "Lime Shulker Box"
+  pink_shulker_box: "Pink Shulker Box"
+  gray_shulker_box: "Gray Shulker Box"
+  light_gray_shulker_box: "Light Gray Shulker Box"
+  cyan_shulker_box: "Cyan Shulker Box"
+  purple_shulker_box: "Purple Shulker Box"
+  blue_shulker_box: "Blue Shulker Box"
+  brown_shulker_box: "Brown Shulker Box"
+  green_shulker_box: "Green Shulker Box"
+  red_shulker_box: "Red Shulker Box"
+  black_shulker_box: "Black Shulker Box"
+  white_glazed_terracotta: "White Glazed Terracotta"
+  orange_glazed_terracotta: "Orange Glazed Terracotta"
+  magenta_glazed_terracotta: "Magenta Glazed Terracotta"
+  light_blue_glazed_terracotta: "Light Blue Glazed Terracotta"
+  yellow_glazed_terracotta: "Yellow Glazed Terracotta"
+  lime_glazed_terracotta: "Lime Glazed Terracotta"
+  pink_glazed_terracotta: "Pink Glazed Terracotta"
+  gray_glazed_terracotta: "Gray Glazed Terracotta"
+  light_gray_glazed_terracotta: "Light Gray Glazed Terracotta"
+  cyan_glazed_terracotta: "Cyan Glazed Terracotta"
+  purple_glazed_terracotta: "Purple Glazed Terracotta"
+  blue_glazed_terracotta: "Blue Glazed Terracotta"
+  brown_glazed_terracotta: "Brown Glazed Terracotta"
+  green_glazed_terracotta: "Green Glazed Terracotta"
+  red_glazed_terracotta: "Red Glazed Terracotta"
+  black_glazed_terracotta: "Black Glazed Terracotta"
+  black_concrete: "Black Concrete"
+  red_concrete: "Red Concrete"
+  green_concrete: "Green Concrete"
+  brown_concrete: "Brown Concrete"
+  blue_concrete: "Blue Concrete"
+  purple_concrete: "Purple Concrete"
+  cyan_concrete: "Cyan Concrete"
+  light_gray_concrete: "Light Gray Concrete"
+  gray_concrete: "Gray Concrete"
+  pink_concrete: "Pink Concrete"
+  lime_concrete: "Lime Concrete"
+  yellow_concrete: "Yellow Concrete"
+  light_blue_concrete: "Light Blue Concrete"
+  magenta_concrete: "Magenta Concrete"
+  orange_concrete: "Orange Concrete"
+  white_concrete: "White Concrete"
+  black_concrete_powder: "Black Concrete Powder"
+  red_concrete_powder: "Red Concrete Powder"
+  green_concrete_powder: "Green Concrete Powder"
+  brown_concrete_powder: "Brown Concrete Powder"
+  blue_concrete_powder: "Blue Concrete Powder"
+  purple_concrete_powder: "Purple Concrete Powder"
+  cyan_concrete_powder: "Cyan Concrete Powder"
+  light_gray_concrete_powder: "Light Gray Concrete Powder"
+  gray_concrete_powder: "Gray Concrete Powder"
+  pink_concrete_powder: "Pink Concrete Powder"
+  lime_concrete_powder: "Lime Concrete Powder"
+  yellow_concrete_powder: "Yellow Concrete Powder"
+  light_blue_concrete_powder: "Light Blue Concrete Powder"
+  magenta_concrete_powder: "Magenta Concrete Powder"
+  orange_concrete_powder: "Orange Concrete Powder"
+  white_concrete_powder: "White Concrete Powder"
+  turtle_egg: "Turtle Egg"
+  two_turtle_eggs: "Two Turtle Eggs"
+  three_turtle_eggs: "Three Turtle Eggs"
+  four_turtle_eggs: "Four Turtle Eggs"
+  banner: "Banner"
+  wall_banner: "Wall Banner"
+  piston_head: "Piston Head"
+  moving_piston: "Moving Piston"
+  red_mushroom: "Red Mushroom"
+  snow_block: "Snow Block"
+  attached_melon_stem: "Attached Melon Stem"
+  melon_stem: "Melon Stem"
+  brewing_stand: "Brewing Stand"
+  end_portal: "End Portal"
+  flower_pot: "Flower Pot"
+  potted_oak_sapling: "Potted Oak Sapling"
+  potted_spruce_sapling: "Potted Spruce Sapling"
+  potted_birch_sapling: "Potted Birch Sapling"
+  potted_jungle_sapling: "Potted Jungle Sapling"
+  potted_acacia_sapling: "Potted Acacia Sapling"
+  potted_dark_oak_sapling: "Potted Dark Oak Sapling"
+  potted_fern: "Potted Fern"
+  potted_dandelion: "Potted Dandelion"
+  potted_poppy: "Potted Poppy"
+  potted_blue_orchid: "Potted Blue Orchid"
+  potted_allium: "Potted Allium"
+  potted_azure_bluet: "Potted Azure Bluet"
+  potted_red_tulip: "Potted Red Tulip"
+  potted_orange_tulip: "Potted Orange Tulip"
+  potted_white_tulip: "Potted White Tulip"
+  potted_pink_tulip: "Potted Pink Tulip"
+  potted_oxeye_daisy: "Potted Oxeye Daisy"
+  potted_red_mushroom: "Potted Red Mushroom"
+  potted_brown_mushroom: "Potted Brown Mushroom"
+  potted_dead_bush: "Potted Dead Bush"
+  potted_cactus: "Potted Cactus"
+  skeleton_wall_skull: "Skeleton Wall Skull"
+  skeleton_skull: "Skeleton Skull"
+  wither_skeleton_wall_skull: "Wither Skeleton Wall Skull"
+  wither_skeleton_skull: "Wither Skeleton Skull"
+  zombie_wall_head: "Zombie Wall Head"
+  zombie_head: "Zombie Head"
+  player_wall_head: "Player Wall Head"
+  player_head: "Player Head"
+  creeper_wall_head: "Creeper Wall Head"
+  creeper_head: "Creeper Head"
+  dragon_wall_head: "Dragon Wall Head"
+  dragon_head: "Dragon Head"
+  end_gateway: "End Gateway"
+  structure_void: "Structure Void"
+  structure_block: "Structure Block"
+  void_air: "Void Air"
+  cave_air: "Cave Air"
+  bubble_column: "Bubble Column"
+  dead_tube_coral_block: "Dead Tube Coral Block"
+  dead_brain_coral_block: "Dead Brain Coral Block"
+  dead_bubble_coral_block: "Dead Bubble Coral Block"
+  dead_fire_coral_block: "Dead Fire Coral Block"
+  dead_horn_coral_block: "Dead Horn Coral Block"
+  tube_coral_block: "Tube Coral Block"
+  brain_coral_block: "Brain Coral Block"
+  bubble_coral_block: "Bubble Coral Block"
+  fire_coral_block: "Fire Coral Block"
+  horn_coral_block: "Horn Coral Block"
+  tube_coral: "Tube Coral"
+  brain_coral: "Brain Coral"
+  bubble_coral: "Bubble Coral"
+  fire_coral: "Fire Coral"
+  horn_coral: "Horn Coral"
+  dead_tube_coral: "Dead Tube Coral"
+  dead_brain_coral: "Dead Brain Coral"
+  dead_bubble_coral: "Dead Bubble Coral"
+  dead_fire_coral: "Dead Fire Coral"
+  dead_horn_coral: "Dead Horn Coral"
+  tube_coral_fan: "Tube Coral Fan"
+  brain_coral_fan: "Brain Coral Fan"
+  bubble_coral_fan: "Bubble Coral Fan"
+  fire_coral_fan: "Fire Coral Fan"
+  horn_coral_fan: "Horn Coral Fan"
+  dead_tube_coral_fan: "Dead Tube Coral Fan"
+  dead_brain_coral_fan: "Dead Brain Coral Fan"
+  dead_bubble_coral_fan: "Dead Bubble Coral Fan"
+  dead_fire_coral_fan: "Dead Fire Coral Fan"
+  dead_horn_coral_fan: "Dead Horn Coral Fan"
+  tube_coral_wall_fan: "Tube Coral Wall Fan"
+  brain_coral_wall_fan: "Brain Coral Wall Fan"
+  bubble_coral_wall_fan: "Bubble Coral Wall Fan"
+  fire_coral_wall_fan: "Fire Coral Wall Fan"
+  horn_coral_wall_fan: "Horn Coral Wall Fan"
+  dead_tube_coral_wall_fan: "Dead Tube Coral Wall Fan"
+  dead_brain_coral_wall_fan: "Dead Brain Coral Wall Fan"
+  dead_bubble_coral_wall_fan: "Dead Bubble Coral Wall Fan"
+  dead_fire_coral_wall_fan: "Dead Fire Coral Wall Fan"
+  dead_horn_coral_wall_fan: "Dead Horn Coral Wall Fan"
+  conduit: "Conduit"
+  name_tag: "Name Tag"
+  lead: "Lead"
+  iron_shovel: "Iron Shovel"
+  iron_pickaxe: "Iron Pickaxe"
+  iron_axe: "Iron Axe"
+  flint_and_steel: "Flint and Steel"
+  apple: "Apple"
+  cookie: "Cookie"
+  bow: "Bow"
+  arrow: "Arrow"
+  spectral_arrow: "Spectral Arrow"
+  tipped_arrow: "Tipped Arrow"
+  dried_kelp: "Dried Kelp"
+  coal: "Coal"
+  charcoal: "Charcoal"
+  diamond: "Diamond"
+  emerald: "Emerald"
+  iron_ingot: "Iron Ingot"
+  gold_ingot: "Gold Ingot"
+  iron_sword: "Iron Sword"
+  wooden_sword: "Wooden Sword"
+  wooden_shovel: "Wooden Shovel"
+  wooden_pickaxe: "Wooden Pickaxe"
+  wooden_axe: "Wooden Axe"
+  stone_sword: "Stone Sword"
+  stone_shovel: "Stone Shovel"
+  stone_pickaxe: "Stone Pickaxe"
+  stone_axe: "Stone Axe"
+  diamond_sword: "Diamond Sword"
+  diamond_shovel: "Diamond Shovel"
+  diamond_pickaxe: "Diamond Pickaxe"
+  diamond_axe: "Diamond Axe"
+  stick: "Stick"
+  bowl: "Bowl"
+  mushroom_stew: "Mushroom Stew"
+  golden_sword: "Golden Sword"
+  golden_shovel: "Golden Shovel"
+  golden_pickaxe: "Golden Pickaxe"
+  golden_axe: "Golden Axe"
+  string: "String"
+  feather: "Feather"
+  gunpowder: "Gunpowder"
+  wooden_hoe: "Wooden Hoe"
+  stone_hoe: "Stone Hoe"
+  iron_hoe: "Iron Hoe"
+  diamond_hoe: "Diamond Hoe"
+  golden_hoe: "Golden Hoe"
+  wheat_seeds: "Wheat Seeds"
+  pumpkin_seeds: "Pumpkin Seeds"
+  melon_seeds: "Melon Seeds"
+  melon_slice: "Melon Slice"
+  wheat: "Wheat"
+  bread: "Bread"
+  leather_helmet: "Leather Cap"
+  leather_chestplate: "Leather Tunic"
+  leather_leggings: "Leather Pants"
+  leather_boots: "Leather Boots"
+  chainmail_helmet: "Chainmail Helmet"
+  chainmail_chestplate: "Chainmail Chestplate"
+  chainmail_leggings: "Chainmail Leggings"
+  chainmail_boots: "Chainmail Boots"
+  iron_helmet: "Iron Helmet"
+  iron_chestplate: "Iron Chestplate"
+  iron_leggings: "Iron Leggings"
+  iron_boots: "Iron Boots"
+  diamond_helmet: "Diamond Helmet"
+  diamond_chestplate: "Diamond Chestplate"
+  diamond_leggings: "Diamond Leggings"
+  diamond_boots: "Diamond Boots"
+  golden_helmet: "Golden Helmet"
+  golden_chestplate: "Golden Chestplate"
+  golden_leggings: "Golden Leggings"
+  golden_boots: "Golden Boots"
+  flint: "Flint"
+  porkchop: "Raw Porkchop"
+  cooked_porkchop: "Cooked Porkchop"
+  chicken: "Raw Chicken"
+  cooked_chicken: "Cooked Chicken"
+  mutton: "Raw Mutton"
+  cooked_mutton: "Cooked Mutton"
+  rabbit: "Raw Rabbit"
+  cooked_rabbit: "Cooked Rabbit"
+  rabbit_stew: "Rabbit Stew"
+  rabbit_foot: "Rabbit's Foot"
+  rabbit_hide: "Rabbit Hide"
+  beef: "Raw Beef"
+  cooked_beef: "Steak"
+  painting: "Painting"
+  item_frame: "Item Frame"
+  golden_apple: "Golden Apple"
+  enchanted_golden_apple: "Enchanted Golden Apple"
+  sign: "Sign"
+  bucket: "Bucket"
+  water_bucket: "Water Bucket"
+  lava_bucket: "Lava Bucket"
+  pufferfish_bucket: "Bucket of Pufferfish"
+  salmon_bucket: "Bucket of Salmon"
+  cod_bucket: "Bucket of Cod"
+  tropical_fish_bucket: "Bucket of Tropical Fish"
+  minecart: "Minecart"
+  saddle: "Saddle"
+  redstone: "Redstone"
+  snowball: "Snowball"
+  oak_boat: "Oak Boat"
+  spruce_boat: "Spruce Boat"
+  birch_boat: "Birch Boat"
+  jungle_boat: "Jungle Boat"
+  acacia_boat: "Acacia Boat"
+  dark_oak_boat: "Dark Oak Boat"
+  leather: "Leather"
+  milk_bucket: "Milk Bucket"
+  brick: "Brick"
+  clay_ball: "Clay"
+  paper: "Paper"
+  book: "Book"
+  slime_ball: "Slimeball"
+  chest_minecart: "Minecart with Chest"
+  furnace_minecart: "Minecart with Furnace"
+  tnt_minecart: "Minecart with TNT"
+  hopper_minecart: "Minecart with Hopper"
+  command_block_minecart: "Minecart with Command Block"
+  egg: "Egg"
+  compass: "Compass"
+  fishing_rod: "Fishing Rod"
+  clock: "Clock"
+  glowstone_dust: "Glowstone Dust"
+  cod: "Raw Cod"
+  salmon: "Raw Salmon"
+  pufferfish: "Pufferfish"
+  tropical_fish: "Tropical Fish"
+  cooked_cod: "Cooked Cod"
+  cooked_salmon: "Cooked Salmon"
+  music_disc_13: "Music Disc 13"
+  music_disc_cat: "Music Disc Cat"
+  music_disc_blocks: "Music Disc Blocks"
+  music_disc_chirp: "Music Disc Chirp"
+  music_disc_far: "Music Disc Far"
+  music_disc_mall: "Music Disc Mall"
+  music_disc_mellohi: "Music Disc Mellohi"
+  music_disc_stal: "Music Disc Stal"
+  music_disc_strad: "Music Disc Strad"
+  music_disc_ward: "Music Disc Ward"
+  bone: "Bone"
+  ink_sac: "Ink Sac"
+  rose_red: "Rose Red"
+  cactus_green: "Cactus Green"
+  cocoa_beans: "Cocoa Beans"
+  lapis_lazuli: "Lapis Lazuli"
+  purple_dye: "Purple Dye"
+  cyan_dye: "Cyan Dye"
+  light_gray_dye: "Light Gray Dye"
+  gray_dye: "Gray Dye"
+  pink_dye: "Pink Dye"
+  lime_dye: "Lime Dye"
+  dandelion_yellow: "Dandelion Yellow"
+  light_blue_dye: "Light Blue Dye"
+  magenta_dye: "Magenta Dye"
+  orange_dye: "Orange Dye"
+  bone_meal: "Bone Meal"
+  sugar: "Sugar"
+  black_bed: "Black Bed"
+  red_bed: "Red Bed"
+  green_bed: "Green Bed"
+  brown_bed: "Brown Bed"
+  blue_bed: "Blue Bed"
+  purple_bed: "Purple Bed"
+  cyan_bed: "Cyan Bed"
+  light_gray_bed: "Light Gray Bed"
+  gray_bed: "Gray Bed"
+  pink_bed: "Pink Bed"
+  lime_bed: "Lime Bed"
+  yellow_bed: "Yellow Bed"
+  light_blue_bed: "Light Blue Bed"
+  magenta_bed: "Magenta Bed"
+  orange_bed: "Orange Bed"
+  white_bed: "White Bed"
+  repeater: "Redstone Repeater"
+  comparator: "Redstone Comparator"
+  filled_map: "Map"
+  shears: "Shears"
+  rotten_flesh: "Rotten Flesh"
+  ender_pearl: "Ender Pearl"
+  blaze_rod: "Blaze Rod"
+  ghast_tear: "Ghast Tear"
+  nether_wart: "Nether Wart"
+  potion: "Potion"
+  splash_potion: "Splash Potion"
+  lingering_potion: "Lingering Potion"
+  end_crystal: "End Crystal"
+  gold_nugget: "Gold Nugget"
+  glass_bottle: "Glass Bottle"
+  spider_eye: "Spider Eye"
+  fermented_spider_eye: "Fermented Spider Eye"
+  blaze_powder: "Blaze Powder"
+  magma_cream: "Magma Cream"
+  cauldron: "Cauldron"
+  brewing_stand: "Brewing Stand"
+  ender_eye: "Eye of Ender"
+  glistering_melon_slice: "Glistering Melon Slice"
+  bat_spawn_egg: "Bat Spawn Egg"
+  blaze_spawn_egg: "Blaze Spawn Egg"
+  cave_spider_spawn_egg: "Cave Spider Spawn Egg"
+  chicken_spawn_egg: "Chicken Spawn Egg"
+  cod_spawn_egg: "Cod Spawn Egg"
+  cow_spawn_egg: "Cow Spawn Egg"
+  creeper_spawn_egg: "Creeper Spawn Egg"
+  dolphin_spawn_egg: "Dolphin Spawn Egg"
+  donkey_spawn_egg: "Donkey Spawn Egg"
+  drowned_spawn_egg: "Drowned Spawn Egg"
+  elder_guardian_spawn_egg: "Elder Guardian Spawn Egg"
+  enderman_spawn_egg: "Enderman Spawn Egg"
+  endermite_spawn_egg: "Endermite Spawn Egg"
+  evoker_spawn_egg: "Evoker Spawn Egg"
+  ghast_spawn_egg: "Ghast Spawn Egg"
+  guardian_spawn_egg: "Guardian Spawn Egg"
+  horse_spawn_egg: "Horse Spawn Egg"
+  husk_spawn_egg: "Husk Spawn Egg"
+  llama_spawn_egg: "Llama Spawn Egg"
+  magma_cube_spawn_egg: "Magma Cube Spawn Egg"
+  mooshroom_spawn_egg: "Mooshroom Spawn Egg"
+  mule_spawn_egg: "Mule Spawn Egg"
+  ocelot_spawn_egg: "Ocelot Spawn Egg"
+  parrot_spawn_egg: "Parrot Spawn Egg"
+  pig_spawn_egg: "Pig Spawn Egg"
+  phantom_spawn_egg: "Phantom Spawn Egg"
+  polar_bear_spawn_egg: "Polar Bear Spawn Egg"
+  pufferfish_spawn_egg: "Pufferfish Spawn Egg"
+  rabbit_spawn_egg: "Rabbit Spawn Egg"
+  salmon_spawn_egg: "Salmon Spawn Egg"
+  sheep_spawn_egg: "Sheep Spawn Egg"
+  shulker_spawn_egg: "Shulker Spawn Egg"
+  silverfish_spawn_egg: "Silverfish Spawn Egg"
+  skeleton_spawn_egg: "Skeleton Spawn Egg"
+  skeleton_horse_spawn_egg: "Skeleton Horse Spawn Egg"
+  slime_spawn_egg: "Slime Spawn Egg"
+  spider_spawn_egg: "Spider Spawn Egg"
+  squid_spawn_egg: "Squid Spawn Egg"
+  stray_spawn_egg: "Stray Spawn Egg"
+  tropical_fish_spawn_egg: "Tropical Fish Spawn Egg"
+  turtle_spawn_egg: "Turtle Spawn Egg"
+  vex_spawn_egg: "Vex Spawn Egg"
+  villager_spawn_egg: "Villager Spawn Egg"
+  vindicator_spawn_egg: "Vindicator Spawn Egg"
+  witch_spawn_egg: "Witch Spawn Egg"
+  wither_skeleton_spawn_egg: "Wither Skeleton Spawn Egg"
+  wolf_spawn_egg: "Wolf Spawn Egg"
+  zombie_spawn_egg: "Zombie Spawn Egg"
+  zombie_horse_spawn_egg: "Zombie Horse Spawn Egg"
+  zombie_pigman_spawn_egg: "Zombie Pigman Spawn Egg"
+  zombie_villager_spawn_egg: "Zombie Villager Spawn Egg"
+  experience_bottle: "Bottle o' Enchanting"
+  fire_charge: "Fire Charge"
+  writable_book: "Book and Quill"
+  written_book: "Written Book"
+  flower_pot: "Flower Pot"
+  map: "Empty Map"
+  carrot: "Carrot"
+  golden_carrot: "Golden Carrot"
+  potato: "Potato"
+  baked_potato: "Baked Potato"
+  poisonous_potato: "Poisonous Potato"
+  skeleton_skull: "Skeleton Skull"
+  wither_skeleton_skull: "Wither Skeleton Skull"
+  zombie_head: "Zombie Head"
+  creeper_head: "Creeper Head"
+  dragon_head: "Dragon Head"
+  carrot_on_a_stick: "Carrot on a Stick"
+  nether_star: "Nether Star"
+  pumpkin_pie: "Pumpkin Pie"
+  enchanted_book: "Enchanted Book"
+  firework_rocket: "Firework Rocket"
+  firework_star: "Firework Star"
+  nether_brick: "Nether Brick"
+  quartz: "Nether Quartz"
+  armor_stand: "Armor Stand"
+  iron_horse_armor: "Iron Horse Armor"
+  golden_horse_armor: "Golden Horse Armor"
+  diamond_horse_armor: "Diamond Horse Armor"
+  prismarine_shard: "Prismarine Shard"
+  prismarine_crystals: "Prismarine Crystals"
+  chorus_fruit: "Chorus Fruit"
+  popped_chorus_fruit: "Popped Chorus Fruit"
+  beetroot: "Beetroot"
+  beetroot_seeds: "Beetroot Seeds"
+  beetroot_soup: "Beetroot Soup"
+  dragon_breath: "Dragon's Breath"
+  elytra: "Elytra"
+  totem_of_undying: "Totem of Undying"
+  shulker_shell: "Shulker Shell"
+  iron_nugget: "Iron Nugget"
+  knowledge_book: "Knowledge Book"
+  debug_stick: "Debug Stick"
+  trident: "Trident"
+  scute: "Scute"
+  turtle_helmet: "Turtle Shell"
+  phantom_membrane: "Phantom Membrane"
+  nautilus_shell: "Nautilus Shell"
+  heart_of_the_sea: "Heart of the Sea"
 
-Version: 1
+Version: 2

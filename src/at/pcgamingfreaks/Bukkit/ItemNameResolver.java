@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -41,6 +41,29 @@ public class ItemNameResolver
 		int translationCount = 0;
 		for(String key : language.getLang().getKeys(true))
 		{
+			if(!key.startsWith("Items")) continue;
+			String material = key.substring(6), suffix = "";
+			short dataValue = -1;
+			Material mat = Material.matchMaterial(material);
+			if(mat == null) continue;
+			if(!names.containsKey(mat))
+			{
+				names.put(mat, new HashMap<Short, String>());
+			}
+			names.get(mat).put(dataValue, language.getLang().getString(key, "") + suffix);
+			translationCount++;
+		}
+		logger.info("Finished loading item translations for " + translationCount + " items.");
+		return this;
+	}
+
+	public ItemNameResolver loadLegacy(@NotNull Language language, @NotNull Logger logger)
+	{
+		if(!language.isLoaded()) return this;
+		logger.info("Loading item translations ...");
+		int translationCount = 0;
+		for(String key : language.getLang().getKeys(true))
+		{
 			String material = key, suffix = "";
 			short dataValue = -1;
 			if(key.contains(".") || key.contains(":"))
@@ -59,11 +82,12 @@ public class ItemNameResolver
 				}
 			}
 			Material mat = Material.matchMaterial(material);
+			if(mat == null) continue;
 			if(!names.containsKey(mat))
 			{
 				names.put(mat, new HashMap<Short, String>());
 			}
-			names.get(mat).put(dataValue, language.get(key) + suffix);
+			names.get(mat).put(dataValue, language.getLang().getString(key, "") + suffix);
 			translationCount++;
 		}
 		logger.info("Finished loading item translations for " + translationCount + " items.");
@@ -98,7 +122,7 @@ public class ItemNameResolver
 			{
 				return namesForMaterial.get(dataValue);
 			}
-			if(dataValue != -1 && namesForMaterial.containsKey((short) -1))
+			if(namesForMaterial.containsKey((short) -1))
 			{
 				return namesForMaterial.get((short) -1);
 			}

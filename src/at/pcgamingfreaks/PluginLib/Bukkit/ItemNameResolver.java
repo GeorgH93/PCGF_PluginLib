@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.Language;
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.YamlFileUpdateMethod;
 
 import org.jetbrains.annotations.NotNull;
@@ -46,9 +47,18 @@ public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameRes
 	{
 		super();
 		instance = this;
-		Language itemNameLanguage = new Language(plugin, 1, File.separator + "lang", "items_");
-		itemNameLanguage.load("en", YamlFileUpdateMethod.UPGRADE);
-		super.load(itemNameLanguage, plugin.getLogger());
+		if(MCVersion.isOlderThan(MCVersion.MC_1_13))
+		{
+			Language itemNameLanguage = new Language(plugin, 1, 1, File.separator + "lang", "items_", "legacy_");
+			itemNameLanguage.load("en", YamlFileUpdateMethod.UPGRADE);
+			super.loadLegacy(itemNameLanguage, plugin.getLogger());
+		}
+		else
+		{
+			Language itemNameLanguage = new Language(plugin, 2, File.separator + "lang", "items_");
+			itemNameLanguage.load("en", YamlFileUpdateMethod.UPGRADE);
+			super.load(itemNameLanguage, plugin.getLogger());
+		}
 	}
 
 	@Override
