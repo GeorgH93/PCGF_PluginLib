@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2017-2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -34,11 +34,12 @@ public class ItemNameResolver
 {
 	private final Map<Material, Map<Short, String>> names = new HashMap<>();
 
-	public ItemNameResolver load(@NotNull Language language, @NotNull Logger logger)
+	public void load(@NotNull Language language, @NotNull Logger logger)
 	{
-		if(!language.isLoaded()) return this;
+		if(!language.isLoaded()) return;
 		logger.info("Loading item translations ...");
 		int translationCount = 0;
+		//noinspection ConstantConditions
 		for(String key : language.getLang().getKeys(true))
 		{
 			if(!key.startsWith("Items")) continue;
@@ -54,14 +55,14 @@ public class ItemNameResolver
 			translationCount++;
 		}
 		logger.info("Finished loading item translations for " + translationCount + " items.");
-		return this;
 	}
 
-	public ItemNameResolver loadLegacy(@NotNull Language language, @NotNull Logger logger)
+	public void loadLegacy(@NotNull Language language, @NotNull Logger logger)
 	{
-		if(!language.isLoaded()) return this;
+		if(!language.isLoaded()) return;
 		logger.info("Loading item translations ...");
 		int translationCount = 0;
+		//noinspection ConstantConditions
 		for(String key : language.getLang().getKeys(true))
 		{
 			String material = key, suffix = "";
@@ -91,7 +92,6 @@ public class ItemNameResolver
 			translationCount++;
 		}
 		logger.info("Finished loading item translations for " + translationCount + " items.");
-		return this;
 	}
 
 	/**

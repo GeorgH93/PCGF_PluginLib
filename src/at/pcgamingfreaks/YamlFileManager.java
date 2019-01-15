@@ -23,7 +23,8 @@ import at.pcgamingfreaks.yaml.YAMLNotInitializedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 /**
@@ -200,7 +201,7 @@ public class YamlFileManager
 		}
 		else if(expectedVersion < getVersion())
 		{
-			logger.info(fileDescriptionCapitalized + " file version newer than expected! Expected: " + expectedVersion + ". Is: " + getVersion());
+			logger.info(fileDescriptionCapitalized + " file version newer than expected! Expected: " + expectedVersion + " Is: " + getVersion());
 		}
 		else
 		{

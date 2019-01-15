@@ -17,10 +17,10 @@
 
 package at.pcgamingfreaks.PluginLib.Bungee;
 
-import at.pcgamingfreaks.*;
 import at.pcgamingfreaks.Bungee.Configuration;
 import at.pcgamingfreaks.Bungee.Updater;
 import at.pcgamingfreaks.Calendar.TimeSpan;
+import at.pcgamingfreaks.*;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
@@ -60,8 +60,8 @@ public final class PluginLib extends Plugin implements PluginLibrary
 			updater.update();
 		}
 
-		Language commonLanguage = new at.pcgamingfreaks.Bungee.Language(this, 1, File.separator + "lang", "common_");
-		commonLanguage.load("en", YamlFileUpdateMethod.UPGRADE);
+		Language commonLanguage = new at.pcgamingfreaks.Bungee.Language(this, 2, File.separator + "lang", "common_");
+		commonLanguage.load(config.getLanguage(), config.getLanguageUpdateMode());
 		if(commonLanguage.isLoaded())
 		{
 			String[] unitNames = new String[] { commonLanguage.get("Date.Units.Year"), commonLanguage.get("Date.Units.Years"), commonLanguage.get("Date.Units.Month"), commonLanguage.get("Date.Units.Months"), commonLanguage.get("Date.Units.Day"), commonLanguage.get("Date.Units.Days"), commonLanguage.get("Date.Units.Hour"), commonLanguage.get("Date.Units.Hours"), commonLanguage.get("Date.Units.Minute"), commonLanguage.get("Date.Units.Minutes"), commonLanguage.get("Date.Units.Second"), commonLanguage.get("Date.Units.Seconds") };

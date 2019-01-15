@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017, 2018 GeorgH93
+ *   Copyright (C) 2017-2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@ package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.Language;
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.YamlFileUpdateMethod;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,26 +44,30 @@ public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameRes
 	 */
 	ItemNameResolver(@NotNull PluginLib plugin)
 	{
-		super();
-		instance = this;
 		if(MCVersion.isOlderThan(MCVersion.MC_1_13))
 		{
 			Language itemNameLanguage = new Language(plugin, 1, 1, File.separator + "lang", "items_", "legacy_");
-			itemNameLanguage.load("en", YamlFileUpdateMethod.UPGRADE);
+			itemNameLanguage.load(plugin.getConfiguration().getLanguage(), plugin.getConfiguration().getItemLangUpdateMode());
 			super.loadLegacy(itemNameLanguage, plugin.getLogger());
 		}
 		else
 		{
 			Language itemNameLanguage = new Language(plugin, 2, File.separator + "lang", "items_");
-			itemNameLanguage.load("en", YamlFileUpdateMethod.UPGRADE);
+			itemNameLanguage.load(plugin.getConfiguration().getLanguage(), plugin.getConfiguration().getItemLangUpdateMode());
 			super.load(itemNameLanguage, plugin.getLogger());
 		}
+		instance = this;
 	}
 
 	@Override
-	public at.pcgamingfreaks.Bukkit.ItemNameResolver load(@NotNull Language language, @NotNull Logger logger)
+	public void load(@NotNull Language language, @NotNull Logger logger)
 	{
 		// Prevents other plugins from loading item names in the shared ItemNameResolver
-		return this;
+	}
+
+	@Override
+	public void loadLegacy(@NotNull Language language, @NotNull Logger logger)
+	{
+		// Prevents other plugins from loading item names in the shared ItemNameResolver
 	}
 }
