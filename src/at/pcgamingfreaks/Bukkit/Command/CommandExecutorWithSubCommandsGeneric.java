@@ -17,14 +17,15 @@
 
 package at.pcgamingfreaks.Bukkit.Command;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubCommand> extends at.pcgamingfreaks.Command.CommandExecutorWithSubCommands<SUB_COMMAND> implements CommandExecutor, TabExecutor
 {
@@ -53,11 +54,11 @@ public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubComman
 	{
 		if(args.length > 0)
 		{
-			String arg = args[0].toLowerCase();
+			final String arg = args[0].toLowerCase();
 			SubCommand subCommand = subCommandMap.get(arg);
-			if(subCommand != null)
+			if(subCommand != null && args.length > 1)
 			{
-				return subCommand.doTabComplete(sender, alias, args[0], (args.length > 1) ? Arrays.copyOfRange(args, 1, args.length) : new String[0]);
+				return subCommand.doTabComplete(sender, alias, args[0], Arrays.copyOfRange(args, 1, args.length));
 			}
 			List<String> results = new LinkedList<>();
 			if(args.length == 1)
@@ -68,14 +69,6 @@ public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubComman
 					{
 						results.add(cmd.getKey());
 					}
-				}
-			}
-			arg = args[args.length - 1].toLowerCase();
-			for(Player player : Bukkit.getServer().getOnlinePlayers())
-			{
-				if(player.getName().toLowerCase().startsWith(arg))
-				{
-					results.add(player.getName());
 				}
 			}
 			return results;
