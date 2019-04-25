@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,9 @@
 
 package at.pcgamingfreaks.Bukkit.Particles;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -26,10 +28,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 @Deprecated
 abstract class ParticleSpawnerBukkitNMSBase extends ParticleSpawner
 {
+	private static final Method METHOD_MATERIAL_DATA_GET_ITEM_TYPE_ID = MCVersion.isOlderThan(MCVersion.MC_1_13) ? Reflection.getMethod(MaterialData.class, "getItemTypeId") : null;
+
 	@SuppressWarnings("deprecation")
 	public void spawnParticle(Location location, Particle type, Object particleData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
@@ -48,14 +53,26 @@ abstract class ParticleSpawnerBukkitNMSBase extends ParticleSpawner
 		}
 		else if(type.getDataType().equals(MaterialData.class))
 		{
-			if(particleData == null || (!(particleData instanceof MaterialData) && !(particleData instanceof ItemStack)))
+			if((!(particleData instanceof MaterialData) && !(particleData instanceof ItemStack)))
 			{
 				data = new int[]{0};
 			}
 			else
 			{
 				MaterialData matData = (particleData instanceof MaterialData) ? (MaterialData) particleData : ((ItemStack) particleData).getData();
-				data = new int[] { matData.getItemTypeId() + (((int)matData.getData()) << 12) };
+				if(METHOD_MATERIAL_DATA_GET_ITEM_TYPE_ID != null)
+				{
+					try
+					{
+						data = new int[] { (int) METHOD_MATERIAL_DATA_GET_ITEM_TYPE_ID.invoke(matData) + (((int) matData.getData()) << 12) };
+					}
+					catch(IllegalAccessException | InvocationTargetException e)
+					{
+						data = new int[] { 0 };
+						e.printStackTrace();
+					}
+				}
+				else data = new int[] { 0 };
 			}
 		}
 		else data = new int[0];

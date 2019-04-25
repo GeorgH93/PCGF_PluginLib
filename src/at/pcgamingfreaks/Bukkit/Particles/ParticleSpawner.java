@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import org.bukkit.material.MaterialData;
 /**
  * API to spawn particles.
  * This particle API is compatible with MC versions 1.7 to 1.12.
- * There is will work on MC 1.13 and newer, but there will be no more testing or development going into it.
+ * This will work on MC 1.13 and newer, but there will be no more testing or development going into it.
  * Bukkit has a particle api build in now, please use that if you don't need support for very old MC versions!
  */
 @Deprecated
