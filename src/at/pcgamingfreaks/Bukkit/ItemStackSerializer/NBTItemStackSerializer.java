@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 /**
  * Doesn't handle item format chances on MC 1.13 or newer! Use NBTItemStackSerializerGen2 instead!
+ * Doesn't support MC 1.14 and newer! Use NBTItemStackSerializerGen2 instead!
  */
 @Deprecated
 @SuppressWarnings("ConstantConditions")
@@ -55,6 +56,19 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 	private static final Method METHOD_AS_BUKKIT_COPY     = NMSReflection.getMethod(CLASS_CRAFT_ITEM_STACK, "asBukkitCopy", CLASS_NMS_ITEM_STACK);
 	private static final Method METHOD_NBT_COMP_STREAM_A2 = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", InputStream.class);
 	//endregion
+
+	private static final int CURRENT_DATA_VERSION;
+
+	static
+	{
+		//region get data version
+		// Data version can be found in: net.minecraft.server.<version>.EntityHuman.java (search for "DataVersion")
+		if(MCVersion.isOlderThan(MCVersion.MC_1_13)) CURRENT_DATA_VERSION = 1343;
+		else if(MCVersion.is(MCVersion.MC_NMS_1_13_R1)) CURRENT_DATA_VERSION = 1519;
+		else if(MCVersion.is(MCVersion.MC_NMS_1_13_R2)) CURRENT_DATA_VERSION = 1631;
+		else CURRENT_DATA_VERSION = -1;
+		//endregion
+	}
 
 	private Logger logger = null;
 
@@ -113,7 +127,7 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 		return null;
 	}
 
-	@SuppressWarnings("ConstantConditions")
+	@SuppressWarnings({ "ConstantConditions", "Duplicates" })
 	private static @Nullable ItemStack deserializeNBTCompound(@NotNull Object compound) throws Exception
 	{
 		Object nmsItemStack;
@@ -145,7 +159,7 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 				//noinspection ConstantConditions
 				Object localNBTTagCompound = CLASS_NBT_TAG_COMPOUND.newInstance();
 				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, "size", itemStacks.length);
-				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, "DataVersion", NBTItemStackSerializerGen2.getDataVersion());
+				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, "DataVersion", CURRENT_DATA_VERSION);
 				for(int i = 0; i < itemStacks.length; i++)
 				{
 					if(itemStacks[i] != null)

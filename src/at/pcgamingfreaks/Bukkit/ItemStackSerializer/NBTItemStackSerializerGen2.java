@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 	private static final Method METHOD_NBT_TAG_C_SET_INT            = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "setInt", String.class, int.class);
 	private static final Method METHOD_NBT_TAG_C_SET_BYTE           = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "setByte", String.class, byte.class);
 	private static final Method METHOD_NBT_TAG_C_SET_NBT_BASE       = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "set", String.class, CLASS_NBT_BASE);
-	private static final Method METHOD_NBT_TAG_LIST_ADD             = NMSReflection.getMethod(CLASS_NBT_TAG_LIST, "add", CLASS_NBT_BASE);
+	private static final Method METHOD_NBT_TAG_LIST_ADD             = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? NMSReflection.getMethod(CLASS_NBT_TAG_LIST, "add", CLASS_NBT_BASE) : NMSReflection.getMethod(CLASS_NBT_TAG_LIST, "b", int.class, CLASS_NBT_BASE);
 	private static final Method METHOD_NBT_COMP_STEAM_A             = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", CLASS_NBT_TAG_COMPOUND, OutputStream.class);
 	private static final Method METHOD_NBT_TAG_C_SET2               = NMSReflection.getMethod(CLASS_NBT_TAG_COMPOUND, "set", String.class, NMSReflection.getNMSClass("NBTBase"));
 	private static final Method METHOD_SAVE                         = NMSReflection.getMethod(CLASS_NMS_ITEM_STACK, "save", CLASS_NBT_TAG_COMPOUND);
@@ -60,23 +60,33 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 	private static final Method METHOD_NBT_COMP_STREAM_A2           = NMSReflection.getMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", InputStream.class);
 	private static final Method METHOD_NBT_TAG_LIST_SIZE            = NMSReflection.getMethod(CLASS_NBT_TAG_LIST, "size");
 	private static final Method METHOD_DATA_FIXER_UPDATE;
-	private static final Enum ENUM_DATA_FIX_TYPES                  = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13)) ? NMSReflection.getEnum(NMSReflection.getClass("com.mojang.datafixers.DataFixTypes"), "PLAYER") : null;
+	private static final Enum ENUM_DATA_FIX_TYPE;
 	//endregion
 
 
 	private static final Object DATA_FIXER;
-	private static final int CURRENT_DATA_VERSION = getDataVersion();
+	private static final int CURRENT_DATA_VERSION;
 
 	static
 	{
 		Object dataFixer = null;
 		Method fixerUpdate = null;
+		Enum fixType = null;
 		if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13))
 		{
 			try
 			{
 				dataFixer = NMSReflection.getNMSField("MinecraftServer", "dataConverterManager").get(NMSReflection.getOBCMethod("CraftServer", "getServer").invoke(Bukkit.getServer()));
-				fixerUpdate = NMSReflection.getNMSMethod("GameProfileSerializer", "a", NMSReflection.getClass("com.mojang.datafixers.DataFixer"), NMSReflection.getClass("com.mojang.datafixers.DSL$TypeReference"), CLASS_NBT_TAG_COMPOUND, int.class, int.class);
+				if(MCVersion.isOlderThan(MCVersion.MC_1_14))
+				{
+					fixerUpdate = NMSReflection.getNMSMethod("GameProfileSerializer", "a", NMSReflection.getClass("com.mojang.datafixers.DataFixer"), NMSReflection.getClass("com.mojang.datafixers.DSL$TypeReference"), CLASS_NBT_TAG_COMPOUND, int.class);
+					fixType = NMSReflection.getEnum(NMSReflection.getClass("com.mojang.datafixers.DataFixTypes"), "PLAYER");
+				}
+				else
+				{
+					fixerUpdate = NMSReflection.getNMSMethod("GameProfileSerializer", "a", NMSReflection.getClass("com.mojang.datafixers.DataFixer"), NMSReflection.getNMSClass("DataFixTypes"), CLASS_NBT_TAG_COMPOUND, int.class);
+					fixType = NMSReflection.getNMSEnum("DataFixTypes", "PLAYER");
+				}
 			}
 			catch(Exception e)
 			{
@@ -85,6 +95,32 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 		}
 		DATA_FIXER = dataFixer;
 		METHOD_DATA_FIXER_UPDATE = fixerUpdate;
+		ENUM_DATA_FIX_TYPE = fixType;
+
+		//region get data version
+		// Data version can be found in: net.minecraft.server.<version>.EntityHuman.java (search for "DataVersion")
+		if(MCVersion.isOlderThan(MCVersion.MC_1_13)) CURRENT_DATA_VERSION = 1343;
+		else if(MCVersion.is(MCVersion.MC_NMS_1_13_R1)) CURRENT_DATA_VERSION = 1519;
+		else if(MCVersion.is(MCVersion.MC_NMS_1_13_R2)) CURRENT_DATA_VERSION = 1631;
+		else if(MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_14_R1))
+		{
+			int version = -1;
+			try
+			{
+				Method methodSharedConstantsGetGameVersion = NMSReflection.getNMSMethod("SharedConstants", "a");
+				Object gameVersion = methodSharedConstantsGetGameVersion.invoke(null);
+				Method methodGameVersionGetWorldVersion = NMSReflection.getMethod(NMSReflection.getClass("com.mojang.bridge.game.GameVersion"), "getWorldVersion");
+				version = (int) methodGameVersionGetWorldVersion.invoke(gameVersion);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+
+			CURRENT_DATA_VERSION = version;
+		}
+		else CURRENT_DATA_VERSION = -1;
+		//endregion
 	}
 
 	private final Logger logger;
@@ -140,7 +176,7 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 				if(!(boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, "Inventory", 9)) convertOldFormatToNew(localNBTTagCompound, size);
 				if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) && dataVersion < CURRENT_DATA_VERSION) // MC 1.13 has moved the data-format update code out of the deserializer, so it needs to be done manually
 				{
-					localNBTTagCompound = METHOD_DATA_FIXER_UPDATE.invoke(null, DATA_FIXER, ENUM_DATA_FIX_TYPES, localNBTTagCompound, dataVersion, CURRENT_DATA_VERSION);
+					localNBTTagCompound = METHOD_DATA_FIXER_UPDATE.invoke(null, DATA_FIXER, ENUM_DATA_FIX_TYPE, localNBTTagCompound, dataVersion);
 				}
 				ItemStack[] its = new ItemStack[size];
 				Object nbtItemList = METHOD_GET_COMPOUND_LIST.invoke(localNBTTagCompound, "Inventory", 10);
@@ -168,7 +204,7 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 		return null;
 	}
 
-	@SuppressWarnings("ConstantConditions")
+	@SuppressWarnings({ "ConstantConditions", "Duplicates" })
 	private static @Nullable ItemStack deserializeNBTCompound(@NotNull Object compound) throws Exception
 	{
 		Object nmsItemStack;
@@ -203,14 +239,17 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, "DataVersion", CURRENT_DATA_VERSION);
 				Object nbtItemList = CLASS_NBT_TAG_LIST.newInstance();
 				METHOD_NBT_TAG_C_SET_NBT_BASE.invoke(localNBTTagCompound, "Inventory", nbtItemList);
-				for(int i = 0; i < itemStacks.length; i++)
+				for(int i = 0, used = -1; i < itemStacks.length; i++)
 				{
 					if(itemStacks[i] != null)
 					{
 						Object itemNBTCompound = CLASS_NBT_TAG_COMPOUND.newInstance();
 						METHOD_NBT_TAG_C_SET_BYTE.invoke(itemNBTCompound, "Slot", (byte) i);
 						METHOD_SAVE.invoke(METHOD_AS_NMS_COPY.invoke(null, itemStacks[i]), itemNBTCompound);
-						METHOD_NBT_TAG_LIST_ADD.invoke(nbtItemList, itemNBTCompound);
+						if(MCVersion.isOlderThan(MCVersion.MC_1_14))
+							METHOD_NBT_TAG_LIST_ADD.invoke(nbtItemList, itemNBTCompound);
+						else
+							METHOD_NBT_TAG_LIST_ADD.invoke(nbtItemList, ++used, itemNBTCompound);
 					}
 				}
 				METHOD_NBT_COMP_STEAM_A.invoke(null, localNBTTagCompound, dataOutputStream);
@@ -225,14 +264,6 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 		return ba;
 	}
 
-	static int getDataVersion()
-	{
-		if(MCVersion.isOlderThan(MCVersion.MC_1_13)) return 1343;
-		if(MCVersion.is(MCVersion.MC_NMS_1_13_R1)) return 1519;
-		if(MCVersion.is(MCVersion.MC_NMS_1_13_R2)) return 1631;
-		return -1;
-	}
-
 	@Override
 	public boolean checkIsMCVersionCompatible()
 	{
@@ -241,6 +272,6 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 
 	public static boolean isMCVersionCompatible()
 	{
-		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_13_R2);
+		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_14_R1);
 	}
 }
