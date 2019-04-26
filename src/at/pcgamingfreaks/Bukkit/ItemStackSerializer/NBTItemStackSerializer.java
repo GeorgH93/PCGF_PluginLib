@@ -63,7 +63,11 @@ public class NBTItemStackSerializer implements ItemStackSerializer
 	{
 		//region get data version
 		// Data version can be found in: net.minecraft.server.<version>.EntityHuman.java (search for "DataVersion")
-		if(MCVersion.isOlderThan(MCVersion.MC_1_13)) CURRENT_DATA_VERSION = 1343;
+		if(MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_9_R1)) CURRENT_DATA_VERSION = 176;
+		else if(MCVersion.is(MCVersion.MC_NMS_1_9_R2)) CURRENT_DATA_VERSION = 184;
+		else if(MCVersion.is(MCVersion.MC_NMS_1_10_R1)) CURRENT_DATA_VERSION = 512;
+		else if(MCVersion.is(MCVersion.MC_NMS_1_11_R1)) CURRENT_DATA_VERSION = 922;
+		else if(MCVersion.is(MCVersion.MC_NMS_1_12_R1)) CURRENT_DATA_VERSION = 1343;
 		else if(MCVersion.is(MCVersion.MC_NMS_1_13_R1)) CURRENT_DATA_VERSION = 1519;
 		else if(MCVersion.is(MCVersion.MC_NMS_1_13_R2)) CURRENT_DATA_VERSION = 1631;
 		else CURRENT_DATA_VERSION = -1;
