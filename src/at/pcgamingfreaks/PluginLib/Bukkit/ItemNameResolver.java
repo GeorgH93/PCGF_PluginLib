@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017-2019 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameRes
 	{
 		if(MCVersion.isOlderThan(MCVersion.MC_1_13))
 		{
-			Language itemNameLanguage = new Language(plugin, 1, 1, File.separator + "lang", "items_", "legacy_");
+			Language itemNameLanguage = new Language(plugin, 1, 1, File.separator + "lang", "items_", "legacy_items_");
 			itemNameLanguage.load(plugin.getConfiguration().getLanguage(), plugin.getConfiguration().getItemLangUpdateMode());
 			super.loadLegacy(itemNameLanguage, plugin.getLogger());
 		}
