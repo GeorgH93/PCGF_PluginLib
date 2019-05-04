@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import at.pcgamingfreaks.yaml.YAML;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
@@ -128,6 +128,19 @@ public class Language extends YamlFileManager
 	public @NotNull String get(@NotNull String path)
 	{
 		return yaml.getString("Language." + path, "§cMessage not found!");
+	}
+
+	/**
+	 * Gets the string value of a given key. It is the same as calling "getLang().getString(key, defaultValue)".
+	 * No prefixes are applied.
+	 *
+	 * @param key The key to get the value from.
+	 * @param defaultValue The default value that should be returned if the file doesn't contain the requested key.
+	 * @return The value stored for the given key, the default value if the key is not found in the language file.
+	 */
+	public @Nullable String getRaw(@NotNull String key, @Nullable String defaultValue)
+	{
+		return yaml.getString(key, defaultValue);
 	}
 
 	protected void set(@NotNull String path, @NotNull String value)

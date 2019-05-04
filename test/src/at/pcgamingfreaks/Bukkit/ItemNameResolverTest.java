@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2018 MarkusWME
+ *   Copyright (C) 2019 GeorgH93
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Bukkit;
@@ -58,7 +58,7 @@ public class ItemNameResolverTest
 		}).when(mockedLogger).info(anyString());
 		Language mockedLanguage = mock(Language.class);
 		doReturn(false).when(mockedLanguage).isLoaded();
-		itemNameResolver.load(mockedLanguage, mockedLogger);
+		itemNameResolver.loadLegacy(mockedLanguage, mockedLogger);
 		assertEquals("The info count should match", 0, counts[0]);
 		YAML mockedYAML = mock(YAML.class);
 		HashSet<String> keys = new HashSet<>();
@@ -91,18 +91,18 @@ public class ItemNameResolverTest
 		doReturn("Oak Sapling").when(mockedYAML).getString("6.0");
 		doReturn(true).when(mockedLanguage).isLoaded();
 		doReturn(mockedYAML).when(mockedLanguage).getLang();
-		doReturn("Air").when(mockedLanguage).get("0");
-		doReturn("Stone").when(mockedLanguage).get("1");
-		doReturn("Granite").when(mockedLanguage).get("1.1");
-		doReturn("Polished Granite").when(mockedLanguage).get("1.2");
-		doReturn("Diorite").when(mockedLanguage).get("1:3");
-		doReturn("Polished Diorite").when(mockedLanguage).get("1:4");
-		doReturn("Andesite").when(mockedLanguage).get("1.5");
-		doReturn("Polished Andesite").when(mockedLanguage).get("1.6");
-		doReturn("Wood Plank").when(mockedLanguage).get("5");
-		doReturn("Oak").when(mockedLanguage).get("5.0");
-		doReturn("Oak Sapling").when(mockedLanguage).get("6.0");
-		itemNameResolver.load(mockedLanguage, mockedLogger);
+		doReturn("Air").when(mockedLanguage).getRaw(eq("0"), anyString());
+		doReturn("Stone").when(mockedLanguage).getRaw(eq("1"), anyString());
+		doReturn("Granite").when(mockedLanguage).getRaw(eq("1.1"), anyString());
+		doReturn("Polished Granite").when(mockedLanguage).getRaw(eq("1.2"), anyString());
+		doReturn("Diorite").when(mockedLanguage).getRaw(eq("1:3"), anyString());
+		doReturn("Polished Diorite").when(mockedLanguage).getRaw(eq("1:4"), anyString());
+		doReturn("Andesite").when(mockedLanguage).getRaw(eq("1.5"), anyString());
+		doReturn("Polished Andesite").when(mockedLanguage).getRaw(eq("1.6"), anyString());
+		doReturn("Wood Plank").when(mockedLanguage).getRaw(eq("5"), anyString());
+		doReturn("Oak").when(mockedLanguage).getRaw(eq("5.0"), anyString());
+		doReturn("Oak Sapling").when(mockedLanguage).getRaw(eq("6.0"), anyString());
+		itemNameResolver.loadLegacy(mockedLanguage, mockedLogger);
 		assertEquals("The info count should match", 2, counts[0]);
 		assertEquals("The name of the material should match", "Air", itemNameResolver.getName(Material.AIR));
 		assertEquals("The name of the material should match", "Andesite", itemNameResolver.getName(Material.STONE, (short) 5));

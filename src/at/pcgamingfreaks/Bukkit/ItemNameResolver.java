@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017-2019 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ public class ItemNameResolver
 			{
 				names.put(mat, new HashMap<Short, String>());
 			}
-			names.get(mat).put(dataValue, language.getLang().getString(key, "") + suffix);
+			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
 			translationCount++;
 		}
 		logger.info("Finished loading item translations for " + translationCount + " items.");
@@ -79,7 +79,7 @@ public class ItemNameResolver
 				catch(NumberFormatException ignored) {}
 				if(language.getLang().getBoolean(material + ".appendDefault", false))
 				{
-					suffix = language.getLang().getString(material, language.getLang().getString(material + ".default", ""));
+					suffix = language.getRaw(material, language.getRaw(material + ".default", ""));
 				}
 			}
 			Material mat = Material.matchMaterial(material);
@@ -88,7 +88,7 @@ public class ItemNameResolver
 			{
 				names.put(mat, new HashMap<Short, String>());
 			}
-			names.get(mat).put(dataValue, language.getLang().getString(key, "") + suffix);
+			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
 			translationCount++;
 		}
 		logger.info("Finished loading item translations for " + translationCount + " items.");
