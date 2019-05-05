@@ -24,12 +24,16 @@ import at.pcgamingfreaks.Bukkit.Message.Sender.TitleMetadata;
 
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import me.clip.placeholderapi.PlaceholderAPI;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender>
 {
@@ -37,6 +41,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	private static final boolean PRE_1_8_MC = MCVersion.isOlderThan(MCVersion.MC_1_8);
 
 	private SendMethod method = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
+	private boolean placeholderApiEnabled = false;
 	//endregion
 
 	//region Constructors
@@ -169,6 +174,16 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		super.setOptionalParameters(optionalParameters);
 	}
 
+	public void setPlaceholderApiEnabled(boolean enabled)
+	{
+		placeholderApiEnabled = enabled && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
+	}
+
+	public boolean isPlaceholderApiEnabled()
+	{
+		return placeholderApiEnabled;
+	}
+
 	/**
 	 * Sends the message to a target.
 	 *
@@ -184,11 +199,15 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		if(getSendMethod() == SendMethod.DISABLED) return;
 		if(target instanceof Player && getSendMethod() != SendMethod.CHAT_CLASSIC)
 		{
-			method.getSender().doSend((Player) target, (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
+			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
+			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders((Player) target, jsonMsg);
+			method.getSender().doSend((Player) target, jsonMsg, optionalParameters);
 		}
 		else
 		{
-			target.sendMessage((args != null && args.length > 0) ? String.format(fallback, args) : fallback);
+			String msg = (args != null && args.length > 0) ? String.format(fallback, args) : fallback;
+			if(isPlaceholderApiEnabled() && target instanceof Player) msg = PlaceholderAPI.setPlaceholders((Player) target, msg);
+			target.sendMessage(msg);
 		}
 	}
 
@@ -210,17 +229,29 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 			String msg = (args != null && args.length > 0) ? String.format(fallback, args) : fallback;
 			for(Player player : targets)
 			{
-				player.sendMessage(msg);
+				player.sendMessage((isPlaceholderApiEnabled()) ? PlaceholderAPI.setPlaceholders(player, msg) : msg);
 			}
 		}
 		else
 		{
-			method.getSender().doSend(targets, (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
+			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
+			if(isPlaceholderApiEnabled())
+			{
+				for(Player player : targets)
+				{
+					method.getSender().doSend(player, PlaceholderAPI.setPlaceholders(player, jsonMsg));
+				}
+			}
+			else
+			{
+				method.getSender().doSend(targets, jsonMsg, optionalParameters);
+			}
 		}
 	}
 
 	/**
 	 * Sends the message to all online players on the server, as well as the console.
+	 * This function will ignore PlaceholderAPI placeholders even if PlaceholderAPI is enabled!
 	 *
 	 * @param args An optional array of arguments.
 	 *                If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
@@ -238,6 +269,89 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		{
 			Bukkit.getConsoleSender().sendMessage((args != null && args.length > 0) ? String.format(fallback, args) : fallback); // Send the message to the console
 			method.getSender().doBroadcast((args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
+		}
+	}
+
+	/**
+	 * Sends the message to a target.
+	 *
+	 * @param target The target that should receive the message.
+	 * @param playerForPAPI The player that should be used to resolve the PlaceholderAPI placeholders.
+	 * @param args   An optional array of arguments.
+	 *                  If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
+	 *                  This can be used to add variable data into the message.
+	 */
+	public void send(@NotNull CommandSender target, @NotNull OfflinePlayer playerForPAPI, @Nullable Object... args)
+	{
+		Validate.notNull(target, "The target that should receive the message should not be null!");
+		if(getSendMethod() == SendMethod.DISABLED) return;
+		if(target instanceof Player && getSendMethod() != SendMethod.CHAT_CLASSIC)
+		{
+			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
+			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
+			method.getSender().doSend((Player) target, jsonMsg, optionalParameters);
+		}
+		else
+		{
+			String msg = (args != null && args.length > 0) ? String.format(fallback, args) : fallback;
+			if(isPlaceholderApiEnabled()) msg = PlaceholderAPI.setPlaceholders(playerForPAPI, msg);
+			target.sendMessage(msg);
+		}
+	}
+
+	/**
+	 * Sends the message to a {@link Collection} of targets.
+	 *
+	 * @param targets The targets that should receive the message.
+	 * @param playerForPAPI The player that should be used to resolve the PlaceholderAPI placeholders.
+	 * @param args    An optional array of arguments.
+	 *                   If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
+	 *                   This can be used to add variable data into the message.
+	 */
+	public void send(@NotNull Collection<? extends Player> targets, OfflinePlayer playerForPAPI, @Nullable Object... args)
+	{
+		Validate.notNull(targets, "The targets that should receive the message should not be null!");
+		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
+		if(getSendMethod() == SendMethod.CHAT_CLASSIC)
+		{
+			String msg = (args != null && args.length > 0) ? String.format(fallback, args) : fallback;
+			if(isPlaceholderApiEnabled()) msg = PlaceholderAPI.setPlaceholders(playerForPAPI, msg);
+			for(Player player : targets)
+			{
+				player.sendMessage(msg);
+			}
+		}
+		else
+		{
+			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
+			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
+			method.getSender().doSend(targets, jsonMsg, optionalParameters);
+		}
+	}
+
+	/**
+	 * Sends the message to all online players on the server, as well as the console.
+	 *
+	 * @param playerForPAPI The player that should be used to resolve the PlaceholderAPI placeholders.
+	 * @param args An optional array of arguments.
+	 *                If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
+	 *                This can be used to add variable data into the message.
+	 */
+	public void broadcast(@NotNull OfflinePlayer playerForPAPI, @Nullable Object... args)
+	{
+		if(getSendMethod() == SendMethod.DISABLED) return;
+		String msg = (args != null && args.length > 0) ? String.format(fallback, args) : fallback;
+		if(isPlaceholderApiEnabled()) msg = PlaceholderAPI.setPlaceholders(playerForPAPI, msg);
+		if(getSendMethod() == SendMethod.CHAT_CLASSIC)
+		{
+			Bukkit.broadcastMessage(msg);
+		}
+		else
+		{
+			Bukkit.getConsoleSender().sendMessage(msg); // Send the message to the console
+			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
+			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
+			method.getSender().doBroadcast(jsonMsg, optionalParameters);
 		}
 	}
 }

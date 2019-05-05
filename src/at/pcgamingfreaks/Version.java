@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks;
 
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -119,7 +118,6 @@ public class Version
 		}
 
 		timestamp = getBuildParameter(this.optionalTags, "(t|ts|time(stamp)?)");
-		//noinspection SpellCheckingInspection
 		buildNumber = getBuildParameter(this.optionalTags, "(b|build(number)?)");
 		this.hashCode = Arrays.hashCode(this.version);
 	}
@@ -171,7 +169,6 @@ public class Version
 	 */
 	private byte compare(@NotNull Version otherVersion)
 	{
-		Validate.notNull(otherVersion);
 		int c = Math.min(this.version.length, otherVersion.version.length);
 		for(int i = 0; i < c; i++)
 		{

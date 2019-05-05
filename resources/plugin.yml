@@ -5,3 +5,4 @@ description: ${description}
 main: ${project.groupId}.PluginLib.Bukkit.PluginLib
 version: ${project.version}-T${timestamp}
 api-version: 1.13
+softdepend: [PlaceholderAPI]
