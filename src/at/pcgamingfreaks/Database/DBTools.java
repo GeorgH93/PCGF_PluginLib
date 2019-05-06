@@ -31,6 +31,7 @@ public class DBTools
 	/**
 	 * Updates the database so that the given table exists and matches the schema after using this function
 	 * <b>Important:</b> Currently only tested and optimised for MySQL! No warranty that it works with SQL databases other than MySQL.
+	 * This function will use the connection to automatically detect which database software is used and use the correct sql dialect.
 	 *
 	 * @param connection The JDBC database connection
 	 * @param tableDefinition A MySQL create query using the following style guidelines:

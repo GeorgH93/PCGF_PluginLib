@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Database;
 
+import org.intellij.lang.annotations.Language;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,14 +30,13 @@ public class MySQLTableValidatorTest
 {
 	private static Connection mockedConnection;
 	private static Statement mockedStatement;
-	private static PreparedStatement mockedPreparedStatement;
 	private static ResultSet mockedResultSet;
 
 	@Before
 	public void prepareTestObjects() throws SQLException
 	{
 		mockedStatement = mock(Statement.class);
-		mockedPreparedStatement = mock(PreparedStatement.class);
+		PreparedStatement mockedPreparedStatement = mock(PreparedStatement.class);
 		mockedConnection = mock(Connection.class);
 		mockedResultSet = mock(ResultSet.class);
 		doReturn(true).when(mockedResultSet).next();
@@ -56,7 +56,7 @@ public class MySQLTableValidatorTest
 	public void testCreateWhenNoTableExists() throws SQLException
 	{
 		doReturn(false).when(mockedResultSet).next();
-		String tableDefinition = "CREATE TABLE `test` (\n" +
+		@Language("SQL") String tableDefinition = "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
 				"  PRIMARY KEY (`id`)\n" +
 				")";
@@ -145,8 +145,7 @@ public class MySQLTableValidatorTest
 				         ")").when(mockedResultSet).getString(2);
 		new MySQLTableValidator().validate(mockedConnection, "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
-				"  UNIQUE KEY id\n" +
-				")");
+				"  UNIQUE KEY id\n)");
 	}
 
 	@Test
@@ -598,8 +597,7 @@ public class MySQLTableValidatorTest
 		new MySQLTableValidator().validate(mockedConnection, "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
 				"  `val` VARCHAR(255),\n" +
-				"  CONSTRAINT fk_multiple FOREIGN KEY (`id`, `val`) REFERENCES `test2` (`id`, `val`) ON DELETE CASCADE ON UPDATE NO ACTION\n" +
-				")");
+				"  CONSTRAINT fk_multiple FOREIGN KEY (`id`, `val`) REFERENCES `test2` (`id`, `val`) ON DELETE CASCADE ON UPDATE NO ACTION)");
 		verify(mockedStatement, times(++updateCalls)).executeUpdate(contains("DROP FOREIGN KEY"));
 		new MySQLTableValidator().validate(mockedConnection, "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
@@ -777,7 +775,7 @@ public class MySQLTableValidatorTest
 				         "  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT\n" +
 				         ") ENGINE=InnoDB").when(mockedResultSet).getString(2);
 		//noinspection SpellCheckingInspection
-		String createStatement = "CREATE TABLE `test` (\n" +
+		@Language("SQL") String createStatement = "CREATE TABLE `test` (\n" +
 				"  INT(10) UNSIGNED NOT NULL AUTO_INCREMENT\n" +
 				") ENGINE=InnoDB;";
 		new MySQLTableValidator().validate(mockedConnection, createStatement);

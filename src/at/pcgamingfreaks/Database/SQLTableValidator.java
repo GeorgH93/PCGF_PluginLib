@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Database;
 
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -32,6 +33,8 @@ import java.util.regex.Pattern;
  */
 public abstract class SQLTableValidator
 {
+	//TODO use named regex groups where possible, cleanup/refactor code, make more generic, test test test
+
 	private static final Pattern CURRENT_TABLE_INFO = Pattern.compile("^\\w*(CREATE TABLE)( IF NOT EXISTS)?\\s+(`(?<tableNameEsc>\\w+)`|(?<tableName>\\w+))\\s+\\(\\n(?<columns>[\\s\\S]*)\\n\\)(?<engine>\\s+ENGINE=\\w+)?;?$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern COLUMN_NAME_EXTRACTOR_PATTERN = Pattern.compile("^(`([^`]+)`|\\w+) (.*)$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern COLUMN_CONSTRAINT_CHECKER_PATTERN = Pattern.compile("^(CONSTRAINT\\s*(`(\\w*)`|\\w*)\\s+)?(PRIMARY KEY|UNIQUE KEY|UNIQUE INDEX|FOREIGN KEY)\\s+(.*)$", Pattern.CASE_INSENSITIVE);
@@ -114,8 +117,6 @@ public abstract class SQLTableValidator
 		//endregion
 	}
 
-	protected abstract String getCurrentCreateStatement(@NotNull Connection connection, @NotNull String tableName) throws SQLException;
-
 	protected List<String> getCurrentTableColumns(@NotNull Connection connection, @NotNull String tableName) throws SQLException
 	{
 		List<String> currentTableColumns = new LinkedList<>();
@@ -167,19 +168,11 @@ public abstract class SQLTableValidator
 				}
 				if(!keyExists)
 				{
-					//TODO
-					try(Statement statement = connection.createStatement())
-					{
-						statement.executeUpdate("ALTER TABLE " + tableName + " ADD PRIMARY KEY " + columnMatcher.group(5));
-					}
+					addPrimaryKey(connection, tableName, columnMatcher.group(5));
 				}
 				else if(update)
 				{
-					//TODO
-					try(Statement statement = connection.createStatement())
-					{
-						statement.executeUpdate("ALTER TABLE " + tableName + " DROP PRIMARY KEY, ADD PRIMARY KEY " + columnMatcher.group(5));
-					}
+					modifyPrimaryKey(connection, tableName, columnMatcher.group(5));
 				}
 				break;
 			case "UNIQUE INDEX":
@@ -218,10 +211,7 @@ public abstract class SQLTableValidator
 											break;
 										}
 									}
-									if(keyExists)
-									{
-										break;
-									}
+									if(keyExists) break;
 								}
 							}
 						}
@@ -267,11 +257,7 @@ public abstract class SQLTableValidator
 						}
 						if(update)
 						{
-							//TODO
-							try(Statement statement = connection.createStatement())
-							{
-								statement.executeUpdate("ALTER TABLE " + tableName + " DROP INDEX `" + columnName + "`, ADD UNIQUE INDEX `" + columnName + "` (" + tempKeyMatcher.group(3) + ")");
-							}
+							makeIndexUnique(connection, tableName, columnName, tempKeyMatcher.group(3));
 						}
 					}
 				}
@@ -281,11 +267,7 @@ public abstract class SQLTableValidator
 				}
 				if(!keyExists)
 				{
-					//TODO
-					try(Statement statement = connection.createStatement())
-					{
-						statement.executeUpdate("ALTER TABLE " + tableName + " ADD UNIQUE INDEX " + (columnName == null ? "" : "`" + columnName + "` ") + "(" + tempKeyMatcher.group(3) + ")");
-					}
+					addUniqueIndex(connection, tableName, columnName,  tempKeyMatcher.group(3));
 				}
 				break;
 			case "FOREIGN KEY":
@@ -297,10 +279,7 @@ public abstract class SQLTableValidator
 				}
 				createKeyArray = tempKeyMatcher.group(3).replaceAll("`", "").split(",\\s*");
 				tempArray = tempKeyMatcher.group(5).replaceAll("`", "").split(",\\s*");
-				if(createKeyArray.length != tempArray.length)
-				{
-					throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
-				}
+				if(createKeyArray.length != tempArray.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
 				currentTableColumnsIterator = currentTableColumns.iterator();
 				if(columnName == null)
 				{
@@ -315,10 +294,7 @@ public abstract class SQLTableValidator
 							{
 								currentReferenceColumns = currentMatcher.group(3).replaceAll("`", "").split(",\\s*");
 								currentTargetColumns = currentMatcher.group(5).replaceAll("`", "").split(",\\s*");
-								if(currentReferenceColumns.length != currentTargetColumns.length)
-								{
-									throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
-								}
+								if(currentReferenceColumns.length != currentTargetColumns.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
 								if(createKeyArray.length != currentReferenceColumns.length)
 								{
 									keyExists = false;
@@ -385,10 +361,7 @@ public abstract class SQLTableValidator
 									currentTableColumnsIterator.remove();
 									currentReferenceColumns = currentMatcher.group(3).replaceAll("`", "").split(",\\s*");
 									currentTargetColumns = currentMatcher.group(5).replaceAll("`", "").split(",\\s*");
-									if(currentReferenceColumns.length != currentTargetColumns.length)
-									{
-										throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
-									}
+									if(currentReferenceColumns.length != currentTargetColumns.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
 									if(createKeyArray.length != currentReferenceColumns.length)
 									{
 										update = true;
@@ -404,10 +377,7 @@ public abstract class SQLTableValidator
 									}
 									if(currentMatcher.group(7) != null)
 									{
-										if(tempKeyMatcher.group(7) == null || !currentMatcher.group(7).equalsIgnoreCase(tempKeyMatcher.group(7)))
-										{
-											update = true;
-										}
+										if(tempKeyMatcher.group(7) == null || !currentMatcher.group(7).equalsIgnoreCase(tempKeyMatcher.group(7))) update = true;
 									}
 									else if(tempKeyMatcher.group(7) != null)
 									{
@@ -415,15 +385,9 @@ public abstract class SQLTableValidator
 									}
 									if(currentMatcher.group(9) != null)
 									{
-										if(tempKeyMatcher.group(9) == null || !currentMatcher.group(9).equalsIgnoreCase(tempKeyMatcher.group(9)))
-										{
-											update = true;
-										}
+										if(tempKeyMatcher.group(9) == null || !currentMatcher.group(9).equalsIgnoreCase(tempKeyMatcher.group(9))) update = true;
 									}
-									else if(tempKeyMatcher.group(9) != null)
-									{
-										update = true;
-									}
+									else if(tempKeyMatcher.group(9) != null) update = true;
 									break;
 								}
 							}
@@ -431,20 +395,12 @@ public abstract class SQLTableValidator
 					}
 					if(update)
 					{
-						//TODO
-						try(Statement statement = connection.createStatement())
-						{
-							statement.executeUpdate("ALTER TABLE " + tableName + " DROP FOREIGN KEY `" + columnName + "`,  ADD CONSTRAINT `" + columnName + "` FOREIGN KEY (" + tempKeyMatcher.group(3) + ") REFERENCES " + tempKeyMatcher.group(4) + " (" + tempKeyMatcher.group(5) + ") " + (tempKeyMatcher.group(6) == null ? "" : tempKeyMatcher.group(6) + " ") + (tempKeyMatcher.group(8) == null ? "" : tempKeyMatcher.group(8)));
-						}
+						modifyConstraint(connection, tableName, columnName, tempKeyMatcher.group(3), tempKeyMatcher.group(4) + " (" + tempKeyMatcher.group(5) + ") " + (tempKeyMatcher.group(6) == null ? "" : tempKeyMatcher.group(6) + " ") + (tempKeyMatcher.group(8) == null ? "" : tempKeyMatcher.group(8)));
 					}
 				}
 				if(!keyExists)
 				{
-					//TODO
-					try(Statement statement = connection.createStatement())
-					{
-						statement.executeUpdate("ALTER TABLE " + tableName + " ADD CONSTRAINT " + (columnName == null ? "" : "`" + columnName + "` ") + "FOREIGN KEY (" + tempKeyMatcher.group(3) + ") REFERENCES " + tempKeyMatcher.group(4) + " (" + tempKeyMatcher.group(5) + ") " + (tempKeyMatcher.group(6) == null ? "" : tempKeyMatcher.group(6) + " ") + (tempKeyMatcher.group(8) == null ? "" : tempKeyMatcher.group(8)));
-					}
+					addConstraint(connection, tableName, columnName, tempKeyMatcher.group(3), tempKeyMatcher.group(4) + " (" + tempKeyMatcher.group(5) + ") " + (tempKeyMatcher.group(6) == null ? "" : tempKeyMatcher.group(6) + " ") + (tempKeyMatcher.group(8) == null ? "" : tempKeyMatcher.group(8)));
 				}
 				break;
 		}
@@ -517,22 +473,6 @@ public abstract class SQLTableValidator
 		}
 	}
 
-	protected void addIndex(@NotNull Connection connection, String tableName, String columnName, String indexString) throws SQLException
-	{
-		try(Statement statement = connection.createStatement())
-		{
-			statement.executeUpdate("ALTER TABLE " + tableName + " ADD INDEX " + (columnName != null && columnName.length() > 0 ? "`" + columnName + "` " : "") + "(" + indexString + ")");
-		}
-	}
-
-	protected void modifyIndex(@NotNull Connection connection, String tableName, String columnName, String indexString) throws SQLException
-	{
-		try(Statement statement = connection.createStatement())
-		{
-			statement.executeUpdate("ALTER TABLE " + tableName + " DROP INDEX `" + columnName + "`, ADD INDEX `" + columnName + "` (" + indexString + ")");
-		}
-	}
-
 	protected void processName(@NotNull Connection connection, @NotNull Matcher columnMatcher, @NotNull String tableName, @NotNull String definitionColumn, @NotNull List<String> currentTableColumns) throws SQLException
 	{
 		String columnName = columnMatcher.group(2) == null ? columnMatcher.group(1) : columnMatcher.group(2);
@@ -569,10 +509,7 @@ public abstract class SQLTableValidator
 									break;
 								}
 							}
-							if(update)
-							{
-								break;
-							}
+							if(update) break;
 						}
 					}
 					if(update)
@@ -588,22 +525,31 @@ public abstract class SQLTableValidator
 		}
 	}
 
-	protected void addColumn(Connection connection, String tableName, String columnName, String columnDefinition) throws SQLException
-	{
-		try(Statement statement = connection.createStatement())
-		{
-			statement.executeUpdate("ALTER TABLE `" + tableName + "` ADD COLUMN `" + columnName + "` " + columnDefinition);
-		}
-	}
+	//region SQL commands to be implemented by database specific classes
+	protected abstract String getCurrentCreateStatement(@NotNull Connection connection, @NotNull String tableName) throws SQLException;
 
-	protected void modifyColumn(Connection connection, String tableName, String columnName, String columnDefinition) throws SQLException
-	{
-		try(Statement statement = connection.createStatement())
-		{
-			statement.executeUpdate("ALTER TABLE " + tableName + " MODIFY COLUMN `" + columnName + "` " + columnDefinition);
-		}
-	}
+	protected abstract void addColumn(Connection connection, String tableName, String columnName, String columnDefinition) throws SQLException;
 
+	protected abstract void modifyColumn(Connection connection, String tableName, String columnName, String columnDefinition) throws SQLException;
+
+	protected abstract void addIndex(@NotNull Connection connection, String tableName, String columnName, String indexString) throws SQLException;
+
+	protected abstract void modifyIndex(@NotNull Connection connection, String tableName, String columnName, String indexString) throws SQLException;
+
+	protected abstract void makeIndexUnique(@NotNull Connection connection, String tableName, String columnName, String indexString) throws SQLException;
+
+	protected abstract void addUniqueIndex(@NotNull Connection connection, String tableName, @Nullable String columnName, String indexString) throws SQLException;
+
+	protected abstract void addConstraint(@NotNull Connection connection, String tableName, String columnName, String foreignKey, String references) throws SQLException;
+
+	protected abstract void modifyConstraint(@NotNull Connection connection, String tableName, String columnName, String foreignKey, String references) throws SQLException;
+
+	protected abstract void addPrimaryKey(@NotNull Connection connection, String tableName, String primaryKey) throws SQLException;
+
+	protected abstract void modifyPrimaryKey(@NotNull Connection connection, String tableName, String primaryKey) throws SQLException;
+	//endregion
+
+	//region reformat create query stuff
 	private static final Pattern QUERY_END = Pattern.compile("\\)(?<engine>\\s+ENGINE=\\w+)?\\s*;?$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern QUERY_BEGIN = Pattern.compile("^\\w*(CREATE TABLE IF NOT EXISTS|CREATE TABLE)\\s+(`(\\w+)`|\\w+)\\s+\\(", Pattern.CASE_INSENSITIVE);
 
@@ -619,6 +565,7 @@ public abstract class SQLTableValidator
 		if(!tempMatcher.find()) return null;
 		String queryBegin = tempMatcher.group();
 		query = tempMatcher.replaceAll("").trim();
-		return queryBegin + "\n" + query.replaceAll(",(?=([^\"'`]*[\"'`][^\"'`]*[\"'`])*[^\"'`]*$)", ",\n") + "\n" + queryEnd;
+		return queryBegin + "\n" + query.replaceAll(",(?=([^\"'`]*[\"'`][^\"'`]*[\"'`])*[^\"'`]*$)", ",\n").replaceAll("(,\\n)(?=[^(]*?\\))", ",") + "\n" + queryEnd;
 	}
+	//endregion
 }
