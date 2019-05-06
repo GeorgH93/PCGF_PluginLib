@@ -30,6 +30,7 @@ public class DBToolsTest
 {
 	private static Connection mockedConnection;
 	private static Statement mockedStatement;
+	private static PreparedStatement mockedPreparedStatement;
 	private static ResultSet mockedResultSet;
 
 	@BeforeClass
@@ -42,11 +43,14 @@ public class DBToolsTest
 	public void prepareTestObjects() throws SQLException
 	{
 		mockedStatement = mock(Statement.class);
+		mockedPreparedStatement = mock(PreparedStatement.class);
 		mockedConnection = mock(Connection.class);
 		mockedResultSet = mock(ResultSet.class);
 		doReturn(true).when(mockedResultSet).next();
 		doReturn(mockedStatement).when(mockedConnection).createStatement();
+		doReturn(mockedPreparedStatement).when(mockedConnection).prepareStatement(anyString());
 		doReturn(mockedResultSet).when(mockedStatement).executeQuery(anyString());
+		doReturn(mockedResultSet).when(mockedPreparedStatement).executeQuery();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -58,7 +62,7 @@ public class DBToolsTest
 	@Test
 	public void testCreateWhenNoTableExists() throws SQLException
 	{
-		doThrow(new SQLException()).when(mockedStatement).executeQuery(anyString());
+		doReturn(false).when(mockedResultSet).next();
 		String tableDefinition = "CREATE TABLE `test` (\n" +
 				"  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
 				"  PRIMARY KEY (`id`)\n" +
@@ -791,7 +795,8 @@ public class DBToolsTest
 				") engine=InnoDB;";
 		DBTools.updateDB(mockedConnection, createStatement);
 		verify(mockedStatement, times(0)).executeUpdate(createStatement);
-		doThrow(new SQLException()).when(mockedStatement).executeQuery(anyString());
+		// Table doesn't exist
+		doReturn(false).when(mockedResultSet).next();
 		DBTools.updateDB(mockedConnection, createStatement);
 		verify(mockedStatement, times(1)).executeUpdate(createStatement);
 	}
