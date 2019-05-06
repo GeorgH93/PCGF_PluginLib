@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  */
 public abstract class SQLTableValidator
 {
-	private static final Pattern CURRENT_TABLE_INFO = Pattern.compile("^\\w*(CREATE TABLE IF NOT EXISTS|CREATE TABLE)\\s+(`(\\w+)`|\\w+)\\s+\\(\\n(?<columns>[\\s\\S]*)\\n\\)(?<engine>\\s+ENGINE=\\w+)?;?$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern CURRENT_TABLE_INFO = Pattern.compile("^\\w*(CREATE TABLE)( IF NOT EXISTS)?\\s+(`(?<tableNameEsc>\\w+)`|(?<tableName>\\w+))\\s+\\(\\n(?<columns>[\\s\\S]*)\\n\\)(?<engine>\\s+ENGINE=\\w+)?;?$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern COLUMN_NAME_EXTRACTOR_PATTERN = Pattern.compile("^(`([^`]+)`|\\w+) (.*)$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern COLUMN_CONSTRAINT_CHECKER_PATTERN = Pattern.compile("^(CONSTRAINT\\s*(`(\\w*)`|\\w*)\\s+)?(PRIMARY KEY|UNIQUE KEY|UNIQUE INDEX|FOREIGN KEY)\\s+(.*)$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern COLUMN_KEY_CHECKER_PATTERN = Pattern.compile("^(INDEX|KEY)\\s+(`(\\w*)`|(\\w*))?\\s?\\(((`\\w*`|\\w*)(,\\s*(`\\w*`|\\w*))*)\\)$", Pattern.CASE_INSENSITIVE);
@@ -64,9 +64,17 @@ public abstract class SQLTableValidator
 	public void validate(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition) throws IllegalArgumentException, SQLException
 	{
 		//region validate and prepare table definition
-		Matcher definitionTableInfoMatch = CURRENT_TABLE_INFO.matcher(tableDefinition.trim());
-		if(!definitionTableInfoMatch.find()) throw new IllegalArgumentException("Invalid format of create query detected!");
-		String tableName = definitionTableInfoMatch.group(definitionTableInfoMatch.groupCount() - 2); //TODO find a better solution for this
+		tableDefinition = tableDefinition.trim();
+		Matcher definitionTableInfoMatch = CURRENT_TABLE_INFO.matcher(tableDefinition);
+		if(!definitionTableInfoMatch.find())
+		{
+			tableDefinition = reformatTableDefinition(tableDefinition); // Try to format the table definition properly
+			if(tableDefinition != null) definitionTableInfoMatch = CURRENT_TABLE_INFO.matcher(tableDefinition);
+			if(!definitionTableInfoMatch.find()) throw new IllegalArgumentException("Invalid format of create query detected!");
+		}
+		String tableName = definitionTableInfoMatch.group("tableNameEsc");
+		if(tableName == null) tableName = definitionTableInfoMatch.group("tableName");
+		if(tableName == null || tableName.isEmpty()) throw new IllegalArgumentException("Invalid format of create query detected!");
 		String[] definitionTableColumns = definitionTableInfoMatch.group("columns").split(",\n\\s?");
 		//endregion
 		//region get current definition
@@ -111,8 +119,9 @@ public abstract class SQLTableValidator
 	protected List<String> getCurrentTableColumns(@NotNull Connection connection, @NotNull String tableName) throws SQLException
 	{
 		List<String> currentTableColumns = new LinkedList<>();
-		String currentCreateStatement = getCurrentCreateStatement(connection, tableName);
-		if(currentCreateStatement.isEmpty()) throw new SQLException();
+		@Language("SQL") String currentCreateStatement = getCurrentCreateStatement(connection, tableName);
+		if(!CURRENT_TABLE_INFO.matcher(currentCreateStatement).matches()) currentCreateStatement = reformatTableDefinition(currentCreateStatement);
+		if(currentCreateStatement == null || currentCreateStatement.isEmpty()) throw new SQLException();
 		Collections.addAll(currentTableColumns, currentCreateStatement.split("(,|^\\()?\n\\s*"));
 		currentTableColumns.remove(0);
 		currentTableColumns.remove(currentTableColumns.size() - 1);
@@ -593,5 +602,23 @@ public abstract class SQLTableValidator
 		{
 			statement.executeUpdate("ALTER TABLE " + tableName + " MODIFY COLUMN `" + columnName + "` " + columnDefinition);
 		}
+	}
+
+	private static final Pattern QUERY_END = Pattern.compile("\\)(?<engine>\\s+ENGINE=\\w+)?\\s*;?$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern QUERY_BEGIN = Pattern.compile("^\\w*(CREATE TABLE IF NOT EXISTS|CREATE TABLE)\\s+(`(\\w+)`|\\w+)\\s+\\(", Pattern.CASE_INSENSITIVE);
+
+	protected static String reformatTableDefinition(@Language("SQL") String query)
+	{
+		query = query.replaceAll("\r", "").replaceAll("\n", " ");
+		Matcher tempMatcher = QUERY_END.matcher(query);
+		if(!tempMatcher.find()) return null;
+		String temp = tempMatcher.group("engine");
+		query = tempMatcher.replaceAll("");
+		String queryEnd = ")" + ((temp != null) ? temp : "") + ";";
+		tempMatcher = QUERY_BEGIN.matcher(query);
+		if(!tempMatcher.find()) return null;
+		String queryBegin = tempMatcher.group();
+		query = tempMatcher.replaceAll("").trim();
+		return queryBegin + "\n" + query.replaceAll(",(?=([^\"'`]*[\"'`][^\"'`]*[\"'`])*[^\"'`]*$)", ",\n") + "\n" + queryEnd;
 	}
 }

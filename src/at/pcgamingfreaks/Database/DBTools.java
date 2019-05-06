@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,18 +25,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 public class DBTools
 {
-	private static final Pattern CURRENT_TABLE_INFO = Pattern.compile("^\\w*(CREATE TABLE IF NOT EXISTS|CREATE TABLE)\\s+(`(\\w+)`|\\w+)\\s+\\(\\n([\\s\\S]*)\\n\\)(\\s+ENGINE=\\w+)?;?$", Pattern.CASE_INSENSITIVE);
-	private static final Pattern COLUMN_NAME_EXTRACTOR_PATTERN = Pattern.compile("^(`(\\w+)`|\\w+) (.*)$", Pattern.CASE_INSENSITIVE);
-	private static final Pattern COLUMN_CONSTRAINT_CHECKER_PATTERN = Pattern.compile("^(CONSTRAINT\\s*(`(\\w*)`|\\w*)\\s+)?(PRIMARY KEY|UNIQUE KEY|UNIQUE INDEX|FOREIGN KEY)\\s+(.*)$", Pattern.CASE_INSENSITIVE);
-	private static final Pattern COLUMN_KEY_CHECKER_PATTERN = Pattern.compile("^(INDEX|KEY)\\s+(`(\\w*)`|(\\w*))?\\s?\\(((`\\w*`|\\w*)(,\\s*(`\\w*`|\\w*))*)\\)$", Pattern.CASE_INSENSITIVE);
-	private static final Pattern COLUMN_TYPE_EXTRACTOR_PATTERN = Pattern.compile("^(\\w*(\\(\\d+(,\\d+)?\\))?)\\s+(.*)$", Pattern.CASE_INSENSITIVE);
-	private static final Pattern UNIQUE_INDEX_PATTERN = Pattern.compile("^(`(\\w+)`|\\w+)?\\s*\\((.*)\\)$", Pattern.CASE_INSENSITIVE);
-	private static final Pattern FOREIGN_KEY_PATTERN = Pattern.compile("^(`(\\w+)`|\\w+)?\\s*\\(([^)]*)\\)\\s+REFERENCES\\s+(`\\w+`|\\w+)\\s+\\(([^)]*)\\)\\s*(ON DELETE (RESTRICT|CASCADE|SET NULL|NO ACTION))?\\s*(ON UPDATE (RESTRICT|CASCADE|SET NULL|NO ACTION))?$", Pattern.CASE_INSENSITIVE);
-
 	/**
 	 * Updates the database so that the given table exists and matches the schema after using this function
 	 * <b>Important:</b> Currently only tested and optimised for MySQL! No warranty that it works with SQL databases other than MySQL.
@@ -58,11 +49,15 @@ public class DBTools
 	 * @throws IllegalArgumentException If the create query is not in the right format
 	 * @throws SQLException If any handling with the database failed
 	 */
-	@Deprecated
 	@SuppressWarnings("SqlNoDataSourceInspection")
 	public static void updateDB(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition) throws IllegalArgumentException, SQLException
 	{
-		new SQLTableValidatorMySQL().validate(connection, tableDefinition);
+		switch(connection.getMetaData().getDatabaseProductName())
+		{
+			case "MySQL": new MySQLTableValidator().validate(connection, tableDefinition); return;
+			case "SQLite": new SQLiteTableValidator().validate(connection, tableDefinition); return;
+			default: throw new RuntimeException("Unsupported database backend");
+		}
 	}
 
 	/**

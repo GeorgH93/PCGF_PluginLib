@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SQLTableValidatorMySQL extends SQLTableValidator
+public class MySQLTableValidator extends SQLTableValidator
 {
 	@Override
 	protected String getCurrentCreateStatement(@NotNull Connection connection, @NotNull String tableName) throws SQLException
