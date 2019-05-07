@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -148,6 +148,29 @@ public class Utils extends at.pcgamingfreaks.Utils
 	}
 
 	/**
+	 * Calculates the squared distance between two players
+	 * Unlike Bukkit's built in function this will not cause an exception if the players aren't in the same world but return {@link Double#POSITIVE_INFINITY}
+	 *
+	 * @param player1 The first player
+	 * @param player2 The second player
+	 * @return The distance between the players. {@link Double#POSITIVE_INFINITY} if the players aren't in the same world
+	 */
+	public static double getDistanceSquared(@NotNull Player player1, @NotNull Player player2)
+	{
+		Validate.notNull(player1, "None of the players can be null!");
+		Validate.notNull(player2, "None of the players can be null!");
+		if(player1.equals(player2))
+		{
+			return 0;
+		}
+		if(player1.getWorld().getName().equalsIgnoreCase(player2.getWorld().getName()))
+		{
+			return player1.getLocation().distanceSquared(player2.getLocation());
+		}
+		return Double.POSITIVE_INFINITY;
+	}
+
+	/**
 	 * Checks if two players are within a certain range from each other.
 	 *
 	 * @param player1 The first player.
@@ -158,8 +181,23 @@ public class Utils extends at.pcgamingfreaks.Utils
 	public static boolean inRange(@NotNull Player player1, @NotNull Player player2, double maxDistance)
 	{
 		if(maxDistance < 0) return true;
-		double distance = getDistance(player1, player2);
-		return (maxDistance == 0 && distance != Double.POSITIVE_INFINITY) || distance <= maxDistance;
+		double distance = getDistanceSquared(player1, player2);
+		return (maxDistance == 0 && distance != Double.POSITIVE_INFINITY) || distance <= maxDistance * maxDistance;
+	}
+
+	/**
+	 * Checks if two players are within a certain range from each other.
+	 *
+	 * @param player1 The first player.
+	 * @param player2 The second player.
+	 * @param maxDistanceSquared The max squared distance between the two players. Negative values will always return true.
+	 * @return True if the players are within the given range, false if not.
+	 */
+	public static boolean inRangeSquared(@NotNull Player player1, @NotNull Player player2, double maxDistanceSquared)
+	{
+		if(maxDistanceSquared < 0) return true;
+		double distance = getDistanceSquared(player1, player2);
+		return (maxDistanceSquared == 0 && distance != Double.POSITIVE_INFINITY) || distance <= maxDistanceSquared;
 	}
 
 	/**
@@ -174,6 +212,20 @@ public class Utils extends at.pcgamingfreaks.Utils
 	public static boolean inRange(@NotNull Player player1, @NotNull Player player2, double maxDistance, @NotNull String bypassPermission)
 	{
 		return player1.hasPermission(bypassPermission) || player2.hasPermission(bypassPermission) || inRange(player1, player2, maxDistance);
+	}
+
+	/**
+	 * Checks if two players are within a certain range from each other.
+	 *
+	 * @param player1 The first player.
+	 * @param player2 The second player.
+	 * @param maxDistanceSquared The max squared distance between the two players. Negative values will always return true.
+	 * @param bypassPermission If one of the players has the permission this function will return true.
+	 * @return True if the players are within the given range, false if not.
+	 */
+	public static boolean inRangeSquared(@NotNull Player player1, @NotNull Player player2, double maxDistanceSquared, @NotNull String bypassPermission)
+	{
+		return player1.hasPermission(bypassPermission) || player2.hasPermission(bypassPermission) || inRangeSquared(player1, player2, maxDistanceSquared);
 	}
 
 	/**

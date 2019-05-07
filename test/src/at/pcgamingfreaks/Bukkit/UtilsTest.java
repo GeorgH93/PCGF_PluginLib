@@ -18,11 +18,11 @@
 package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.Reflection;
-import at.pcgamingfreaks.TestClasses.*;
 import at.pcgamingfreaks.TestClasses.NMS.EntityPlayer;
 import at.pcgamingfreaks.TestClasses.NMS.IChatBaseComponent;
 import at.pcgamingfreaks.TestClasses.NMS.PacketPlayOutChat;
 import at.pcgamingfreaks.TestClasses.NMS.PlayerConnection;
+import at.pcgamingfreaks.TestClasses.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -44,9 +44,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -122,6 +120,27 @@ public class UtilsTest
 		doReturn(mockedLocation).when(mockedPlayer2).getLocation();
 		doReturn(5.0).when(mockedLocation).distance(mockedLocation);
 		assertEquals("The distance should be correct if the players are in the same world", 5.0, Utils.getDistance(mockedPlayer1, mockedPlayer2), 0.1);
+	}
+
+	@Test
+	public void testGetDistanceSquared()
+	{
+		Player mockedPlayer1 = mock(Player.class);
+		Player mockedPlayer2 = mock(Player.class);
+		World mockedWorld1 = mock(World.class);
+		doReturn("World1").when(mockedWorld1).getName();
+		World mockedWorld2 = mock(World.class);
+		doReturn("World2").when(mockedWorld2).getName();
+		Location mockedLocation = mock(Location.class);
+		assertEquals("The distance should be 0 if the players are the same", 0.0, Utils.getDistanceSquared(mockedPlayer1, mockedPlayer1), 0.1);
+		doReturn(mockedWorld1).when(mockedPlayer1).getWorld();
+		doReturn(mockedWorld2).when(mockedPlayer2).getWorld();
+		assertEquals("The distance should be positive infinity if the players are in different worlds", Double.POSITIVE_INFINITY, Utils.getDistanceSquared(mockedPlayer1, mockedPlayer2), 0.1);
+		doReturn(mockedWorld1).when(mockedPlayer2).getWorld();
+		doReturn(mockedLocation).when(mockedPlayer1).getLocation();
+		doReturn(mockedLocation).when(mockedPlayer2).getLocation();
+		doReturn(25.0).when(mockedLocation).distanceSquared(mockedLocation);
+		assertEquals("The distance should be correct if the players are in the same world", 25.0, Utils.getDistanceSquared(mockedPlayer1, mockedPlayer2), 0.1);
 	}
 
 	@Test
@@ -207,6 +226,28 @@ public class UtilsTest
 		assertFalse(Utils.inRange(PLAYER1, PLAYER2, 1.0, "bypass.rangelimit"));
 		assertFalse(Utils.inRange(PLAYER1, PLAYER3, 0, "bypass.rangelimit"));
 		assertTrue(Utils.inRange(PLAYER4, PLAYER3, 0, "bypass.rangelimit"));
+	}
+
+	@Test
+	public void testInRangeSquared()
+	{
+		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER2, -1.0));
+		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER4, -1.0));
+		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER2, 0));
+		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER2, 300*300));
+		assertFalse(Utils.inRangeSquared(PLAYER1, PLAYER4, 1.0));
+		assertFalse(Utils.inRangeSquared(PLAYER1, PLAYER3, 1.0));
+		assertFalse(Utils.inRangeSquared(PLAYER1, PLAYER2, 1.0));
+		assertFalse(Utils.inRangeSquared(PLAYER1, PLAYER3, 0));
+		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER2, -1.0, "bypass.rangelimit"));
+		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER4, -1.0, "bypass.rangelimit"));
+		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER4, 1.0, "bypass.rangelimit"));
+		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER2, 0, "bypass.rangelimit"));
+		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER2, 300*300, "bypass.rangelimit"));
+		assertFalse(Utils.inRangeSquared(PLAYER1, PLAYER3, 1.0, "bypass.rangelimit"));
+		assertFalse(Utils.inRangeSquared(PLAYER1, PLAYER2, 1.0, "bypass.rangelimit"));
+		assertFalse(Utils.inRangeSquared(PLAYER1, PLAYER3, 0, "bypass.rangelimit"));
+		assertTrue(Utils.inRangeSquared(PLAYER4, PLAYER3, 0, "bypass.rangelimit"));
 	}
 
 	@Test
