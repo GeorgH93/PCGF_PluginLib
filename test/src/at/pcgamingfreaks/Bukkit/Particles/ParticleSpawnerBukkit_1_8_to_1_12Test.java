@@ -26,7 +26,6 @@ import at.pcgamingfreaks.TestClasses.TestObjects;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -42,11 +41,11 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.*;
 
@@ -76,14 +75,12 @@ public class ParticleSpawnerBukkit_1_8_to_1_12Test
 		World mockedWorld = mock(World.class);
 		doReturn("World1").when(mockedWorld).getName();
 		Location mockedLocation = spy(new Location(mockedWorld, 10.0, 20.0, 30.0));
-		List<Entity> entities = new ArrayList<>();
+		List<Player> players = new ArrayList<>();
 		TestBukkitPlayer mockedPlayer = spy(new TestBukkitPlayer());
 		doCallRealMethod().when(mockedPlayer).getHandle();
 		doReturn(mockedLocation).when(mockedPlayer).getLocation();
-		entities.add(mockedPlayer);
-		Entity mockedEntity = mock(Entity.class);
-		entities.add(mockedEntity);
-		doReturn(entities).when(mockedWorld).getEntities();
+		players.add(mockedPlayer);
+		doReturn(players).when(mockedWorld).getPlayers();
 		ParticleSpawnerBukkit_1_8_to_1_12 effect = new ParticleSpawnerBukkit_1_8_to_1_12();
 		effect.spawnParticle(mockedLocation, Particle.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
 		verifyStatic(times(++sendPacketCalls));

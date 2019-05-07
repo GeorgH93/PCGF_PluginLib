@@ -22,7 +22,6 @@ import at.pcgamingfreaks.Bukkit.Utils;
 import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -35,7 +34,6 @@ abstract class ParticleSpawnerBukkitNMSBase extends ParticleSpawner
 {
 	private static final Method METHOD_MATERIAL_DATA_GET_ITEM_TYPE_ID = MCVersion.isOlderThan(MCVersion.MC_1_13) ? Reflection.getMethod(MaterialData.class, "getItemTypeId") : null;
 
-	@SuppressWarnings("deprecation")
 	public void spawnParticle(Location location, Particle type, Object particleData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
 		int[] data;
@@ -82,11 +80,14 @@ abstract class ParticleSpawnerBukkitNMSBase extends ParticleSpawner
 	protected void spawnParticle(Location location, double visibleRange, Object particlePacket) throws IllegalAccessException, InvocationTargetException
 	{
 		if(particlePacket == null) return;
-		for(Entity entity : location.getWorld().getEntities())
+		double visibleRangeSquared = visibleRange * visibleRange;
+		String worldName = location.getWorld().getName();
+		for(Player player : location.getWorld().getPlayers())
 		{
-			if(entity instanceof Player && entity.getLocation().getWorld().getName().equalsIgnoreCase(location.getWorld().getName()) && entity.getLocation().distance(location) < visibleRange)
+			// Getting entitys from a world sometimes returns players which are not actually in that world, so they need to be verified. Also checking world.equals(otherWorld) is sometimes not reliable (on MC 1.11).
+			if(player.getLocation().getWorld().getName().equalsIgnoreCase(worldName) && player.getLocation().distanceSquared(location) < visibleRangeSquared)
 			{
-				Utils.sendPacket((Player)entity, particlePacket);
+				Utils.sendPacket(player, particlePacket);
 			}
 		}
 	}
