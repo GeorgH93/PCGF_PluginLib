@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.PluginLib.Database;
 
 import at.pcgamingfreaks.Configuration;
+import at.pcgamingfreaks.Database.ConnectionProvider;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -29,7 +30,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-public abstract class DatabaseConnectionPoolBase implements DatabaseConnectionPool
+public abstract class DatabaseConnectionPoolBase implements DatabaseConnectionPool, ConnectionProvider
 {
 	protected final Configuration config;
 	protected final File dataFolder;
@@ -75,14 +76,22 @@ public abstract class DatabaseConnectionPoolBase implements DatabaseConnectionPo
 
 	protected abstract HikariConfig getPoolConfig();
 
-	public void close()
+	public void shutdown()
 	{
 		this.dataSource.close();
 	}
+
+	public void close() {} // This is empty on a purpose! Other plugins should not be able to close the connection pool if they no longer need it.
 
 	@Override
 	public @NotNull Connection getConnection() throws SQLException
 	{
 		return this.dataSource.getConnection();
+	}
+
+	@Override
+	public @NotNull ConnectionProvider getConnectionProvider()
+	{
+		return this;
 	}
 }

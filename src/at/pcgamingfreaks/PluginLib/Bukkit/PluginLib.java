@@ -99,7 +99,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 	{
 		instance = null;
 		Updater updater =  (this.config.getBool("Misc.AutoUpdate", true)) ? update(null) : null;
-		if(this.databaseConnectionPool != null) this.databaseConnectionPool.close();
+		if(this.databaseConnectionPool != null) this.databaseConnectionPool.shutdown();
 		if(updater != null) updater.waitForAsyncOperation();
 		this.getLogger().info(StringUtils.getPluginDisabledMessage(this.getDescription().getFullName()));
 	}

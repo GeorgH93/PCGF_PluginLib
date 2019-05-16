@@ -20,6 +20,7 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YAMLKeyNotFoundException;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -188,6 +189,7 @@ public class Configuration extends YamlFileManager
 	 * @param returnOnNotFound The value returned if the key was not found.
 	 * @return The {@link String} value from the configuration file.
 	 */
+	@Contract("_, !null -> !null")
 	public @Nullable String getString(@NotNull String path, @Nullable String returnOnNotFound)
 	{
 		return yaml.getString(path, returnOnNotFound);
