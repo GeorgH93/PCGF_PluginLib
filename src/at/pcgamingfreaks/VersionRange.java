@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -37,22 +38,22 @@ public class VersionRange
 		this.maxVersion = maxVersion;
 	}
 
-	public boolean inRange(String version)
+	public boolean inRange(@NotNull String version)
 	{
 		return inRange(new Version(version));
 	}
 
-	public boolean inRange(Version version)
+	public boolean inRange(@NotNull Version version)
 	{
 		return (minVersion == null || minVersion.olderOrEqualThan(version)) && (maxVersion == null || maxVersion.newerOrEqualThan(version));
 	}
 
-	public boolean inRangeExclusive(String version)
+	public boolean inRangeExclusive(@NotNull String version)
 	{
 		return inRangeExclusive(new Version(version));
 	}
 
-	public boolean inRangeExclusive(Version version)
+	public boolean inRangeExclusive(@NotNull Version version)
 	{
 		return (minVersion == null || minVersion.olderThan(version)) && (maxVersion == null || maxVersion.newerThan(version));
 	}

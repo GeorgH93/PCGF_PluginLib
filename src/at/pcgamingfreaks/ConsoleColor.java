@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * This class allows to change the color of console outputs.
  * It's recommended that you reset the color at the end of your output, to make sure the next message has the default color again.
@@ -113,7 +115,7 @@ public enum ConsoleColor
 	}
 
 	@Override
-	public String toString()
+	public @NotNull String toString()
 	{
 		return this.code;
 	}

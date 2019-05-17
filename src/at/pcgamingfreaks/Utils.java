@@ -36,7 +36,7 @@ public class Utils
 	 * @param bytes The byte array to convert to hex.
 	 * @return The hex string matching the given byte array. The chars a-f will be lower case!
 	 */
-	public static String byteArrayToHex(@Nullable byte[] bytes)
+	public static @NotNull String byteArrayToHex(@Nullable byte[] bytes)
 	{
 		if(bytes == null || bytes.length == 0) return "";
 		StringBuilder hexBuilder = new StringBuilder(bytes.length * 2);
@@ -135,7 +135,7 @@ public class Utils
 	 * @param targetFile  The file where the content should be extracted to.
 	 * @return True if the file has been extracted successful, false if not.
 	 */
-	public static boolean extractFile(Class<?> pluginClass, Logger logger, String inJarPath, File targetFile)
+	public static boolean extractFile(@NotNull Class<?> pluginClass, @NotNull Logger logger, @NotNull String inJarPath, @NotNull File targetFile)
 	{
 		try
 		{
@@ -176,7 +176,7 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static byte tryParse(String string, byte fallbackValue)
+	public static byte tryParse(@NotNull String string, byte fallbackValue)
 	{
 		try
 		{
@@ -193,7 +193,7 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static short tryParse(String string, short fallbackValue)
+	public static short tryParse(@NotNull String string, short fallbackValue)
 	{
 		try
 		{
@@ -210,7 +210,7 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static int tryParse(String string, int fallbackValue)
+	public static int tryParse(@NotNull String string, int fallbackValue)
 	{
 		try
 		{
@@ -227,7 +227,7 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static long tryParse(String string, long fallbackValue)
+	public static long tryParse(@NotNull String string, long fallbackValue)
 	{
 		try
 		{
@@ -244,7 +244,7 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static float tryParse(String string, float fallbackValue)
+	public static float tryParse(@NotNull String string, float fallbackValue)
 	{
 		try
 		{
@@ -261,7 +261,7 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static double tryParse(String string, double fallbackValue)
+	public static double tryParse(@NotNull String string, double fallbackValue)
 	{
 		try
 		{

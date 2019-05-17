@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -140,7 +141,7 @@ public class Version
 		return -1;
 	}
 
-	private static List<String> getAll(String[] source, String[] searchForArray)
+	private static @NotNull List<String> getAll(@NotNull String[] source, @NotNull String[] searchForArray)
 	{
 		List<String> result = new LinkedList<>();
 		for(String searchFor : searchForArray)
@@ -156,7 +157,7 @@ public class Version
 	 * @param version The String to check.
 	 * @return True if the string matches the format. False if not.
 	 */
-	public static boolean isValidVersionString(String version)
+	public static boolean isValidVersionString(@NotNull String version)
 	{
 		return version.matches(VERSION_STING_FORMAT);
 	}
@@ -284,7 +285,7 @@ public class Version
 	 * @return The string representing this version.
 	 */
 	@Override
-	public String toString()
+	public @NotNull String toString()
 	{
 		return this.rawVersion;
 	}
@@ -296,6 +297,7 @@ public class Version
 	 * @return True if both versions are equal, false if not.
 	 */
 	@Override
+	@Contract("null -> false")
 	public boolean equals(Object otherVersion)
 	{
 		return otherVersion instanceof Version && compare((Version) otherVersion) == SAME;

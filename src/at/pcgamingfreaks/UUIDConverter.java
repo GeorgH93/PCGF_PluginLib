@@ -30,6 +30,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -332,7 +333,7 @@ public final class UUIDConverter
 			return UUID_CACHE.get(name);
 		}
 		String uuid = null;
-		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + (at.getTime()/1000L) : "")).openStream(), "UTF-8")))
+		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + (at.getTime()/1000L) : "")).openStream(), StandardCharsets.UTF_8)))
 		{
 			uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).getAsString();
 			if(uuid != null && (at == null || at.after(new Date(System.currentTimeMillis() - 1000L*24*3600* 30))))
@@ -441,7 +442,7 @@ public final class UUIDConverter
 						out.write(GSON.toJson(batch).getBytes(Charsets.UTF_8));
 					}
 					Profile[] profiles;
-					try(Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8")))
+					try(Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
 					{
 						profiles = GSON.fromJson(in, Profile[].class);
 					}
@@ -527,7 +528,6 @@ public final class UUIDConverter
 		{
 			try
 			{
-				//noinspection SpellCheckingInspection
 				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").parse(expiresOn);
 			}
 			catch(ParseException e)

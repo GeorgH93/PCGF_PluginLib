@@ -168,7 +168,7 @@ public class StringUtils
 	 * @param maxLength The max amount of characters the text should be limited to.
 	 * @return The text in it's limited length.
 	 */
-	public static String limitLength(@NotNull String text, int maxLength)
+	public static @NotNull String limitLength(@NotNull String text, int maxLength)
 	{
 		Validate.notNull(text, "The text must not be null.");
 		Validate.isTrue(maxLength >= 0, "The max length must not be negative!");
@@ -183,7 +183,7 @@ public class StringUtils
 	 * @param string The string to be escaped.
 	 * @return The escaped string.
 	 */
-	public static String escapeJsonString(@NotNull String string)
+	public static @NotNull String escapeJsonString(@NotNull String string)
 	{
 		return string.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
 	}
@@ -197,7 +197,7 @@ public class StringUtils
 	 * @return The parsed page number
 	 * @throws NumberFormatException Thrown if the string is not in the valid format.
 	 */
-	public static int parsePageNumber(String input) throws NumberFormatException
+	public static int parsePageNumber(@NotNull String input) throws NumberFormatException
 	{
 		Matcher matcher = PAGE_REGEX.matcher(input);
 		if(matcher.matches())
@@ -222,22 +222,22 @@ public class StringUtils
 	private static final String ENABLED_MESSAGE = ConsoleColor.GREEN + " %s has been enabled! " + ConsoleColor.YELLOW + " :) " + ConsoleColor.RESET;
 	private static final String DISABLED_MESSAGE = ConsoleColor.RED + " %s has been disabled. " + ConsoleColor.YELLOW + " :( " + ConsoleColor.RESET;
 
-	public static String getPluginEnabledMessage(@NotNull String pluginName)
+	public static @NotNull String getPluginEnabledMessage(@NotNull String pluginName)
 	{
 		return String.format(ENABLED_MESSAGE, pluginName);
 	}
 
-	public static String getPluginEnabledMessage(@NotNull String pluginName, @NotNull Version version)
+	public static @NotNull String getPluginEnabledMessage(@NotNull String pluginName, @NotNull Version version)
 	{
 		return getPluginEnabledMessage(pluginName + " v" + version);
 	}
 
-	public static String getPluginDisabledMessage(@NotNull String pluginName)
+	public static @NotNull String getPluginDisabledMessage(@NotNull String pluginName)
 	{
 		return String.format(DISABLED_MESSAGE, pluginName);
 	}
 
-	public static String getPluginDisabledMessage(@NotNull String pluginName, @NotNull Version version)
+	public static @NotNull String getPluginDisabledMessage(@NotNull String pluginName, @NotNull Version version)
 	{
 		return getPluginDisabledMessage(pluginName + " v" + version);
 	}

@@ -20,6 +20,7 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.yaml.YAML;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -138,6 +139,7 @@ public class Language extends YamlFileManager
 	 * @param defaultValue The default value that should be returned if the file doesn't contain the requested key.
 	 * @return The value stored for the given key, the default value if the key is not found in the language file.
 	 */
+	@Contract("_, !null -> !null")
 	public @Nullable String getRaw(@NotNull String key, @Nullable String defaultValue)
 	{
 		return yaml.getString(key, defaultValue);
