@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,45 +15,42 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.PluginLib.Database;
+package at.pcgamingfreaks.Database.ConnectionProvider;
 
-import at.pcgamingfreaks.Configuration;
+import at.pcgamingfreaks.ConsoleColor;
 
 import com.zaxxer.hikari.HikariConfig;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
+import java.util.logging.Logger;
 
-class SQLiteConnectionPool extends DatabaseConnectionPoolBase
+public class SQLiteConnectionProvider extends PooledConnectionProvider
 {
-	public SQLiteConnectionPool(Configuration config, File dataFolder)
+	private final String databasePath;
+
+	public SQLiteConnectionProvider(@NotNull Logger logger, @NotNull String pluginName, @NotNull String databasePath)
 	{
-		super(config, dataFolder);
+		super(logger, pluginName);
+		this.databasePath = databasePath;
+		init();
 	}
 
 	@Override
-	protected HikariConfig getPoolConfig()
+	protected @NotNull HikariConfig getPoolConfig()
 	{
 		try
 		{
-			Class.forName("org.sqlite.JDBC");
+			Class.forName("org.sqlite.JDBC"); // JDBC is unable to load the SQLite JDBC driver on its own.
 		}
 		catch(ClassNotFoundException e)
 		{
-			e.printStackTrace();
-			return null;
+			logger.severe(ConsoleColor.RED + " Failed to load SQLite JDBC driver!" + ConsoleColor.RESET);
 		}
 		HikariConfig poolConfig = new HikariConfig();
 		poolConfig.setMaximumPoolSize(1);
-		poolConfig.setJdbcUrl("jdbc:sqlite:" + dataFolder.getAbsolutePath() + File.separator + "backpack.db");
-		poolConfig.setConnectionTestQuery("SELECT 1;");
+		poolConfig.setJdbcUrl("jdbc:sqlite:" + databasePath);
+		poolConfig.setConnectionTestQuery("SELECT 1;"); // HikariCP doesn't support connection tests on it's own.
 		return poolConfig;
-	}
-
-	@Override
-	public @NotNull String getDatabaseType()
-	{
-		return "SQLite";
 	}
 }

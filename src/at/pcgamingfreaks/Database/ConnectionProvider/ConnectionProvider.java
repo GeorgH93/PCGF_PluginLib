@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,37 +15,24 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.PluginLib.Database;
-
-import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
-
-import org.jetbrains.annotations.NotNull;
+package at.pcgamingfreaks.Database.ConnectionProvider;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public interface DatabaseConnectionPool
+public interface ConnectionProvider
 {
 	/**
-	 * Gets the type of the database behind the connection pool. Use this to adjust your code for the used database.
-	 *
-	 * @return The type of the database the pool is connected with.
-	 */
-	@NotNull String getDatabaseType();
-
-	/**
-	 * Gets a connection from the pool.
+	 * Gets a connection from the connection provider.
 	 * If you take one, close it when you are done!
 	 *
-	 * @return The connection from the pool.
+	 * @return The connection provided by the provider.
 	 * @throws SQLException If there was a problem with the connection.
 	 */
-	@NotNull Connection getConnection() throws SQLException;
+	Connection getConnection() throws SQLException;
 
 	/**
-	 * Gets the connection provider for the pool.
-	 *
-	 * @return The connection provider represented by the pool.
+	 * Closes the connection provider and frees resources used by it.
 	 */
-	@NotNull ConnectionProvider getConnectionProvider();
+	void close();
 }

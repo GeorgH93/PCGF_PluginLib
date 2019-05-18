@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.PluginLib.Database;
 
 import at.pcgamingfreaks.Configuration;
-import at.pcgamingfreaks.Database.ConnectionProvider;
+import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

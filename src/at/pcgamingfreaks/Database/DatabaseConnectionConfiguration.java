@@ -17,19 +17,24 @@
 
 package at.pcgamingfreaks.Database;
 
-import java.io.Closeable;
-import java.sql.Connection;
-import java.sql.SQLException;
+import org.jetbrains.annotations.NotNull;
 
-public interface ConnectionProvider extends AutoCloseable
+public interface DatabaseConnectionConfiguration
 {
-	/**
-	 * Gets a connection from the connection provider.
-	 * If you take one, close it when you are done!
-	 *
-	 * @return The connection provided by the provider.
-	 * @throws SQLException If there was a problem with the connection.
-	 */
-	Connection getConnection() throws SQLException;
+	@NotNull String getSQLHost();
 
+	@NotNull String getSQLDatabase();
+
+	/**
+	 * Gets the properties for the connection. Must start with a ?
+	 *
+	 * @return The Connection properties
+	 */
+	@NotNull String getSQLConnectionProperties();
+
+	@NotNull String getSQLUser();
+
+	@NotNull String getSQLPassword();
+
+	int getSQLMaxConnections();
 }

@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MySQLConnectionPool extends DatabaseConnectionPoolBase
+class MySQLConnectionPool extends DatabaseConnectionPoolBase
 {
 	public MySQLConnectionPool(Configuration config, File dataFolder)
 	{
