@@ -47,12 +47,14 @@ public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameRes
 		if(MCVersion.isOlderThan(MCVersion.MC_1_13))
 		{
 			Language itemNameLanguage = new Language(plugin, 1, 1, File.separator + "lang", "items_", "legacy_items_");
+			itemNameLanguage.setFileDescription("item name language");
 			itemNameLanguage.load(plugin.getConfiguration().getLanguage(), plugin.getConfiguration().getItemLangUpdateMode());
 			super.loadLegacy(itemNameLanguage, plugin.getLogger());
 		}
 		else
 		{
 			Language itemNameLanguage = new Language(plugin, 2, File.separator + "lang", "items_");
+			itemNameLanguage.setFileDescription("item name language");
 			itemNameLanguage.load(plugin.getConfiguration().getLanguage(), plugin.getConfiguration().getItemLangUpdateMode());
 			super.load(itemNameLanguage, plugin.getLogger());
 		}

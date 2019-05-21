@@ -65,7 +65,7 @@ public class YamlFileManager
 	 *
 	 * @param description The description of the file (e.g.: config or language). Should be all lowercase (the capitalized version will be automatically created).
 	 */
-	protected void setFileDescription(@NotNull String description)
+	public void setFileDescription(@NotNull String description)
 	{
 		fileDescription = description;
 		fileDescriptionCapitalized = description.substring(0, 1).toUpperCase() + description.substring(1);
