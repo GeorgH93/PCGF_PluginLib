@@ -35,7 +35,7 @@ public abstract class SQLTableValidator
 {
 	//TODO use named regex groups where possible, cleanup/refactor code, make more generic, test test test
 
-	private static final Pattern CURRENT_TABLE_INFO = Pattern.compile("^\\w*(CREATE TABLE)( IF NOT EXISTS)?\\s+(`(?<tableNameEsc>\\w+)`|(?<tableName>\\w+))\\s+\\(\\n(?<columns>[\\s\\S]*)\\n\\)(?<engine>\\s+ENGINE=\\w+)?;?$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern CURRENT_TABLE_INFO = Pattern.compile("^\\w*(CREATE TABLE)( IF NOT EXISTS)?\\s+(`(?<tableNameEsc>\\w+)`|(?<tableName>\\w+))\\s+\\(\\n(?<columns>[\\s\\S]*)\\n\\)(?<engine>\\s+ENGINE=\\w+)?(\\s+DEFAULT\\s+CHARSET=(?<charset>\\w+))?;?$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern COLUMN_NAME_EXTRACTOR_PATTERN = Pattern.compile("^(`([^`]+)`|\\w+) (.*)$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern COLUMN_CONSTRAINT_CHECKER_PATTERN = Pattern.compile("^(CONSTRAINT\\s*(`(\\w*)`|\\w*)\\s+)?(PRIMARY KEY|UNIQUE KEY|UNIQUE INDEX|FOREIGN KEY)\\s+(.*)$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern COLUMN_KEY_CHECKER_PATTERN = Pattern.compile("^(INDEX|KEY)\\s+(`(\\w*)`|(\\w*))?\\s?\\(((`\\w*`|\\w*)(,\\s*(`\\w*`|\\w*))*)\\)$", Pattern.CASE_INSENSITIVE);

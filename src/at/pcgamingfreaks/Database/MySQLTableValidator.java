@@ -20,17 +20,19 @@ package at.pcgamingfreaks.Database;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class MySQLTableValidator extends SQLTableValidator
 {
 	@Override
 	protected String getCurrentCreateStatement(@NotNull Connection connection, @NotNull String tableName) throws SQLException
 	{
-		try(PreparedStatement preparedStatement = connection.prepareStatement("SHOW CREATE TABLE %;"))
+		try(Statement statement = connection.createStatement())
 		{
-			preparedStatement.setString(1, tableName);
-			try(ResultSet tableExists = preparedStatement.executeQuery())
+			try(ResultSet tableExists = statement.executeQuery("SHOW CREATE TABLE `" + tableName + "`"))
 			{
 				if(tableExists.next())
 				{
