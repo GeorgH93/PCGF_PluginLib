@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>at.pcgamingfreaks</groupId>
 	<artifactId>PluginLib</artifactId>
-	<version>1.0.10-SNAPSHOT</version>
+	<version>1.0.11-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<scm>
@@ -45,7 +45,7 @@
 	<repositories>
 		<repository>
 			<id>pcgf-repo</id>
-			<url>https://repo.pcgamingfreaks.at/repository/everything/</url>
+			<url>https://repo.pcgamingfreaks.at/repository/maven-everything/</url>
 		</repository>
 		<repository>
 			<id>spigot-nexus</id>
@@ -66,62 +66,13 @@
 	</repositories>
 
 	<dependencies>
-		<!-- jUnit for unit tests -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-			<optional>true</optional>
-		</dependency>
-		<!-- Mocking stuff -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>2.0.2-beta</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>${powermockVersion}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.powermock</groupId>
-					<artifactId>powermock-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.powermock</groupId>
-					<artifactId>powermock-reflect</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito</artifactId>
-			<version>${powermockVersion}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4-rule</artifactId>
-			<version>${powermockVersion}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-classloading-xstream</artifactId>
-			<version>${powermockVersion}</version>
-			<scope>test</scope>
-		</dependency>
 		<!-- For better code documentation -->
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>15.0</version>
+			<version>17.0.0</version>
 		</dependency>
-		<!-- The YAML-Parser, it doesn't lose the comments in the yml file when it gets changed and saved -->
+		<!-- The YAML-Parser, it doesn't lose the comments in the yml file when they gets changed and saved -->
 		<dependency>
 			<groupId>at.pcgamingfreaks</groupId>
 			<artifactId>YAML-Parser</artifactId>
@@ -171,6 +122,57 @@
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>1.7.10</version>
 		</dependency>
+		<!-- region test dependencies -->
+		<!-- jUnit for unit tests -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+			<optional>true</optional>
+		</dependency>
+		<!-- Mocking stuff -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>2.0.2-beta</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>${powermockVersion}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.powermock</groupId>
+					<artifactId>powermock-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.powermock</groupId>
+					<artifactId>powermock-reflect</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>${powermockVersion}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4-rule</artifactId>
+			<version>${powermockVersion}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-classloading-xstream</artifactId>
+			<version>${powermockVersion}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- endregion -->
 	</dependencies>
 
 	<build>
@@ -217,7 +219,7 @@
 						</goals>
 						<configuration>
 							<createDependencyReducedPom>false</createDependencyReducedPom>
-							<minimizeJar>false</minimizeJar> <!-- We don't know what other plugin authors will need so we can't minimize the jar. -->
+							<minimizeJar>true</minimizeJar>
 							<artifactSet>
 								<includes>
 									<include>at.pcgamingfreaks:YAML-Parser</include>
@@ -227,6 +229,24 @@
 									<include>org.slf4j:*</include>
 								</includes>
 							</artifactSet>
+							<relocations>
+								<relocation>
+									<pattern>com.google</pattern>
+									<shadedPattern>at.pcgf.libs.com.google</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>com.zaxxer</pattern>
+									<shadedPattern>at.pcgf.libs.com.zaxxer</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.apache</pattern>
+									<shadedPattern>at.pcgf.libs.org.apache</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.slf4j</pattern>
+									<shadedPattern>at.pcgf.libs.org.slf4j</shadedPattern>
+								</relocation>
+							</relocations>
 						</configuration>
 					</execution>
 				</executions>
