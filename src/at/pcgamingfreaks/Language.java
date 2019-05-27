@@ -260,6 +260,13 @@ public class Language extends YamlFileManager
 	}
 	//endregion
 
+	@Override
+	protected void loaded()
+	{
+		logger.info(ConsoleColor.GREEN + fileDescriptionCapitalized + " file successfully loaded. Language: " + getLanguage() + "  Author: " + getAuthor() + ConsoleColor.RESET);
+	}
+
+
 	//region helper class
 	/**
 	 * Ignore this class, it's just a helper class for some internal stuff

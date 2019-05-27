@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public class YamlFileManager
 	protected YAML yaml; // The object holding the parsed content of the yaml file
 	protected File yamlFile; // The loaded yaml file
 	protected YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.UPDATE; // Defines the update behavior for yaml files
-	private String fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
+	protected String fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
 
 	YamlFileManager(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @Nullable String file, @NotNull String inJarPrefix, @Nullable YAML oldConfig)
 	{
@@ -128,6 +128,11 @@ public class YamlFileManager
 	{
 		return false;
 	}
+
+	protected void loaded()
+	{
+		logger.info(ConsoleColor.GREEN + fileDescriptionCapitalized + " file successfully loaded." + ConsoleColor.RESET);
+	}
 	//endregion
 
 	//region handling file ops (load, save, update, upgrade, create)
@@ -182,7 +187,7 @@ public class YamlFileManager
 		{
 			if(extracted)
 			{
-				logger.warning(ConsoleColor.YELLOW + "The version of the " + fileDescription + " file (" + file + ") is outdated in the jar! Please inform the plugin developer." + ConsoleColor.RESET);
+				logger.warning(ConsoleColor.YELLOW + "The version of the " + fileDescription + " file (" + file + ") is outdated in the jar!" + ConsoleColor.RESET);
 			}
 			if(updateMode == YamlFileUpdateMethod.OVERWRITE && !extracted)
 			{
@@ -199,13 +204,10 @@ public class YamlFileManager
 				update();
 			}
 		}
-		else if(expectedVersion < getVersion())
-		{
-			logger.info(fileDescriptionCapitalized + " file version newer than expected! Expected: " + expectedVersion + " Is: " + getVersion());
-		}
 		else
 		{
-			logger.info(ConsoleColor.GREEN + fileDescriptionCapitalized + " file successfully loaded." + ConsoleColor.RESET);
+			if(expectedVersion < getVersion()) logger.info(fileDescriptionCapitalized + " file version newer than expected! Expected: " + expectedVersion + " Is: " + getVersion());
+			loaded();
 		}
 	}
 

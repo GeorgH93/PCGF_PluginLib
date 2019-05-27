@@ -231,8 +231,8 @@
 							</artifactSet>
 							<relocations>
 								<relocation>
-									<pattern>com.google</pattern>
-									<shadedPattern>at.pcgf.libs.com.google</shadedPattern>
+									<pattern>com.google.gson</pattern>
+									<shadedPattern>at.pcgf.libs.com.google.gson</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>com.zaxxer</pattern>

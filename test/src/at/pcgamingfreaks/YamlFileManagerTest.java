@@ -197,18 +197,18 @@ public class YamlFileManagerTest
 		assertEquals("There should be one warning in the log", 1, count[0]);
 		doReturn(500).when(testFileManager).getVersion();
 		testFileManager.validate();
-		assertEquals("There should be one info in the log", 1, count[1]);
+		assertEquals("There should be one info in the log", 2, count[1]);
 		Field updateModeField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "updateMode", YamlFileUpdateMethod.UPGRADE);
 		testFileManager.validate();
 		doReturn(1).when(testFileManager).getVersion();
 		testFileManager.validate();
-		assertEquals("There should be new info in the log", 2, count[1]);
+		assertEquals("There should be new info in the log", 4, count[1]);
 		updateModeField.set(testFileManager, YamlFileUpdateMethod.OVERWRITE);
 		testFileManager.validate();
-		assertEquals("There should be no new info in the log in overwrite mode when the file has been extracted", 2, count[1]);
+		assertEquals("There should be no new info in the log in overwrite mode when the file has been extracted", 4, count[1]);
 		extractedField.set(testFileManager, false);
 		testFileManager.validate();
-		assertEquals("There should be new info in the log in overwrite mode", 3, count[1]);
+		assertEquals("There should be new info in the log in overwrite mode", 5, count[1]);
 		TestUtils.setUnaccessible(extractedField, testFileManager, false);
 		TestUtils.setUnaccessible(updateModeField, testFileManager, false);
 	}
