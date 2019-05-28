@@ -3,7 +3,7 @@
 # It also prevents you from entering you database information's into many plugins over and over again.
 Database:
   # Database type. MySQL, SQLite or Off (Disables shared database pool)
-  # Yes you can use a single SQLite file for all supporting plugins with this option. But it probably has a negative impact on performance, so you should probably consider using MySQL. It's mainly there for debugging.
+  # Yes you can use a single SQLite file for all plugins supporting with this option. But it probably has a negative impact on performance, so you should probably consider using MySQL. It's mainly there for debugging.
   Type: Off
   SQL:
     Host: localhost:3306

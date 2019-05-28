@@ -1,6 +1,6 @@
-name: ${pluginName}
-author: ${author}
-website: ${website}
-description: ${description}
-main: ${project.groupId}.PluginLib.Bungee.PluginLib
-version: ${project.version}-T${timestamp}
+name: "${pluginName}"
+author: "${author}"
+website: "${website}"
+description: "${description}"
+main: "${project.groupId}.PluginLib.Bungee.PluginLib"
+version: "${project.version}-T${timestamp}"
