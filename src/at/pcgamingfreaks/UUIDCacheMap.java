@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks;
 
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -32,15 +31,12 @@ class UUIDCacheMap extends ConcurrentHashMap<String, String>
 	@Override
 	public String put(@NotNull String key, @NotNull String value)
 	{
-		Validate.notNull(key);
-		Validate.notNull(value);
 		return super.put(key.toLowerCase(), value.replaceAll("-", "").toLowerCase());
 	}
 
 	@Override
 	public void putAll(@NotNull Map<? extends String, ? extends String> m)
 	{
-		Validate.notNull(m);
 		for(Entry<? extends String, ? extends String> entry : m.entrySet())
 		{
 			put(entry.getKey(), entry.getValue());
@@ -50,28 +46,24 @@ class UUIDCacheMap extends ConcurrentHashMap<String, String>
 	@Override
 	public boolean contains(@NotNull Object value)
 	{
-		Validate.notNull(value);
 		return value instanceof String && super.contains(((String) value).replaceAll("-", "").toLowerCase());
 	}
 
 	@Override
 	public boolean containsKey(@NotNull Object key)
 	{
-		Validate.notNull(key);
 		return key instanceof String && super.containsKey(((String) key).toLowerCase());
 	}
 
 	@Override
 	public String get(@NotNull Object key)
 	{
-		Validate.notNull(key);
 		return key instanceof String ? super.get(((String) key).toLowerCase()) : null;
 	}
 
 	@Override
 	public String remove(@NotNull Object key)
 	{
-		Validate.notNull(key);
 		return key instanceof String ? super.remove(((String) key).toLowerCase()) : null;
 	}
 }

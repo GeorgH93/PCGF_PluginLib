@@ -171,8 +171,7 @@ public class StringUtils
 	public static @NotNull String limitLength(@NotNull String text, int maxLength)
 	{
 		Validate.notNull(text, "The text must not be null.");
-		Validate.isTrue(maxLength >= 0, "The max length must not be negative!");
-		if(text.length() == 0 || maxLength == 0) return "";
+		if(text.length() == 0 || maxLength <= 0) return "";
 		if(text.length() <= maxLength) return text; // No need to create a new object if the string has not changed
 		return text.substring(0, maxLength -1);
 	}
