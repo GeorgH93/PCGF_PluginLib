@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks.Calendar;
 
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,8 +30,9 @@ import java.util.Date;
 public class TimeSpan
 {
 	public static final byte YEAR = 0, MONTH = 1, DAY = 2, HOUR = 3, MINUTE = 4, SECOND = 5, TOTAL_DAYS = 6;
-	private static final int[] CalTypes = new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH };
-	private static String[] timeUnitNames = new String[] { "year", "years", "month", "months", "day", "days", "hour", "hours", "minute", "minutes", "second", "seconds" };
+
+	private static final BasicTimeSpanFormat DEFAULT_TIME_SPAN_FORMAT = new BasicTimeSpanFormat();
+	private static final int[] CAL_TYPES = new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH };
 	private int[] timeSpan;
 
 	//region TimeSpan constructors
@@ -184,18 +184,18 @@ public class TimeSpan
 			}
 
 			boolean future = toDate.after(fromDate);
-			for(int i = 0, dayOfMonth = fromDate.get(Calendar.DAY_OF_MONTH); i < CalTypes.length; i++)
+			for(int i = 0, dayOfMonth = fromDate.get(Calendar.DAY_OF_MONTH); i < CAL_TYPES.length; i++)
 			{
 				while((future && !fromDate.after(toDate)) || (!future && !fromDate.before(toDate)))
 				{
-					fromDate.add(CalTypes[i], future ? 1 : -1);
-					if(CalTypes[i] != Calendar.DAY_OF_MONTH && fromDate.get(Calendar.DAY_OF_MONTH) < dayOfMonth && fromDate.get(Calendar.DAY_OF_MONTH) < fromDate.getActualMaximum(Calendar.DAY_OF_MONTH))
+					fromDate.add(CAL_TYPES[i], future ? 1 : -1);
+					if(CAL_TYPES[i] != Calendar.DAY_OF_MONTH && fromDate.get(Calendar.DAY_OF_MONTH) < dayOfMonth && fromDate.get(Calendar.DAY_OF_MONTH) < fromDate.getActualMaximum(Calendar.DAY_OF_MONTH))
 					{
 						fromDate.set(Calendar.DAY_OF_MONTH, Math.min(fromDate.getActualMaximum(Calendar.DAY_OF_MONTH), dayOfMonth));
 					}
 					timeSpan[i]++;
 				}
-				fromDate.add(CalTypes[i], future ? -1 : 1);
+				fromDate.add(CAL_TYPES[i], future ? -1 : 1);
 			}
 		}
 
@@ -211,7 +211,7 @@ public class TimeSpan
 	@Override
 	public String toString()
 	{
-		return toString(timeUnitNames);
+		return toString(DEFAULT_TIME_SPAN_FORMAT);
 	}
 
 	/**
@@ -219,23 +219,15 @@ public class TimeSpan
 	 *                  new String[] { "year", "years", "month", "months", "day", "days", "hour", "hours", "minute", "minutes", "second", "seconds" }
 	 * @return The TimeSpan converted to a string
 	 */
+	@Deprecated
 	public String toString(@NotNull String[] unitNames)
 	{
-		Validate.notNull(unitNames);
-		Validate.isTrue(unitNames.length == 12, "Not enough unit names given.");
+		return toString(new BasicTimeSpanFormat(unitNames));
+	}
 
-		StringBuilder stringBuilder = new StringBuilder();
-		for(int i = 0; i < TOTAL_DAYS; i++)
-		{
-			if(timeSpan[i] > 0 || (i == SECOND && stringBuilder.length() == 0))
-			{
-				if(stringBuilder.length() > 0) stringBuilder.append(' ');
-				stringBuilder.append(timeSpan[i]);
-				stringBuilder.append(' ');
-				stringBuilder.append((timeSpan[i] == 1) ? unitNames[i*2] : unitNames[i*2+1]);
-			}
-		}
-		return stringBuilder.toString();
+	public String toString(TimeSpanFormat timeSpanFormat)
+	{
+		return timeSpanFormat.format(this);
 	}
 	//endregion
 
@@ -275,10 +267,22 @@ public class TimeSpan
 		return timeSpan[SECOND];
 	}
 
+	/**
+	 * Gets a copy of the internally used data array.
+	 *
+	 * @return The internal time span array.
+	 */
 	public int[] getArray()
 	{
 		return timeSpan.clone();
 	}
+
+	/**
+	 * Returns the internally used data array. Modifying the array will change the values of the TimeSpan.
+	 *
+	 * @return The internal time span array.
+	 */
+	public int[] getArrayNoCopy() { return timeSpan; }
 	//endregion
 
 	@Override

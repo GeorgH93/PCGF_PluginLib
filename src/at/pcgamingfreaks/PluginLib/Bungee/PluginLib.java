@@ -19,6 +19,7 @@ package at.pcgamingfreaks.PluginLib.Bungee;
 
 import at.pcgamingfreaks.Bungee.Configuration;
 import at.pcgamingfreaks.Bungee.Updater;
+import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.*;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
@@ -68,7 +69,7 @@ public final class PluginLib extends Plugin implements PluginLibrary
 			try
 			{
 				//noinspection ConstantConditions
-				Reflection.getField(TimeSpan.class, "timeUnitNames").set(null, unitNames);
+				Reflection.getField(BasicTimeSpanFormat.class, "unitNames").set(Reflection.getField(TimeSpan.class, "DEFAULT_TIME_SPAN_FORMAT").get(null), unitNames);
 			}
 			catch(IllegalAccessException e)
 			{

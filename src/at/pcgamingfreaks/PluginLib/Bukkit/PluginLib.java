@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Bukkit.ItemNameResolver;
 import at.pcgamingfreaks.Bukkit.Language;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Updater;
+import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
@@ -82,9 +83,9 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 			try
 			{
 				//noinspection ConstantConditions
-				Reflection.getField(TimeSpan.class, "timeUnitNames").set(null, unitNames);
+				Reflection.getField(BasicTimeSpanFormat.class, "unitNames").set(Reflection.getField(TimeSpan.class, "DEFAULT_TIME_SPAN_FORMAT").get(null), unitNames);
 			}
-			catch(IllegalAccessException e)
+			catch(Exception e)
 			{
 				e.printStackTrace();
 			}
