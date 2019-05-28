@@ -263,7 +263,8 @@ public class Language extends YamlFileManager
 	@Override
 	protected void loaded()
 	{
-		logger.info(ConsoleColor.GREEN + fileDescriptionCapitalized + " file successfully loaded. Language: " + getLanguage() + "  Author: " + getAuthor() + ConsoleColor.RESET);
+		String author = getAuthor().equals("Unknown") ? "" : "  Author: " + getAuthor();
+		logger.info(ConsoleColor.GREEN + fileDescriptionCapitalized + " file successfully loaded. Language: " + getLanguage() + author + ConsoleColor.RESET);
 	}
 
 
