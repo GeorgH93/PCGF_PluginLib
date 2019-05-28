@@ -28,6 +28,10 @@ A small library to reduce the code for some stuff commonly used in plugins.
 * [Marriage Master](https://www.spigotmc.org/resources/19273/) (V2.0 and newer)
 * [Minepacks](https://www.spigotmc.org/resources/19286/) (V2.0 and newer)
 
+## Requirements:
+* Java 7 (or newer)
+* Bukkit, Spigot, Paper or BungeeCord for MC 1.7 or newer
+
 ## Adding it to your plugin
 The library can be added in two ways to your plugin.
 1. Requiring it to be installed as a plugin (will be published on dev.bukkit.org and spigotmc.org soon)
