@@ -32,11 +32,12 @@ import java.util.logging.Logger;
 public class Language extends YamlFileManager
 {
 	private static final String PATH_ADDITION_SEND_METHOD = "_SendMethod", PATH_ADDITION_PARAMETERS = "_Parameters";
-	protected String language = "en";
+	protected String language = "en", fallbackLanguage = "en"; // ToDo add parameter for fallback language in load method
 	protected static MessageClassesReflectionDataHolder messageClasses;
 
 	private YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.OVERWRITE;
 	private final String prefix;
+	private boolean extractedFallback = false;
 
 	//region constructors
 	//region alternative constructors
@@ -184,7 +185,7 @@ public class Language extends YamlFileManager
 	 */
 	public boolean load(@NotNull String language, @NotNull YamlFileUpdateMethod updateMode)
 	{
-		this.language = language;
+		this.language = language.toLowerCase();
 		this.updateMode = updateMode;
 		file = language + ".yml";
 		yamlFile = new File(baseDir, prefix + file);
@@ -194,11 +195,31 @@ public class Language extends YamlFileManager
 
 	protected void extractFile()
 	{
-		if(!Utils.extractFile(getClass(), logger, inJarPrefix + file, yamlFile) && !language.equals("en"))
+		if(extracted || !Utils.extractFile(getClass(), logger, inJarPrefix + file, yamlFile))
 		{
-			Utils.extractFile(getClass(), logger, inJarPrefix + "en.yml", yamlFile);
+			if(!language.equals(fallbackLanguage))
+			{
+				Utils.extractFile(getClass(), logger, inJarPrefix + fallbackLanguage + ".yml", yamlFile);
+				extractedFallback = true;
+			}
+			else
+			{
+				logger.warning(ConsoleColor.RED + "Fallback language file failed to extract!" + ConsoleColor.RESET);
+			}
 		}
 		extracted = true;
+	}
+
+	protected void validateUpdate()
+	{
+		if((getVersion() < upgradeThreshold || updateMode == YamlFileUpdateMethod.UPGRADE) && !extractedFallback && !language.equals(fallbackLanguage))
+		{
+			upgrade();
+		}
+		else
+		{
+			update();
+		}
 	}
 
 	public @Nullable YAML getLang()

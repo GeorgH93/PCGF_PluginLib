@@ -195,19 +195,27 @@ public class YamlFileManager
 				load();
 				logger.info(ConsoleColor.GREEN + "Successful updated " + fileDescription + " file." + ConsoleColor.RESET);
 			}
-			else if((getVersion() < upgradeThreshold || updateMode == YamlFileUpdateMethod.UPGRADE) && !extracted)
-			{
-				upgrade();
-			}
 			else
 			{
-				update();
+				validateUpdate();
 			}
 		}
 		else
 		{
 			if(expectedVersion < getVersion()) logger.info(fileDescriptionCapitalized + " file version newer than expected! Expected: " + expectedVersion + " Is: " + getVersion());
 			loaded();
+		}
+	}
+
+	protected void validateUpdate()
+	{
+		if((getVersion() < upgradeThreshold || updateMode == YamlFileUpdateMethod.UPGRADE) && !extracted)
+		{
+			upgrade();
+		}
+		else
+		{
+			update();
 		}
 	}
 
