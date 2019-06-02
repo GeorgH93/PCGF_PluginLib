@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 public class Language extends YamlFileManager
 {
 	private static final String PATH_ADDITION_SEND_METHOD = "_SendMethod", PATH_ADDITION_PARAMETERS = "_Parameters";
-	protected String language = "en", fallbackLanguage = "en"; // ToDo add parameter for fallback language in load method
+	protected String language = "en", fallbackLanguage = "en";
 	protected static MessageClassesReflectionDataHolder messageClasses;
 
 	private YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.OVERWRITE;
@@ -185,8 +185,22 @@ public class Language extends YamlFileManager
 	 */
 	public boolean load(@NotNull String language, @NotNull YamlFileUpdateMethod updateMode)
 	{
+		return load(language, updateMode, "en");
+	}
+
+	/**
+	 * Loads the language file
+	 *
+	 * @param language   the language to load
+	 * @param updateMode how the language file should be updated
+	 * @param fallbackLanguage   the language to load in case the main language does not exist
+	 * @return True if it's loaded successfully. False if not.
+	 */
+	public boolean load(@NotNull String language, @NotNull YamlFileUpdateMethod updateMode, @NotNull String fallbackLanguage)
+	{
 		this.language = language.toLowerCase();
 		this.updateMode = updateMode;
+		this.fallbackLanguage = fallbackLanguage;
 		file = language + ".yml";
 		yamlFile = new File(baseDir, prefix + file);
 		load();
