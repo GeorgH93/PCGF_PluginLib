@@ -164,7 +164,7 @@ public class Utils
 		catch (IOException | NullPointerException e)
 		{
 			logger.warning("Failed to extract file \"" + inJarPath + "\"!");
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return false;
 	}

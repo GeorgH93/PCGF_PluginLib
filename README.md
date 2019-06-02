@@ -1,10 +1,12 @@
-# Bukkit/BungeeCord PluginLib
-A small library to reduce the code for some stuff commonly used in plugins.
+# PCGF - PluginLib
+A library for Bukkit, Spigot, Paper and BungeeCord, that provides commonly used functions
+and provides cross version support for a lot of Minecraft features
+(some of which are no longer supported or support for them has been added later by Bukkit/Spigot/Paper).
 
 ## Features:
 ### Bukkit + BungeeCord:
 * Config/Language file handler
-    * File upgrade support (fill old values in new file)
+    * File upgrade support (copy old values in new file)
     * Comment support
 * UUID converter
 * Auto-updater
@@ -21,7 +23,7 @@ A small library to reduce the code for some stuff commonly used in plugins.
 ### Bukkit only:
 * Particles handler
 * Item-Stack serializer
-* Material name handler
+* Material name resolver
 * Late registerable commands
 
 ## Plugins using it:
@@ -31,6 +33,7 @@ A small library to reduce the code for some stuff commonly used in plugins.
 ## Requirements:
 * Java 7 (or newer)
 * Bukkit, Spigot, Paper or BungeeCord for MC 1.7 or newer
+* (Optional) PlaceholderAPI (to use it with the provided message API)
 
 ## Adding it to your plugin
 The library can be added in two ways to your plugin.
