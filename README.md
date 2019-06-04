@@ -1,7 +1,12 @@
+[ci]: https://ci.pcgamingfreaks.at/job/PluginLib/
+
 # PCGF - PluginLib
 A library for Bukkit, Spigot, Paper and BungeeCord, that provides commonly used functions
 and provides cross version support for a lot of Minecraft features
 (some of which are no longer supported or support for them has been added later by Bukkit/Spigot/Paper).
+
+## Download:
+[Build Server][ci]
 
 ## Features:
 ### Bukkit + BungeeCord:
@@ -99,8 +104,8 @@ Replace `your_package` with the package of your plugin.
 **Do not shade this library into your plugin without relocation!!!**
 
 ## Links:
-* [Build Server ![Build Status](https://ci.pcgamingfreaks.at/job/PluginLib/badge/icon)](https://ci.pcgamingfreaks.at/job/PluginLib/)
-* [Code Coverage ![Coverage Status](https://coveralls.io/repos/github/GeorgH93/Bukkit_Bungee_PluginLib/badge.svg)](https://coveralls.io/github/GeorgH93/Bukkit_Bungee_PluginLib)
+* [Build Server ![Build Status](https://ci.pcgamingfreaks.at/job/PluginLib/badge/icon)][ci]
+* [Code Coverage ![Coverage Status](https://coveralls.io/repos/github/GeorgH93/PCGF_PluginLib/badge.svg)](https://coveralls.io/github/GeorgH93/PCGF_PluginLib)
 * [Javadoc](https://ci.pcgamingfreaks.at/job/PluginLib/javadoc/)
 * Spigot (TBA)
 * Dev Bukkit (TBA)

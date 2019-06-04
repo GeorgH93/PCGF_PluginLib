@@ -7,13 +7,13 @@
 	<packaging>jar</packaging>
 
 	<scm>
-		<connection>scm:git:git@github.com:GeorgH93/Bukkit_Bungee_PluginLib.git</connection>
-		<developerConnection>scm:git:git@github.com:GeorgH93/Bukkit_Bungee_PluginLib.git</developerConnection>
-		<url>git@github.com:GeorgH93/Bukkit_Bungee_PluginLib.git</url>
+		<connection>scm:git:git@github.com:GeorgH93/PCGF_PluginLib.git</connection>
+		<developerConnection>scm:git:git@github.com:GeorgH93/PCGF_PluginLib.git</developerConnection>
+		<url>git@github.com:GeorgH93/PCGF_PluginLib.git</url>
 	</scm>
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/GeorgH93/Bukkit_Bungee_PluginLib/issues</url>
+		<url>https://github.com/GeorgH93/PCGF_PluginLib/issues</url>
 	</issueManagement>
 	<ciManagement>
 		<system>jenkins</system>
@@ -37,7 +37,7 @@
 		<powermockVersion>1.7.4</powermockVersion><!-- property so that we have to change only one value to update all the powermock dependencies -->
 		<pluginName>PCGF_PluginLib</pluginName>
 		<author>GeorgH93</author>
-		<website>TODO</website>
+		<website>https://github.com/GeorgH93/PCGF_PluginLib</website>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 	</properties>
