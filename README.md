@@ -36,7 +36,7 @@ and provides cross version support for a lot of Minecraft features
 * [Minepacks](https://www.spigotmc.org/resources/19286/) (V2.0 and newer)
 
 ## Requirements:
-* Java 7 (or newer)
+* Java 8 (or newer)
 * Bukkit, Spigot, Paper or BungeeCord for MC 1.7 or newer
 * (Optional) PlaceholderAPI (to use it with the provided message API)
 
@@ -59,7 +59,7 @@ The library can be added in two ways to your plugin.
 <dependency>
  	<groupId>at.pcgamingfreaks</groupId>
  	<artifactId>PluginLib</artifactId>
- 	<version>1.0.2-SNAPSHOT</version>
+ 	<version>1.0.12-SNAPSHOT</version>
 </dependency>
 ```
 

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>at.pcgamingfreaks</groupId>
 	<artifactId>PluginLib</artifactId>
-	<version>1.0.11-SNAPSHOT</version>
+	<version>1.0.12-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<scm>
@@ -40,6 +40,8 @@
 		<website>https://github.com/GeorgH93/PCGF_PluginLib</website>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
+
+		<javadoc.opts>-Xdoclint:none</javadoc.opts>
 	</properties>
 
 	<repositories>
@@ -115,12 +117,12 @@
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>2.4.1</version>
+			<version>3.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.7.10</version>
+			<version>1.7.25</version>
 		</dependency>
 		<!-- region test dependencies -->
 		<!-- jUnit for unit tests -->
@@ -202,15 +204,15 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<!-- Shades some required libs into the final jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.3</version>
+				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -341,27 +343,4 @@
 			<url>https://repo.pcgamingfreaks.at/repository/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-
-	<profiles>
-		<!-- Java 1.8 uses checks for the JavaDoc, we disable them on Java 1.8, but older Java version don't understand the parameter, so we have to use a small trick -->
-		<profile>
-			<id>doclint-java8-disable</id>
-			<activation>
-				<jdk>[1.8,)</jdk>
-			</activation>
-			<properties>
-				<javadoc.opts>-Xdoclint:none</javadoc.opts>
-			</properties>
-		</profile>
-		<!-- Java 1.7 ran out of space during tests, but Java 1.8 no longer needs this parameter, so we have to use a small trick -->
-		<profile>
-			<id>use-permgen-java7</id>
-			<activation>
-				<jdk>1.7</jdk>
-			</activation>
-			<properties>
-				<permgen.args>-XX:MaxPermSize=256m</permgen.args>
-			</properties>
-		</profile>
-	</profiles>
 </project>

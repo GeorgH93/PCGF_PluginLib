@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,8 +16,6 @@
  */
 
 package at.pcgamingfreaks;
-
-import at.pcgamingfreaks.Calendar.TimeSpan;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -74,56 +72,6 @@ public class UtilsTest
 		assertTrue("The execution should take the given amount of seconds", elapsedTime > 900 && elapsedTime < 1100);
 		Thread.currentThread().interrupt();
 		Utils.blockThread(10);
-	}
-
-	@Test
-	public void testWarnOnJava7() throws Exception
-	{
-		final int[] logCount = new int[] { 0, 0 };
-		Logger mockLogger = mock(Logger.class);
-		doAnswer(new Answer<Void>()
-		{
-			@Override
-			public Void answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				logCount[0]++;
-				return null;
-			}
-		}).when(mockLogger).warning(anyString());
-		doAnswer(new Answer<Void>()
-		{
-			@Override
-			public Void answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				logCount[1]++;
-				return null;
-			}
-		}).when(mockLogger).info(anyString());
-		String javaVersion = System.getProperty("java.version");
-		System.setProperty("java.version", "1.7");
-		long startTime = System.currentTimeMillis();
-		Utils.warnOnJava_1_7(mockLogger, 1);
-		long stopTime = System.currentTimeMillis(), elapsedTime = stopTime - startTime;
-		assertTrue("The elapsed time should match the given second", elapsedTime > 900 && elapsedTime < 1100);
-		assertEquals("There should be one message in the warning log", 1, logCount[0]);
-		assertEquals("There should be one message in the info log", 1, logCount[1]);
-		TimeSpan mockedTimeSpan = new TimeSpan(1430438403000L, true);
-		whenNew(TimeSpan.class).withAnyArguments().thenReturn(mockedTimeSpan);
-		Utils.warnOnJava_1_7(mockLogger);
-		assertEquals("There should be a second message in the warning log now", 2, logCount[0]);
-		assertEquals("There should be a second message in the info log now", 2, logCount[1]);
-		System.setProperty("java.version", "1.8");
-		Utils.warnOnJava_1_7(mockLogger);
-		System.setProperty("java.version", "1.7");
-		mockedTimeSpan = mock(TimeSpan.class);
-		doReturn(5).when(mockedTimeSpan).getYears();
-		doReturn(5).when(mockedTimeSpan).getMonths();
-		whenNew(TimeSpan.class).withAnyArguments().thenReturn(mockedTimeSpan);
-		Utils.warnOnJava_1_7(mockLogger);
-		doReturn(1).when(mockedTimeSpan).getYears();
-		doReturn(1).when(mockedTimeSpan).getMonths();
-		Utils.warnOnJava_1_7(mockLogger);
-		System.setProperty("java.version", javaVersion);
 	}
 
 	@Test
