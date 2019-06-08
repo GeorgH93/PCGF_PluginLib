@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -238,16 +238,7 @@ public class Configuration extends YamlFileManager
 	 */
 	public @NotNull YamlFileUpdateMethod getLanguageUpdateMode()
 	{
-		String mode = yaml.getString(languageUpdateKey, "upgrade");
-		try
-		{
-			return YamlFileUpdateMethod.valueOf(mode.toUpperCase());
-		}
-		catch(IllegalArgumentException ignored)
-		{
-			logger.warning("Failed to read \"" + languageUpdateKey + "\" config option (Invalid value: " + mode + "). Using default value (\"upgrade\").");
-		}
-		return YamlFileUpdateMethod.UPGRADE;
+		return YamlFileUpdateMethod.fromString(yaml.getString(languageUpdateKey, "upgrade"));
 	}
 	//endregion
 

@@ -31,11 +31,11 @@ import java.util.logging.Logger;
 
 public class Language extends YamlFileManager
 {
+	private static final String MESSAGE_NOT_FOUND = "§cMessage not found!";
 	private static final String PATH_ADDITION_SEND_METHOD = "_SendMethod", PATH_ADDITION_PARAMETERS = "_Parameters";
 	protected String language = "en", fallbackLanguage = "en";
 	protected static MessageClassesReflectionDataHolder messageClasses;
 
-	private YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.OVERWRITE;
 	private final String prefix;
 	private boolean extractedFallback = false;
 
@@ -129,7 +129,13 @@ public class Language extends YamlFileManager
 	 */
 	public @NotNull String get(@NotNull String path)
 	{
-		return yaml.getString("Language." + path, "§cMessage not found!");
+		String msg = yaml.getString("Language." + path, MESSAGE_NOT_FOUND);
+		//noinspection StringEquality
+		if(msg == MESSAGE_NOT_FOUND) // == is correct! We want to check if the string is the given fallback string object and not if it is the same text. If someone would put the fallback text in the language file no info should be shown.
+		{
+			logger.info("No translation for key: " + path);
+		}
+		return msg;
 	}
 
 	/**
@@ -173,7 +179,7 @@ public class Language extends YamlFileManager
 	 */
 	public boolean load(@NotNull String language, @NotNull String updateMode)
 	{
-		return load(language, (updateMode.equalsIgnoreCase("overwrite")) ? YamlFileUpdateMethod.OVERWRITE : YamlFileUpdateMethod.UPDATE);
+		return load(language, YamlFileUpdateMethod.fromString(updateMode));
 	}
 
 	/**

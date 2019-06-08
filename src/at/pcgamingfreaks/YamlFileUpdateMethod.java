@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015-2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,9 +17,21 @@
 
 package at.pcgamingfreaks;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum YamlFileUpdateMethod
 {
 	UPDATE,
 	UPGRADE,
-	OVERWRITE
+	OVERWRITE;
+
+	public static @NotNull YamlFileUpdateMethod fromString(@NotNull String mode)
+	{
+		try
+		{
+			return YamlFileUpdateMethod.valueOf(mode.toUpperCase());
+		}
+		catch(IllegalArgumentException ignored) {}
+		return YamlFileUpdateMethod.UPGRADE;
+	}
 }
