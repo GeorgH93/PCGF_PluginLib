@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ public class StringUtils
 	public static final Pattern IPv4_PATTERN  = Pattern.compile("(((?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}) ?[.,-:;_ ] ?){3}(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))");
 	public static final Pattern URL_PATTERN   = Pattern.compile("[-a-zA-Z0-9@:%_+.~#?&/=]{2,63}[.,][a-z]{2,10}\\b(/[-a-zA-Z0-9@:%_+~#?&/=]*)?");
 	//endregion
+	public static final String[] BYTE_SIZE_NAMES = { "byte", "bytes", "kiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
 
 	public static boolean arrayContains(@NotNull String[] strings, @Nullable String searchFor)
 	{
@@ -215,6 +216,18 @@ public class StringUtils
 			return page;
 		}
 		throw new NumberFormatException("Unable to parse page number! Invalid format!");
+	}
+
+	public static String formatByteCountHumanReadable(long bytes)
+	{
+		if(bytes == 1) return "1 " + BYTE_SIZE_NAMES[0];
+		int i = 1;
+		double doubleBytes = bytes;
+		while (doubleBytes > 1024 && i++ < 6)
+		{
+			doubleBytes /= 1024.0;
+		}
+		return (i == 0) ? bytes + " " + BYTE_SIZE_NAMES[i] : String.format("%.2f %s", doubleBytes, BYTE_SIZE_NAMES[i]);
 	}
 
 	//region Enabled / Disabled messages

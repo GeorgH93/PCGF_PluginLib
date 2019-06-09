@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Updater;
 
 import at.pcgamingfreaks.ConsoleColor;
+import at.pcgamingfreaks.StringUtils;
 import at.pcgamingfreaks.Updater.UpdateProviders.NotSuccessfullyQueriedException;
 import at.pcgamingfreaks.Updater.UpdateProviders.RequestTypeNotAvailableException;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
@@ -183,27 +184,31 @@ public abstract class Updater
 			}
 			//endregion
 			long fileLength = connection.getContentLengthLong();
-			int count, percent, percentHelper = -1;
 			File downloadFile = new File(updateFolder.getAbsolutePath() + File.separator + fileName);
 			MessageDigest hashGenerator = updateProvider.providesChecksum().getInstanceOrNull();
 			try(InputStream inputStream = (hashGenerator != null) ? new DigestInputStream(new BufferedInputStream(connection.getInputStream()), hashGenerator) : new BufferedInputStream(url.openStream());
 			    FileOutputStream outputStream = new FileOutputStream(downloadFile))
 			{
-				byte[] buffer = new byte[BUFFER_SIZE];
 				if(announceDownloadProgress)
 				{
 					logger.info("Start downloading update: " + updateProvider.getLatestVersion().toString());
 				}
-				long downloaded = 0;
+				int count, downloaded = 0, progress, lastProgress = 1;
+				float percentPerByte = 100f / fileLength;
+				byte[] buffer = new byte[BUFFER_SIZE];
+				String size = (announceDownloadProgress && fileLength > 0) ? StringUtils.formatByteCountHumanReadable(fileLength) : "";
 				while((count = inputStream.read(buffer, 0, BUFFER_SIZE)) != -1)
 				{
 					downloaded += count;
 					outputStream.write(buffer, 0, count);
-					percent = (int) ((downloaded * 100) / fileLength);
-					if(announceDownloadProgress && percent % 10 == 0 && percent / 10 > percentHelper)
+					if(announceDownloadProgress && fileLength > 0) // ignore invalid file sizes
 					{
-						percentHelper++;
-						logger.info("Downloading update: " + percent + "% of " + fileLength + " bytes.");
+						progress = (int) (downloaded * percentPerByte);
+						if(progress % 10 == 0 && progress > lastProgress)
+						{
+							lastProgress = progress;
+							logger.info("Downloading update: " + progress + "% of " + size);
+						}
 					}
 				}
 				outputStream.flush();
@@ -322,76 +327,52 @@ public abstract class Updater
 	public void update(@Nullable final UpdaterResponse response)
 	{
 		if(result == UpdateResult.DISABLED) return;
-		runAsync(new Runnable()
-		{
-			@Override
-			public void run()
+		runAsync(() -> {
+			result = updateProvider.query();
+			if(result == UpdateResult.SUCCESS)
 			{
-				result = updateProvider.query();
-				if(result == UpdateResult.SUCCESS)
+				if(versionCheck(getRemoteVersion()))
 				{
-					if(versionCheck(getRemoteVersion()))
+					result = UpdateResult.UPDATE_AVAILABLE;
+					try
 					{
-						result = UpdateResult.UPDATE_AVAILABLE;
-						try
+						if(updateProvider.providesDownloadURL())
 						{
-							if(updateProvider.providesDownloadURL())
+							download(updateProvider.getLatestFileURL(), (updateProvider.getLatestFileName().toLowerCase().endsWith(".zip")) ? updateProvider.getLatestFileName() : targetFileName);
+							if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.providesDependencies())
 							{
-								download(updateProvider.getLatestFileURL(), (updateProvider.getLatestFileName().toLowerCase().endsWith(".zip")) ? updateProvider.getLatestFileName() : targetFileName);
-								if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.providesDependencies())
+								for(UpdateProvider.UpdateFile update : updateProvider.getLatestDependencies())
 								{
-									for(UpdateProvider.UpdateFile update : updateProvider.getLatestDependencies())
-									{
-										download(update.getDownloadURL(), update.getFileName());
-									}
-									result = (result == UpdateResult.SUCCESS) ? UpdateResult.SUCCESS : UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED;
+									download(update.getDownloadURL(), update.getFileName());
 								}
+								result = (result == UpdateResult.SUCCESS) ? UpdateResult.SUCCESS : UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED;
 							}
 						}
-						catch(Exception e)
-						{
-							e.printStackTrace();
-						}
 					}
-					else
+					catch(Exception e)
 					{
-						result = UpdateResult.NO_UPDATE;
+						e.printStackTrace();
 					}
 				}
-				if(response != null) runSync(new Runnable()
+				else
 				{
-					@Override
-					public void run()
-					{
-						response.onDone(result);
-					}
-				});
+					result = UpdateResult.NO_UPDATE;
+				}
 			}
+			if(response != null) runSync(() -> response.onDone(result));
 		});
 	}
 
 	public void checkForUpdate(final UpdaterResponse response)
 	{
 		if(result == UpdateResult.DISABLED) return;
-		runAsync(new Runnable()
-		{
-			@Override
-			public void run()
+		runAsync(() -> {
+			result = updateProvider.query();
+			if(result == UpdateResult.SUCCESS)
 			{
-				result = updateProvider.query();
-				if(result == UpdateResult.SUCCESS)
-				{
-					result = versionCheck(getRemoteVersion()) ? UpdateResult.UPDATE_AVAILABLE : UpdateResult.NO_UPDATE;
-				}
-				runSync(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						response.onDone(result);
-					}
-				});
+				result = versionCheck(getRemoteVersion()) ? UpdateResult.UPDATE_AVAILABLE : UpdateResult.NO_UPDATE;
 			}
+			runSync(() -> response.onDone(result));
 		});
 	}
 
