@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -218,16 +219,35 @@ public class StringUtils
 		throw new NumberFormatException("Unable to parse page number! Invalid format!");
 	}
 
+	/**
+	 * Converts a byte count into an human readable string (e.g.: 1.24 MiB).
+	 *
+	 * @param bytes The size in bytes
+	 * @return The formatted string.
+	 */
 	public static String formatByteCountHumanReadable(long bytes)
 	{
+		return formatByteCountHumanReadable(Locale.ROOT, bytes);
+	}
+
+	/**
+	 * Converts a byte count into an human readable string (e.g.: 1.24 MiB).
+	 *
+	 * @param locale The locale to be used for number formatting
+	 * @param bytes The size in bytes
+	 * @return The formatted string.
+	 */
+	public static String formatByteCountHumanReadable(Locale locale, long bytes)
+	{
 		if(bytes == 1) return "1 " + BYTE_SIZE_NAMES[0];
-		int i = 1;
+		if(bytes < 1024) return bytes + " " + BYTE_SIZE_NAMES[1];
 		double doubleBytes = bytes;
-		while (doubleBytes > 1024 && i++ < 6)
+		int i = 1;
+		for(; doubleBytes >= 1024 && i < BYTE_SIZE_NAMES.length; i++)
 		{
 			doubleBytes /= 1024.0;
 		}
-		return (i == 0) ? bytes + " " + BYTE_SIZE_NAMES[i] : String.format("%.2f %s", doubleBytes, BYTE_SIZE_NAMES[i]);
+		return String.format(locale, (doubleBytes >= 100) ? "%.1f %s" : "%.2f %s", doubleBytes, BYTE_SIZE_NAMES[i]);
 	}
 
 	//region Enabled / Disabled messages

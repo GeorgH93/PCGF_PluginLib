@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 
@@ -223,5 +224,22 @@ public class StringUtilsTest
 		assertEquals(1, StringUtils.parsePageNumber("0+2"));
 		assertEquals(1, StringUtils.parsePageNumber("4-2"));
 		assertEquals(1, StringUtils.parsePageNumber("3--"));
+	}
+
+	@Test
+	public void testFormatByteCountHumanReadable() throws Exception
+	{
+		assertEquals("1 byte", StringUtils.formatByteCountHumanReadable(1));
+		assertEquals("10 bytes", StringUtils.formatByteCountHumanReadable(10));
+		assertEquals("1.00 kiB", StringUtils.formatByteCountHumanReadable(1024));
+		assertEquals("1.00 MiB", StringUtils.formatByteCountHumanReadable(1024*1024));
+		assertEquals("1.00 GiB", StringUtils.formatByteCountHumanReadable(1024*1024*1024));
+		assertEquals("2.00 GiB", StringUtils.formatByteCountHumanReadable(Integer.MAX_VALUE));
+		assertEquals("1.00 TiB", StringUtils.formatByteCountHumanReadable(1024L*1024*1024*1024));
+		assertEquals("1.00 PiB", StringUtils.formatByteCountHumanReadable(1024L*1024*1024*1024*1024));
+		assertEquals("1.00 EiB", StringUtils.formatByteCountHumanReadable(1024L*1024*1024*1024*1024*1024));
+		assertEquals("100.0 MiB", StringUtils.formatByteCountHumanReadable(1024*1024*100));
+		assertEquals("8.00 EiB", StringUtils.formatByteCountHumanReadable(Long.MAX_VALUE));
+		assertEquals("8,00 EiB", StringUtils.formatByteCountHumanReadable(Locale.GERMAN, Long.MAX_VALUE));
 	}
 }
