@@ -207,7 +207,8 @@ public class Language extends YamlFileManager
 		this.language = language.toLowerCase();
 		this.updateMode = updateMode;
 		this.fallbackLanguage = fallbackLanguage;
-		file = language + ".yml";
+		this.extractedFallback = false;
+		file = language + YAML_FILE_EXT;
 		yamlFile = new File(baseDir, prefix + file);
 		load();
 		return isLoaded();
@@ -232,7 +233,7 @@ public class Language extends YamlFileManager
 
 	protected void validateUpdate()
 	{
-		if((getVersion() < upgradeThreshold || updateMode == YamlFileUpdateMethod.UPGRADE) && !extractedFallback && !language.equals(fallbackLanguage))
+		if((getVersion() < upgradeThreshold || updateMode == YamlFileUpdateMethod.UPGRADE) && !extractedFallback)
 		{
 			upgrade();
 		}
