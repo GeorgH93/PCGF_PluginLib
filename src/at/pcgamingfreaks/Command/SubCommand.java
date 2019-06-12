@@ -1,11 +1,11 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
- *  
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -111,17 +111,31 @@ public abstract class SubCommand<COMMAND_SENDER>
 	 */
 	public void close() {}
 
-	/**
-	 * Allows to register commands that have to do with the current command (to be registered at the same time as the command).
-	 *
-	 * Also allows to execute code after the command is registered.
-	 */
+	@Deprecated
 	public void registerSubCommands() {}
 
-	/**
-	 * Allows to un-register commands that have been registered at the same time as another command.
-	 */
+	@Deprecated
 	public void unRegisterSubCommands() {}
+
+	/**
+	 * Allows to perform actions before the sub-command will be registered in the command manager.
+	 */
+	public void beforeRegister() {}
+
+	/**
+	 * Allows to perform actions after the sub-command has been registered in the command manager.
+	 */
+	public void afterRegister() {}
+
+	/**
+	 * Allows to perform actions before the sub-command will be un-registered from the command manager.
+	 */
+	public void beforeUnregister() {}
+
+	/**
+	 * Allows to perform actions after the sub-command has been un-registered from the command manager.
+	 */
+	public void afterUnRegister() {}
 	//endregion
 
 	/**

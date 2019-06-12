@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ public abstract class CommandExecutorWithSubCommands<SUB_COMMAND extends SubComm
 
 	public void registerSubCommand(@NotNull SUB_COMMAND command)
 	{
+		command.beforeRegister();
 		commands.add(command);
 		@SuppressWarnings("unchecked") @NotNull List<String> aliases = command.getAliases();
 		for(String alias : aliases)
@@ -51,10 +52,12 @@ public abstract class CommandExecutorWithSubCommands<SUB_COMMAND extends SubComm
 			subCommandMap.put(alias, command);
 		}
 		command.registerSubCommands();
+		command.afterRegister();
 	}
 
 	public void unRegisterSubCommand(@NotNull SUB_COMMAND command)
 	{
+		command.beforeUnregister();
 		command.unRegisterSubCommands();
 		commands.remove(command);
 		@SuppressWarnings("unchecked") @NotNull List<String> aliases = command.getAliases();
@@ -62,5 +65,6 @@ public abstract class CommandExecutorWithSubCommands<SUB_COMMAND extends SubComm
 		{
 			subCommandMap.remove(alias);
 		}
+		command.afterUnRegister();
 	}
 }
