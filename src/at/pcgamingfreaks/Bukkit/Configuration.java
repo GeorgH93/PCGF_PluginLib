@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016, 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Configuration extends at.pcgamingfreaks.Configuration
 {
-	protected JavaPlugin plugin;
+	protected final JavaPlugin plugin;
 
 	/**
 	 * @param plugin  the instance of the plugin
@@ -31,7 +31,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 */
 	public Configuration(@NotNull JavaPlugin plugin, int version)
 	{
-		this(plugin, version, -1, "config.yml");
+		this(plugin, version, -1, DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -42,7 +42,6 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	public Configuration(@NotNull JavaPlugin plugin, int version, @Nullable String path)
 	{
 		this(plugin, version, -1, path);
-
 	}
 
 	/**
@@ -52,7 +51,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 */
 	public Configuration(@NotNull JavaPlugin plugin, int version, int upgradeThreshold)
 	{
-		this(plugin, version, upgradeThreshold, "config.yml");
+		this(plugin, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**

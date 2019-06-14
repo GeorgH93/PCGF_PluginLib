@@ -32,11 +32,11 @@ import java.util.logging.Logger;
 public class Language extends YamlFileManager
 {
 	private static final String MESSAGE_NOT_FOUND = "§cMessage not found!";
-	private static final String PATH_ADDITION_SEND_METHOD = "_SendMethod", PATH_ADDITION_PARAMETERS = "_Parameters";
-	protected String language = "en", fallbackLanguage = "en";
+	private static final String KEY_LANGUAGE = "Language.", KEY_ADDITION_SEND_METHOD = "_SendMethod", KEY_ADDITION_PARAMETERS = "_Parameters";
 	protected static MessageClassesReflectionDataHolder messageClasses;
 
 	private final String prefix;
+	protected String language = "en", fallbackLanguage = "en";
 	private boolean extractedFallback = false;
 
 	//region constructors
@@ -129,7 +129,7 @@ public class Language extends YamlFileManager
 	 */
 	public @NotNull String get(@NotNull String path)
 	{
-		String msg = yaml.getString("Language." + path, MESSAGE_NOT_FOUND);
+		String msg = yaml.getString(KEY_LANGUAGE + path, MESSAGE_NOT_FOUND);
 		//noinspection StringEquality
 		if(msg == MESSAGE_NOT_FOUND) // == is correct! We want to check if the string is the given fallback string object and not if it is the same text. If someone would put the fallback text in the language file no info should be shown.
 		{
@@ -165,6 +165,13 @@ public class Language extends YamlFileManager
 		load(language, updateMode);
 	}
 
+	//region load methods
+	/**
+	 * Loads the language file
+	 *
+	 * @param config the config with the settings that should be used to load the language file
+	 * @return True if it's loaded successfully. False if not.
+	 */
 	public boolean load(@NotNull Configuration config)
 	{
 		return load(config.getLanguage(), config.getLanguageUpdateMode());
@@ -213,6 +220,7 @@ public class Language extends YamlFileManager
 		load();
 		return isLoaded();
 	}
+	//endregion
 
 	protected void extractFile()
 	{
@@ -220,7 +228,7 @@ public class Language extends YamlFileManager
 		{
 			if(!language.equals(fallbackLanguage))
 			{
-				Utils.extractFile(getClass(), logger, inJarPrefix + fallbackLanguage + ".yml", yamlFile);
+				Utils.extractFile(getClass(), logger, inJarPrefix + fallbackLanguage + YAML_FILE_EXT, yamlFile);
 				extractedFallback = true;
 			}
 			else
@@ -231,7 +239,7 @@ public class Language extends YamlFileManager
 		extracted = true;
 	}
 
-	protected void validateUpdate()
+	protected void decideUpdateMode()
 	{
 		if((getVersion() < upgradeThreshold || updateMode == YamlFileUpdateMethod.UPGRADE) && !extractedFallback)
 		{
@@ -240,6 +248,29 @@ public class Language extends YamlFileManager
 		else
 		{
 			update();
+		}
+	}
+
+	/**
+	 * Allows inheriting classes to implement own code for the yaml file upgrade
+	 * If no special code is implemented all keys (which exists in both files) will be copied 1:1 into the new yaml file
+	 * also if the old file defines a _SendMethod or _Parameters sub keys they will be copied too.
+	 *
+	 * @param oldYamlFile the old yaml file
+	 */
+	@Override
+	protected void doUpgrade(@NotNull YamlFileManager oldYamlFile)
+	{
+		logger.info("No custom " + fileDescription + " upgrade code. Copying data from old file to new one.");
+		for(String key : yaml.getKeys())
+		{
+			if(oldYamlFile.yaml.isSet(key))
+			{
+				if(key.equals(KEY_YAML_VERSION)) continue;
+				yaml.set(key, oldYamlFile.yaml.getString(key, null));
+				if(oldYamlFile.yaml.isSet(key + KEY_ADDITION_SEND_METHOD)) yaml.set(key + KEY_ADDITION_SEND_METHOD, oldYamlFile.yaml.getString(key + KEY_ADDITION_SEND_METHOD, null));
+				if(oldYamlFile.yaml.isSet(key + KEY_ADDITION_PARAMETERS)) yaml.set(key + KEY_ADDITION_PARAMETERS, oldYamlFile.yaml.getString(key + KEY_ADDITION_PARAMETERS, null));
+			}
 		}
 	}
 
@@ -257,7 +288,7 @@ public class Language extends YamlFileManager
 	{
 		if(messageClasses == null)
 		{
-			logger.warning("Message reflection data object not set!");
+			logger.warning(ConsoleColor.RED + "Message reflection data object not set!" + ConsoleColor.RESET);
 			return null;
 		}
 		T msg = null;
@@ -265,7 +296,7 @@ public class Language extends YamlFileManager
 		{
 			//noinspection unchecked
 			msg = (T) messageClasses.messageConstructor.newInstance((escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path));
-			String pathSendMethod = "Language." + path + PATH_ADDITION_SEND_METHOD, pathParameter = "Language." + path + PATH_ADDITION_PARAMETERS;
+			String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
 			if(yaml.isSet(pathSendMethod))
 			{
 				Object sendMethod = Enum.valueOf(messageClasses.enumType, yaml.getString(pathSendMethod, "CHAT").toUpperCase());
@@ -282,7 +313,8 @@ public class Language extends YamlFileManager
 		}
 		catch(Exception e)
 		{
-			logger.warning("Failed generate metadata for: " + path);
+			if(msg == null) logger.warning(ConsoleColor.RED + "Failed to load message: " + KEY_LANGUAGE + path + " " + ConsoleColor.RESET);
+			else logger.warning(ConsoleColor.RED + "Failed generate metadata for: " + KEY_LANGUAGE + path + " " + ConsoleColor.RESET);
 			e.printStackTrace();
 		}
 		return msg;

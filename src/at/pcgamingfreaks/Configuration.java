@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 public class Configuration extends YamlFileManager
 {
+	protected static final String DEFAULT_CONFIG_FILE_NAME = "config" + YAML_FILE_EXT;
 	protected String languageKey = "Language", languageUpdateKey = "LanguageUpdateMode"; // Allow to change the keys for the language and the language update mode setting
 
 	//region constructors
@@ -40,7 +41,7 @@ public class Configuration extends YamlFileManager
 	 */
 	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version)
 	{
-		this(logger, baseDir, version, -1, "config.yml");
+		this(logger, baseDir, version, -1, DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -62,7 +63,7 @@ public class Configuration extends YamlFileManager
 	 */
 	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold)
 	{
-		this(logger, baseDir, version, upgradeThreshold, "config.yml");
+		this(logger, baseDir, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**

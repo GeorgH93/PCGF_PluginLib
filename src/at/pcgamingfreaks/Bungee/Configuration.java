@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016, 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class Configuration extends at.pcgamingfreaks.Configuration
 {
-	protected Plugin plugin;
+	protected static final String DEFAULT_BUNGEE_CORD_PREFIX = "bungee_";
+	protected final Plugin plugin;
 
 	/**
 	 * @param plugin  the instance of the plugin
@@ -32,7 +33,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 */
 	public Configuration(@NotNull Plugin plugin, int version)
 	{
-		this(plugin, version, -1, "config.yml");
+		this(plugin, version, -1, DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -52,7 +53,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 */
 	public Configuration(@NotNull Plugin plugin, int version, int upgradeThreshold)
 	{
-		this(plugin, version, upgradeThreshold, "config.yml");
+		this(plugin, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -63,7 +64,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 */
 	public Configuration(@NotNull Plugin plugin, int version, int upgradeThreshold, @Nullable String path)
 	{
-		this(plugin, version, upgradeThreshold, path, "bungee_");
+		this(plugin, version, upgradeThreshold, path, DEFAULT_BUNGEE_CORD_PREFIX);
 	}
 
 	/**

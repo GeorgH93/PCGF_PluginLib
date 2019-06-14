@@ -32,6 +32,8 @@ import java.util.logging.Logger;
  */
 public class YamlFileManager
 {
+	protected static final String KEY_YAML_VERSION = "Version", YAML_FILE_EXT = ".yml";
+
 	protected final Logger logger; // The logger instance of the using plugin
 	protected final String inJarPrefix, path;
 	protected final int expectedVersion, upgradeThreshold;
@@ -88,7 +90,7 @@ public class YamlFileManager
 	 */
 	public int getVersion()
 	{
-		return yaml.getInt("Version", -1);
+		return yaml.getInt(KEY_YAML_VERSION, -1);
 	}
 
 	//region file handling stuff for inheriting classes
@@ -100,12 +102,12 @@ public class YamlFileManager
 	 */
 	protected void doUpgrade(@NotNull YamlFileManager oldYamlFile)
 	{
-		logger.info("No custom " + fileDescription + " upgrade code implemented! Copying all data from old file to new one.");
+		logger.info("No custom " + fileDescription + " upgrade code. Copying data from old file to new one.");
 		for(String key : yaml.getKeys())
 		{
 			if(oldYamlFile.yaml.isSet(key))
 			{
-				if(key.equals("Version")) continue;
+				if(key.equals(KEY_YAML_VERSION)) continue;
 				yaml.set(key, oldYamlFile.yaml.getString(key, null));
 			}
 		}
@@ -197,7 +199,7 @@ public class YamlFileManager
 			}
 			else
 			{
-				validateUpdate();
+				decideUpdateMode();
 			}
 		}
 		else
@@ -207,7 +209,7 @@ public class YamlFileManager
 		}
 	}
 
-	protected void validateUpdate()
+	protected void decideUpdateMode()
 	{
 		if((getVersion() < upgradeThreshold || updateMode == YamlFileUpdateMethod.UPGRADE) && !extracted)
 		{
@@ -225,7 +227,7 @@ public class YamlFileManager
 		try
 		{
 			doUpdate();
-			yaml.set("Version", expectedVersion);
+			yaml.set(KEY_YAML_VERSION, expectedVersion);
 			save();
 			logger.info(ConsoleColor.GREEN + "Successful updated " + fileDescription + " file." + ConsoleColor.RESET);
 		}
@@ -256,7 +258,7 @@ public class YamlFileManager
 			{
 				doUpgrade(new YamlFileManager(logger, baseDir, oldVersion, -1, path, file + ".old_v" + oldVersion, inJarPrefix, oldYAML));
 			}
-			yaml.set("Version", expectedVersion);
+			yaml.set(KEY_YAML_VERSION, expectedVersion);
 			save();
 			logger.info(ConsoleColor.GREEN + "Successful upgraded " + fileDescription + " file." + ConsoleColor.RESET);
 		}
