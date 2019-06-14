@@ -290,8 +290,7 @@ public abstract class Updater
 			logger.log(Level.SEVERE, "The auto-updater tried to unzip a new update file, but was unsuccessful.", e);
 			result = UpdateResult.FAIL_DOWNLOAD;
 		}
-		//noinspection ResultOfMethodCallIgnored
-		file.delete();
+		if(!file.delete()) logger.info("Failed to delete " + file.getName());
 	}
 
 	protected boolean isPluginFile(String name)

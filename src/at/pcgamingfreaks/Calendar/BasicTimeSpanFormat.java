@@ -34,7 +34,7 @@ public class BasicTimeSpanFormat implements TimeSpanFormat
 		Validate.notNull(timeUnitNames);
 		Validate.isTrue(timeUnitNames.length == 12, "Wrong amount of unit names given. Please make sure that the array is in the right format.\n" +
 				"Like: new String[] { \"year\", \"years\", \"month\", \"months\", \"day\", \"days\", \"hour\", \"hours\", \"minute\", \"minutes\", \"second\", \"seconds\" }");
-		unitNames = timeUnitNames;
+		unitNames = timeUnitNames.clone();
 	}
 
 	@Override

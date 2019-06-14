@@ -50,7 +50,7 @@ public class StringUtils
 	public static final Pattern IPv4_PATTERN  = Pattern.compile("(((?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}) ?[.,-:;_ ] ?){3}(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))");
 	public static final Pattern URL_PATTERN   = Pattern.compile("[-a-zA-Z0-9@:%_+.~#?&/=]{2,63}[.,][a-z]{2,10}\\b(/[-a-zA-Z0-9@:%_+~#?&/=]*)?");
 	//endregion
-	public static final String[] BYTE_SIZE_NAMES = { "byte", "bytes", "kiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
+	private static final String[] BYTE_SIZE_NAMES = { "byte", "bytes", "kiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
 
 	public static boolean arrayContains(@NotNull String[] strings, @Nullable String searchFor)
 	{

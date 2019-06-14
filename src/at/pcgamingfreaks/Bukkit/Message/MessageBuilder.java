@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.Collection;
 
 public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, MessageComponent, Message, ChatColor>
 {
@@ -115,13 +115,14 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	@Override
 	public MessageBuilder appendJson(String json)
 	{
-		List<MessageComponent> components = null;
 		try
 		{
-			components = MessageComponent.fromJson(json);
+			return append(MessageComponent.fromJson(json));
 		}
-		catch(Exception ignored) {}
-		return (components == null) ? append(json) : append(components);
+		catch(Exception ignored)
+		{
+			return append(json);
+		}
 	}
 	//endregion
 
