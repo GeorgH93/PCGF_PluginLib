@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,26 +17,29 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 
+import static at.pcgamingfreaks.Bukkit.MCVersion.MC_1_8;
+
 public enum SendMethod
 {
 	CHAT_CLASSIC(null, null),
-	CHAT(new ChatSender(), null),
-	TITLE(new TitleSender(), TitleMetadata.class),
-	ACTION_BAR(new ActionBarSender(), null),
+	CHAT(MCVersion.isOlderThan(MC_1_8) ? null : new ChatSender(), null),
+	TITLE(MCVersion.isOlderThan(MC_1_8) ? null : new TitleSender(), TitleMetadata.class),
+	ACTION_BAR(MCVersion.isOlderThan(MC_1_8) ? null : new ActionBarSender(), null),
 	//BOSS_BAR(new BossBarSender(), BossBarMetadata.class), //TODO
 	DISABLED(new DisabledSender(), null);
 
-	private final BaseSender defaultSender;
+	private final Sender defaultSender;
 	private final Class<?> metadataClass;
 	private final Method fromJsonMethod;
 
-	SendMethod(BaseSender defaultSender, @Nullable Class<?> metadataClass)
+	SendMethod(Sender defaultSender, @Nullable Class<?> metadataClass)
 	{
 		this.defaultSender = defaultSender;
 		this.metadataClass = metadataClass;
@@ -48,7 +51,7 @@ public enum SendMethod
 	 *
 	 * @return The default sender instance.
 	 */
-	public BaseSender getSender()
+	public Sender getSender()
 	{
 		return this.defaultSender;
 	}

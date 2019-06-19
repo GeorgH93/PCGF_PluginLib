@@ -23,23 +23,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public final class DisabledSender implements Sender
+public interface Sender
 {
-	@Override
-	public void doSend(@NotNull Player player, @NotNull String json) {}
+	void doSend(@NotNull Player player, @NotNull String json);
 
-	@Override
-	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optional) {}
+	void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optional);
 
-	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json) {}
+	void doSend(@NotNull Collection<? extends Player> players, @NotNull String json);
 
-	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optional) {}
+	void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optional);
 
-	@Override
-	public void doBroadcast(@NotNull String json) {}
+	void doBroadcast(@NotNull String json);
 
-	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optional) {}
+	void doBroadcast(@NotNull String json, @Nullable Object optional);
 }
