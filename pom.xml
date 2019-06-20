@@ -200,6 +200,26 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.20</version>
+				<configuration>
+					<excludedScopes>test,provided,system</excludedScopes>
+					<generateBundle>true</generateBundle>
+					<licensesOutputFile>${project.build.directory}/generated-resources/licenses-THIRD-PARTY.xml</licensesOutputFile>
+				</configuration>
+				<executions>
+					<execution>
+						<id>add-third-party</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>add-third-party</goal>
+							<goal>download-licenses</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- Shades some required libs into the final jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -241,6 +261,14 @@
 									<shadedPattern>at.pcgf.libs.org.slf4j</shadedPattern>
 								</relocation>
 							</relocations>
+							<filters>
+								<filter>
+									<artifact>org.apache.commons:commons-lang3</artifact>
+									<excludes>
+										<exclude>META-INF/*.txt</exclude>
+									</excludes>
+								</filter>
+							</filters>
 						</configuration>
 					</execution>
 				</executions>
@@ -284,8 +312,6 @@
 				<version>2.7.2</version>
 				<configuration>
 					<workingDirectory>${java.io.tmpdir}</workingDirectory>
-					<!--suppress MavenModelInspection -->
-					<argLine>${permgen.args}</argLine>
 				</configuration>
 			</plugin>
 			<!-- Creates the coverage report -->
