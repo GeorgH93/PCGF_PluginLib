@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import at.pcgamingfreaks.Bungee.Updater;
 import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.*;
+import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
@@ -111,6 +112,12 @@ public final class PluginLib extends Plugin implements PluginLibrary
 
 	@Override
 	public @Nullable DatabaseConnectionPool getDatabaseConnectionPool()
+	{
+		return databaseConnectionPool;
+	}
+
+	@Override
+	public @Nullable ConnectionProvider getConnectionProvider()
 	{
 		return databaseConnectionPool;
 	}

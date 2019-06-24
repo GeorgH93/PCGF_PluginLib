@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.PluginLib;
 
+import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
 import at.pcgamingfreaks.Version;
 
@@ -34,8 +35,16 @@ public interface PluginLibrary
 
 	/**
 	 * Gets the provided database connection pool.
+	 * It's recommended to use the getConnectionProvider instead to get the connection provider directly.
 	 *
 	 * @return The database connection pool. Null if failed to start up or disabled.
 	 */
 	@Nullable DatabaseConnectionPool getDatabaseConnectionPool();
+
+	/**
+	 * Gets the provided database connection pool connection provider directly.
+	 *
+	 * @return The database connection pool connection provider. Null if failed to start up or disabled.
+	 */
+	@Nullable ConnectionProvider getConnectionProvider();
 }

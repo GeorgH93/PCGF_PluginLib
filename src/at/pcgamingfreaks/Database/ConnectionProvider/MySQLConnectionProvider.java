@@ -47,4 +47,10 @@ public class MySQLConnectionProvider extends PooledConnectionProvider
 		poolConfig.setMaximumPoolSize(connectionConfiguration.getSQLMaxConnections());
 		return poolConfig;
 	}
+
+	@Override
+	public String getDatabaseType()
+	{
+		return "mysql";
+	}
 }

@@ -53,4 +53,10 @@ public class SQLiteConnectionProvider extends PooledConnectionProvider
 		poolConfig.setConnectionTestQuery("SELECT 1;"); // HikariCP doesn't support connection tests on it's own.
 		return poolConfig;
 	}
+
+	@Override
+	public String getDatabaseType()
+	{
+		return "sqlite";
+	}
 }

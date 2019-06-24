@@ -31,6 +31,8 @@ public interface ConnectionProvider
 	 */
 	Connection getConnection() throws SQLException;
 
+	String getDatabaseType();
+
 	/**
 	 * Closes the connection provider and frees resources used by it.
 	 */

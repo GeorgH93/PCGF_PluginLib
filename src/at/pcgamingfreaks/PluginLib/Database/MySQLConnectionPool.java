@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2017 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -63,6 +63,6 @@ class MySQLConnectionPool extends DatabaseConnectionPoolBase
 	@Override
 	public @NotNull String getDatabaseType()
 	{
-		return "MySQL";
+		return "mysql";
 	}
 }
