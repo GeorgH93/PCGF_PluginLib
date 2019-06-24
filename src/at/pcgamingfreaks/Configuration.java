@@ -107,6 +107,7 @@ public class Configuration extends YamlFileManager
 	 */
 	public void reload()
 	{
+		extracted = false;
 		load();
 	}
 

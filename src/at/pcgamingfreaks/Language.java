@@ -215,6 +215,7 @@ public class Language extends YamlFileManager
 		this.updateMode = updateMode;
 		this.fallbackLanguage = fallbackLanguage;
 		this.extractedFallback = false;
+		extracted = false;
 		file = language + YAML_FILE_EXT;
 		yamlFile = new File(baseDir, prefix + file);
 		load();
