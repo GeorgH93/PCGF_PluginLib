@@ -22,6 +22,7 @@
 
 	<name>PCGF MC PluginLib</name>
 	<description>A library to reduce work and code on Bukkit or BungeeCord plugins.</description>
+	<url>https://github.com/GeorgH93/PCGF_PluginLib/</url>
 	<inceptionYear>2015</inceptionYear>
 	<licenses>
 		<license>
@@ -37,7 +38,6 @@
 		<powermockVersion>1.7.4</powermockVersion><!-- property so that we have to change only one value to update all the powermock dependencies -->
 		<pluginName>PCGF_PluginLib</pluginName>
 		<author>GeorgH93</author>
-		<website>https://github.com/GeorgH93/PCGF_PluginLib</website>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 
