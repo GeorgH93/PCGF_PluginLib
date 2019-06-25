@@ -30,8 +30,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -61,14 +59,9 @@ public class LanguageTest
 	{
 		loggedInfoCount = 0;
 		mockedLogger = mock(Logger.class);
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				loggedInfoCount++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			loggedInfoCount++;
+			return null;
 		}).when(mockedLogger).info(anyString());
 		TestUtils.initReflection();
 		Bukkit.setServer(new TestBukkitServer());
@@ -156,7 +149,7 @@ public class LanguageTest
 	public void testExtract() throws NoSuchFieldException, IllegalAccessException
 	{
 		mockStatic(Utils.class);
-		given(Utils.extractFile(Matchers.<Class<?>>any(), any(Logger.class), anyString(), any(File.class))).willReturn(false);
+		given(Utils.extractFile(Matchers.any(), any(Logger.class), anyString(), any(File.class))).willReturn(false);
 		File userDir = new File(System.getProperty("user.dir"));
 		Language language = new Language(mockedLogger, userDir, 1);
 		Field languageField = TestUtils.setAccessible(Language.class, language, "language", "de");

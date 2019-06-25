@@ -18,13 +18,13 @@
 package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.yaml.YAML;
-import at.pcgamingfreaks.yaml.YAMLNotInitializedException;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 /**
@@ -108,7 +108,14 @@ public class YamlFileManager
 			if(oldYamlFile.yaml.isSet(key))
 			{
 				if(key.equals(KEY_YAML_VERSION)) continue;
-				yaml.set(key, oldYamlFile.yaml.getString(key, null));
+				if(oldYamlFile.yaml.isList(key))
+				{
+					yaml.set(key, oldYamlFile.yaml.getStringList(key, new LinkedList<>()));
+				}
+				else
+				{
+					yaml.set(key, oldYamlFile.yaml.getString(key, null));
+				}
 			}
 		}
 	}
@@ -143,6 +150,12 @@ public class YamlFileManager
 		return yaml;
 	}
 
+	public @NotNull YAML getYamlE() throws YamlFileNotInitializedException
+	{
+		if(yaml == null) throw new YamlFileNotInitializedException();
+		return yaml;
+	}
+
 	/**
 	 * Saves all changes to the file.
 	 *
@@ -150,15 +163,7 @@ public class YamlFileManager
 	 */
 	public void save() throws FileNotFoundException
 	{
-		try
-		{
-			yaml.save(yamlFile);
-		}
-		catch(YAMLNotInitializedException e)
-		{
-			logger.warning("Failed to save chances to file \"" + yamlFile.toString() + "\"!");
-			e.printStackTrace();
-		}
+		yaml.save(yamlFile);
 	}
 
 	protected void load()
@@ -189,7 +194,7 @@ public class YamlFileManager
 		{
 			if(extracted)
 			{
-				logger.warning(ConsoleColor.YELLOW + "The version of the " + fileDescription + " file (" + file + ") is outdated in the jar!" + ConsoleColor.RESET);
+				logger.warning(ConsoleColor.YELLOW + "The " + fileDescription + " file (" + file + ") is outdated in the jar!" + ConsoleColor.RESET);
 			}
 			if(updateMode == YamlFileUpdateMethod.OVERWRITE && !extracted)
 			{
@@ -276,4 +281,12 @@ public class YamlFileManager
 		extracted = true;
 	}
 	//endregion
+
+	public static class YamlFileNotInitializedException extends RuntimeException
+	{
+		private YamlFileNotInitializedException()
+		{
+			super("The yaml file has not been loaded successful");
+		}
+	}
 }

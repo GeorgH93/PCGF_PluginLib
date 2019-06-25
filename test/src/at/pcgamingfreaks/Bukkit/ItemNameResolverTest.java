@@ -19,13 +19,11 @@ package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.TestClasses.TestBlock;
 import at.pcgamingfreaks.yaml.YAML;
-import at.pcgamingfreaks.yaml.YAMLKeyNotFoundException;
+import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.util.HashSet;
 import java.util.logging.Logger;
@@ -38,7 +36,7 @@ public class ItemNameResolverTest
 {
 	@SuppressWarnings({ "ConstantConditions", "ResultOfMethodCallIgnored" })
 	@Test
-	public void testGetName() throws YAMLKeyNotFoundException
+	public void testGetName() throws YamlKeyNotFoundException
 	{
 		ItemNameResolver itemNameResolver = new ItemNameResolver();
 		assertEquals("The name of the block should match", "air", itemNameResolver.getName(new TestBlock()));
@@ -47,14 +45,9 @@ public class ItemNameResolverTest
 		assertEquals("The name of the item stack should match", "birch_fence", itemNameResolver.getName(new ItemStack(Material.BIRCH_FENCE)));
 		final int[] counts = { 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				counts[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			counts[0]++;
+			return null;
 		}).when(mockedLogger).info(anyString());
 		Language mockedLanguage = mock(Language.class);
 		doReturn(false).when(mockedLanguage).isLoaded();

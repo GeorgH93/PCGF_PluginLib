@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 public class Language extends YamlFileManager
@@ -268,15 +269,39 @@ public class Language extends YamlFileManager
 			if(oldYamlFile.yaml.isSet(key))
 			{
 				if(key.equals(KEY_YAML_VERSION)) continue;
-				yaml.set(key, oldYamlFile.yaml.getString(key, null));
-				if(oldYamlFile.yaml.isSet(key + KEY_ADDITION_SEND_METHOD)) yaml.set(key + KEY_ADDITION_SEND_METHOD, oldYamlFile.yaml.getString(key + KEY_ADDITION_SEND_METHOD, null));
-				if(oldYamlFile.yaml.isSet(key + KEY_ADDITION_PARAMETERS)) yaml.set(key + KEY_ADDITION_PARAMETERS, oldYamlFile.yaml.getString(key + KEY_ADDITION_PARAMETERS, null));
+				if(oldYamlFile.yaml.isList(key))
+				{
+					yaml.set(key, oldYamlFile.yaml.getStringList(key, new LinkedList<>()));
+				}
+				else
+				{
+					yaml.set(key, oldYamlFile.yaml.getString(key, null));
+					if(oldYamlFile.yaml.isSet(key + KEY_ADDITION_SEND_METHOD)) yaml.set(key + KEY_ADDITION_SEND_METHOD, oldYamlFile.yaml.getString(key + KEY_ADDITION_SEND_METHOD, null));
+					if(oldYamlFile.yaml.isSet(key + KEY_ADDITION_PARAMETERS)) yaml.set(key + KEY_ADDITION_PARAMETERS, oldYamlFile.yaml.getString(key + KEY_ADDITION_PARAMETERS, null));
+				}
 			}
 		}
 	}
 
+	/**
+	 * Gets the {@link YAML} language configuration instance for direct read/write.
+	 *
+	 * @return The language configuration instance. null if the language file is not loaded.
+	 */
 	public @Nullable YAML getLang()
 	{
+		return yaml;
+	}
+
+	/**
+	 * Gets the {@link YAML} language configuration instance for direct read/write.
+	 *
+	 * @return The language configuration instance.
+	 * @throws LanguageNotInitializedException If the language configuration has not been loaded successful.
+	 */
+	public @NotNull YAML getLangE() throws LanguageNotInitializedException
+	{
+		if(yaml == null) throw new LanguageNotInitializedException();
 		return yaml;
 	}
 
@@ -300,7 +325,7 @@ public class Language extends YamlFileManager
 			String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
 			if(yaml.isSet(pathSendMethod))
 			{
-				Object sendMethod = Enum.valueOf(messageClasses.enumType, yaml.getString(pathSendMethod, "CHAT").toUpperCase());
+				@SuppressWarnings("unchecked") Object sendMethod = Enum.valueOf(messageClasses.enumType, yaml.getString(pathSendMethod, "CHAT").toUpperCase());
 				messageClasses.setSendMethod.invoke(msg, sendMethod);
 				if(yaml.isSet(pathParameter))
 				{
@@ -362,4 +387,12 @@ public class Language extends YamlFileManager
 		public Method setSendMethod, getMetadataFromJsonMethod;
 	}
 	//endregion
+
+	public static class LanguageNotInitializedException extends RuntimeException
+	{
+		private LanguageNotInitializedException()
+		{
+			super("The language file has not been loaded successful");
+		}
+	}
 }

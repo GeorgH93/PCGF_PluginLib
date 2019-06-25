@@ -19,7 +19,7 @@ package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.yaml.YAML;
-import at.pcgamingfreaks.yaml.YAMLKeyNotFoundException;
+import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -29,7 +29,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -68,14 +67,9 @@ public class ConfigurationTest
 	public void prepareTestClass()
 	{
 		mockedLogger = mock(Logger.class);
-		doAnswer(new Answer<Void>()
-		{
-			@Override
-			public Void answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				loggedInfos++;
-				return null;
-			}
+		doAnswer((Answer<Void>) invocationOnMock -> {
+			loggedInfos++;
+			return null;
 		}).when(mockedLogger).info(anyString());
 	}
 
@@ -103,7 +97,7 @@ public class ConfigurationTest
 	}
 
 	@Test
-	public void testExtendedConfiguration() throws YAMLKeyNotFoundException
+	public void testExtendedConfiguration() throws YamlKeyNotFoundException
 	{
 		Configuration oldConfiguration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1, "config.yml");
 		Configuration upgradeThresholdConfig = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1, 1);
@@ -111,7 +105,7 @@ public class ConfigurationTest
 	}
 
 	@Test
-	public void testSaveConfig() throws FileNotFoundException, YAMLKeyNotFoundException
+	public void testSaveConfig() throws FileNotFoundException, YamlKeyNotFoundException
 	{
 		Configuration configuration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1);
 		configuration.set("NewlySavedValue", true);
@@ -136,31 +130,23 @@ public class ConfigurationTest
 	{
 		final int[] count = { 0, 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				count[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			count[0]++;
+			return null;
 		}).when(mockedLogger).warning(anyString());
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				count[1]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			count[1]++;
+			return null;
 		}).when(mockedLogger).info(anyString());
 		Configuration configuration = spy(new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1));
 		doNothing().when(configuration).extractFile();
 		doNothing().when(configuration).save();
 		doReturn(false).when(configuration).newConfigCreated();
 		File testFile = new File("NoYAML.yml");
-		FileOutputStream fileStream = new FileOutputStream(testFile);
-		fileStream.write("Dies ist kein YAML\nOder?\n:".getBytes());
-		fileStream.flush();
-		fileStream.close();
+		try(FileOutputStream fileStream = new FileOutputStream(testFile))
+		{
+			fileStream.write("Dies ist kein YAML\nOder?\n:".getBytes());
+		}
 		Field yamlFileField = TestUtils.setAccessible(YamlFileManager.class, configuration, "yamlFile", testFile);
 		configuration.load();
 		testFile.delete();
@@ -193,7 +179,7 @@ public class ConfigurationTest
 	}
 
 	@Test
-	public void testGetter() throws IllegalAccessException, NoSuchFieldException, YAMLKeyNotFoundException
+	public void testGetter() throws IllegalAccessException, NoSuchFieldException, YamlKeyNotFoundException
 	{
 		Configuration configuration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1);
 		YAML mockedYAML = mock(YAML.class);
@@ -227,13 +213,9 @@ public class ConfigurationTest
 		Configuration configuration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1);
 		YAML mockedYAML = mock(YAML.class);
 		final int[] count = { 0 };
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				count[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			count[0]++;
+			return null;
 		}).when(mockedYAML).set(anyString(), any());
 		Field yamlField = TestUtils.setAccessible(YamlFileManager.class, configuration, "yaml", mockedYAML);
 		configuration.set("Test", "Test");

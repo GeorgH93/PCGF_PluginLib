@@ -19,13 +19,10 @@ package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.yaml.YAML;
-import at.pcgamingfreaks.yaml.YAMLInvalidContentException;
-import at.pcgamingfreaks.yaml.YAMLNotInitializedException;
+import at.pcgamingfreaks.yaml.YamlInvalidContentException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -45,34 +42,13 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class YamlFileManagerTest
 {
 	@Test
-	public void testConstructor()
-	{
-		YamlFileManager testFileManager = new YamlFileManager(null, null, 20, 15, "", null, "", new YAML());
-		assertNotNull("The YamlFileManager should not be null", testFileManager);
-		assertNotNull("The YAML object should not be null", testFileManager.getYaml());
-	}
-
-	@Test
-	public void testIsLoaded()
-	{
-		YamlFileManager testFileManager = new YamlFileManager(null, null, 20, 15, "", null, "", new YAML());
-		assertTrue("The file should be loaded", testFileManager.isLoaded());
-		testFileManager = new YamlFileManager(null, null, 20, 15, "", null, "", null);
-		assertFalse("The file should not be loaded", testFileManager.isLoaded());
-	}
-
-	@Test
-	public void testDoUpgrade() throws YAMLInvalidContentException
+	public void testDoUpgrade() throws YamlInvalidContentException
 	{
 		final int[] infoCount = { 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				infoCount[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			infoCount[0]++;
+			return null;
 		}).when(mockedLogger).info(anyString());
 		YamlFileManager testFileManager = new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", new YAML("Version: 7\nTest: 2\nHallo: Welt"));
 		YamlFileManager oldFileManager = new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", new YAML("Version: 2\nTest: 5"));
@@ -85,13 +61,9 @@ public class YamlFileManagerTest
 	{
 		final int[] infoCount = { 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				infoCount[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			infoCount[0]++;
+			return null;
 		}).when(mockedLogger).info(anyString());
 		new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null).doUpdate();
 		assertEquals("One info message should be written to the console", 1, infoCount[0]);
@@ -104,26 +76,19 @@ public class YamlFileManagerTest
 	}
 
 	@Test
-	public void testSave() throws FileNotFoundException, YAMLNotInitializedException
+	public void testSave() throws FileNotFoundException
 	{
 		final int[] warnCount = { 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				warnCount[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			warnCount[0]++;
+			return null;
 		}).when(mockedLogger).warning(anyString());
 		YAML mockedYAML = mock(YAML.class);
 		doNothing().when(mockedYAML).save(any(File.class));
 		YamlFileManager testFileManager = new YamlFileManager(mockedLogger, null, 20, 15, "", "Test.file", "", mockedYAML);
 		testFileManager.save();
 		assertEquals("No info message should be written to the console", 0, warnCount[0]);
-		doThrow(new YAMLNotInitializedException()).when(mockedYAML).save(any(File.class));
-		testFileManager.save();
-		assertEquals("One info message should be written to the console", 1, warnCount[0]);
 	}
 
 	@SuppressWarnings("ResultOfMethodCallIgnored")
@@ -135,13 +100,9 @@ public class YamlFileManagerTest
 		doReturn(12L).when(mockedFile).length();
 		final int[] warnCount = { 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				warnCount[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			warnCount[0]++;
+			return null;
 		}).when(mockedLogger).warning(anyString());
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
 		doNothing().when(testFileManager).validate();
@@ -167,21 +128,13 @@ public class YamlFileManagerTest
 	{
 		final int[] count = { 0, 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				count[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			count[0]++;
+			return null;
 		}).when(mockedLogger).warning(anyString());
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				count[1]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			count[1]++;
+			return null;
 		}).when(mockedLogger).info(anyString());
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
 		doReturn(5).when(testFileManager).getVersion();
@@ -218,21 +171,13 @@ public class YamlFileManagerTest
 	{
 		final int[] count = { 0, 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				count[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			count[0]++;
+			return null;
 		}).when(mockedLogger).warning(anyString());
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				count[1]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			count[1]++;
+			return null;
 		}).when(mockedLogger).info(anyString());
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
 		doNothing().when(testFileManager).doUpdate();
@@ -259,21 +204,13 @@ public class YamlFileManagerTest
 		int infos = 0;
 		final int[] count = { 0, 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				count[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			count[0]++;
+			return null;
 		}).when(mockedLogger).warning(anyString());
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				count[1]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			count[1]++;
+			return null;
 		}).when(mockedLogger).info(anyString());
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
 		doNothing().when(testFileManager).load();

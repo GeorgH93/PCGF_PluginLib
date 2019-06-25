@@ -17,24 +17,62 @@
 
 package at.pcgamingfreaks.Database;
 
+import at.pcgamingfreaks.yaml.YAML;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public interface DatabaseConnectionConfiguration
 {
-	@NotNull String getSQLHost();
+	@NotNull YAML getConfigE();
 
-	@NotNull String getSQLDatabase();
+	default @NotNull String getSQLHost()
+	{
+		return getConfigE().getString("Database.SQL.Host", "localhost:3306");
+	}
+
+	default @NotNull String getSQLDatabase()
+	{
+		return getConfigE().getString("Database.SQL.Database", "minecraft");
+	}
+
+	default @NotNull List<String> getSQLConnectionPropertiesList()
+	{
+		return getConfigE().getStringList("Database.SQL.Properties", new LinkedList<>());
+	}
 
 	/**
 	 * Gets the properties for the connection. Must start with a ?
 	 *
 	 * @return The Connection properties
 	 */
-	@NotNull String getSQLConnectionProperties();
+	default @NotNull String getSQLConnectionProperties()
+	{
+		List<String> list = getSQLConnectionPropertiesList();
+		StringBuilder str = new StringBuilder("?allowMultiQueries=true");
+		char separator = '?';
+		for(String s : list)
+		{
+			str.append(separator).append(s);
+			separator = '&';
+		}
+		return str.toString();
+	}
 
-	@NotNull String getSQLUser();
+	default @NotNull String getSQLUser()
+	{
+		return getConfigE().getString("Database.SQL.User", "minecraft");
+	}
 
-	@NotNull String getSQLPassword();
+	default @NotNull String getSQLPassword()
+	{
+		return getConfigE().getString("Database.SQL.Password", "minecraft");
+	}
 
-	int getSQLMaxConnections();
+	default int getSQLMaxConnections()
+	{
+		return Math.max(1, getConfigE().getInt("Database.SQL.MaxConnections", 2));
+	}
 }

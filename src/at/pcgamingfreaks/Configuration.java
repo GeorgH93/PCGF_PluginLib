@@ -18,7 +18,7 @@
 package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.yaml.YAML;
-import at.pcgamingfreaks.yaml.YAMLKeyNotFoundException;
+import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -115,10 +115,22 @@ public class Configuration extends YamlFileManager
 	/**
 	 * Gets the {@link YAML} configuration instance for direct read/write.
 	 *
-	 * @return The configuration instance
+	 * @return The configuration instance. null if the configuration file is not loaded.
 	 */
 	public @Nullable YAML getConfig()
 	{
+		return yaml;
+	}
+
+	/**
+	 * Gets the {@link YAML} configuration instance for direct read/write.
+	 *
+	 * @return The configuration instance
+	 * @throws ConfigNotInitializedException If the configuration has not been loaded successful.
+	 */
+	public @NotNull YAML getConfigE() throws ConfigNotInitializedException
+	{
+		if(yaml == null) throw new ConfigNotInitializedException();
 		return yaml;
 	}
 
@@ -127,10 +139,10 @@ public class Configuration extends YamlFileManager
 	 *
 	 * @param path The path to the value in the configuration file.
 	 * @return The {@link Integer} value from the configuration file.
-	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
+	 * @throws YamlKeyNotFoundException When the given path could not be found in the configuration
 	 * @throws NumberFormatException When the value on the given position can't be converted to an {@link Integer}
 	 */
-	public int getInt(@NotNull String path) throws YAMLKeyNotFoundException, NumberFormatException
+	public int getInt(@NotNull String path) throws YamlKeyNotFoundException, NumberFormatException
 	{
 		return yaml.getInt(path);
 	}
@@ -152,10 +164,10 @@ public class Configuration extends YamlFileManager
 	 *
 	 * @param path The path to the value in the configuration file.
 	 * @return The {@link Double} value from the configuration file.
-	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
+	 * @throws YamlKeyNotFoundException When the given path could not be found in the configuration
 	 * @throws NumberFormatException When the value on the given position can't be converted to an {@link Double}
 	 */
-	public double getDouble(@NotNull String path) throws YAMLKeyNotFoundException, NumberFormatException
+	public double getDouble(@NotNull String path) throws YamlKeyNotFoundException, NumberFormatException
 	{
 		return yaml.getDouble(path);
 	}
@@ -177,9 +189,9 @@ public class Configuration extends YamlFileManager
 	 *
 	 * @param path The path to the value in the configuration file.
 	 * @return The {@link String} value from the configuration file.
-	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
+	 * @throws YamlKeyNotFoundException When the given path could not be found in the configuration
 	 */
-	public @NotNull String getString(@NotNull String path) throws YAMLKeyNotFoundException
+	public @NotNull String getString(@NotNull String path) throws YamlKeyNotFoundException
 	{
 		return yaml.getString(path);
 	}
@@ -202,9 +214,9 @@ public class Configuration extends YamlFileManager
 	 *
 	 * @param path The path to the value in the configuration file.
 	 * @return The {@link Boolean} value from the configuration file.
-	 * @throws YAMLKeyNotFoundException When the given path could not be found in the configuration
+	 * @throws YamlKeyNotFoundException When the given path could not be found in the configuration
 	 */
-	public boolean getBool(@NotNull String path) throws YAMLKeyNotFoundException
+	public boolean getBool(@NotNull String path) throws YamlKeyNotFoundException
 	{
 		return yaml.getBoolean(path);
 	}
@@ -289,4 +301,12 @@ public class Configuration extends YamlFileManager
 		yaml.set(path, value);
 	}
 	//endregion
+
+	public static class ConfigNotInitializedException extends RuntimeException
+	{
+		private ConfigNotInitializedException()
+		{
+			super("The config file has not been loaded successful");
+		}
+	}
 }
