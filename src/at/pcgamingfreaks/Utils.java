@@ -24,7 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.net.URL;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class Utils
 {
@@ -83,7 +86,7 @@ public class Utils
 	/**
 	 * Extracts a file from a loaded .jar file.
 	 *
-	 * @param pluginClass The class of the plugin that want's to extract a file.
+	 * @param pluginClass The main-class of the plugin that holds the file to be extracted.
 	 * @param logger      The logger to be used for messages.
 	 * @param inJarPath   The files path in the jar file.
 	 * @param targetFile  The file where the content should be extracted to.
@@ -109,6 +112,7 @@ public class Utils
 			if(!inJarPath.startsWith("/")) inJarPath = "/" + inJarPath;
 			try(InputStream is = pluginClass.getResourceAsStream(inJarPath); OutputStream os = new FileOutputStream(targetFile))
 			{
+				//noinspection UnstableApiUsage
 				ByteStreams.copy(is, os);
 				os.flush();
 			}
@@ -223,5 +227,58 @@ public class Utils
 		}
 		catch (NumberFormatException ignored) {}
 		return fallbackValue;
+	}
+
+	/**
+	 * Extracts files from a loaded .jar file.
+	 *
+	 * @param pluginClass The main-class of the plugin that holds the file to be extracted.
+	 * @param inJarPath   The files path in the jar file.
+	 * @param targetDir   The directory in which the files should be extracted.
+	 * @param overwrite   If existing files should be overwritten.
+	 */
+	public static void extractFiles(@NotNull Class<?> pluginClass, @NotNull String inJarPath, @NotNull File targetDir, boolean overwrite)
+	{
+		extractFiles(pluginClass.getProtectionDomain().getCodeSource().getLocation(), inJarPath, targetDir, overwrite);
+	}
+
+	/**
+	 * Extracts files from a loaded .jar file.
+	 *
+	 * @param jar         The url to the jar file
+	 * @param inJarPath   The files path in the jar file.
+	 * @param targetDir   The directory in which the files should be extracted.
+	 * @param overwrite   If existing files should be overwritten.
+	 */
+	public static void extractFiles(@NotNull URL jar, @NotNull String inJarPath, @NotNull File targetDir, boolean overwrite)
+	{
+		try(ZipInputStream zip = new ZipInputStream(jar.openStream()))
+		{
+			ZipEntry e;
+			while((e = zip.getNextEntry()) != null)
+			{
+				String name = e.getName();
+				if (name.startsWith(inJarPath))
+				{
+					File target = new File(targetDir, name.replace(inJarPath, ""));
+					if(target.exists())
+					{
+						if(!overwrite) continue;
+						//noinspection ResultOfMethodCallIgnored
+						target.delete(); // Delete old file
+					}
+					try(FileOutputStream fileOutputStream = new FileOutputStream(target))
+					{
+						//noinspection UnstableApiUsage
+						ByteStreams.copy(zip, fileOutputStream);
+						fileOutputStream.flush();
+					}
+				}
+			}
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
