@@ -18,6 +18,7 @@
 package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.yaml.YAML;
+import at.pcgamingfreaks.yaml.YamlGetter;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -154,6 +155,11 @@ public class YamlFileManager
 	{
 		if(yaml == null) throw new YamlFileNotInitializedException();
 		return yaml;
+	}
+
+	public @NotNull YamlGetter getYamlReadOnly() throws YamlFileNotInitializedException
+	{
+		return getYamlE();
 	}
 
 	/**

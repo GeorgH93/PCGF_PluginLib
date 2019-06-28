@@ -19,6 +19,7 @@ package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.yaml.YAML;
+import at.pcgamingfreaks.yaml.YamlGetter;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -290,7 +291,7 @@ public class Language extends YamlFileManager
 	 */
 	public @Nullable YAML getLang()
 	{
-		return yaml;
+		return getYaml();
 	}
 
 	/**
@@ -303,6 +304,17 @@ public class Language extends YamlFileManager
 	{
 		if(yaml == null) throw new LanguageNotInitializedException();
 		return yaml;
+	}
+
+	/**
+	 * Gets the {@link YAML} language configuration as a {@link YamlGetter} instance for direct read (read-only).
+	 *
+	 * @return The language configuration instance.
+	 * @throws LanguageNotInitializedException If the language configuration has not been loaded successful.
+	 */
+	public @NotNull YamlGetter getLangReadOnly() throws LanguageNotInitializedException
+	{
+		return getLangE();
 	}
 
 	public @NotNull String getTranslated(@NotNull String path)

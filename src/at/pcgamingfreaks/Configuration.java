@@ -18,6 +18,7 @@
 package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.yaml.YAML;
+import at.pcgamingfreaks.yaml.YamlGetter;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 
 import org.jetbrains.annotations.Contract;
@@ -119,7 +120,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 */
 	public @Nullable YAML getConfig()
 	{
-		return yaml;
+		return getYaml();
 	}
 
 	/**
@@ -132,6 +133,11 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	{
 		if(yaml == null) throw new ConfigNotInitializedException();
 		return yaml;
+	}
+
+	public @NotNull YamlGetter getConfigReadOnly() throws ConfigNotInitializedException
+	{
+		return getConfigE();
 	}
 
 	/**
