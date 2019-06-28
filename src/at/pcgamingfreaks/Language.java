@@ -173,7 +173,7 @@ public class Language extends YamlFileManager
 	 * @param config the config with the settings that should be used to load the language file
 	 * @return True if it's loaded successfully. False if not.
 	 */
-	public boolean load(@NotNull Configuration config)
+	public boolean load(@NotNull LanguageConfiguration config)
 	{
 		return load(config.getLanguage(), config.getLanguageUpdateMode());
 	}

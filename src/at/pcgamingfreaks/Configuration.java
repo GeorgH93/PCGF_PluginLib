@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.logging.Logger;
 
-public class Configuration extends YamlFileManager
+public class Configuration extends YamlFileManager implements LanguageConfiguration
 {
 	protected static final String DEFAULT_CONFIG_FILE_NAME = "config" + YAML_FILE_EXT;
 	protected String languageKey = "Language", languageUpdateKey = "LanguageUpdateMode"; // Allow to change the keys for the language and the language update mode setting
@@ -240,6 +240,7 @@ public class Configuration extends YamlFileManager
 	 *
 	 * @return The language to use.
 	 */
+	@Override
 	public @NotNull String getLanguage()
 	{
 		return yaml.getString(languageKey, "en");
@@ -250,6 +251,7 @@ public class Configuration extends YamlFileManager
 	 *
 	 * @return The update method for the language file.
 	 */
+	@Override
 	public @NotNull YamlFileUpdateMethod getLanguageUpdateMode()
 	{
 		return YamlFileUpdateMethod.fromString(yaml.getString(languageUpdateKey, "upgrade"));
