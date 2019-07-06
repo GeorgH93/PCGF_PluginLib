@@ -48,7 +48,7 @@ public class NMSReflectionTest
 		//noinspection SpellCheckingInspection
 		nmsClassPathField.set(null, "at.pcgamingfreaks.TestClasses.");
 		nmsClassPathField.setAccessible(false);
-		Field obcClassPathField = NMSReflection.class.getDeclaredField("OBC_CLASS_PATH");
+		Field obcClassPathField = OBCReflection.class.getDeclaredField("OBC_CLASS_PATH");
 		obcClassPathField.setAccessible(true);
 		modifiersField.setInt(obcClassPathField, obcClassPathField.getModifiers() & ~Modifier.FINAL);
 		//noinspection SpellCheckingInspection

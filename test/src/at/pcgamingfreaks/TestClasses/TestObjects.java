@@ -19,6 +19,7 @@ package at.pcgamingfreaks.TestClasses;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Bukkit.OBCReflection;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.Connection;
@@ -34,8 +35,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.io.File;
@@ -63,13 +62,9 @@ public class TestObjects
 	public static void initMockedJavaPlugin() throws Exception
 	{
 		BukkitScheduler mockedScheduler = mock(BukkitScheduler.class);
-		when(mockedScheduler.runTask(any(org.bukkit.plugin.Plugin.class), any(Runnable.class))).thenAnswer(new Answer<Object>() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				((Runnable) invocationOnMock.getArguments()[1]).run();
-				return null;
-			}
+		when(mockedScheduler.runTask(any(org.bukkit.plugin.Plugin.class), any(Runnable.class))).thenAnswer(invocationOnMock -> {
+			((Runnable) invocationOnMock.getArguments()[1]).run();
+			return null;
 		});
 		Server mockedServer = mock(Server.class);
 		when(mockedServer.getScheduler()).thenReturn(mockedScheduler);
@@ -95,14 +90,9 @@ public class TestObjects
 		when(mockedFile.getParentFile()).thenReturn(new File(""));
 		when(mockedFile.getName()).thenReturn("FileName");
 		TaskScheduler mockedTaskScheduler = mock(TaskScheduler.class);
-		when(mockedTaskScheduler.runAsync(any(Plugin.class), any(Runnable.class))).thenAnswer(new Answer<Object>()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				((Runnable) invocationOnMock.getArguments()[1]).run();
-				return null;
-			}
+		when(mockedTaskScheduler.runAsync(any(Plugin.class), any(Runnable.class))).thenAnswer(invocationOnMock -> {
+			((Runnable) invocationOnMock.getArguments()[1]).run();
+			return null;
 		});
 		ProxyServer mockedProxyServer = mock(ProxyServer.class);
 		when(mockedProxyServer.getPluginsFolder()).thenReturn(new File(""));
@@ -137,7 +127,7 @@ public class TestObjects
 		nmsClassPath.set(null, "at.pcgamingfreaks.TestClasses.NMS.");
 		modifiers.set(nmsClassPath, nmsClassPath.getModifiers() | Modifier.FINAL);
 		nmsClassPath.setAccessible(false);
-		Field obcClassPath = NMSReflection.class.getDeclaredField("OBC_CLASS_PATH");
+		Field obcClassPath = OBCReflection.class.getDeclaredField("OBC_CLASS_PATH");
 		obcClassPath.setAccessible(true);
 		modifiers.set(obcClassPath, obcClassPath.getModifiers() & ~Modifier.FINAL);
 		obcClassPath.set(null, "at.pcgamingfreaks.TestClasses.OBC.");
@@ -151,7 +141,7 @@ public class TestObjects
 	{
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
-		Field bukkitVersion = NMSReflection.class.getDeclaredField("BUKKIT_VERSION");
+		Field bukkitVersion = OBCReflection.class.getDeclaredField("BUKKIT_VERSION");
 		bukkitVersion.setAccessible(true);
 		modifiers.set(bukkitVersion, bukkitVersion.getModifiers() & ~Modifier.FINAL);
 		bukkitVersion.set(null, version);

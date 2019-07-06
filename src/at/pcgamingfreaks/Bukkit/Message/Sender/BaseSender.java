@@ -36,7 +36,7 @@ public abstract class BaseSender implements Sender
 	//region Reflection stuff
 	protected static final Class<?> CHAT_SERIALIZER = NMSReflection.getNMSClass((MCVersion.is(MCVersion.MC_NMS_1_8_R1)) ? "ChatSerializer" : "IChatBaseComponent$ChatSerializer");
 	protected static final Class<?> I_CHAT_BASE_COMPONENT = NMSReflection.getNMSClass("IChatBaseComponent");
-	protected static final Method CHAT_SERIALIZER_METHOD_A = NMSReflection.getMethod(CHAT_SERIALIZER, "a", String.class);
+	protected static final Method CHAT_SERIALIZER_METHOD_A = NMSReflection.getNMSMethod(CHAT_SERIALIZER, "a", String.class);
 	//endregion
 
 	public static @Nullable Object finalizeJson(@NotNull String json) throws InvocationTargetException, IllegalAccessException

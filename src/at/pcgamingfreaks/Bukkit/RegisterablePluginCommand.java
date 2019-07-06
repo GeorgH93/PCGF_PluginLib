@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
  */
 
 package at.pcgamingfreaks.Bukkit;
+
+import at.pcgamingfreaks.Reflection;
 
 import org.apache.commons.lang3.Validate;
 import org.bukkit.command.*;
@@ -37,7 +39,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class RegisterablePluginCommand extends Command implements PluginIdentifiableCommand
 {
-	private static final Field FIELD_KNOWN_COMMANDS = NMSReflection.getField(SimpleCommandMap.class, "knownCommands");
+	private static final Field FIELD_KNOWN_COMMANDS = Reflection.getField(SimpleCommandMap.class, "knownCommands");
 
 	private final Plugin owningPlugin;
 	private CommandExecutor executor;

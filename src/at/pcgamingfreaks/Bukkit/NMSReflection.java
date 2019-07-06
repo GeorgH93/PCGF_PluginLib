@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,8 +17,6 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import at.pcgamingfreaks.Reflection;
-
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,15 +24,16 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class NMSReflection extends Reflection
+public class NMSReflection extends OBCReflection
 {
-	private static final String BUKKIT_VERSION = Bukkit.getServer().getClass().getName().split("\\.")[3];
 	private static final String NMS_CLASS_PATH = "net.minecraft.server." + BUKKIT_VERSION + ".";
-	private static final String OBC_CLASS_PATH = "org.bukkit.craftbukkit." + BUKKIT_VERSION + ".";
 
-	public static String getVersion()
+	static
 	{
-		return BUKKIT_VERSION;
+		if(Bukkit.getServer().getName().toLowerCase().contains("cauldron") || Bukkit.getServer().getName().toLowerCase().contains("uranium"))
+		{
+			throw new RuntimeException("Using Bukkit Reflections for Cauldron / Uranium based server!");
+		}
 	}
 
 	/**
@@ -67,7 +66,20 @@ public class NMSReflection extends Reflection
 	public static @Nullable Method getNMSMethod(@NotNull String className, @NotNull String name, @Nullable Class<?>... args)
 	{
 		Class<?> clazz = getNMSClass(className);
-		return (clazz == null) ? null : getMethod(clazz, name, args);
+		return (clazz == null) ? null : getNMSMethod(clazz, name, args);
+	}
+
+	/**
+	 * Gets a method reference from a net.minecraft.server class.
+	 *
+	 * @param clazz The class.
+	 * @param name The name of the method.
+	 * @param args The types of the parameters of the method.
+	 * @return The method reference. Null if it was not found.
+	 */
+	public static @Nullable Method getNMSMethod(@NotNull Class<?> clazz, @NotNull String name, @Nullable Class<?>... args)
+	{
+		return getMethod(clazz, name, args);
 	}
 
 	/**
@@ -83,6 +95,18 @@ public class NMSReflection extends Reflection
 		return (clazz == null) ? null : getField(clazz, name);
 	}
 
+	/**
+	 * Gets a field reference from a net.minecraft.server class.
+	 *
+	 * @param clazz The class.
+	 * @param name The name of the field.
+	 * @return The field reference. Null if it was not found.
+	 */
+	public static @Nullable Field getNMSField(@NotNull Class<?> clazz, @NotNull String name)
+	{
+		return getField(clazz, name);
+	}
+
 	public static @Nullable Enum<?> getNMSEnum(@NotNull String enumClassAndEnumName)
 	{
 		return getEnum(NMS_CLASS_PATH + enumClassAndEnumName);
@@ -91,52 +115,6 @@ public class NMSReflection extends Reflection
 	public static @Nullable Enum<?> getNMSEnum(@NotNull String enumClass, @NotNull String enumName)
 	{
 		return getEnum(NMS_CLASS_PATH + enumClass + "." + enumName);
-	}
-
-	/**
-	 * Gets an org.bukkit.craftbukkit class reference.
-	 *
-	 * @param className The name of the class.
-	 * @return The class reference. Null if it was not found.
-	 */
-	public static @Nullable Class<?> getOBCClass(@NotNull String className)
-	{
-		try
-		{
-			return Class.forName(OBC_CLASS_PATH + className);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	/**
-	 * Gets a method reference from an org.bukkit.craftbukkit class.
-	 *
-	 * @param className The name of the class.
-	 * @param name The name of the method.
-	 * @param args The types of the parameters of the method.
-	 * @return The method reference. Null if it was not found.
-	 */
-	public static @Nullable Method getOBCMethod(@NotNull String className, @NotNull String name, @Nullable Class<?>... args)
-	{
-		Class<?> clazz = getOBCClass(className);
-		return (clazz == null) ? null : getMethod(clazz, name, args);
-	}
-
-	/**
-	 * Gets a field reference from an org.bukkit.craftbukkit class.
-	 *
-	 * @param className The name of the class.
-	 * @param name The name of the field.
-	 * @return The field reference. Null if it was not found.
-	 */
-	public static @Nullable Field getOBCField(@NotNull String className, @NotNull String name)
-	{
-		Class<?> clazz = getOBCClass(className);
-		return (clazz == null) ? null : getField(clazz, name);
 	}
 
 	public static @Nullable Object getHandle(@NotNull Object obj)

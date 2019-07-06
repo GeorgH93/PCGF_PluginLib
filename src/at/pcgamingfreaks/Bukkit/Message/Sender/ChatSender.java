@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public class ChatSender extends BaseSender
 		{
 			Class<?> chatMessageType = NMSReflection.getNMSClass("ChatMessageType");
 			PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, chatMessageType);
-			BYTE_TO_MESSAGE_TYPE_ENUM = NMSReflection.getMethod(chatMessageType, "a", Byte.TYPE);
+			BYTE_TO_MESSAGE_TYPE_ENUM = NMSReflection.getNMSMethod(chatMessageType, "a", Byte.TYPE);
 		}
 	}
 	//endregion
