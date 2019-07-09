@@ -25,7 +25,6 @@ import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
-import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
 import at.pcgamingfreaks.Reflection;
@@ -38,16 +37,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.File;
 
 public final class PluginLib extends JavaPlugin implements PluginLibrary
 {
-	private static PluginLibrary instance = null;
+	@Getter @Setter(AccessLevel.PRIVATE) private static PluginLibrary instance = null;
 
 	private Config config;
-	private Version version;
-	private DatabaseConnectionPoolBase databaseConnectionPool;
-	private ItemNameResolver itemNameResolver;
+	@Getter private Version version;
+	@Getter private DatabaseConnectionPoolBase databaseConnectionPool;
+	@Getter private ItemNameResolver itemNameResolver;
 
 	@Override
 	public void onEnable()
@@ -92,14 +95,14 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 			}
 		}
 
-		instance = this;
+		setInstance(this);
 		this.getLogger().info(StringUtils.getPluginEnabledMessage(this.getDescription().getFullName()));
 	}
 
 	@Override
 	public void onDisable()
 	{
-		instance = null;
+		setInstance(null);
 		Updater updater =  (this.config.getBool("Misc.AutoUpdate", true)) ? update(null) : null;
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.shutdown();
 		if(updater != null) updater.waitForAsyncOperation();
@@ -111,28 +114,6 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 		Updater updater = new Updater(this, this.getFile(), true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
 		updater.update(responseCallback);
 		return updater;
-	}
-
-	public static PluginLibrary getInstance()
-	{
-		return instance;
-	}
-
-	@Override
-	public @NotNull Version getVersion()
-	{
-		return version;
-	}
-
-	@Override
-	public @Nullable DatabaseConnectionPool getDatabaseConnectionPool()
-	{
-		return databaseConnectionPool;
-	}
-
-	public @NotNull ItemNameResolver getItemNameResolver()
-	{
-		return itemNameResolver;
 	}
 
 	Config getConfiguration()

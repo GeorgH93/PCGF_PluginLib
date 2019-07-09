@@ -23,7 +23,6 @@ import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.*;
 import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
-import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPool;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
 import at.pcgamingfreaks.Updater.UpdateProviders.JenkinsUpdateProvider;
@@ -33,15 +32,19 @@ import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.File;
 
 public final class PluginLib extends Plugin implements PluginLibrary
 {
-	private static PluginLibrary instance = null;
+	@Getter @Setter(AccessLevel.PRIVATE) private static PluginLibrary instance = null;
 
 	private Configuration config;
-	private Version version;
-	private DatabaseConnectionPoolBase databaseConnectionPool;
+	@Getter private Version version;
+	@Getter private DatabaseConnectionPoolBase databaseConnectionPool;
 
 	@Override
 	public void onEnable()
@@ -78,14 +81,14 @@ public final class PluginLib extends Plugin implements PluginLibrary
 			}
 		}
 
-		instance = this;
+		setInstance(this);
 		this.getLogger().info(StringUtils.getPluginEnabledMessage(this.getDescription().getName(), version));
 	}
 
 	@Override
 	public void onDisable()
 	{
-		instance = null;
+		setInstance(null);
 		Updater updater =  (this.config.getBool("Misc.AutoUpdate", true)) ? update(null) : null;
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.shutdown();
 		if(updater != null) updater.waitForAsyncOperation();
@@ -97,23 +100,6 @@ public final class PluginLib extends Plugin implements PluginLibrary
 		Updater updater = new Updater(this, true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
 		updater.update(responseCallback);
 		return updater;
-	}
-
-	public static PluginLibrary getInstance()
-	{
-		return instance;
-	}
-
-	@Override
-	public @NotNull Version getVersion()
-	{
-		return version;
-	}
-
-	@Override
-	public @Nullable DatabaseConnectionPool getDatabaseConnectionPool()
-	{
-		return databaseConnectionPool;
 	}
 
 	@Override
