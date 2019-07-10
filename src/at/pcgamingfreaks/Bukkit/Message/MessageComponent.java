@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,8 @@
 package at.pcgamingfreaks.Bukkit.Message;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Bukkit.NmsReflector;
+import at.pcgamingfreaks.Bukkit.OBCReflection;
 import at.pcgamingfreaks.Bukkit.Utils;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageHoverEvent;
@@ -41,15 +42,15 @@ import java.util.List;
 public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent, ChatColor> implements JsonDeserializer<MessageComponent>
 {
 	//region Reflection Variables
-	private static final transient Class<?> CRAFT_STATISTIC = NMSReflection.getOBCClass("CraftStatistic");
+	private static final transient Class<?> CRAFT_STATISTIC = OBCReflection.getOBCClass("CraftStatistic");
 	@SuppressWarnings({ "ConstantConditions", "deprecation" })
-	private static final transient Method GET_NMS_ACHIEVEMENT =  (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? NMSReflection.getMethod(CRAFT_STATISTIC, "getNMSAchievement", Achievement.class) : null;
+	private static final transient Method GET_NMS_ACHIEVEMENT =  (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? OBCReflection.getMethod(CRAFT_STATISTIC, "getNMSAchievement", Achievement.class) : null;
 	@SuppressWarnings("ConstantConditions")
-	private static final transient Method GET_NMS_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getNMSStatistic", Statistic.class);
-	private static final transient Method GET_MATERIAL_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getMaterialStatistic", Statistic.class, Material.class);
-	private static final transient Method GET_ENTITY_STATISTIC = NMSReflection.getMethod(CRAFT_STATISTIC, "getEntityStatistic", Statistic.class, EntityType.class);
-	private static final transient Method GET_STATISTIC_NAME = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? NMSReflection.getNMSMethod("IScoreboardCriteria", "getName") : null;
-	private static final transient Field FIELD_STATISTIC_NAME = MCVersion.isOlderThan(MCVersion.MC_1_13) ? NMSReflection.getNMSField("Statistic", "name") : null;
+	private static final transient Method GET_NMS_STATISTIC = OBCReflection.getMethod(CRAFT_STATISTIC, "getNMSStatistic", Statistic.class);
+	private static final transient Method GET_MATERIAL_STATISTIC = OBCReflection.getMethod(CRAFT_STATISTIC, "getMaterialStatistic", Statistic.class, Material.class);
+	private static final transient Method GET_ENTITY_STATISTIC = OBCReflection.getMethod(CRAFT_STATISTIC, "getEntityStatistic", Statistic.class, EntityType.class);
+	private static final transient Method GET_STATISTIC_NAME = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsMethod("IScoreboardCriteria", "getName") : null;
+	private static final transient Field FIELD_STATISTIC_NAME = MCVersion.isOlderThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsField("Statistic", "name") : null;
 	//endregion
 
 	private static final transient at.pcgamingfreaks.Message.MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");

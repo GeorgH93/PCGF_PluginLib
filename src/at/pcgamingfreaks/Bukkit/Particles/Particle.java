@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Bukkit.NmsReflector;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -168,7 +168,7 @@ public enum Particle
 		Enum<?> nmsEnum = null;
 		if(MCVersion.isNewerOrEqualThan(minVersion) && MCVersion.isNewerOrEqualThan(MCVersion.MC_1_8) && MCVersion.isOlderThan(MCVersion.MC_1_13))
 		{
-			nmsEnum = NMSReflection.getNMSEnum("EnumParticle." + name);
+			nmsEnum = NmsReflector.INSTANCE.getNmsEnum("EnumParticle", name);
 		}
 		this.nmsEnumParticle = nmsEnum;
 		this.dataType = dataType;

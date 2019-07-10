@@ -37,7 +37,7 @@ and provides cross version support for a lot of Minecraft features
 
 ## Requirements:
 * Java 8 (or newer)
-* Bukkit, Spigot, Paper or BungeeCord for MC 1.7 or newer
+* Bukkit, Spigot, Paper, Uranium or BungeeCord for MC 1.7 or newer
 * (Optional) PlaceholderAPI (to use it with the provided message API)
 
 ## Adding it to your plugin

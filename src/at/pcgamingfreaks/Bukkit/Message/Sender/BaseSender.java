@@ -19,7 +19,7 @@ package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Message;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Bukkit.NmsReflector;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,9 +34,9 @@ import java.lang.reflect.Method;
 public abstract class BaseSender implements Sender
 {
 	//region Reflection stuff
-	protected static final Class<?> CHAT_SERIALIZER = NMSReflection.getNMSClass((MCVersion.is(MCVersion.MC_NMS_1_8_R1)) ? "ChatSerializer" : "IChatBaseComponent$ChatSerializer");
-	protected static final Class<?> I_CHAT_BASE_COMPONENT = NMSReflection.getNMSClass("IChatBaseComponent");
-	protected static final Method CHAT_SERIALIZER_METHOD_A = NMSReflection.getNMSMethod(CHAT_SERIALIZER, "a", String.class);
+	protected static final Class<?> CHAT_SERIALIZER = NmsReflector.INSTANCE.getNmsClass((MCVersion.is(MCVersion.MC_NMS_1_8_R1)) ? "ChatSerializer" : "IChatBaseComponent$ChatSerializer");
+	protected static final Class<?> I_CHAT_BASE_COMPONENT = NmsReflector.INSTANCE.getNmsClass("IChatBaseComponent");
+	protected static final Method CHAT_SERIALIZER_METHOD_A = NmsReflector.INSTANCE.getNmsMethod(CHAT_SERIALIZER, "a", String.class);
 	//endregion
 
 	public static @Nullable Object finalizeJson(@NotNull String json) throws InvocationTargetException, IllegalAccessException

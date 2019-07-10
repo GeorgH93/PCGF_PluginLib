@@ -18,13 +18,14 @@
 package at.pcgamingfreaks.Bukkit;
 
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class NMSReflection extends OBCReflection
+public class NMSReflection extends OBCReflection implements NmsReflector
 {
 	private static final String NMS_CLASS_PATH = "net.minecraft.server." + BUKKIT_VERSION + ".";
 
@@ -32,7 +33,7 @@ public class NMSReflection extends OBCReflection
 	{
 		if(Bukkit.getServer().getName().toLowerCase().contains("cauldron") || Bukkit.getServer().getName().toLowerCase().contains("uranium"))
 		{
-			throw new RuntimeException("Using Bukkit Reflections for Cauldron / Uranium based server!");
+			throw new RuntimeException("Using Bukkit Reflections on Cauldron / Uranium based server!");
 		}
 	}
 
@@ -65,8 +66,7 @@ public class NMSReflection extends OBCReflection
 	 */
 	public static @Nullable Method getNMSMethod(@NotNull String className, @NotNull String name, @Nullable Class<?>... args)
 	{
-		Class<?> clazz = getNMSClass(className);
-		return (clazz == null) ? null : getNMSMethod(clazz, name, args);
+		return getNMSMethod(getNMSClass(className), name, args);
 	}
 
 	/**
@@ -77,9 +77,10 @@ public class NMSReflection extends OBCReflection
 	 * @param args The types of the parameters of the method.
 	 * @return The method reference. Null if it was not found.
 	 */
-	public static @Nullable Method getNMSMethod(@NotNull Class<?> clazz, @NotNull String name, @Nullable Class<?>... args)
+	@Contract("null, _, _ -> null")
+	public static @Nullable Method getNMSMethod(@Nullable Class<?> clazz, @NotNull String name, @Nullable Class<?>... args)
 	{
-		return getMethod(clazz, name, args);
+		return (clazz == null) ? null : getMethod(clazz, name, args);
 	}
 
 	/**
@@ -91,8 +92,7 @@ public class NMSReflection extends OBCReflection
 	 */
 	public static @Nullable Field getNMSField(@NotNull String className, @NotNull String name)
 	{
-		Class<?> clazz = getNMSClass(className);
-		return (clazz == null) ? null : getField(clazz, name);
+		return getNMSField(getNMSClass(className), name);
 	}
 
 	/**
@@ -102,9 +102,10 @@ public class NMSReflection extends OBCReflection
 	 * @param name The name of the field.
 	 * @return The field reference. Null if it was not found.
 	 */
-	public static @Nullable Field getNMSField(@NotNull Class<?> clazz, @NotNull String name)
+	@Contract("null, _ -> null")
+	public static @Nullable Field getNMSField(@Nullable Class<?> clazz, @NotNull String name)
 	{
-		return getField(clazz, name);
+		return (clazz == null) ? null : getField(clazz, name);
 	}
 
 	public static @Nullable Enum<?> getNMSEnum(@NotNull String enumClassAndEnumName)
@@ -129,5 +130,53 @@ public class NMSReflection extends OBCReflection
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public @Nullable Class<?> getNmsClass(@NotNull String className)
+	{
+		return getNMSClass(className);
+	}
+
+	@Override
+	public @Nullable Method getNmsMethod(@NotNull String className, @NotNull String name, @NotNull Class<?>... args)
+	{
+		return getNMSMethod(className, name, args);
+	}
+
+	@Override
+	public @Nullable Method getNmsMethod(@Nullable Class<?> clazz, @NotNull String name, @NotNull Class<?>... args)
+	{
+		return getNMSMethod(clazz, name, args);
+	}
+
+	@Override
+	public @Nullable Field getNmsField(@NotNull String className, @NotNull String name)
+	{
+		return getNMSField(className, name);
+	}
+
+	@Override
+	public @Nullable Field getNmsField(@Nullable Class<?> clazz, @NotNull String name)
+	{
+		return getNMSField(clazz, name);
+	}
+
+	@Override
+	public @Nullable Enum<?> getNmsEnum(@NotNull String enumClassAndEnumName)
+	{
+		return getNMSEnum(enumClassAndEnumName);
+	}
+
+	@Override
+	public @Nullable Enum<?> getNmsEnum(@NotNull String enumClass, @NotNull String enumName)
+	{
+		return getNMSEnum(enumClass, enumName);
+	}
+
+	@Override
+	public @Nullable Object getNmsHandle(@NotNull Object obj)
+	{
+		return getHandle(obj);
 	}
 }

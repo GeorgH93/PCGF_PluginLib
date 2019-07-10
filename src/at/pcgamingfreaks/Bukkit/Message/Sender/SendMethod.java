@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Reflection;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +43,7 @@ public enum SendMethod
 	{
 		this.defaultSender = defaultSender;
 		this.metadataClass = metadataClass;
-		this.fromJsonMethod = (metadataClass != null) ? NMSReflection.getMethod(this.metadataClass, "fromJson", String.class) : null;
+		this.fromJsonMethod = (metadataClass != null) ? Reflection.getMethod(this.metadataClass, "fromJson", String.class) : null;
 	}
 
 	/**

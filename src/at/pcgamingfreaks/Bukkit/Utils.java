@@ -38,16 +38,16 @@ import java.util.logging.Logger;
  */
 public class Utils extends at.pcgamingfreaks.Utils
 {
-	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NMSReflection.getNMSClass("NBTTagCompound");
+	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NmsReflector.INSTANCE.getNmsClass("NBTTagCompound");
 	private static final Method AS_NMS_COPY_METHOD = NMSReflection.getOBCMethod("inventory.CraftItemStack", "asNMSCopy", ItemStack.class);
-	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NMSReflection.getNMSMethod("ItemStack", "save", NBT_TAG_COMPOUND_CLASS);
+	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NmsReflector.INSTANCE.getNmsMethod("ItemStack", "save", NBT_TAG_COMPOUND_CLASS);
 	//region Reflection constants for the send packet method
-	private static final Class<?> ENTITY_PLAYER = NMSReflection.getNMSClass("EntityPlayer");
-	private static final Class<?> PACKET = NMSReflection.getNMSClass("Packet");
-	private static final Method SEND_PACKET = NMSReflection.getNMSMethod("PlayerConnection", "sendPacket", PACKET);
-	private static final Field PLAYER_CONNECTION = NMSReflection.getNMSField(ENTITY_PLAYER, "playerConnection");
+	private static final Class<?> ENTITY_PLAYER = NmsReflector.INSTANCE.getNmsClass("EntityPlayer");
+	private static final Class<?> PACKET = NmsReflector.INSTANCE.getNmsClass("Packet");
+	private static final Method SEND_PACKET = NmsReflector.INSTANCE.getNmsMethod("PlayerConnection", "sendPacket", PACKET);
+	private static final Field PLAYER_CONNECTION = NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "playerConnection");
 	//endregion
-	private static final Field PLAYER_PING = NMSReflection.getNMSField(ENTITY_PLAYER, "ping");
+	private static final Field PLAYER_PING = NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "ping");
 
 	/**
 	 * Converts an item stack into a json string used for chat messages.

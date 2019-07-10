@@ -19,8 +19,9 @@ package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Message;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Bukkit.NmsReflector;
 import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ import java.util.Collection;
 public class ChatSender extends BaseSender
 {
 	//region Reflection stuff
-	private static final Class<?> PACKET_PLAY_OUT_CHAT = NMSReflection.getNMSClass("PacketPlayOutChat");
+	private static final Class<?> PACKET_PLAY_OUT_CHAT = NmsReflector.INSTANCE.getNmsClass("PacketPlayOutChat");
 	private static final Constructor<?> PACKET_PLAY_OUT_CHAT_CONSTRUCTOR;
 	private static final Method BYTE_TO_MESSAGE_TYPE_ENUM;
 
@@ -43,14 +44,14 @@ public class ChatSender extends BaseSender
 	{
 		if(MCVersion.isOlderThan(MCVersion.MC_1_12))
 		{
-			PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, Byte.TYPE);
+			PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, Byte.TYPE);
 			BYTE_TO_MESSAGE_TYPE_ENUM = null;
 		}
 		else
 		{
-			Class<?> chatMessageType = NMSReflection.getNMSClass("ChatMessageType");
-			PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, chatMessageType);
-			BYTE_TO_MESSAGE_TYPE_ENUM = NMSReflection.getNMSMethod(chatMessageType, "a", Byte.TYPE);
+			Class<?> chatMessageType = NmsReflector.INSTANCE.getNmsClass("ChatMessageType");
+			PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, chatMessageType);
+			BYTE_TO_MESSAGE_TYPE_ENUM = NmsReflector.INSTANCE.getNmsMethod(chatMessageType, "a", Byte.TYPE);
 		}
 	}
 	//endregion

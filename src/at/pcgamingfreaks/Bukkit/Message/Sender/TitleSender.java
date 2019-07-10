@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,8 +18,9 @@
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.Message.Message;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Bukkit.NmsReflector;
 import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -34,8 +35,8 @@ public class TitleSender extends BaseSender
 	private static final TitleMetadata METADATA = new TitleMetadata(); // Default metadata object
 
 	//region Reflection stuff
-	private static final Class<?> PACKET_PLAY_OUT_TITLE = NMSReflection.getNMSClass("PacketPlayOutTitle");
-	private static final Constructor<?> PACKET_PLAY_OUT_TITLE_CONSTRUCTOR = NMSReflection.getConstructor(PACKET_PLAY_OUT_TITLE, NMSReflection.getNMSClass("PacketPlayOutTitle$EnumTitleAction"), I_CHAT_BASE_COMPONENT, int.class, int.class, int.class);
+	private static final Class<?> PACKET_PLAY_OUT_TITLE = NmsReflector.INSTANCE.getNmsClass("PacketPlayOutTitle");
+	private static final Constructor<?> PACKET_PLAY_OUT_TITLE_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_TITLE, NmsReflector.INSTANCE.getNmsClass("PacketPlayOutTitle$EnumTitleAction"), I_CHAT_BASE_COMPONENT, int.class, int.class, int.class);
 	//endregion
 
 	/**

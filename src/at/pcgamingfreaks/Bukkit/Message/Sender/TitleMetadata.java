@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
-import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Bukkit.NmsReflector;
 
 import com.google.gson.Gson;
 
@@ -30,8 +30,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class TitleMetadata
 {
-	private static final transient Enum<?> ENUM_TITLE = NMSReflection.getNMSEnum("PacketPlayOutTitle$EnumTitleAction.TITLE");
-	private static final transient Enum<?> ENUM_SUBTITLE = NMSReflection.getNMSEnum("PacketPlayOutTitle$EnumTitleAction.SUBTITLE");
+	private static final transient Enum<?> ENUM_TITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.TITLE");
+	private static final transient Enum<?> ENUM_SUBTITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.SUBTITLE");
 	private static final transient Gson GSON = new Gson();
 
 	private int fadeIn = 5, fadeOut = 50, stay = 5;

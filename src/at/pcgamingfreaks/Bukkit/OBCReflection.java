@@ -44,15 +44,7 @@ public class OBCReflection extends Reflection
 	 */
 	public static @Nullable Class<?> getOBCClass(@NotNull String className)
 	{
-		try
-		{
-			return Class.forName(OBC_CLASS_PATH + className);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
+		return getClass(OBC_CLASS_PATH + className);
 	}
 
 	/**

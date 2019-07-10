@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,8 @@
 package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Bukkit.NmsReflector;
+import at.pcgamingfreaks.Reflection;
 
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
@@ -28,7 +29,7 @@ import java.lang.reflect.Constructor;
 @Deprecated
 class ParticleSpawnerBukkit_1_8_to_1_12 extends ParticleSpawnerBukkitNMSBase
 {
-	private static final Constructor PACKET_CONSTRUCTOR = NMSReflection.getConstructor(NMSReflection.getNMSClass("PacketPlayOutWorldParticles"), NMSReflection.getNMSClass("EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
+	private static final Constructor PACKET_CONSTRUCTOR = Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutWorldParticles"), NmsReflector.INSTANCE.getNmsClass("EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
 
 	@Override
 	public void spawnParticle(Location location, Particle particle, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)

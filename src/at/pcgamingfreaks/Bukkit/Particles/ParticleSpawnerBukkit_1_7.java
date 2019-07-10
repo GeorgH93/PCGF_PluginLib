@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,8 @@
 package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Bukkit.NmsReflector;
+import at.pcgamingfreaks.Reflection;
 
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
@@ -28,7 +29,7 @@ import java.lang.reflect.Constructor;
 @Deprecated
 class ParticleSpawnerBukkit_1_7 extends ParticleSpawnerBukkitNMSBase
 {
-	private static final Constructor PACKET_CONSTRUCTOR = NMSReflection.getConstructor(NMSReflection.getNMSClass("PacketPlayOutWorldParticles"), String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
+	private static final Constructor PACKET_CONSTRUCTOR = Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutWorldParticles"), String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
 
 	@Override
 	protected void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data) {}
