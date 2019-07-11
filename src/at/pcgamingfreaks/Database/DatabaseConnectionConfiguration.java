@@ -51,7 +51,7 @@ public interface DatabaseConnectionConfiguration
 	default @NotNull String getSQLConnectionProperties()
 	{
 		List<String> list = getSQLConnectionPropertiesList();
-		StringBuilder str = new StringBuilder("?allowMultiQueries=true");
+		StringBuilder str = new StringBuilder();
 		char separator = '?';
 		for(String s : list)
 		{
