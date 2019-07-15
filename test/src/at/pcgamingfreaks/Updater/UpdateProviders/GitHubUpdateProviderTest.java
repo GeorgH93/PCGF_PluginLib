@@ -47,7 +47,7 @@ public class GitHubUpdateProviderTest
 		assertNotNull("The GitHubUpdateProvider should not be null", updateProvider);
 		@NotNull UpdateResult result = updateProvider.query();
 		if(result == UpdateResult.FAIL_API_KEY) return; // Workaround for Travis-CI
-		assertEquals("", UpdateResult.FAIL_NO_VERSION_FOUND, result);
+		assertEquals("", UpdateResult.FAIL_FILE_NOT_FOUND, result);
 		assertEquals("No checksum should be provided", ChecksumType.NONE, updateProvider.providesChecksum());
 	}
 
@@ -62,7 +62,6 @@ public class GitHubUpdateProviderTest
 		assertEquals("The update result should match", UpdateResult.SUCCESS, updateProvider.query());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testQueryWithInvalidRepository() throws Exception
 	{

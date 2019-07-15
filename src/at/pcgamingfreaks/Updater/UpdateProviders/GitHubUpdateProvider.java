@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -50,9 +50,9 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 { //TODO allow to chose checksum type
 	private static final Pattern IN_MD_5_SEARCH_PATTERN = Pattern.compile("(?<hash>[\\da-fA-F]{32}) \\*(?<file>.*)");
 	private final URL url;
-	private final Pattern assetJarPattern, assetMD5Pattern;
+	private final @NotNull Pattern assetJarPattern;
+	private final @Nullable Pattern assetMD5Pattern;
 	private final String projectRepo;
-	private UpdateFile lastResult = null;
 
 	public GitHubUpdateProvider(@NotNull String githubProjectOwner, @NotNull String githubProjectRepo, @NotNull Logger logger)
 	{
@@ -110,7 +110,7 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 							result.setDownloadURL(new URL(asset.get("browser_download_url").getAsString()));
 							foundDl = true;
 						}
-						else if(assetMD5Pattern.matcher(name).matches())
+						else if(assetMD5Pattern != null && assetMD5Pattern.matcher(name).matches())
 						{
 							result.setChecksum(getMD5FromUrl(asset.get("browser_download_url").getAsString()));
 						}
@@ -226,7 +226,7 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 	@Override
 	public @NotNull ChecksumType providesChecksum()
 	{
-		return (assetMD5Pattern != null && ((lastResult != null && !lastResult.getChecksum().isEmpty()) || lastResult == null)) ? ChecksumType.MD5 : ChecksumType.NONE;
+		return (assetMD5Pattern != null && (lastResult == null || !lastResult.getChecksum().isEmpty())) ? ChecksumType.MD5 : ChecksumType.NONE;
 	}
 
 	@Override
