@@ -1,25 +1,25 @@
 /*
- * Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Bungee.Message;
 
 import at.pcgamingfreaks.Bungee.Message.Sender.BossBarMetadata;
-import at.pcgamingfreaks.Bungee.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.Bungee.Message.Sender.SendMethod;
+import at.pcgamingfreaks.Bungee.Message.Sender.TitleMetadata;
 
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 
-public final class Message extends at.pcgamingfreaks.Message.Message<Message, ProxiedPlayer, CommandSender>
+public final class Message extends at.pcgamingfreaks.Message.Message<Message, ProxiedPlayer, CommandSender> implements IMessage
 {
 	//region Variables
 	private SendMethod method = SendMethod.CHAT;

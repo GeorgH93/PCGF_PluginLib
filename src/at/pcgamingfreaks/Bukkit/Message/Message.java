@@ -35,7 +35,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import java.util.Arrays;
 import java.util.Collection;
 
-public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender>
+public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender> implements IMessage
 {
 	//region Variables
 	private static final boolean PRE_1_8_MC = MCVersion.isOlderThan(MCVersion.MC_1_8);

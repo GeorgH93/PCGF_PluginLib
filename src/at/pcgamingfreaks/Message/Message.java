@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class Message<T extends Message, PLAYER, COMMAND_SENDER>
+public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> implements IMessage<PLAYER, COMMAND_SENDER>
 {
 	//region Variables
 	protected static final Gson GSON = new Gson();
@@ -148,12 +148,12 @@ public abstract class Message<T extends Message, PLAYER, COMMAND_SENDER>
 	 * @param replacement The string which would replace the found expression.
 	 * @return            This message instance (for chaining).
 	 */
-	public @NotNull T replaceAll(@NotNull @Language("RegExp") String regex, @NotNull String replacement)
+	public @NotNull MESSAGE replaceAll(@NotNull @Language("RegExp") String regex, @NotNull String replacement)
 	{
 		json = json.replaceAll(regex, replacement);
 		fallback = fallback.replaceAll(regex, replacement);
 		//noinspection unchecked
-		return (T) this;
+		return (MESSAGE) this;
 	}
 
 	//region Send methods
