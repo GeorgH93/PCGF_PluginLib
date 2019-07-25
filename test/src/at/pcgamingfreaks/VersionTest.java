@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ public class VersionTest
 	private static final Version version_1_2_snapshot_t_201703081212 = new Version(VERSION_1_2_SNAPSHOT_TIME_201703081212), version_1_2_snapshot_t_201603081212 = new Version(VERSION_1_2_SNAPSHOT_TIME_201603081212);
 
 	@Test
-	public void testIsValidVersionString() throws Exception
+	public void testIsValidVersionString()
 	{
 		assertTrue("The given string should be a valid version string", Version.isValidVersionString(VERSION_1));
 		assertTrue("The given string should be a valid version string", Version.isValidVersionString(VERSION_1_0));
@@ -94,7 +94,7 @@ public class VersionTest
 	}
 
 	@Test
-	public void testNewerThan() throws Exception
+	public void testNewerThan()
 	{
 		assertTrue("The version should be newer", version_1_2.newerThan(version_1));
 		assertTrue("The version should be newer", version_1_2.newerThan(version_1_0));
@@ -200,7 +200,7 @@ public class VersionTest
 	}
 
 	@Test
-	public void testNewerOrEqualThan() throws Exception
+	public void testNewerOrEqualThan()
 	{
 		assertTrue("The version should be newer or equal", version_1.newerOrEqualThan(version_1));
 		assertTrue("The version should be newer or equal", version_1.newerOrEqualThan(version_1_0));
@@ -308,7 +308,7 @@ public class VersionTest
 	}
 
 	@Test
-	public void testOlderThan() throws Exception
+	public void testOlderThan()
 	{
 		assertTrue("The version should be older", version_1.olderThan(version_1_2));
 		assertTrue("The version should be older", version_1.olderThan(version_1_2_it));
@@ -415,7 +415,7 @@ public class VersionTest
 	}
 
 	@Test
-	public void testOlderOrEqualThan() throws Exception
+	public void testOlderOrEqualThan()
 	{
 		assertTrue("The version should be older or equal", version_1.olderOrEqualThan(version_1));
 		assertTrue("The version should be older or equal", version_1.olderOrEqualThan(version_1_0));
@@ -512,7 +512,7 @@ public class VersionTest
 	}
 
 	@Test
-	public void testToString() throws Exception
+	public void testToString()
 	{
 		assertEquals("The version strings should match", VERSION_1, version_1.toString());
 		assertEquals("The version strings should match", VERSION_1_0, version_1_0.toString());
@@ -532,121 +532,121 @@ public class VersionTest
 	}
 
 	@Test
-	public void testEquals() throws Exception
+	public void testEquals()
 	{
-		assertTrue("The version should be the same", version_1.equals(version_1_0));
-		assertTrue("The version should be the same", version_1.equals(version_v1_0));
-		assertTrue("The version should be the same", version_1_0.equals(version_1));
-		assertTrue("The version should be the same", version_1_0.equals(version_v1_0));
-		assertTrue("The version should be the same", version_v1_0.equals(version_1));
-		assertTrue("The version should be the same", version_v1_0.equals(version_1_0));
-		assertTrue("The version should be the same", version_1_2.equals(version_1_2_it));
-		assertTrue("The version should be the same", version_1_2.equals(version_1_2_snapshot_it));
-		assertTrue("The version should be the same", version_1_2_it.equals(version_1_2));
-		assertTrue("The version should be the same", version_1_2_it.equals(version_1_2_snapshot_it));
-		assertTrue("The version should be the same", version_1_2_snapshot_it.equals(version_1_2));
-		assertTrue("The version should be the same", version_1_2_snapshot_it.equals(version_1_2_it));
-		assertFalse("The version should not be the same", version_1.equals(version_1_2));
-		assertFalse("The version should not be the same", version_1.equals(version_1_2_it));
-		assertFalse("The version should not be the same", version_1.equals(version_1_2_snapshot));
-		assertFalse("The version should not be the same", version_1.equals(version_1_2_snapshot_it));
-		assertFalse("The version should not be the same", version_1.equals(version_1_2_beta));
-		assertFalse("The version should not be the same", version_1.equals(version_1_2_beta2));
-		assertFalse("The version should not be the same", version_1.equals(version_v2_0));
-		assertFalse("The version should not be the same", version_1_0.equals(version_1_2));
-		assertFalse("The version should not be the same", version_1_0.equals(version_1_2_it));
-		assertFalse("The version should not be the same", version_1_0.equals(version_1_2_snapshot));
-		assertFalse("The version should not be the same", version_1_0.equals(version_1_2_snapshot_it));
-		assertFalse("The version should not be the same", version_1_0.equals(version_1_2_beta));
-		assertFalse("The version should not be the same", version_1_0.equals(version_1_2_beta2));
-		assertFalse("The version should not be the same", version_1_0.equals(version_v2_0));
-		assertFalse("The version should not be the same", version_v1_0.equals(version_1_2));
-		assertFalse("The version should not be the same", version_v1_0.equals(version_1_2_it));
-		assertFalse("The version should not be the same", version_v1_0.equals(version_1_2_snapshot));
-		assertFalse("The version should not be the same", version_v1_0.equals(version_1_2_snapshot_it));
-		assertFalse("The version should not be the same", version_v1_0.equals(version_1_2_beta));
-		assertFalse("The version should not be the same", version_v1_0.equals(version_1_2_beta2));
-		assertFalse("The version should not be the same", version_v1_0.equals(version_v2_0));
-		assertFalse("The version should not be the same", version_1_2.equals(version_1));
-		assertFalse("The version should not be the same", version_1_2.equals(version_1_0));
-		assertFalse("The version should not be the same", version_1_2.equals(version_v1_0));
-		assertFalse("The version should not be the same", version_1_2.equals(version_1_2_snapshot));
-		assertFalse("The version should not be the same", version_1_2.equals(version_1_2_beta));
-		assertFalse("The version should not be the same", version_1_2.equals(version_1_2_beta2));
-		assertFalse("The version should not be the same", version_1_2.equals(version_v2_0));
-		assertFalse("The version should not be the same", version_1_2_it.equals(version_1));
-		assertFalse("The version should not be the same", version_1_2_it.equals(version_1_0));
-		assertFalse("The version should not be the same", version_1_2_it.equals(version_v1_0));
-		assertFalse("The version should not be the same", version_1_2_it.equals(version_1_2_snapshot));
-		assertFalse("The version should not be the same", version_1_2_it.equals(version_1_2_beta));
-		assertFalse("The version should not be the same", version_1_2_it.equals(version_1_2_beta2));
-		assertFalse("The version should not be the same", version_1_2_it.equals(version_v2_0));
-		assertFalse("The version should not be the same", version_1_2_snapshot.equals(version_1));
-		assertFalse("The version should not be the same", version_1_2_snapshot.equals(version_1_0));
-		assertFalse("The version should not be the same", version_1_2_snapshot.equals(version_v1_0));
-		assertFalse("The version should not be the same", version_1_2_snapshot.equals(version_1_2));
-		assertFalse("The version should not be the same", version_1_2_snapshot.equals(version_1_2_it));
-		assertFalse("The version should not be the same", version_1_2_snapshot.equals(version_1_2_snapshot_it));
-		assertFalse("The version should not be the same", version_1_2_snapshot.equals(version_1_2_beta));
-		assertFalse("The version should not be the same", version_1_2_snapshot.equals(version_1_2_beta2));
-		assertFalse("The version should not be the same", version_1_2_snapshot.equals(version_v2_0));
-		assertFalse("The version should not be the same", version_1_2_snapshot_it.equals(version_1));
-		assertFalse("The version should not be the same", version_1_2_snapshot_it.equals(version_1_0));
-		assertFalse("The version should not be the same", version_1_2_snapshot_it.equals(version_v1_0));
-		assertFalse("The version should not be the same", version_1_2_snapshot_it.equals(version_1_2_snapshot));
-		assertFalse("The version should not be the same", version_1_2_snapshot_it.equals(version_1_2_beta));
-		assertFalse("The version should not be the same", version_1_2_snapshot_it.equals(version_1_2_beta2));
-		assertFalse("The version should not be the same", version_1_2_snapshot_it.equals(version_v2_0));
-		assertFalse("The version should not be the same", version_1_2_beta.equals(version_v2_0));
-		assertFalse("The version should not be the same", version_1_2_beta2.equals(version_v2_0));
-		assertFalse("The version should not be the same", version_1_2_beta2.equals(version_2_0_snapshot));
-		assertFalse("The version should not be the same", version_v2_0.equals(version_2_0_snapshot));
+		assertEquals("The version should be the same", version_1, version_1_0);
+		assertEquals("The version should be the same", version_1, version_v1_0);
+		assertEquals("The version should be the same", version_1_0, version_1);
+		assertEquals("The version should be the same", version_1_0, version_v1_0);
+		assertEquals("The version should be the same", version_v1_0, version_1);
+		assertEquals("The version should be the same", version_v1_0, version_1_0);
+		assertEquals("The version should be the same", version_1_2, version_1_2_it);
+		assertEquals("The version should be the same", version_1_2, version_1_2_snapshot_it);
+		assertEquals("The version should be the same", version_1_2_it, version_1_2);
+		assertEquals("The version should be the same", version_1_2_it, version_1_2_snapshot_it);
+		assertEquals("The version should be the same", version_1_2_snapshot_it, version_1_2);
+		assertEquals("The version should be the same", version_1_2_snapshot_it, version_1_2_it);
+		assertNotEquals("The version should not be the same", version_1, version_1_2);
+		assertNotEquals("The version should not be the same", version_1, version_1_2_it);
+		assertNotEquals("The version should not be the same", version_1, version_1_2_snapshot);
+		assertNotEquals("The version should not be the same", version_1, version_1_2_snapshot_it);
+		assertNotEquals("The version should not be the same", version_1, version_1_2_beta);
+		assertNotEquals("The version should not be the same", version_1, version_1_2_beta2);
+		assertNotEquals("The version should not be the same", version_1, version_v2_0);
+		assertNotEquals("The version should not be the same", version_1_0, version_1_2);
+		assertNotEquals("The version should not be the same", version_1_0, version_1_2_it);
+		assertNotEquals("The version should not be the same", version_1_0, version_1_2_snapshot);
+		assertNotEquals("The version should not be the same", version_1_0, version_1_2_snapshot_it);
+		assertNotEquals("The version should not be the same", version_1_0, version_1_2_beta);
+		assertNotEquals("The version should not be the same", version_1_0, version_1_2_beta2);
+		assertNotEquals("The version should not be the same", version_1_0, version_v2_0);
+		assertNotEquals("The version should not be the same", version_v1_0, version_1_2);
+		assertNotEquals("The version should not be the same", version_v1_0, version_1_2_it);
+		assertNotEquals("The version should not be the same", version_v1_0, version_1_2_snapshot);
+		assertNotEquals("The version should not be the same", version_v1_0, version_1_2_snapshot_it);
+		assertNotEquals("The version should not be the same", version_v1_0, version_1_2_beta);
+		assertNotEquals("The version should not be the same", version_v1_0, version_1_2_beta2);
+		assertNotEquals("The version should not be the same", version_v1_0, version_v2_0);
+		assertNotEquals("The version should not be the same", version_1_2, version_1);
+		assertNotEquals("The version should not be the same", version_1_2, version_1_0);
+		assertNotEquals("The version should not be the same", version_1_2, version_v1_0);
+		assertNotEquals("The version should not be the same", version_1_2, version_1_2_snapshot);
+		assertNotEquals("The version should not be the same", version_1_2, version_1_2_beta);
+		assertNotEquals("The version should not be the same", version_1_2, version_1_2_beta2);
+		assertNotEquals("The version should not be the same", version_1_2, version_v2_0);
+		assertNotEquals("The version should not be the same", version_1_2_it, version_1);
+		assertNotEquals("The version should not be the same", version_1_2_it, version_1_0);
+		assertNotEquals("The version should not be the same", version_1_2_it, version_v1_0);
+		assertNotEquals("The version should not be the same", version_1_2_it, version_1_2_snapshot);
+		assertNotEquals("The version should not be the same", version_1_2_it, version_1_2_beta);
+		assertNotEquals("The version should not be the same", version_1_2_it, version_1_2_beta2);
+		assertNotEquals("The version should not be the same", version_1_2_it, version_v2_0);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot, version_1);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot, version_1_0);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot, version_v1_0);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot, version_1_2);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot, version_1_2_it);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot, version_1_2_snapshot_it);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot, version_1_2_beta);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot, version_1_2_beta2);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot, version_v2_0);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot_it, version_1);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot_it, version_1_0);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot_it, version_v1_0);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot_it, version_1_2_snapshot);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot_it, version_1_2_beta);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot_it, version_1_2_beta2);
+		assertNotEquals("The version should not be the same", version_1_2_snapshot_it, version_v2_0);
+		assertNotEquals("The version should not be the same", version_1_2_beta, version_v2_0);
+		assertNotEquals("The version should not be the same", version_1_2_beta2, version_v2_0);
+		assertNotEquals("The version should not be the same", version_1_2_beta2, version_2_0_snapshot);
+		assertNotEquals("The version should not be the same", version_v2_0, version_2_0_snapshot);
 		//noinspection ObjectEqualsNull
-		assertFalse("The version should not be the same", version_v2_0.equals(null));
-		assertTrue("The versions should match", new Version(VERSION_1).equals(version_1));
-		assertTrue("The versions should match", new Version(VERSION_1_0).equals(version_1_0));
-		assertTrue("The versions should match", new Version(VERSION_1_0).equals(version_1));
-		assertTrue("The versions should match", new Version(VERSION_V1_0).equals(version_v1_0));
-		assertTrue("The versions should match", new Version(VERSION_1_2).equals(version_1_2));
-		assertTrue("The versions should match", new Version(VERSION_1_2_SNAPSHOT).equals(version_1_2_snapshot));
-		assertTrue("The versions should match", new Version(VERSION_1_2_BETA).equals(version_1_2_beta));
-		assertTrue("The versions should match", new Version(VERSION_1_2_BETA2).equals(version_1_2_beta2));
-		assertTrue("The versions should match", new Version(VERSION_V2_0).equals(version_v2_0));
-		assertTrue("The versions should match", new Version(VERSION_1_2).equals(version_1_2_it));
-		assertFalse("The versions should not match", new Version(VERSION_1_2_SNAPSHOT).equals(version_1_2_snapshot_it));
-		assertTrue("The versions should match", new Version(VERSION_1, true).equals(version_1));
-		assertTrue("The versions should match", new Version(VERSION_1_0, true).equals(version_1_0));
-		assertTrue("The versions should match", new Version(VERSION_V1_0, true).equals(version_v1_0));
-		assertTrue("The versions should match", new Version(VERSION_1_2, true).equals(version_1_2));
-		assertFalse("The versions should not match", new Version(VERSION_1_2_SNAPSHOT, true).equals(version_1_2_snapshot));
-		assertTrue("The versions should not match", new Version(VERSION_1_2, true).equals(version_1_2_it));
-		assertTrue("The versions should not match", new Version(VERSION_1_2_SNAPSHOT, true).equals(version_1_2_snapshot_it));
+		assertNotEquals("The version should not be the same", null, version_v2_0);
+		assertEquals("The versions should match", new Version(VERSION_1), version_1);
+		assertEquals("The versions should match", new Version(VERSION_1_0), version_1_0);
+		assertEquals("The versions should match", new Version(VERSION_1_0), version_1);
+		assertEquals("The versions should match", new Version(VERSION_V1_0), version_v1_0);
+		assertEquals("The versions should match", new Version(VERSION_1_2), version_1_2);
+		assertEquals("The versions should match", new Version(VERSION_1_2_SNAPSHOT), version_1_2_snapshot);
+		assertEquals("The versions should match", new Version(VERSION_1_2_BETA), version_1_2_beta);
+		assertEquals("The versions should match", new Version(VERSION_1_2_BETA2), version_1_2_beta2);
+		assertEquals("The versions should match", new Version(VERSION_V2_0), version_v2_0);
+		assertEquals("The versions should match", new Version(VERSION_1_2), version_1_2_it);
+		assertNotEquals("The versions should not match", new Version(VERSION_1_2_SNAPSHOT), version_1_2_snapshot_it);
+		assertEquals("The versions should match", new Version(VERSION_1, true), version_1);
+		assertEquals("The versions should match", new Version(VERSION_1_0, true), version_1_0);
+		assertEquals("The versions should match", new Version(VERSION_V1_0, true), version_v1_0);
+		assertEquals("The versions should match", new Version(VERSION_1_2, true), version_1_2);
+		assertNotEquals("The versions should not match", new Version(VERSION_1_2_SNAPSHOT, true), version_1_2_snapshot);
+		assertEquals("The versions should not match", new Version(VERSION_1_2, true), version_1_2_it);
+		assertEquals("The versions should not match", new Version(VERSION_1_2_SNAPSHOT, true), version_1_2_snapshot_it);
 	}
 
 	@Test
-	public void testHashCode() throws Exception
+	public void testHashCode()
 	{
-		assertTrue("The hashcode should match", new Version(VERSION_1).hashCode() == version_1.hashCode());
-		assertTrue("The hashcode should match", version_1.hashCode() == version_1_0.hashCode());
-		assertTrue("The hashcode should match", version_1.hashCode() == version_v1_0.hashCode());
-		assertFalse("The hashcode should not match", version_1.hashCode() == version_1_2.hashCode());
-		assertFalse("The hashcode should not match", version_1.hashCode() == version_1_2_it.hashCode());
-		assertFalse("The hashcode should not match", version_1.hashCode() == version_1_2_snapshot.hashCode());
-		assertFalse("The hashcode should not match", version_1.hashCode() == version_1_2_snapshot_it.hashCode());
-		assertFalse("The hashcode should not match", version_1.hashCode() == version_v2_0.hashCode());
-		assertTrue("The hashcode should match", new Version(VERSION_1_0).hashCode() == version_1_0.hashCode());
-		assertTrue("The hashcode should match", version_1_0.hashCode() == version_v1_0.hashCode());
-		assertTrue("The hashcode should match", version_1_0.hashCode() == version_1.hashCode());
-		assertFalse("The hashcode should not match", version_1_0.hashCode() == version_1_2.hashCode());
-		assertFalse("The hashcode should not match", version_1_0.hashCode() == version_1_2_it.hashCode());
-		assertFalse("The hashcode should not match", version_1_0.hashCode() == version_1_2_snapshot.hashCode());
-		assertFalse("The hashcode should not match", version_1_0.hashCode() == version_1_2_snapshot_it.hashCode());
-		assertFalse("The hashcode should not match", version_1_0.hashCode() == version_v2_0.hashCode());
+		assertEquals("The hashcode should match", new Version(VERSION_1).hashCode(), version_1.hashCode());
+		assertEquals("The hashcode should match", version_1.hashCode(), version_1_0.hashCode());
+		assertEquals("The hashcode should match", version_1.hashCode(), version_v1_0.hashCode());
+		assertNotEquals("The hashcode should not match", version_1.hashCode(), version_1_2.hashCode());
+		assertNotEquals("The hashcode should not match", version_1.hashCode(), version_1_2_it.hashCode());
+		assertNotEquals("The hashcode should not match", version_1.hashCode(), version_1_2_snapshot.hashCode());
+		assertNotEquals("The hashcode should not match", version_1.hashCode(), version_1_2_snapshot_it.hashCode());
+		assertNotEquals("The hashcode should not match", version_1.hashCode(), version_v2_0.hashCode());
+		assertEquals("The hashcode should match", new Version(VERSION_1_0).hashCode(), version_1_0.hashCode());
+		assertEquals("The hashcode should match", version_1_0.hashCode(), version_v1_0.hashCode());
+		assertEquals("The hashcode should match", version_1_0.hashCode(), version_1.hashCode());
+		assertNotEquals("The hashcode should not match", version_1_0.hashCode(), version_1_2.hashCode());
+		assertNotEquals("The hashcode should not match", version_1_0.hashCode(), version_1_2_it.hashCode());
+		assertNotEquals("The hashcode should not match", version_1_0.hashCode(), version_1_2_snapshot.hashCode());
+		assertNotEquals("The hashcode should not match", version_1_0.hashCode(), version_1_2_snapshot_it.hashCode());
+		assertNotEquals("The hashcode should not match", version_1_0.hashCode(), version_v2_0.hashCode());
 	}
 
 	@Test
 	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public void testPreRelease() throws Exception
+	public void testPreRelease()
 	{
 		Matcher mockedMatcher = mock(Matcher.class);
 		doReturn(true).when(mockedMatcher).matches();

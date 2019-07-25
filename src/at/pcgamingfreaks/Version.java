@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Version
-{
+public class Version implements Comparable<Version>
+{ //TODO support 1.0a and 1.0b (a, b) as alpha/beta markers
 	public static final String VERSION_STING_FORMAT = "[vV]?\\d+(\\.\\d+)*(-[^-\\s]+)*";
 	private static final byte SAME = 0, OLDER = -1, NEWER = 1;
 	private static final String VERSION_SPLIT_REGEX = "\\.", TAG_SPLIT_REGEX = "-", UNIMPORTANT_VERSION_PARTS_REGEX = "(\\.0)*$", PRE_RELEASE_TAG_FORMAT = "\\w+\\d";
@@ -307,6 +307,12 @@ public class Version
 	public int hashCode()
 	{
 		return hashCode;
+	}
+
+	@Override
+	public int compareTo(@NotNull Version o)
+	{
+		return compare(o);
 	}
 	//endregion
 
