@@ -52,14 +52,13 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class TestObjects
 {
 	private static JavaPlugin mockedJavaPlugin;
-	@SuppressWarnings("SpellCheckingInspection")
 	private static org.bukkit.plugin.Plugin mockedBukkitPlugin;
 	private static Plugin mockedPlugin;
 	private static ProxiedPlayer mockedPlayer;
 
 	private static List<ProxiedPlayer> players;
 
-	public static void initMockedJavaPlugin() throws Exception
+	public static void initMockedJavaPlugin()
 	{
 		BukkitScheduler mockedScheduler = mock(BukkitScheduler.class);
 		when(mockedScheduler.runTask(any(org.bukkit.plugin.Plugin.class), any(Runnable.class))).thenAnswer(invocationOnMock -> {
@@ -74,7 +73,6 @@ public class TestObjects
 		when(mockedJavaPlugin.getServer()).thenReturn(mockedServer);
 	}
 
-	@SuppressWarnings("SpellCheckingInspection")
 	public static void initMockedBukkitPlugin()
 	{
 		PluginDescriptionFile mockedPluginDescription = PowerMockito.mock(PluginDescriptionFile.class);
@@ -115,7 +113,6 @@ public class TestObjects
 		when(mockedPlayer.unsafe()).thenReturn(mockedUnsafe);
 	}
 
-	@SuppressWarnings("SpellCheckingInspection")
 	public static void initNMSReflection() throws NoSuchFieldException, IllegalAccessException
 	{
 		setBukkitVersion("1_8_R1");
@@ -136,7 +133,6 @@ public class TestObjects
 		modifiers.setAccessible(false);
 	}
 
-	@SuppressWarnings("SpellCheckingInspection")
 	public static void setBukkitVersion(String version) throws NoSuchFieldException, IllegalAccessException
 	{
 		Field modifiers = Field.class.getDeclaredField("modifiers");
@@ -164,7 +160,6 @@ public class TestObjects
 		players.add(mockedPlayer);
 	}
 
-	@SuppressWarnings("SpellCheckingInspection")
 	public static void initBukkitOnlinePlayers() throws Exception
 	{
 		List<Player> bukkitPlayers = new ArrayList<>();
@@ -187,7 +182,6 @@ public class TestObjects
 
 	public static JavaPlugin getJavaPlugin() { return mockedJavaPlugin; }
 
-	@SuppressWarnings("SpellCheckingInspection")
 	public static org.bukkit.plugin.Plugin getBukkitPlugin() { return mockedBukkitPlugin; }
 
 	public static Plugin getPlugin()

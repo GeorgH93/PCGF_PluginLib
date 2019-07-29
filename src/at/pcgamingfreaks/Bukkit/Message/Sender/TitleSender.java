@@ -32,9 +32,10 @@ import java.util.Collection;
 
 public class TitleSender extends BaseSender
 {
-	private static final TitleMetadata METADATA = new TitleMetadata(); // Default metadata object
+	private static final ITitleMetadataBukkit METADATA = new TitleMetadata(); // Default metadata object
 
 	//region Reflection stuff
+	private static final Enum<?> ENUM_TIME = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.TIMES");
 	private static final Class<?> PACKET_PLAY_OUT_TITLE = NmsReflector.INSTANCE.getNmsClass("PacketPlayOutTitle");
 	private static final Constructor<?> PACKET_PLAY_OUT_TITLE_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_TITLE, NmsReflector.INSTANCE.getNmsClass("PacketPlayOutTitle$EnumTitleAction"), I_CHAT_BASE_COMPONENT, int.class, int.class, int.class);
 	//endregion
@@ -68,7 +69,7 @@ public class TitleSender extends BaseSender
 	 * @param message  The message to be sent.
 	 * @param metadata The metadata object giving more details on how the message should be displayed.
 	 */
-	public static void send(@NotNull Player player, @NotNull Message message, @NotNull TitleMetadata metadata)
+	public static void send(@NotNull Player player, @NotNull Message message, @NotNull ITitleMetadataBukkit metadata)
 	{
 		send(player, message.toString(), metadata);
 	}
@@ -102,7 +103,7 @@ public class TitleSender extends BaseSender
 	 * @param message  The message to be sent.
 	 * @param metadata The metadata object giving more details on how the message should be displayed.
 	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull Message message, @NotNull TitleMetadata metadata)
+	public static void send(@NotNull Collection<? extends Player> players, @NotNull Message message, @NotNull ITitleMetadataBukkit metadata)
 	{
 		send(players, message.toString(), metadata);
 	}
@@ -133,7 +134,7 @@ public class TitleSender extends BaseSender
 	 * @param message  The message to be sent.
 	 * @param metadata The metadata object giving more details on how the message should be displayed.
 	 */
-	public static void broadcast(@NotNull Message message, @NotNull TitleMetadata metadata)
+	public static void broadcast(@NotNull Message message, @NotNull ITitleMetadataBukkit metadata)
 	{
 		broadcast(message.toString(), metadata);
 	}
@@ -147,7 +148,7 @@ public class TitleSender extends BaseSender
 	@Override
 	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optional)
 	{
-		send(player, json, (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA);
+		send(player, json, (optional instanceof ITitleMetadataBukkit) ? (ITitleMetadataBukkit) optional : METADATA);
 	}
 
 	@Override
@@ -159,7 +160,7 @@ public class TitleSender extends BaseSender
 	@Override
 	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optional)
 	{
-		send(players, json, (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA);
+		send(players, json, (optional instanceof ITitleMetadataBukkit) ? (ITitleMetadataBukkit) optional : METADATA);
 	}
 
 	@Override
@@ -171,7 +172,7 @@ public class TitleSender extends BaseSender
 	@Override
 	public void doBroadcast(@NotNull String json, @Nullable Object optional)
 	{
-		broadcast(json, (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA);
+		broadcast(json, (optional instanceof ITitleMetadataBukkit) ? (ITitleMetadataBukkit) optional : METADATA);
 	}
 
 	/**
@@ -181,12 +182,13 @@ public class TitleSender extends BaseSender
 	 * @param json     The message in JSON format to be sent.
 	 * @param metadata The metadata object giving more details on how the message should be displayed.
 	 */
-	public static void send(@NotNull Player player, @NotNull String json, @NotNull TitleMetadata metadata)
+	public static void send(@NotNull Player player, @NotNull String json, @NotNull ITitleMetadataBukkit metadata)
 	{
 		if (CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_TITLE_CONSTRUCTOR == null) return;
 		try
 		{
-			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(metadata.getTitleType(), finalizeJson(json), metadata.getFadeIn(), metadata.getStay(), metadata.getFadeOut()));
+			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TIME, null, metadata.getFadeIn(), metadata.getStay(), metadata.getFadeOut()));
+			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(metadata.getTitleType(), finalizeJson(json), -1, -1, -1));
 		}
 		catch (Exception e)
 		{
@@ -201,14 +203,16 @@ public class TitleSender extends BaseSender
 	 * @param json     The message in JSON format to be sent.
 	 * @param metadata The metadata object giving more details on how the message should be displayed.
 	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull String json, @NotNull TitleMetadata metadata)
+	public static void send(@NotNull Collection<? extends Player> players, @NotNull String json, @NotNull ITitleMetadataBukkit metadata)
 	{
-		if (CHAT_SERIALIZER_METHOD_A == null ||PACKET_PLAY_OUT_TITLE_CONSTRUCTOR == null) return;
+		if (CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_TITLE_CONSTRUCTOR == null) return;
 		try
 		{
-			Object titlePacket = PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(metadata.getTitleType(), finalizeJson(json), metadata.getFadeIn(), metadata.getStay(), metadata.getFadeOut());
+			Object timePacket = PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TIME, null, metadata.getFadeIn(), metadata.getStay(), metadata.getFadeOut());
+			Object titlePacket = PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(metadata.getTitleType(), finalizeJson(json), -1, -1, -1);
 			for(Player player : players)
 			{
+				Utils.sendPacket(player, timePacket);
 				Utils.sendPacket(player, titlePacket);
 			}
 		}
@@ -224,7 +228,7 @@ public class TitleSender extends BaseSender
 	 * @param json     The message in JSON format to be sent.
 	 * @param metadata The metadata object giving more details on how the message should be displayed.
 	 */
-	public static void broadcast(@NotNull String json, @NotNull TitleMetadata metadata)
+	public static void broadcast(@NotNull String json, @NotNull ITitleMetadataBukkit metadata)
 	{
 		send(Bukkit.getOnlinePlayers(), json, metadata);
 	}

@@ -31,8 +31,6 @@ import org.bukkit.entity.Player;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -110,7 +108,6 @@ public class MessageTest
 		final int[] doSendCalls = { 0 };
 		List<Player> players = new ArrayList<>();
 		CommandSender mockedCommandSender = mock(CommandSender.class);
-		//noinspection SpellCheckingInspection
 		TestBukkitPlayer player = new TestBukkitPlayer();
 		setVersion("1_8");
 		Message message = new Message("");
@@ -145,23 +142,15 @@ public class MessageTest
 		assertEquals("The send method should be called as often as given", commandSenderCalls, player.sendCalls);
 		message.setSendMethod(SendMethod.CHAT);
 		BaseSender mockedSender = spy(ChatSender.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				doSendCalls[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			doSendCalls[0]++;
+			return null;
 		}).when(mockedSender).doSend(any(Player.class), anyString(), anyObject());
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				doSendCalls[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			doSendCalls[0]++;
+			return null;
 		}).when(mockedSender).doSend(anyCollectionOf(Player.class), anyString(), anyObject());
-		Field defaultSender = SendMethod.class.getDeclaredField("defaultSender");
+		Field defaultSender = SendMethod.class.getDeclaredField("sender");
 		defaultSender.setAccessible(true);
 		defaultSender.set(SendMethod.CHAT, mockedSender);
 		message.send(player, (Object[]) null);
@@ -188,34 +177,22 @@ public class MessageTest
 		setVersion("1_9");
 		Message message = new Message("");
 		BaseSender mockedSender = mock(ChatSender.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				broadcastCalls[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			broadcastCalls[0]++;
+			return null;
 		}).when(mockedSender).doBroadcast(anyString(), anyObject());
-		Field defaultSender = SendMethod.class.getDeclaredField("defaultSender");
+		Field defaultSender = SendMethod.class.getDeclaredField("sender");
 		defaultSender.setAccessible(true);
 		defaultSender.set(SendMethod.CHAT, mockedSender);
 		mockStatic(Bukkit.class);
 		ConsoleCommandSender mockedConsoleCommandSender = mock(ConsoleCommandSender.class);
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				broadcastCalls[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			broadcastCalls[0]++;
+			return null;
 		}).when(mockedConsoleCommandSender).sendMessage(anyString());
-		when(Bukkit.broadcastMessage(anyString())).thenAnswer(new Answer<Object>() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				broadcastCalls[0]++;
-				return null;
-			}
+		when(Bukkit.broadcastMessage(anyString())).thenAnswer(invocationOnMock -> {
+			broadcastCalls[0]++;
+			return null;
 		});
 		when(Bukkit.getConsoleSender()).thenReturn(mockedConsoleCommandSender);
 		message.broadcast((Object[]) null);

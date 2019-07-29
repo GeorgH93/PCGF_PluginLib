@@ -18,6 +18,7 @@
 package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.Message.Message;
+import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
 
@@ -339,13 +340,10 @@ public class Language extends YamlFileManager
 			{
 				@SuppressWarnings("unchecked") Object sendMethod = Enum.valueOf(messageClasses.enumType, yaml.getString(pathSendMethod, "CHAT").toUpperCase());
 				messageClasses.setSendMethod.invoke(msg, sendMethod);
-				if(yaml.isSet(pathParameter))
+				if(yaml.isSet(pathParameter) && sendMethod instanceof ISendMethod)
 				{
-					Object metaFromJsonMethod = messageClasses.getMetadataFromJsonMethod.invoke(sendMethod);
-					if(metaFromJsonMethod != null)
-					{
-						msg.setOptionalParameters(((Method) metaFromJsonMethod).invoke(null, yaml.getString(pathParameter)));
-					}
+					Object meta = ((ISendMethod) sendMethod).parseMetadata(yaml.getString(pathParameter));
+					if(meta != null) msg.setOptionalParameters(meta);
 				}
 			}
 		}
@@ -386,17 +384,16 @@ public class Language extends YamlFileManager
 	 */
 	protected static class MessageClassesReflectionDataHolder
 	{
-		public MessageClassesReflectionDataHolder(Constructor messageConstructor, Method setSendMethod, Method getMetadataFromJsonMethod, Class enumType)
+		public MessageClassesReflectionDataHolder(Constructor messageConstructor, Method setSendMethod, Class<? extends ISendMethod> enumType)
 		{
 			this.enumType = enumType;
 			this.setSendMethod = setSendMethod;
 			this.messageConstructor = messageConstructor;
-			this.getMetadataFromJsonMethod = getMetadataFromJsonMethod;
 		}
 
 		public Class enumType;
 		public Constructor messageConstructor;
-		public Method setSendMethod, getMetadataFromJsonMethod;
+		public Method setSendMethod;
 	}
 	//endregion
 

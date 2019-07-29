@@ -31,7 +31,6 @@ public class TitleMetadataTest
 		titleMetadata.setFadeIn(10);
 		titleMetadata.setFadeOut(20);
 		titleMetadata.setStay(50);
-		titleMetadata.setSubtitle(false);
 		assertEquals("The fade in time should match", 10, titleMetadata.getFadeIn());
 		assertEquals("The fade out time should match", 20, titleMetadata.getFadeOut());
 		assertEquals("The stay time should match", 50, titleMetadata.getStay());

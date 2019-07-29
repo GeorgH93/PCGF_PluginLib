@@ -18,15 +18,18 @@
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
+import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.Reflection;
 
 import org.jetbrains.annotations.Nullable;
+
+import lombok.Getter;
 
 import java.lang.reflect.Method;
 
 import static at.pcgamingfreaks.Bukkit.MCVersion.MC_1_8;
 
-public enum SendMethod
+public enum SendMethod implements ISendMethod
 {
 	CHAT_CLASSIC(null, null),
 	CHAT(MCVersion.isOlderThan(MC_1_8) ? null : new ChatSender(), null),
@@ -35,44 +38,14 @@ public enum SendMethod
 	//BOSS_BAR(new BossBarSender(), BossBarMetadata.class), //TODO
 	DISABLED(new DisabledSender(), null);
 
-	private final Sender defaultSender;
-	private final Class<?> metadataClass;
-	private final Method fromJsonMethod;
+	@Getter private final Sender sender;
+	@Getter private final Class<?> metadataClass;
+	@Getter private final Method metadataFromJsonMethod;
 
-	SendMethod(Sender defaultSender, @Nullable Class<?> metadataClass)
+	SendMethod(Sender sender, @Nullable Class<?> metadataClass)
 	{
-		this.defaultSender = defaultSender;
+		this.sender = sender;
 		this.metadataClass = metadataClass;
-		this.fromJsonMethod = (metadataClass != null) ? Reflection.getMethod(this.metadataClass, "fromJson", String.class) : null;
-	}
-
-	/**
-	 * Gets the default sender instance for the used option.
-	 *
-	 * @return The default sender instance.
-	 */
-	public Sender getSender()
-	{
-		return this.defaultSender;
-	}
-
-	/**
-	 * Gets the metadata class for the used option.
-	 *
-	 * @return The metadata class.
-	 */
-	public @Nullable Class<?> getMetadataClass()
-	{
-		return this.metadataClass;
-	}
-
-	/**
-	 * Gets the method to convert a JSON in a metadata object.
-	 *
-	 * @return The static method to convert a JSON in a metadata object.
-	 */
-	public @Nullable Method getMetadataFromJsonMethod()
-	{
-		return this.fromJsonMethod;
+		this.metadataFromJsonMethod = (metadataClass != null) ? Reflection.getMethod(this.metadataClass, "fromJson", String.class) : null;
 	}
 }

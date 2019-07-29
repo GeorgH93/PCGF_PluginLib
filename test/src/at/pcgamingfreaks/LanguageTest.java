@@ -111,7 +111,7 @@ public class LanguageTest
 		getMessage.setAccessible(true);
 		Field messageClasses = TestUtils.setAccessible(Language.class, language, "messageClasses", null);
 		assertNull("The returned value should be null when the message classes are not initialized", getMessage.invoke(language, true, "Lang1"));
-		messageClasses.set(language, new Language.MessageClassesReflectionDataHolder(Reflection.getConstructor(TestMessage.class, String.class), Reflection.getMethod(TestMessage.class, "setSendMethod", SendMethod.class), Reflection.getMethod(SendMethod.class, "getMetadataFromJsonMethod"), SendMethod.class));
+		messageClasses.set(language, new Language.MessageClassesReflectionDataHolder(Reflection.getConstructor(TestMessage.class, String.class), Reflection.getMethod(TestMessage.class, "setSendMethod", SendMethod.class), SendMethod.class));
 		assertNotNull("The returned value should not be null", getMessage.invoke(language, true, "Lang1"));
 		language.set("Language.Lang1_SendMethod", "CHAT");
 		assertNotNull("The returned value should not be null", getMessage.invoke(language, false, "Lang1"));

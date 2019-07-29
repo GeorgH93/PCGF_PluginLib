@@ -59,7 +59,7 @@ public class TitleMetadataTest
 		titleMetadata.setFadeIn(30);
 		titleMetadata.setFadeOut(50);
 		titleMetadata.setStay(80);
-		titleMetadata.setSubtitle(false);
+		titleMetadata.setTitle();
 		assertEquals("The title metadata should match", 30, titleMetadata.getFadeIn());
 		assertEquals("The title metadata should match", 50, titleMetadata.getFadeOut());
 		assertEquals("The title metadata should match", 80, titleMetadata.getStay());
@@ -68,7 +68,6 @@ public class TitleMetadataTest
 	}
 
 	@Test
-	@SuppressWarnings("SpellCheckingInspection")
 	public void testFromJsonWithError() throws NoSuchFieldException, IllegalAccessException
 	{
 		Field modifiers = Field.class.getDeclaredField("modifiers");

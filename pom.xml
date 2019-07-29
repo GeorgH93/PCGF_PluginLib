@@ -352,8 +352,8 @@
 					<aggregate>true</aggregate>
 					<instrumentation>
 						<excludes>
-							<!-- The plugin for Bukkit/BungeeCord should be ignored in the coverage report -->
-							<exclude>at/pcgamingfreaks/PluginLib/**/*</exclude>
+							<exclude>at/pcgamingfreaks/PluginLib/**/*</exclude> <!-- The plugin for Bukkit/BungeeCord should be ignored in the coverage report -->
+							<exclude>at/pcgamingfreaks/Message/Sender/I*</exclude> <!-- cobertura does not handle default implementations in interfaces -->
 						</excludes>
 					</instrumentation>
 					<check/>

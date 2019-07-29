@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Bungee.Message;
@@ -67,7 +67,7 @@ public class MessageTest
 	public void testSetOptionalParameters() throws NoSuchFieldException, IllegalAccessException
 	{
 		Message message = new Message("");
-		TitleMetadata titleMetadata = new TitleMetadata(10, 20, 30, false);
+		TitleMetadata titleMetadata = new TitleMetadata(10, 20, 30);
 		BossBarMetadata bossBarMetadata = new BossBarMetadata();
 		Field optionalParameters = at.pcgamingfreaks.Message.Message.class.getDeclaredField("optionalParameters");
 		optionalParameters.setAccessible(true);
@@ -102,7 +102,7 @@ public class MessageTest
 		ChatSender mockedSender = mock(ChatSender.class);
 		doNothing().when(mockedSender).doSend(any(ProxiedPlayer.class), anyString(), anyObject());
 		SendMethod sendMethod = (SendMethod) method.get(message);
-		Field defaultSender = sendMethod.getClass().getDeclaredField("defaultSender");
+		Field defaultSender = sendMethod.getClass().getDeclaredField("sender");
 		defaultSender.setAccessible(true);
 		defaultSender.set(sendMethod, mockedSender);
 		message.send(mockedCommandSender, (Object[]) null);
@@ -153,7 +153,7 @@ public class MessageTest
 		ChatSender mockedSender = mock(ChatSender.class);
 		doNothing().when(mockedSender).doBroadcast(anyString(), anyObject());
 		SendMethod sendMethod = (SendMethod) method.get(message);
-		Field defaultSender = sendMethod.getClass().getDeclaredField("defaultSender");
+		Field defaultSender = sendMethod.getClass().getDeclaredField("sender");
 		defaultSender.setAccessible(true);
 		defaultSender.set(sendMethod, mockedSender);
 		CommandSender mockedCommandSender = mock(CommandSender.class);

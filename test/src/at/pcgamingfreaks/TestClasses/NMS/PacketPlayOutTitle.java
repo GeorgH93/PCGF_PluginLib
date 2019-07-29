@@ -23,7 +23,9 @@ public class PacketPlayOutTitle extends Packet
 	public enum EnumTitleAction
 	{
 		TITLE,
-		SUBTITLE
+		SUBTITLE,
+		TIMES,
+		ACTIONBAR
 	}
 
 	public PacketPlayOutTitle(EnumTitleAction titleAction, IChatBaseComponent chatBaseComponent, int i1, int i2, int i3) {}

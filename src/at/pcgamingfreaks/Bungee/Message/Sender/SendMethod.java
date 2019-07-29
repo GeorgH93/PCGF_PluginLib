@@ -17,14 +17,17 @@
 
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
+import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.Reflection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+
 import java.lang.reflect.Method;
 
-public enum SendMethod
+public enum SendMethod implements ISendMethod
 {
 	CHAT(new ChatSender(), null),
 	TITLE(new TitleSender(), TitleMetadata.class),
@@ -32,44 +35,14 @@ public enum SendMethod
 	//BOSS_BAR(new BossBarSender(), null), //TODO
 	DISABLED(new DisabledSender(), null);
 
-	private final BaseSender defaultSender;
-	private final Class<?> metadataClass;
-	private final Method fromJsonMethod;
+	@Getter private final BaseSender sender;
+	@Getter private final Class<?> metadataClass;
+	@Getter private final Method metadataFromJsonMethod;
 
-	SendMethod(@NotNull BaseSender defaultSender, @Nullable Class<?> metadataClass)
+	SendMethod(@NotNull BaseSender sender, @Nullable Class<?> metadataClass)
 	{
-		this.defaultSender = defaultSender;
+		this.sender = sender;
 		this.metadataClass = metadataClass;
-		this.fromJsonMethod = (metadataClass != null) ? Reflection.getMethod(metadataClass, "fromJson", String.class) : null;
-	}
-
-	/**
-	 * Gets the default sender instance for the used option.
-	 *
-	 * @return The default sender instance.
-	 */
-	public @NotNull BaseSender getSender()
-	{
-		return this.defaultSender;
-	}
-
-	/**
-	 * Gets the metadata class for the used option.
-	 *
-	 * @return The metadata class.
-	 */
-	public @Nullable Class<?> getMetadataClass()
-	{
-		return this.metadataClass;
-	}
-
-	/**
-	 * Gets the method to convert a JSON in a metadata object.
-	 *
-	 * @return The static method to convert a JSON in a metadata object.
-	 */
-	public @Nullable Method getMetadataFromJsonMethod()
-	{
-		return this.fromJsonMethod;
+		this.metadataFromJsonMethod = (metadataClass != null) ? Reflection.getMethod(metadataClass, "fromJson", String.class) : null;
 	}
 }

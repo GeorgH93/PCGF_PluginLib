@@ -17,7 +17,10 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NmsReflector;
+import at.pcgamingfreaks.Message.Sender.TitleLocation;
+import at.pcgamingfreaks.Message.Sender.TitleMetadataBase;
 
 import com.google.gson.Gson;
 
@@ -28,19 +31,19 @@ import org.jetbrains.annotations.NotNull;
  * With it it's possible to configure the type of the tile (title/subtitle).
  * And the times used for the title animations (fade-in/out and stay time).
  */
-public final class TitleMetadata
+public final class TitleMetadata extends TitleMetadataBase implements ITitleMetadataBukkit
 {
 	private static final transient Enum<?> ENUM_TITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.TITLE");
 	private static final transient Enum<?> ENUM_SUBTITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.SUBTITLE");
+	private static final transient Enum<?> ENUM_ACTION_BAR = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11)) ? NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.ACTIONBAR") : ENUM_SUBTITLE;
 	private static final transient Gson GSON = new Gson();
 
-	private int fadeIn = 5, fadeOut = 50, stay = 5;
-	private boolean subtitle = false;
+	private boolean subtitle = false; // workaround to keep old metadata jsons being parsed correctly
 
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
 	 */
-	public TitleMetadata() {}
+	public TitleMetadata(){}
 
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
@@ -51,9 +54,7 @@ public final class TitleMetadata
 	 */
 	public TitleMetadata(int fadeIn, int fadeOut, int stay)
 	{
-		this.fadeIn = fadeIn;
-		this.fadeOut = fadeOut;
-		this.stay = stay;
+		super(fadeIn, fadeOut, stay);
 	}
 
 	/**
@@ -61,9 +62,10 @@ public final class TitleMetadata
 	 *
 	 * @param isSubtitle Defines if the title should be displayed as a title or a subtitle.
 	 */
+	@Deprecated
 	public TitleMetadata(boolean isSubtitle)
 	{
-		subtitle = isSubtitle;
+		super((isSubtitle) ? TitleLocation.SUBTITLE : TitleLocation.TITLE);
 	}
 
 	/**
@@ -74,92 +76,33 @@ public final class TitleMetadata
 	 * @param stay       Defines how long the title will stay on the screen of the player. Value in ticks (1/20 sec).
 	 * @param isSubtitle Defines if the title should be displayed as a title or a subtitle (false = title, true = subtitle).
 	 */
+	@Deprecated
 	public TitleMetadata(int fadeIn, int fadeOut, int stay, boolean isSubtitle)
 	{
-		this.fadeIn = fadeIn;
-		this.fadeOut = fadeOut;
-		this.stay = stay;
-		subtitle = isSubtitle;
+		super(fadeIn, fadeOut, stay, (isSubtitle) ? TitleLocation.SUBTITLE : TitleLocation.TITLE);
 	}
 
 	/**
-	 * Sets the fade-in time of the title.
+	 * Creates a new TitleMetadata object to configure how the title will be displayed.
 	 *
-	 * @param fadeIn Defines how long the title will fade-in. Value in ticks (1/20 sec).
+	 * @param fadeIn     Defines how long the title will fade-in. Value in ticks (1/20 sec).
+	 * @param fadeOut    Defines how long the title will fade-out. Value in ticks (1/20 sec).
+	 * @param stay       Defines how long the title will stay on the screen of the player. Value in ticks (1/20 sec).
+	 * @param location   Defines the display location of the title.
 	 */
-	public void setFadeIn(int fadeIn)
+	public TitleMetadata(int fadeIn, int fadeOut, int stay, TitleLocation location)
 	{
-		this.fadeIn = fadeIn;
+		super(fadeIn, fadeOut, stay, location);
 	}
 
 	/**
-	 * Sets the fade-out time of the title.
+	 * Creates a new TitleMetadata object to configure how the title will be displayed.
 	 *
-	 * @param fadeOut Defines how long the title will fade-out. Value in ticks (1/20 sec).
+	 * @param location   Defines the display location of the title.
 	 */
-	public void setFadeOut(int fadeOut)
+	public TitleMetadata(TitleLocation location)
 	{
-		this.fadeOut = fadeOut;
-	}
-
-	/**
-	 * Sets the stay time of the title.
-	 *
-	 * @param stay Defines how long the title will stay on the screen of the player. Value in ticks (1/20 sec).
-	 */
-	public void setStay(int stay)
-	{
-		this.stay = stay;
-	}
-
-	/**
-	 * Sets the display type of the title.
-	 *
-	 * @param subtitle Defines if the title should be displayed as a title or a subtitle (false = title, true = subtitle).
-	 */
-	public void setSubtitle(boolean subtitle)
-	{
-		this.subtitle = subtitle;
-	}
-
-	/**
-	 * Gets the fade-in time of the title.
-	 *
-	 * @return How long the title will fade-in. Value in ticks (1/20 sec).
-	 */
-	public int getFadeIn()
-	{
-		return fadeIn;
-	}
-
-	/**
-	 * Gets the fade-out time of the title.
-	 *
-	 * @return How long the title will fade-out. Value in ticks (1/20 sec).
-	 */
-	public int getFadeOut()
-	{
-		return fadeOut;
-	}
-
-	/**
-	 * Gets the stay time of the title.
-	 *
-	 * @return How long the title will stay on the screen of the player. Value in ticks (1/20 sec).
-	 */
-	public int getStay()
-	{
-		return stay;
-	}
-
-	/**
-	 * Sets the display type of the title.
-	 *
-	 * @return True if the title should be displayed as a subtitle. False if it should be displayed as a title.
-	 */
-	public boolean isSubtitle()
-	{
-		return subtitle;
+		super(location);
 	}
 
 	/**
@@ -169,8 +112,13 @@ public final class TitleMetadata
 	 */
 	public @NotNull Enum<?> getTitleType()
 	{
-		return (isSubtitle()) ? ENUM_SUBTITLE : ENUM_TITLE;
-
+		switch(getLocation())
+		{
+			case TITLE: return ENUM_TITLE;
+			case SUBTITLE: return ENUM_SUBTITLE;
+			case ACTION_BAR: return ENUM_ACTION_BAR;
+		}
+		return ENUM_TITLE;
 	}
 
 	/**
@@ -183,7 +131,9 @@ public final class TitleMetadata
 	{
 		try
 		{
-			return GSON.fromJson(json, TitleMetadata.class);
+			TitleMetadata metadata = GSON.fromJson(json, TitleMetadata.class);
+			if(metadata.subtitle) metadata.setSubtitle();
+			return metadata;
 		}
 		catch(Exception ignored) {}
 		return new TitleMetadata();
