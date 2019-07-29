@@ -173,6 +173,12 @@
 			<version>${powermockVersion}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>org.jacoco.agent</artifactId>
+			<version>0.8.4</version>
+			<classifier>runtime</classifier>
+		</dependency>
 		<!-- endregion -->
 	</dependencies>
 
@@ -337,33 +343,38 @@
 				<version>2.7.2</version>
 				<configuration>
 					<workingDirectory>${java.io.tmpdir}</workingDirectory>
+					<systemPropertyVariables>
+						<jacoco-agent.destfile>${project.build.directory}/coverage.exec</jacoco-agent.destfile>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 			<!-- Creates the coverage report -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<formats>
-						<format>xml</format>
-						<format>html</format>
-					</formats>
-					<aggregate>true</aggregate>
-					<instrumentation>
-						<excludes>
-							<exclude>at/pcgamingfreaks/PluginLib/**/*</exclude> <!-- The plugin for Bukkit/BungeeCord should be ignored in the coverage report -->
-							<exclude>at/pcgamingfreaks/Message/Sender/I*</exclude> <!-- cobertura does not handle default implementations in interfaces -->
-						</excludes>
-					</instrumentation>
-					<check/>
-				</configuration>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.4</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<id>default-instrument</id>
 						<goals>
-							<goal>cobertura</goal>
+							<goal>instrument</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>default-restore-instrumented-classes</id>
+						<goals>
+							<goal>restore-instrumented-classes</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>${project.build.directory}/coverage.exec</dataFile>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
