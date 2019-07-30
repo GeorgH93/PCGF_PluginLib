@@ -8,4 +8,4 @@ cache:
     - '$HOME/.m2/repository'
 
 after_success:
-  - mvn clean cobertura:cobertura coveralls:report
+  - mvn clean package test coveralls:report
