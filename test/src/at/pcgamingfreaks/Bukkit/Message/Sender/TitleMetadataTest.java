@@ -22,17 +22,12 @@ import at.pcgamingfreaks.TestClasses.NMS.PacketPlayOutTitle;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
-import com.google.gson.Gson;
-
 import org.bukkit.Bukkit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import static org.junit.Assert.*;
 
@@ -65,22 +60,5 @@ public class TitleMetadataTest
 		assertEquals("The title metadata should match", 80, titleMetadata.getStay());
 		assertFalse("The title metadata should match", titleMetadata.isSubtitle());
 		assertEquals("The title metadata should match", PacketPlayOutTitle.EnumTitleAction.TITLE, titleMetadata.getTitleType());
-	}
-
-	@Test
-	public void testFromJsonWithError() throws NoSuchFieldException, IllegalAccessException
-	{
-		Field modifiers = Field.class.getDeclaredField("modifiers");
-		modifiers.setAccessible(true);
-		Field gsonField = TitleMetadata.class.getDeclaredField("GSON");
-		gsonField.setAccessible(true);
-		modifiers.set(gsonField, gsonField.getModifiers() & ~Modifier.FINAL);
-		Gson gson = (Gson) gsonField.get(null);
-		gsonField.set(null, null);
-		assertNotNull("The metadata object should be a new one", TitleMetadata.fromJson(""));
-		gsonField.set(null, gson);
-		modifiers.set(gsonField, gsonField.getModifiers() | Modifier.FINAL);
-		gsonField.setAccessible(false);
-		modifiers.setAccessible(false);
 	}
 }

@@ -20,11 +20,11 @@ package at.pcgamingfreaks.Bungee.Message.Sender;
 import at.pcgamingfreaks.Message.Sender.TitleLocation;
 import at.pcgamingfreaks.Message.Sender.TitleMetadataBase;
 
-import com.google.gson.Gson;
-
 import net.md_5.bungee.protocol.packet.Title;
 
 import org.jetbrains.annotations.NotNull;
+
+import lombok.Getter;
 
 /**
  * The TitleMetadata class holds the more detailed configuration options for the title sender.
@@ -33,9 +33,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class TitleMetadata extends TitleMetadataBase
 {
-	private static final transient Gson GSON = new Gson();
-
-	private boolean subtitle = false; // workaround to keep old metadata jsons being parsed correctly
+	@Getter private Title.Action titleType;
 
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
@@ -80,19 +78,43 @@ public final class TitleMetadata extends TitleMetadataBase
 	}
 
 	/**
-	 * Gets the type of the title. This will be used from the {@link TitleSender} class.
+	 * Creates a new TitleMetadata object to configure how the title will be displayed.
 	 *
-	 * @return The matching enum for the display type of the title.
+	 * @param fadeIn     Defines how long the title will fade-in. Value in ticks (1/20 sec).
+	 * @param fadeOut    Defines how long the title will fade-out. Value in ticks (1/20 sec).
+	 * @param stay       Defines how long the title will stay on the screen of the player. Value in ticks (1/20 sec).
+	 * @param location   Defines the display location of the title.
 	 */
-	public @NotNull Title.Action getTitleType()
+	public TitleMetadata(int fadeIn, int fadeOut, int stay, @NotNull TitleLocation location)
+	{
+		super(fadeIn, fadeOut, stay, location);
+	}
+
+	/**
+	 * Creates a new TitleMetadata object to configure how the title will be displayed.
+	 *
+	 * @param location   Defines the display location of the title.
+	 */
+	public TitleMetadata(@NotNull TitleLocation location)
+	{
+		super(location);
+	}
+
+	@Override
+	public void setLocation(@NotNull TitleLocation location)
+	{
+		super.setLocation(location);
+		updateTitleType();
+	}
+
+	public void updateTitleType()
 	{
 		switch(getLocation())
 		{
-			case TITLE: return Title.Action.TITLE;
-			case SUBTITLE: return Title.Action.SUBTITLE;
-			case ACTION_BAR: return Title.Action.ACTIONBAR;
+			case TITLE: titleType = Title.Action.TITLE; break;
+			case SUBTITLE: titleType = Title.Action.SUBTITLE; break;
+			case ACTION_BAR: titleType = Title.Action.ACTIONBAR; break;
 		}
-		return Title.Action.TITLE;
 	}
 
 	/**
@@ -103,13 +125,6 @@ public final class TitleMetadata extends TitleMetadataBase
 	 */
 	public static @NotNull TitleMetadata fromJson(@NotNull String json)
 	{
-		try
-		{
-			TitleMetadata metadata = GSON.fromJson(json, TitleMetadata.class);
-			if(metadata.subtitle) metadata.setSubtitle();
-			return metadata;
-		}
-		catch(Exception ignored) {}
-		return new TitleMetadata();
+		return parseJson(new TitleMetadata(), json);
 	}
 }

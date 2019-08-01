@@ -17,13 +17,18 @@
 
 package at.pcgamingfreaks.Message.Sender;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.jetbrains.annotations.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 
 public abstract class TitleMetadataBase implements ITitleMetadata
 {
-	@Getter @Setter protected int fadeIn = 5, fadeOut = 50, stay = 5;
-	@Getter @Setter protected TitleLocation location = TitleLocation.TITLE;
+	@Getter @Setter private int fadeIn = 5, fadeOut = 50, stay = 5;
+	@Getter @Setter @NotNull private TitleLocation location = TitleLocation.TITLE;
 
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
@@ -52,7 +57,7 @@ public abstract class TitleMetadataBase implements ITitleMetadata
 	 * @param stay       Defines how long the title will stay on the screen of the player. Value in ticks (1/20 sec).
 	 * @param location   Defines the display location of the title.
 	 */
-	public TitleMetadataBase(int fadeIn, int fadeOut, int stay, TitleLocation location)
+	public TitleMetadataBase(int fadeIn, int fadeOut, int stay, @NotNull TitleLocation location)
 	{
 		this(fadeIn, fadeOut, stay);
 		this.location = location;
@@ -63,8 +68,30 @@ public abstract class TitleMetadataBase implements ITitleMetadata
 	 *
 	 * @param location   Defines the display location of the title.
 	 */
-	public TitleMetadataBase(TitleLocation location)
+	public TitleMetadataBase(@NotNull TitleLocation location)
 	{
 		this.location = location;
+	}
+
+	protected static <T extends TitleMetadataBase> @NotNull T parseJson(@NotNull T metadata, @NotNull String json)
+	{
+		try
+		{
+			JsonObject object = new JsonParser().parse(json).getAsJsonObject();
+			object.entrySet().forEach(e -> {
+				switch(e.getKey().toLowerCase())
+				{
+					case "fadein": metadata.setFadeIn(e.getValue().getAsInt()); break;
+					case "stay": metadata.setStay(e.getValue().getAsInt()); break;
+					case "fadeout": metadata.setFadeOut(e.getValue().getAsInt()); break;
+					case "subtitle": if(e.getValue().getAsBoolean()) metadata.setSubtitle(); break;
+					case "location": metadata.setLocation(TitleLocation.valueOf(e.getValue().getAsString().toUpperCase().replace("ACTIONBAR", "ACTION_BAR").replace("SUB_TITLE", "SUBTITLE")));
+				}
+			});
+
+			return metadata;
+		}
+		catch(Exception ignored) {}
+		return metadata;
 	}
 }

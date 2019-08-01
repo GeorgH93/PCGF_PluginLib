@@ -22,9 +22,9 @@ import at.pcgamingfreaks.Bukkit.NmsReflector;
 import at.pcgamingfreaks.Message.Sender.TitleLocation;
 import at.pcgamingfreaks.Message.Sender.TitleMetadataBase;
 
-import com.google.gson.Gson;
-
 import org.jetbrains.annotations.NotNull;
+
+import lombok.Getter;
 
 /**
  * The TitleMetadata class holds the more detailed configuration options for the title sender.
@@ -36,9 +36,8 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	private static final transient Enum<?> ENUM_TITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.TITLE");
 	private static final transient Enum<?> ENUM_SUBTITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.SUBTITLE");
 	private static final transient Enum<?> ENUM_ACTION_BAR = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11)) ? NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.ACTIONBAR") : ENUM_SUBTITLE;
-	private static final transient Gson GSON = new Gson();
 
-	private boolean subtitle = false; // workaround to keep old metadata jsons being parsed correctly
+	@Getter private Enum<?> titleType;
 
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
@@ -90,7 +89,7 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	 * @param stay       Defines how long the title will stay on the screen of the player. Value in ticks (1/20 sec).
 	 * @param location   Defines the display location of the title.
 	 */
-	public TitleMetadata(int fadeIn, int fadeOut, int stay, TitleLocation location)
+	public TitleMetadata(int fadeIn, int fadeOut, int stay, @NotNull TitleLocation location)
 	{
 		super(fadeIn, fadeOut, stay, location);
 	}
@@ -100,25 +99,26 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	 *
 	 * @param location   Defines the display location of the title.
 	 */
-	public TitleMetadata(TitleLocation location)
+	public TitleMetadata(@NotNull TitleLocation location)
 	{
 		super(location);
 	}
 
-	/**
-	 * Gets the NMS type of the title. This will be used from the {@link TitleSender} class.
-	 *
-	 * @return The matching enum for the display type of the title. NMS!!!
-	 */
-	public @NotNull Enum<?> getTitleType()
+	@Override
+	public void setLocation(@NotNull TitleLocation location)
+	{
+		super.setLocation(location);
+		updateTitleType();
+	}
+
+	public void updateTitleType()
 	{
 		switch(getLocation())
 		{
-			case TITLE: return ENUM_TITLE;
-			case SUBTITLE: return ENUM_SUBTITLE;
-			case ACTION_BAR: return ENUM_ACTION_BAR;
+			case TITLE: titleType = ENUM_TITLE; break;
+			case SUBTITLE: titleType = ENUM_SUBTITLE; break;
+			case ACTION_BAR: titleType = ENUM_ACTION_BAR; break;
 		}
-		return ENUM_TITLE;
 	}
 
 	/**
@@ -129,13 +129,6 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	 */
 	public static @NotNull TitleMetadata fromJson(@NotNull String json)
 	{
-		try
-		{
-			TitleMetadata metadata = GSON.fromJson(json, TitleMetadata.class);
-			if(metadata.subtitle) metadata.setSubtitle();
-			return metadata;
-		}
-		catch(Exception ignored) {}
-		return new TitleMetadata();
+		return parseJson(new TitleMetadata(), json);
 	}
 }
