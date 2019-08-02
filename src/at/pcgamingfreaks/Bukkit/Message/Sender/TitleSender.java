@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Message;
 import at.pcgamingfreaks.Bukkit.NmsReflector;
 import at.pcgamingfreaks.Bukkit.Utils;
@@ -28,17 +29,40 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Objects;
 
 public class TitleSender extends BaseSender
 {
 	private static final ITitleMetadataBukkit METADATA = new TitleMetadata(); // Default metadata object
 
 	//region Reflection stuff
+	static final Enum<?> ENUM_TITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.TITLE");
+	static final Enum<?> ENUM_SUBTITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.SUBTITLE");
+	static final Enum<?> ENUM_ACTION_BAR = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11)) ? NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.ACTIONBAR") : ENUM_SUBTITLE;
 	private static final Enum<?> ENUM_TIME = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.TIMES");
 	private static final Class<?> PACKET_PLAY_OUT_TITLE = NmsReflector.INSTANCE.getNmsClass("PacketPlayOutTitle");
-	private static final Constructor<?> PACKET_PLAY_OUT_TITLE_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_TITLE, NmsReflector.INSTANCE.getNmsClass("PacketPlayOutTitle$EnumTitleAction"), I_CHAT_BASE_COMPONENT, int.class, int.class, int.class);
+	private static final Constructor<?> PACKET_PLAY_OUT_TITLE_CONSTRUCTOR = Reflection.getConstructor(Objects.requireNonNull(PACKET_PLAY_OUT_TITLE), NmsReflector.INSTANCE.getNmsClass("PacketPlayOutTitle$EnumTitleAction"), I_CHAT_BASE_COMPONENT, int.class, int.class, int.class);
+	private static final Object EMPTY_STRING, EMPTY_TITLE;
 	//endregion
+
+	static
+	{
+		Object emptyString = null, emptyTitle = null;
+		try
+		{
+			emptyString = finalizeJson("");
+			assert PACKET_PLAY_OUT_TITLE_CONSTRUCTOR != null;
+			emptyTitle = PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TITLE, emptyString, -1, -1, -1);
+		}
+		catch(InvocationTargetException | IllegalAccessException | InstantiationException e)
+		{
+			e.printStackTrace();
+		}
+		EMPTY_STRING = emptyString;
+		EMPTY_TITLE = emptyTitle;
+	}
 
 	/**
 	 * Sends a JSON message to a player shown as title.
@@ -189,6 +213,7 @@ public class TitleSender extends BaseSender
 		{
 			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TIME, null, metadata.getFadeIn(), metadata.getStay(), metadata.getFadeOut()));
 			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(metadata.getTitleType(), finalizeJson(json), -1, -1, -1));
+			if(metadata.isSubtitle()) Utils.sendPacket(player, EMPTY_TITLE);
 		}
 		catch (Exception e)
 		{
@@ -214,7 +239,23 @@ public class TitleSender extends BaseSender
 			{
 				Utils.sendPacket(player, timePacket);
 				Utils.sendPacket(player, titlePacket);
+				if(metadata.isSubtitle()) Utils.sendPacket(player, EMPTY_TITLE);
 			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public static void clear(@NotNull Player player)
+	{
+		if (PACKET_PLAY_OUT_TITLE_CONSTRUCTOR == null) return;
+		try
+		{
+			Utils.sendPacket(player, EMPTY_TITLE);
+			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_SUBTITLE, EMPTY_STRING, -1, -1, -1));
+			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TIME, null, 0,0,0));
 		}
 		catch (Exception e)
 		{

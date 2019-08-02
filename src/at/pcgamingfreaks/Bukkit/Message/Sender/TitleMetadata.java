@@ -17,8 +17,6 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
-import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.NmsReflector;
 import at.pcgamingfreaks.Message.Sender.TitleLocation;
 import at.pcgamingfreaks.Message.Sender.TitleMetadataBase;
 
@@ -33,11 +31,7 @@ import lombok.Getter;
  */
 public final class TitleMetadata extends TitleMetadataBase implements ITitleMetadataBukkit
 {
-	private static final transient Enum<?> ENUM_TITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.TITLE");
-	private static final transient Enum<?> ENUM_SUBTITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.SUBTITLE");
-	private static final transient Enum<?> ENUM_ACTION_BAR = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11)) ? NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.ACTIONBAR") : ENUM_SUBTITLE;
-
-	@Getter private Enum<?> titleType;
+	@Getter private Enum<?> titleType = TitleSender.ENUM_TITLE;
 
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
@@ -115,9 +109,9 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	{
 		switch(getLocation())
 		{
-			case TITLE: titleType = ENUM_TITLE; break;
-			case SUBTITLE: titleType = ENUM_SUBTITLE; break;
-			case ACTION_BAR: titleType = ENUM_ACTION_BAR; break;
+			case TITLE: titleType = TitleSender.ENUM_TITLE; break;
+			case SUBTITLE: titleType = TitleSender.ENUM_SUBTITLE; break;
+			case ACTION_BAR: titleType = TitleSender.ENUM_ACTION_BAR; break;
 		}
 	}
 

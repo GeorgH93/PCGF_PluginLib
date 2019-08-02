@@ -33,7 +33,7 @@ import lombok.Getter;
  */
 public final class TitleMetadata extends TitleMetadataBase
 {
-	@Getter private Title.Action titleType;
+	@Getter private Title.Action titleType = Title.Action.TITLE;
 
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.

@@ -78,7 +78,7 @@ public class TitleSenderTest
 		sendCalls += playerCount * 2;
 		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
 		TitleSender.send(players, new Message(""), new TitleMetadata(true));
-		sendCalls += playerCount * 2;
+		sendCalls += playerCount * 3;
 		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
 	}
 

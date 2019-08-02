@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Bungee.Message.Sender;
@@ -185,6 +185,13 @@ public class TitleSender extends BaseSender
 		titleSend.setText(json);
 		player.unsafe().sendPacket(titleTimes);
 		player.unsafe().sendPacket(titleSend);
+		if(metadata.isSubtitle())
+		{
+			Title title = new Title();
+			title.setAction(Title.Action.TITLE);
+			title.setText("");
+			player.unsafe().sendPacket(title);
+		}
 	}
 
 	/**
@@ -196,17 +203,24 @@ public class TitleSender extends BaseSender
 	 */
 	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @NotNull TitleMetadata metadata)
 	{
-		Title titleTimes = new Title(), titleSend = new Title();
+		Title titleTimes = new Title(), titleSend = new Title(), title = null;
 		titleTimes.setAction(Title.Action.TIMES);
 		titleTimes.setFadeIn(metadata.getFadeIn());
 		titleTimes.setStay(metadata.getStay());
 		titleTimes.setFadeOut(metadata.getFadeOut());
 		titleSend.setAction(metadata.getTitleType());
 		titleSend.setText(json);
+		if(metadata.isSubtitle())
+		{
+			title = new Title();
+			title.setAction(Title.Action.TITLE);
+			title.setText("");
+		}
 		for(ProxiedPlayer player : players)
 		{
 			player.unsafe().sendPacket(titleTimes);
 			player.unsafe().sendPacket(titleSend);
+			if(title != null) player.unsafe().sendPacket(title);
 		}
 	}
 
