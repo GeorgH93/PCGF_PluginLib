@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,16 +17,7 @@
 
 package at.pcgamingfreaks.Bungee.Command;
 
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.event.TabCompleteEvent;
 import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.event.EventHandler;
-import net.md_5.bungee.event.EventPriority;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubCommand> extends at.pcgamingfreaks.Command.CommandExecutorWithSubCommands<SUB_COMMAND> implements Listener
 {
@@ -35,14 +26,14 @@ public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubComman
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onTab(TabCompleteEvent event)
 	{
-		String[] args = event.getCursor().toLowerCase().split(" ");
-		if(args.length > 1 && commandAliases.contains(args[0].substring(1).toLowerCase()))
+		String[] args = event.getCursor().toLowerCase(Locale.ROOT).split(" ");
+		if(args.length > 1 && commandAliases.contains(args[0].substring(1).toLowerCase(Locale.ROOT)))
 		{
-			String arg1 = args[1].toLowerCase();
+			String arg1 = args[1].toLowerCase(Locale.ROOT);
 			SUB_COMMAND marryCommand = subCommandMap.get(arg1);
 			if(marryCommand != null)
 			{
-				event.getSuggestions().addAll(marryCommand.doTabComplete((CommandSender) event.getSender(), args[0].substring(1).toLowerCase(), args[1], (args.length > 2) ? Arrays.copyOfRange(args, 2, args.length) : new String[0]));
+				event.getSuggestions().addAll(marryCommand.doTabComplete((CommandSender) event.getSender(), args[0].substring(1).toLowerCase(Locale.ROOT), args[1], (args.length > 2) ? Arrays.copyOfRange(args, 2, args.length) : new String[0]));
 				return;
 			}
 			if(args.length == 2)

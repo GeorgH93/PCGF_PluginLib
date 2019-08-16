@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 public abstract class DatabaseConnectionPoolBase implements DatabaseConnectionPool, ConnectionProvider
@@ -39,7 +40,7 @@ public abstract class DatabaseConnectionPoolBase implements DatabaseConnectionPo
 	public static DatabaseConnectionPoolBase startPool(Configuration configuration, Logger logger, File dataFolder)
 	{
 		final DatabaseConnectionPoolBase connectionPool;
-		switch(configuration.getString("Database.Type", "off").toLowerCase())
+		switch(configuration.getString("Database.Type", "off").toLowerCase(Locale.ROOT))
 		{
 			case "mysql": connectionPool = new MySQLConnectionPool(configuration, dataFolder); break;
 			case "sqlite": connectionPool = new SQLiteConnectionPool(configuration, dataFolder); break;

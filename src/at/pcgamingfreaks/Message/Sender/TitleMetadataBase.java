@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Locale;
+
 public abstract class TitleMetadataBase implements ITitleMetadata
 {
 	@Getter @Setter private int fadeIn = 5, fadeOut = 50, stay = 5;
@@ -79,13 +81,13 @@ public abstract class TitleMetadataBase implements ITitleMetadata
 		{
 			JsonObject object = new JsonParser().parse(json).getAsJsonObject();
 			object.entrySet().forEach(e -> {
-				switch(e.getKey().toLowerCase())
+				switch(e.getKey().toLowerCase(Locale.ROOT))
 				{
 					case "fadein": metadata.setFadeIn(e.getValue().getAsInt()); break;
 					case "stay": metadata.setStay(e.getValue().getAsInt()); break;
 					case "fadeout": metadata.setFadeOut(e.getValue().getAsInt()); break;
 					case "subtitle": if(e.getValue().getAsBoolean()) metadata.setSubtitle(); break;
-					case "location": metadata.setLocation(TitleLocation.valueOf(e.getValue().getAsString().toUpperCase().replace("ACTIONBAR", "ACTION_BAR").replace("SUB_TITLE", "SUBTITLE")));
+					case "location": metadata.setLocation(TitleLocation.valueOf(e.getValue().getAsString().toUpperCase(Locale.ROOT).replace("ACTIONBAR", "ACTION_BAR").replace("SUB_TITLE", "SUBTITLE")));
 				}
 			});
 

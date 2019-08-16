@@ -19,12 +19,14 @@ package at.pcgamingfreaks.Message;
 
 import com.google.gson.*;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings("unchecked")
 public abstract class MessageComponent<T extends MessageComponent, STYLES extends Enum> implements JsonDeserializer<T>
@@ -147,7 +149,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 		if (isObfuscated()) stringBuilder.append(MessageColor.MAGIC);
 		if (isUnderlined()) stringBuilder.append(MessageColor.UNDERLINE);
 		if (isStrikethrough()) stringBuilder.append(MessageColor.STRIKETHROUGH);
-		if (color != null) stringBuilder.append(getColor().toString().toLowerCase());
+		if (color != null) stringBuilder.append(getColor().toString().toLowerCase(Locale.ROOT));
 		return stringBuilder.toString();
 	}
 	//endregion
@@ -238,7 +240,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	 */
 	public String getColorString()
 	{
-		return getColor().name().toLowerCase();
+		return getColor().name().toLowerCase(Locale.ROOT);
 	}
 
 	/**
@@ -247,9 +249,9 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	 * @param color The new color of the component.
 	 * @return This message component instance.
 	 */
-	public T setColor(String color)
+	public T setColor(final @NotNull String color)
 	{
-		return setColor(MessageColor.valueOf(color.toUpperCase()));
+		return setColor(MessageColor.valueOf(color.toUpperCase(Locale.ROOT)));
 	}
 
 	/**
@@ -971,7 +973,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 		}
 		//Strings
 		if(componentAsJsonObject.get("text") != null) component.text = componentAsJsonObject.get("text").getAsString();
-		if(componentAsJsonObject.get("color") != null) component.color = MessageColor.valueOf(componentAsJsonObject.get("color").getAsString().toUpperCase());
+		if(componentAsJsonObject.get("color") != null) component.color = MessageColor.valueOf(componentAsJsonObject.get("color").getAsString().toUpperCase(Locale.ROOT));
 		if(componentAsJsonObject.get("insertion") != null) component.insertion = componentAsJsonObject.get("insertion").getAsString();
 		//Booleans
 		if(componentAsJsonObject.get("bold") != null) component.bold = componentAsJsonObject.get("bold").getAsBoolean();

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@ package at.pcgamingfreaks;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 public class UUIDCacheMapTest
 {
@@ -53,10 +53,10 @@ public class UUIDCacheMapTest
 		map.put(TEST_USER_NAME, TEST_USER_UUID);
 		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
 		map.put(TEST_USER3_NAME, TEST_USER3_UUID);
-		assertEquals("The UUID of a not inserted name should be null", null, map.get(TEST_USER4_NAME.toUpperCase()));
-		assertEquals("The UUID should match the correct one", TEST_USER_UUID, map.get(TEST_USER_NAME.toUpperCase()));
-		assertEquals("The UUID should match the correct one", TEST_USER2_UUID, map.get(TEST_USER2_NAME.toUpperCase()));
-		assertEquals("The UUID should match the correct one", TEST_USER3_UUID, map.get(TEST_USER3_NAME.toUpperCase()));
+		assertEquals("The UUID of a not inserted name should be null", null, map.get(TEST_USER4_NAME.toUpperCase(Locale.ROOT)));
+		assertEquals("The UUID should match the correct one", TEST_USER_UUID, map.get(TEST_USER_NAME.toUpperCase(Locale.ROOT)));
+		assertEquals("The UUID should match the correct one", TEST_USER2_UUID, map.get(TEST_USER2_NAME.toUpperCase(Locale.ROOT)));
+		assertEquals("The UUID should match the correct one", TEST_USER3_UUID, map.get(TEST_USER3_NAME.toUpperCase(Locale.ROOT)));
 		//noinspection SuspiciousMethodCalls
 		assertEquals("The UUID of an invalid key should return null", null, map.get(3));
 	}
@@ -94,7 +94,7 @@ public class UUIDCacheMapTest
 		map.put(TEST_USER_NAME, TEST_USER_UUID);
 		map.put(TEST_USER2_NAME, TEST_USER2_UUID);
 		UUIDCacheMap map2 = new UUIDCacheMap();
-		map2.put(TEST_USER2_NAME.toUpperCase(), TEST_USER2_UUID);
+		map2.put(TEST_USER2_NAME.toUpperCase(Locale.ROOT), TEST_USER2_UUID);
 		map2.put(TEST_USER3_NAME, TEST_USER3_UUID);
 		map.putAll(map2);
 		assertEquals("A not inserted user should return null as UUID", null, map.get(TEST_USER4_NAME));
@@ -134,9 +134,9 @@ public class UUIDCacheMapTest
 		assertTrue("A contained name should return true", map.containsKey(TEST_USER_NAME));
 		assertTrue("A contained name should return true", map.containsKey(TEST_USER2_NAME));
 		assertTrue("A contained name should return true", map.containsKey(TEST_USER3_NAME));
-		assertTrue("A contained upper case name should return true", map.containsKey(TEST_USER_NAME.toUpperCase()));
-		assertTrue("A contained upper case name should return true", map.containsKey(TEST_USER2_NAME.toUpperCase()));
-		assertTrue("A contained upper case name should return true", map.containsKey(TEST_USER3_NAME.toUpperCase()));
+		assertTrue("A contained upper case name should return true", map.containsKey(TEST_USER_NAME.toUpperCase(Locale.ROOT)));
+		assertTrue("A contained upper case name should return true", map.containsKey(TEST_USER2_NAME.toUpperCase(Locale.ROOT)));
+		assertTrue("A contained upper case name should return true", map.containsKey(TEST_USER3_NAME.toUpperCase(Locale.ROOT)));
 		//noinspection SuspiciousMethodCalls
 		assertFalse(map.containsKey(12));
 		//noinspection SuspiciousMethodCalls

@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class DBTools
 {
@@ -47,11 +48,11 @@ public class DBTools
 	 *                        3.5) {INDEX|KEY} [index_name] (index_col_name,...)
 	 *                        4.) Write PRIMARY KEY and others like CONSTRAINT in a new line, don't add it to the definition of the column (for example "`column` INT, PRIMARY KEY(`column`)" instead of "`column` INT PRIMARY KEY")
 	 *                        5.) Write a create query with every (column) definition in a new line (using \n)
+	 * @param logger (optional) A logger to print additional infos in case of a problem
 	 * @throws IllegalArgumentException If the create query is not in the right format
 	 * @throws SQLException If any handling with the database failed
 	 */
-	@SuppressWarnings("SqlNoDataSourceInspection")
-	public static void updateDB(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition) throws IllegalArgumentException, SQLException
+	public static void updateDB(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition, @Nullable Logger logger) throws IllegalArgumentException, SQLException
 	{
 		switch(connection.getMetaData().getDatabaseProductName())
 		{
@@ -59,6 +60,33 @@ public class DBTools
 			case "SQLite": new SQLiteTableValidator().validate(connection, tableDefinition); return;
 			default: throw new RuntimeException("Unsupported database backend");
 		}
+	}
+
+	/**
+	 * Updates the database so that the given table exists and matches the schema after using this function
+	 * <b>Important:</b> Currently only tested and optimised for MySQL! No warranty that it works with SQL databases other than MySQL.
+	 * This function will use the connection to automatically detect which database software is used and use the correct sql dialect.
+	 *
+	 * @param connection The JDBC database connection
+	 * @param tableDefinition A MySQL create query using the following style guidelines:
+	 *                        1.) One create query per function call
+	 *                        2.) Using correct basic create query syntax (syntax: CREATE TABLE [IF NOT EXISTS] tbl_name (\n create_definition,... \n);)
+	 *                        3.) A create_definition can contain following:
+	 *                        3.1) col_name column_definition
+	 *                        3.2) [CONSTRAINT [symbol]] PRIMARY KEY (index_col_name,...)
+	 *                        3.3) [CONSTRAINT [symbol]] UNIQUE [INDEX|KEY] [index_name] (index_col_name,...)
+	 *                        3.4) [CONSTRAINT [symbol]] FOREIGN KEY [index_name] (index_col_name,...) reference_definition
+	 *                        3.4.1) A reference_definition contains: REFERENCES tbl_name (index_col_name,...) [MATCH FULL|MATCH PARTIAL|MATCH SIMPLE] [ON DELETE reference_option] [ON UPDATE reference_option]
+	 *                        3.4.2) A reference_option is one of the following options: RESTRICT, CASCADE, SET NULL, NO ACTION
+	 *                        3.5) {INDEX|KEY} [index_name] (index_col_name,...)
+	 *                        4.) Write PRIMARY KEY and others like CONSTRAINT in a new line, don't add it to the definition of the column (for example "`column` INT, PRIMARY KEY(`column`)" instead of "`column` INT PRIMARY KEY")
+	 *                        5.) Write a create query with every (column) definition in a new line (using \n)
+	 * @throws IllegalArgumentException If the create query is not in the right format
+	 * @throws SQLException If any handling with the database failed
+	 */
+	public static void updateDB(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition) throws IllegalArgumentException, SQLException
+	{
+		updateDB(connection, tableDefinition, null);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017, 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.ConsoleColor;
-import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Version;
 
@@ -29,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 abstract class BaseOnlineProvider implements UpdateProvider
@@ -55,7 +55,7 @@ abstract class BaseOnlineProvider implements UpdateProvider
 	{
 		Version version = getLatestVersion();
 		if(!version.isPreRelease()) return ReleaseType.RELEASE;
-		String sVersion = version.toString().toLowerCase();
+		String sVersion = version.toString().toLowerCase(Locale.ROOT);
 		if(sVersion.contains("alpha")) return ReleaseType.ALPHA;
 		if(sVersion.contains("beta"))  return ReleaseType.BETA;
 		if(sVersion.contains("-rc"))  return ReleaseType.RC;

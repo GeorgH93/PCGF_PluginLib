@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@ import at.pcgamingfreaks.YamlFileUpdateMethod;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Locale;
+
 final class Config extends Configuration
 {
 	public Config(JavaPlugin plugin, int version)
@@ -36,7 +38,7 @@ final class Config extends Configuration
 		String mode = yaml.getString("Language.ItemUpdateMode", "overwrite");
 		try
 		{
-			return YamlFileUpdateMethod.valueOf(mode.toUpperCase());
+			return YamlFileUpdateMethod.valueOf(mode.toUpperCase(Locale.ROOT));
 		}
 		catch(IllegalArgumentException ignored)
 		{

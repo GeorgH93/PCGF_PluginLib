@@ -127,6 +127,7 @@ public class ItemNameResolver
 				return namesForMaterial.get((short) -1);
 			}
 		}
+		//noinspection StringToUpperCaseOrToLowerCaseWithoutLocale
 		return material.name().toLowerCase();
 	}
 

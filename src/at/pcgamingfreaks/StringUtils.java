@@ -148,17 +148,17 @@ public class StringUtils
 	{
 		Validate.notNull(string);
 		Validate.notNull(searchFor);
-		return string.toLowerCase().contains(searchFor.toLowerCase());
+		return string.toLowerCase(Locale.ROOT).contains(searchFor.toLowerCase(Locale.ROOT));
 	}
 
 	public static boolean containsIgnoreCase(@NotNull String string, @NotNull String... searchFor)
 	{
 		Validate.notNull(string);
 		Validate.notNull(searchFor);
-		string = string.toLowerCase();
+		string = string.toLowerCase(Locale.ROOT);
 		for(String s : searchFor)
 		{
-			if(string.contains(s.toLowerCase())) return true;
+			if(string.contains(s.toLowerCase(Locale.ROOT))) return true;
 		}
 		return false;
 	}

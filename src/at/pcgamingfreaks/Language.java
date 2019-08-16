@@ -30,6 +30,7 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 public class Language extends YamlFileManager
@@ -214,7 +215,7 @@ public class Language extends YamlFileManager
 	 */
 	public boolean load(@NotNull String language, @NotNull YamlFileUpdateMethod updateMode, @NotNull String fallbackLanguage)
 	{
-		this.language = language.toLowerCase();
+		this.language = language.toLowerCase(Locale.ROOT);
 		this.updateMode = updateMode;
 		this.fallbackLanguage = fallbackLanguage;
 		this.extractedFallback = false;
@@ -335,15 +336,28 @@ public class Language extends YamlFileManager
 		{
 			//noinspection unchecked
 			msg = (T) messageClasses.messageConstructor.newInstance((escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path));
-			String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
+			final String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
 			if(yaml.isSet(pathSendMethod))
 			{
-				@SuppressWarnings("unchecked") Object sendMethod = Enum.valueOf(messageClasses.enumType, yaml.getString(pathSendMethod, "CHAT").toUpperCase());
-				messageClasses.setSendMethod.invoke(msg, sendMethod);
-				if(yaml.isSet(pathParameter) && sendMethod instanceof ISendMethod)
+				final String sendMethodName = yaml.getString(pathSendMethod, "CHAT").toUpperCase(Locale.ROOT);
+				Object sendMethod = null;
+				try
 				{
-					Object meta = ((ISendMethod) sendMethod).parseMetadata(yaml.getString(pathParameter));
-					if(meta != null) msg.setOptionalParameters(meta);
+					//noinspection unchecked
+					sendMethod = Enum.valueOf(messageClasses.enumType, sendMethodName);
+				}
+				catch(IllegalArgumentException ignored)
+				{
+					logger.warning(ConsoleColor.RED + "Unknown send method '" + sendMethodName + "' for message " + KEY_LANGUAGE + path + ConsoleColor.RESET);
+				}
+				if(sendMethod instanceof ISendMethod)
+				{
+					messageClasses.setSendMethod.invoke(msg, sendMethod);
+					if(yaml.isSet(pathParameter))
+					{
+						Object meta = ((ISendMethod) sendMethod).parseMetadata(yaml.getString(pathParameter));
+						if(meta != null) msg.setOptionalParameters(meta);
+					}
 				}
 			}
 		}

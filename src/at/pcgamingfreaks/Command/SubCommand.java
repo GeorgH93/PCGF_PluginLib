@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Represents an ready to use base class for sub commands.
@@ -35,13 +36,13 @@ public abstract class SubCommand<COMMAND_SENDER>
 
 	public SubCommand(@NotNull String name, @NotNull String description, @Nullable String permission, @Nullable String... aliases)
 	{
-		this.name = name.toLowerCase();
+		this.name = name.toLowerCase(Locale.ROOT);
 		if(aliases != null)
 		{
 			this.aliases = new ArrayList<>(aliases.length + 1);
 			for(String alias : aliases)
 			{
-				if(alias != null) this.aliases.add(alias.toLowerCase());
+				if(alias != null) this.aliases.add(alias.toLowerCase(Locale.ROOT));
 			}
 		}
 		else

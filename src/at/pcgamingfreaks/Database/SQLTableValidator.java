@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,6 +67,33 @@ public abstract class SQLTableValidator
 	 */
 	public void validate(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition) throws IllegalArgumentException, SQLException
 	{
+		validate(connection, tableDefinition, null);
+	}
+
+	/**
+	 * Updates the database so that the given table exists and matches the schema after using this function
+	 * <b>Important:</b> Currently only tested and optimised for MySQL! No warranty that it works with SQL databases other than MySQL.
+	 *
+	 * @param connection The JDBC database connection
+	 * @param tableDefinition A MySQL create query using the following style guidelines:
+	 *                        1.) One create query per function call
+	 *                        2.) Using correct basic create query syntax (syntax: CREATE TABLE [IF NOT EXISTS] tbl_name (\n create_definition,... \n);)
+	 *                        3.) A create_definition can contain following:
+	 *                        3.1) col_name column_definition
+	 *                        3.2) [CONSTRAINT [symbol]] PRIMARY KEY (index_col_name,...)
+	 *                        3.3) [CONSTRAINT [symbol]] UNIQUE [INDEX|KEY] [index_name] (index_col_name,...)
+	 *                        3.4) [CONSTRAINT [symbol]] FOREIGN KEY [index_name] (index_col_name,...) reference_definition
+	 *                        3.4.1) A reference_definition contains: REFERENCES tbl_name (index_col_name,...) [MATCH FULL|MATCH PARTIAL|MATCH SIMPLE] [ON DELETE reference_option] [ON UPDATE reference_option]
+	 *                        3.4.2) A reference_option is one of the following options: RESTRICT, CASCADE, SET NULL, NO ACTION
+	 *                        3.5) {INDEX|KEY} [index_name] (index_col_name,...)
+	 *                        4.) Write PRIMARY KEY and others like CONSTRAINT in a new line, don't add it to the definition of the column (for example "`column` INT, PRIMARY KEY(`column`)" instead of "`column` INT PRIMARY KEY")
+	 *                        5.) Write a create query with every (column) definition in a new line (using \n)
+	 * @param logger (optional) A logger to print additional infos in case of a problem
+	 * @throws IllegalArgumentException If the create query is not in the right format
+	 * @throws SQLException If any handling with the database failed
+	 */
+	public void validate(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition, @Nullable Logger logger) throws IllegalArgumentException, SQLException
+	{
 		//region validate and prepare table definition
 		tableDefinition = tableDefinition.trim();
 		Matcher definitionTableInfoMatch = CURRENT_TABLE_INFO.matcher(tableDefinition);
@@ -82,9 +110,10 @@ public abstract class SQLTableValidator
 		//endregion
 		//region get current definition
 		List<String> currentTableColumns;
+		final @Language("SQL") String currentCreateStatement = getCurrentCreateStatement(connection, tableName);
 		try
 		{
-			currentTableColumns = getCurrentTableColumns(connection, tableName);
+			currentTableColumns = getCurrentTableColumns(currentCreateStatement);
 		}
 		catch(SQLException ignored)
 		{
@@ -96,31 +125,41 @@ public abstract class SQLTableValidator
 		}
 		//endregion
 		//region compare and update
-		for(int i = 0; i < definitionTableColumns.length; i++)
+		try
 		{
-			definitionTableColumns[i] = definitionTableColumns[i].trim().replaceAll("\\s+", " "); //TODO there are places where multiple spaces must not be removed
-			Matcher columnMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(definitionTableColumns[i]);
-			if(columnMatcher.find())
+			for(int i = 0; i < definitionTableColumns.length; i++)
 			{
-				processConstraint(connection, columnMatcher, tableName, definitionTableColumns[i], currentTableColumns);
-				continue;
+				definitionTableColumns[i] = definitionTableColumns[i].trim().replaceAll("\\s+", " "); //TODO there are places where multiple spaces must not be removed
+				Matcher columnMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(definitionTableColumns[i]);
+				if(columnMatcher.find())
+				{
+					processConstraint(connection, columnMatcher, tableName, definitionTableColumns[i], currentTableColumns);
+					continue;
+				}
+				columnMatcher = COLUMN_KEY_CHECKER_PATTERN.matcher(definitionTableColumns[i]);
+				if(columnMatcher.find())
+				{
+					processKey(connection, columnMatcher, tableName, definitionTableColumns[i], currentTableColumns);
+					continue;
+				}
+				columnMatcher = COLUMN_NAME_EXTRACTOR_PATTERN.matcher(definitionTableColumns[i]);
+				if(columnMatcher.find()) processName(connection, columnMatcher, tableName, definitionTableColumns[i], currentTableColumns);
 			}
-			columnMatcher = COLUMN_KEY_CHECKER_PATTERN.matcher(definitionTableColumns[i]);
-			if(columnMatcher.find())
+		}
+		catch(SQLException e)
+		{
+			if(logger != null)
 			{
-				processKey(connection, columnMatcher, tableName, definitionTableColumns[i], currentTableColumns);
-				continue;
+				logger.severe("Failed to update table definition for " + tableName + "!\nCurrent table layout:\n" + currentCreateStatement + "\nRequested table layout:\n" + tableDefinition);
 			}
-			columnMatcher = COLUMN_NAME_EXTRACTOR_PATTERN.matcher(definitionTableColumns[i]);
-			if(columnMatcher.find()) processName(connection, columnMatcher, tableName, definitionTableColumns[i], currentTableColumns);
+			throw e;
 		}
 		//endregion
 	}
 
-	protected List<String> getCurrentTableColumns(@NotNull Connection connection, @NotNull String tableName) throws SQLException
+	protected List<String> getCurrentTableColumns(@NotNull @Language("SQL") String currentCreateStatement) throws SQLException
 	{
 		List<String> currentTableColumns = new LinkedList<>();
-		@Language("SQL") String currentCreateStatement = getCurrentCreateStatement(connection, tableName);
 		if(!CURRENT_TABLE_INFO.matcher(currentCreateStatement).matches()) currentCreateStatement = reformatTableDefinition(currentCreateStatement);
 		if(currentCreateStatement == null || currentCreateStatement.isEmpty()) throw new SQLException();
 		Collections.addAll(currentTableColumns, currentCreateStatement.split("(,|^\\()?\n\\s*"));
@@ -137,7 +176,7 @@ public abstract class SQLTableValidator
 		String[] createKeyArray, tempArray, currentReferenceColumns, currentTargetColumns;
 		Iterator<String> currentTableColumnsIterator;
 		Matcher currentMatcher, tempKeyMatcher;
-		switch(columnMatcher.group(4).toUpperCase())
+		switch(columnMatcher.group(4).toUpperCase(Locale.ROOT))
 		{
 			case "PRIMARY KEY":
 				createKeyArray = columnMatcher.group(5).replaceAll("[`()]", "").split(",\\s*");

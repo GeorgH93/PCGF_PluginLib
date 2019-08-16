@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Locale;
 
 public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent, ChatColor> implements JsonDeserializer<MessageComponent>
 {
@@ -130,7 +131,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 */
 	public ChatColor getChatColor()
 	{
-		return ChatColor.valueOf(getColorString().toUpperCase());
+		return ChatColor.valueOf(getColorString().toUpperCase(Locale.ROOT));
 	}
 	//endregion
 

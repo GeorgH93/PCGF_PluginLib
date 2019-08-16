@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @SuppressWarnings({ "unused", "SpellCheckingInspection" })
@@ -142,7 +143,7 @@ public enum Particle
 
 	Particle(String oldName)
 	{
-		this(oldName, oldName.toUpperCase());
+		this(oldName, oldName.toUpperCase(Locale.ROOT));
 	}
 
 	Particle(String oldName, String name)
@@ -152,7 +153,7 @@ public enum Particle
 
 	Particle(String oldName, MCVersion minVersion)
 	{
-		this(oldName, oldName.toUpperCase(), minVersion);
+		this(oldName, oldName.toUpperCase(Locale.ROOT), minVersion);
 	}
 
 	Particle(String oldName, String name, MCVersion minVersion)
@@ -191,7 +192,7 @@ public enum Particle
 
 	public @NotNull String getOldNameUpperCase()
 	{
-		return getOldName().toUpperCase();
+		return getOldName().toUpperCase(Locale.ROOT);
 	}
 
 	public @NotNull MCVersion getMinVersion()

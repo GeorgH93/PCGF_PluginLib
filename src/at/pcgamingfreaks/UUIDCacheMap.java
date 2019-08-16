@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package at.pcgamingfreaks;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,7 +32,7 @@ class UUIDCacheMap extends ConcurrentHashMap<String, String>
 	@Override
 	public String put(@NotNull String key, @NotNull String value)
 	{
-		return super.put(key.toLowerCase(), value.replaceAll("-", "").toLowerCase());
+		return super.put(key.toLowerCase(Locale.ROOT), value.replaceAll("-", "").toLowerCase(Locale.ROOT));
 	}
 
 	@Override
@@ -46,24 +47,24 @@ class UUIDCacheMap extends ConcurrentHashMap<String, String>
 	@Override
 	public boolean contains(@NotNull Object value)
 	{
-		return value instanceof String && super.contains(((String) value).replaceAll("-", "").toLowerCase());
+		return value instanceof String && super.contains(((String) value).replaceAll("-", "").toLowerCase(Locale.ROOT));
 	}
 
 	@Override
 	public boolean containsKey(@NotNull Object key)
 	{
-		return key instanceof String && super.containsKey(((String) key).toLowerCase());
+		return key instanceof String && super.containsKey(((String) key).toLowerCase(Locale.ROOT));
 	}
 
 	@Override
 	public String get(@NotNull Object key)
 	{
-		return key instanceof String ? super.get(((String) key).toLowerCase()) : null;
+		return key instanceof String ? super.get(((String) key).toLowerCase(Locale.ROOT)) : null;
 	}
 
 	@Override
 	public String remove(@NotNull Object key)
 	{
-		return key instanceof String ? super.remove(((String) key).toLowerCase()) : null;
+		return key instanceof String ? super.remove(((String) key).toLowerCase(Locale.ROOT)) : null;
 	}
 }

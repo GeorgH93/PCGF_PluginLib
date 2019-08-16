@@ -71,6 +71,7 @@ public class YamlFileManager
 	public void setFileDescription(@NotNull String description)
 	{
 		fileDescription = description;
+		//noinspection StringToUpperCaseOrToLowerCaseWithoutLocale
 		fileDescriptionCapitalized = description.substring(0, 1).toUpperCase() + description.substring(1);
 	}
 

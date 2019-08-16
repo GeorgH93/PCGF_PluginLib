@@ -19,6 +19,8 @@ package at.pcgamingfreaks;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public enum YamlFileUpdateMethod
 {
 	UPDATE,
@@ -29,7 +31,7 @@ public enum YamlFileUpdateMethod
 	{
 		try
 		{
-			return YamlFileUpdateMethod.valueOf(mode.toUpperCase());
+			return YamlFileUpdateMethod.valueOf(mode.toUpperCase(Locale.ROOT));
 		}
 		catch(IllegalArgumentException ignored) {}
 		return YamlFileUpdateMethod.UPGRADE;

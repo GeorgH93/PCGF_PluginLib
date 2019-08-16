@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,10 +23,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubCommand> extends at.pcgamingfreaks.Command.CommandExecutorWithSubCommands<SUB_COMMAND> implements CommandExecutor, TabExecutor
 {
@@ -35,7 +32,7 @@ public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubComman
 	{
 		if(args.length > 0)
 		{
-			SubCommand subCommand = subCommandMap.get(args[0].toLowerCase());
+			SubCommand subCommand = subCommandMap.get(args[0].toLowerCase(Locale.ROOT));
 			if(subCommand != null)
 			{
 				subCommand.doExecute(sender, alias, args[0], (args.length > 1) ? Arrays.copyOfRange(args, 1, args.length) : new String[0]);
@@ -55,7 +52,7 @@ public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubComman
 	{
 		if(args.length > 0)
 		{
-			final String arg = args[0].toLowerCase();
+			final String arg = args[0].toLowerCase(Locale.ROOT);
 			SubCommand subCommand = subCommandMap.get(arg);
 			if(subCommand != null && args.length > 1)
 			{

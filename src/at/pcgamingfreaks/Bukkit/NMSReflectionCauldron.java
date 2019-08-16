@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,7 +59,7 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 
 	static
 	{
-		if(!Bukkit.getServer().getName().toLowerCase().contains("cauldron") && !Bukkit.getServer().getName().toLowerCase().contains("uranium"))
+		if(!Bukkit.getServer().getName().toLowerCase(Locale.ROOT).contains("cauldron") && !Bukkit.getServer().getName().toLowerCase(Locale.ROOT).contains("uranium"))
 		{
 			throw new RuntimeException("Using Cauldron Reflections for non Cauldron / Uranium based server!");
 		}

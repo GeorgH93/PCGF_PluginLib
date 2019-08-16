@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 public class NMSReflection extends OBCReflection implements NmsReflector
 {
@@ -31,7 +32,7 @@ public class NMSReflection extends OBCReflection implements NmsReflector
 
 	static
 	{
-		if(Bukkit.getServer().getName().toLowerCase().contains("cauldron") || Bukkit.getServer().getName().toLowerCase().contains("uranium"))
+		if(Bukkit.getServer().getName().toLowerCase(Locale.ROOT).contains("cauldron") || Bukkit.getServer().getName().toLowerCase(Locale.ROOT).contains("uranium"))
 		{
 			throw new RuntimeException("Using Bukkit Reflections on Cauldron / Uranium based server!");
 		}

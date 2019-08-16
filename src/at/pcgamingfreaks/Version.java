@@ -20,10 +20,7 @@ package at.pcgamingfreaks;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -92,7 +89,7 @@ public class Version implements Comparable<Version>
 			{
 				if(last == 0) last = Integer.MAX_VALUE;
 				int preReleaseTagNumber = 0;
-				String tag = str.toLowerCase();
+				String tag = str.toLowerCase(Locale.ROOT);
 				if(str.matches(PRE_RELEASE_TAG_FORMAT))
 				{
 					preReleaseTagNumber = Integer.parseInt(tag.substring(tag.length() - 1));

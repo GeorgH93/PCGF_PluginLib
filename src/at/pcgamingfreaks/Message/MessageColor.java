@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Message;
@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public enum  MessageColor
 {
@@ -162,7 +163,7 @@ public enum  MessageColor
 			{
 				if(style != null)
 				{
-					msgStyles[i++] = valueOf(style.name().toUpperCase());
+					msgStyles[i++] = valueOf(style.name().toUpperCase(Locale.ROOT));
 				}
 			}
 			if(msgStyles.length > i)
@@ -180,9 +181,9 @@ public enum  MessageColor
 	 * @param style The style element to be converted.
 	 * @return The converted {@link MessageColor} element.
 	 */
-	public static @Nullable MessageColor messageColorFromStyle(@NotNull Enum style)
+	public static @NotNull MessageColor messageColorFromStyle(@NotNull Enum style)
 	{
-		return valueOf(style.name().toUpperCase());
+		return valueOf(style.name().toUpperCase(Locale.ROOT));
 	}
 
 	@Override

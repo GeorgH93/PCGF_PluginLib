@@ -37,6 +37,7 @@ import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -216,7 +217,7 @@ public abstract class Updater
 			connection.disconnect();
 			if(hashGenerator != null)
 			{
-				String MD5Download = Utils.byteArrayToHex(hashGenerator.digest()).toLowerCase(), MD5Target = updateProvider.getLatestChecksum().toLowerCase();
+				String MD5Download = Utils.byteArrayToHex(hashGenerator.digest()).toLowerCase(Locale.ROOT), MD5Target = updateProvider.getLatestChecksum().toLowerCase(Locale.ROOT);
 				if(!MD5Download.equals(MD5Target))
 				{
 					logger.warning("The auto-updater was able to download the file, but the checksum did not match! Delete file.");
@@ -275,7 +276,7 @@ public abstract class Updater
 			while(e.hasMoreElements())
 			{
 				entry = e.nextElement();
-				if(!entry.getName().toLowerCase().endsWith(".jar"))
+				if(!entry.getName().toLowerCase(Locale.ROOT).endsWith(".jar"))
 					continue;
 				destinationFilePath = new File(updateFolder, entry.getName());
 				try(BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry)); BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destinationFilePath), BUFFER_SIZE))
@@ -337,7 +338,7 @@ public abstract class Updater
 					{
 						if(updateProvider.providesDownloadURL())
 						{
-							download(updateProvider.getLatestFileURL(), (updateProvider.getLatestFileName().toLowerCase().endsWith(".zip")) ? updateProvider.getLatestFileName() : targetFileName);
+							download(updateProvider.getLatestFileURL(), (updateProvider.getLatestFileName().toLowerCase(Locale.ROOT).endsWith(".zip")) ? updateProvider.getLatestFileName() : targetFileName);
 							if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.providesDependencies())
 							{
 								for(UpdateProvider.UpdateFile update : updateProvider.getLatestDependencies())
