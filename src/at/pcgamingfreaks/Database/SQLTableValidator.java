@@ -110,9 +110,10 @@ public abstract class SQLTableValidator
 		//endregion
 		//region get current definition
 		List<String> currentTableColumns;
-		final @Language("SQL") String currentCreateStatement = getCurrentCreateStatement(connection, tableName);
+		@Language("SQL") String currentCreateStatement;
 		try
 		{
+			currentCreateStatement = getCurrentCreateStatement(connection, tableName);
 			currentTableColumns = getCurrentTableColumns(currentCreateStatement);
 		}
 		catch(SQLException ignored)
