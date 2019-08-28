@@ -21,6 +21,7 @@ import at.pcgamingfreaks.ConsoleColor;
 
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -48,6 +49,17 @@ public class Utils extends at.pcgamingfreaks.Utils
 	private static final Field PLAYER_CONNECTION = NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "playerConnection");
 	//endregion
 	private static final Field PLAYER_PING = NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "ping");
+	public static final ChatColor[] CHAT_COLORS;
+
+	static
+	{
+		CHAT_COLORS = new ChatColor[16];
+		int i = 0;
+		for(ChatColor c : ChatColor.values())
+		{
+			if(c.isColor() && c != ChatColor.RESET) CHAT_COLORS[i++] = c;
+		}
+	}
 
 	/**
 	 * Converts an item stack into a json string used for chat messages.
