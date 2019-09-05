@@ -87,12 +87,25 @@ public class YamlFileManager
 
 	/**
 	 * Gets the version of the configuration.
+	 * Deprecated! use version() instead
 	 *
 	 * @return The version of the configuration. -1 if there is no or an invalid "Version" value in the configuration file.
 	 */
+	@Deprecated
 	public int getVersion()
 	{
 		return yaml.getInt(KEY_YAML_VERSION, -1);
+	}
+
+	/**
+	 * Gets the version of the configuration.
+	 *
+	 * @return The version of the configuration. 0 if there is no version in the file.
+	 * @throws Version.InvalidVersionStringException If the version in the file is not a valid version string.
+	 */
+	public Version version() throws Version.InvalidVersionStringException
+	{
+		return new Version(yaml.getString(KEY_YAML_VERSION, "0"));
 	}
 
 	//region file handling stuff for inheriting classes
