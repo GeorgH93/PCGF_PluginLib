@@ -49,11 +49,26 @@ public class Version implements Comparable<Version>
 	private final long timestamp, buildNumber;
 	private final boolean preRelease;
 
+	public Version(int majorVersion)
+	{
+		this("" + majorVersion);
+	}
+
+	public Version(int majorVersion, int minorVersion)
+	{
+		this(majorVersion + "." + minorVersion);
+	}
+
+	public Version(final int majorVersion, final int minorVersion, final int patchVersion)
+	{
+		this(majorVersion + "." + minorVersion + "." + patchVersion);
+	}
+
 	/**
 	 * @param version A string representing this version. Must be in the format: {@value #VERSION_STING_FORMAT}
 	 * @throws InvalidVersionStringException The exception is thrown when the given string doesn't match the required format.
 	 */
-	public Version(@NotNull String version) throws InvalidVersionStringException
+	public Version(final @NotNull String version) throws InvalidVersionStringException
 	{
 		this(version, false);
 	}
