@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -120,9 +120,10 @@ public class Reflection
 	 * @param fieldName The name of field to be set.
 	 * @param value The value to be set.
 	 */
-	public static void setValue(@NotNull Object instance, @NotNull String fieldName, @Nullable Object value) throws Exception
+	public static void setValue(@NotNull Object instance, @NotNull String fieldName, @Nullable Object value)
 	{
-		setValue(instance.getClass().getDeclaredField(fieldName), instance, value);
+		//noinspection ConstantConditions
+		setValue(getField(instance.getClass(), fieldName), instance, value);
 	}
 
 	/**

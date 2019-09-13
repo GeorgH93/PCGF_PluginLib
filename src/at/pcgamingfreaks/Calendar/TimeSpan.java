@@ -246,8 +246,8 @@ public class TimeSpan
 	 * Creates a {@link TimeSpan} object from an amount of milliseconds.
 	 * The TimeSpan is created using the fast method.
 	 *
-	 * @param ms The amount of milliseconds that should be converted into a {@see TimeSpan}.
-	 * @return The {@see TimeSpan} created from the given amount of milliseconds.
+	 * @param ms The amount of milliseconds that should be converted into a {@link TimeSpan}.
+	 * @return The {@link TimeSpan} created from the given amount of milliseconds.
 	 */
 	public static @NotNull TimeSpan fromMilliseconds(long ms)
 	{
@@ -258,8 +258,8 @@ public class TimeSpan
 	 * Creates a {@link TimeSpan} object from an amount of seconds.
 	 * The TimeSpan is created using the fast method.
 	 *
-	 * @param seconds The amount of seconds that should be converted into a {@see TimeSpan}.
-	 * @return The {@see TimeSpan} created from the given amount of seconds.
+	 * @param seconds The amount of seconds that should be converted into a {@link TimeSpan}.
+	 * @return The {@link TimeSpan} created from the given amount of seconds.
 	 */
 	public static @NotNull TimeSpan fromSeconds(long seconds)
 	{

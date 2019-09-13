@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ public enum ChecksumType
 	}
 
 	/**
-	 * The algorithm for the {@see java.security.MessageDigest} hash provider.
+	 * The algorithm for the {@link java.security.MessageDigest} hash provider.
 	 *
 	 * @return The algorithm name. Null for the NONE checksum type.
 	 */
@@ -79,7 +79,7 @@ public enum ChecksumType
 	}
 
 	/**
-	 * Gets an instance of the {@see java.security.MessageDigest} hash provider.
+	 * Gets an instance of the {@link java.security.MessageDigest} hash provider.
 	 *
 	 * @return The instance of the hash provider.
 	 * @throws NoSuchAlgorithmException If the algorithm is not available on the system.
@@ -90,7 +90,7 @@ public enum ChecksumType
 	}
 
 	/**
-	 * Gets an instance of the {@see java.security.MessageDigest} hash provider.
+	 * Gets an instance of the {@link java.security.MessageDigest} hash provider.
 	 *
 	 * @return The instance of the hash provider. Null if the algorithm is not available on the system.
 	 */
