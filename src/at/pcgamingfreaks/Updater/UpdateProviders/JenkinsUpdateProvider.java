@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("RedundantThrows")
 public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 {
-	private static final Pattern VERSION_PATTERN = Pattern.compile(".*-(?<version>" + Version.VERSION_STING_FORMAT + ")\\.(jar|zip)");
+	private static final Pattern VERSION_PATTERN = Pattern.compile(".*-(?<VersionString>" + Version.VERSION_STING_FORMAT + ")\\.(jar|zip)");
 	private static final String API_FILTER = "tree=artifacts[relativePath,fileName],fingerprint[hash],number,timestamp,url,fullDisplayName,changeSet[items[comment]]";
 	private static final String[] IGNORE_ARTIFACTS = { "javadoc", "sources" };
 
@@ -150,7 +150,7 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 					Matcher matcher = VERSION_PATTERN.matcher(result.getFileName());
 					if(matcher.matches())
 					{
-						StringBuilder versionBuilder = new StringBuilder(matcher.group("version"));
+						StringBuilder versionBuilder = new StringBuilder(matcher.group("VersionString"));
 						versionBuilder.append("-T");
 						Date buildTime = new Date(object.getAsJsonPrimitive("timestamp").getAsLong());
 						//noinspection SpellCheckingInspection
