@@ -328,6 +328,28 @@ public class Version implements Comparable<Version>
 	}
 	//endregion
 
+	//region Getters
+	public int getMajor()
+	{
+		return (version.length > 0) ? version[0] : 0;
+	}
+
+	public int getMinor()
+	{
+		return (version.length > 1) ? version[1] : 0;
+	}
+
+	public int getPatch()
+	{
+		return (version.length > 2) ? version[2] : 0;
+	}
+
+	public int toInt()
+	{
+		return ((getMajor() & 0xFF) << 22) | ((getMinor() & 0x7FF) << 12) | (getPatch() & 0xFF);
+	}
+	//endregion
+
 	/**
 	 * This exception is thrown when the string representing a version is invalid.
 	 */
