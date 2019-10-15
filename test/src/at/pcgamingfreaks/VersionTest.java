@@ -68,13 +68,6 @@ public class VersionTest
 	}
 
 	@Test(expected = Version.InvalidVersionStringException.class)
-	public void testNullVersion()
-	{
-		//noinspection ConstantConditions
-		new Version(null);
-	}
-
-	@Test(expected = Version.InvalidVersionStringException.class)
 	public void testEmptyVersion()
 	{
 		new Version("");

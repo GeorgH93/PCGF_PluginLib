@@ -27,9 +27,10 @@ import java.util.regex.Pattern;
 
 public class Version implements Comparable<Version>
 { //TODO support 1.0a and 1.0b (a, b) as alpha/beta markers
-	public static final String VERSION_STING_FORMAT = "[vV]?\\d+(\\.\\d+)*(-[^-\\s]+)*";
+	public static final String VERSION_STING_FORMAT = "[vV]?(?<version>\\d+(\\.\\d+)*)(?<tags>(-[^-\\s]+)*)";
 	private static final byte SAME = 0, OLDER = -1, NEWER = 1;
-	private static final String VERSION_SPLIT_REGEX = "\\.", TAG_SPLIT_REGEX = "-", UNIMPORTANT_VERSION_PARTS_REGEX = "(\\.0)*$", PRE_RELEASE_TAG_FORMAT = "\\w+\\d";
+	private static final String VERSION_SPLIT_REGEX = "\\.", TAG_SPLIT_REGEX = "-", UNIMPORTANT_VERSION_PARTS_REGEX = "(\\.0)*$", PRE_RELEASE_TAG_FORMAT = "(?<tag>\\w+)\\.?(?<number>\\d+)";
+	private static final Pattern PRE_RELEASE_TAG_FORMAT_PATTERN = Pattern.compile(PRE_RELEASE_TAG_FORMAT), VERSION_STING_FORMAT_PATTERN = Pattern.compile(VERSION_STING_FORMAT);
 	private static final String[] PRE_RELEASE_TAGS = new String[] { "alpha", "beta", "pre", "rc", "snapshot"};
 	private static final Map<String, Integer> PRE_RELEASE_TAG_VALUE_RESOLUTION = new ConcurrentHashMap<>();
 
@@ -43,7 +44,7 @@ public class Version implements Comparable<Version>
 
 	private final String rawVersion;
 	@SuppressWarnings("FieldCanBeLocal")
-	private final String[] optionalTags;
+	private final String[] tags;
 	private final int[] version;
 	private final int hashCode;
 	private final long timestamp, buildNumber;
@@ -65,7 +66,7 @@ public class Version implements Comparable<Version>
 	}
 
 	/**
-	 * @param version A string representing this version. Must be in the format: {@value #VERSION_STING_FORMAT}
+	 * @param version A string representing this version. Must be in the format: [vV]?\d+(\.\d+)*(-[^-\s]+)*
 	 * @throws InvalidVersionStringException The exception is thrown when the given string doesn't match the required format.
 	 */
 	public Version(final @NotNull String version) throws InvalidVersionStringException
@@ -74,23 +75,20 @@ public class Version implements Comparable<Version>
 	}
 
 	/**
-	 * @param version A string representing this version. Must be in the format: {@value #VERSION_STING_FORMAT}
-	 * @param ignoreOptionalTags Ignores tags like -alpha for the version comparison.
+	 * @param rawVersion A string representing this version. Must be in the format: [vV]?\d+(\.\d+)*(-[^-\s]+)*
+	 * @param ignoreTags Ignores tags like -alpha for the version comparison.
 	 * @throws InvalidVersionStringException The exception is thrown when the given string doesn't match the required format.
 	 */
-	public Version(@NotNull String version, boolean ignoreOptionalTags) throws InvalidVersionStringException
+	public Version(final @NotNull String rawVersion, final boolean ignoreTags) throws InvalidVersionStringException
 	{
-		//noinspection ConstantConditions
-		if(version == null || version.isEmpty() || !isValidVersionString(version)) throw new InvalidVersionStringException("The version string must be in the format: " + VERSION_STING_FORMAT);
-		if(version.startsWith("v") || version.startsWith("V")) version = version.substring(1);
-		this.rawVersion = version;
+		Matcher versionMatcher = validateInput(rawVersion);
+		this.rawVersion = (rawVersion.startsWith("v") || rawVersion.startsWith("V")) ? rawVersion.substring(1) : rawVersion;
+		final String version = versionMatcher.group("version").replaceAll(UNIMPORTANT_VERSION_PARTS_REGEX, "");
 		// Prepare data
-		String[] comps = version.split(TAG_SPLIT_REGEX, 2); // Split the version string and the tags
-		version = comps[0].replaceAll(UNIMPORTANT_VERSION_PARTS_REGEX, ""); // Remove all unimportant parts from the version
-		this.optionalTags = (comps.length > 1 ? comps[1] : "").split(TAG_SPLIT_REGEX); // Split the tags
-		comps = version.split(VERSION_SPLIT_REGEX);
-		List<String> tags = (!ignoreOptionalTags) ? getAll(this.optionalTags, PRE_RELEASE_TAGS) : null;
-		boolean notAFinalVersion = !ignoreOptionalTags && tags.size() > 0;
+		this.tags = versionMatcher.group("tags").split(TAG_SPLIT_REGEX); // Split the tags
+		String[] comps = version.split(VERSION_SPLIT_REGEX);
+		List<String> tags = (!ignoreTags) ? getAll(this.tags, PRE_RELEASE_TAGS) : null;
+		boolean notAFinalVersion = !ignoreTags && tags.size() > 0;
 		this.version = new int[notAFinalVersion ? comps.length + 1 : comps.length];
 		for(int i = 0; i < comps.length; i++)
 		{
@@ -104,11 +102,12 @@ public class Version implements Comparable<Version>
 			{
 				if(last == 0) last = Integer.MAX_VALUE;
 				int preReleaseTagNumber = 0;
-				String tag = str.toLowerCase(Locale.ROOT);
-				if(str.matches(PRE_RELEASE_TAG_FORMAT))
+				String tag = str.toLowerCase(Locale.ENGLISH);
+				Matcher preMatcher = PRE_RELEASE_TAG_FORMAT_PATTERN.matcher(tag);
+				if(preMatcher.matches())
 				{
-					preReleaseTagNumber = Integer.parseInt(tag.substring(tag.length() - 1));
-					tag = tag.substring(0, tag.length() - 1);
+					preReleaseTagNumber = Integer.parseInt(preMatcher.group("number"));
+					tag = preMatcher.group("tag");
 				}
 				last = (last - PRE_RELEASE_TAG_VALUE_RESOLUTION.get(tag)) + preReleaseTagNumber;
 			}
@@ -130,9 +129,17 @@ public class Version implements Comparable<Version>
 			this.preRelease = false;
 		}
 
-		timestamp = getBuildParameter(this.optionalTags, "(t|ts|time(stamp)?)");
-		buildNumber = getBuildParameter(this.optionalTags, "(b|build(number)?)");
+		timestamp = getBuildParameter(this.tags, "(t|ts|time(stamp)?)");
+		buildNumber = getBuildParameter(this.tags, "(b|build(number)?)");
 		this.hashCode = Arrays.hashCode(this.version);
+	}
+
+	private static Matcher validateInput(final String version)
+	{
+		if(version == null) throw new InvalidVersionStringException("The version string must not be null!");
+		Matcher versionMatcher = VERSION_STING_FORMAT_PATTERN.matcher(version);
+		if(!versionMatcher.matches()) throw new InvalidVersionStringException();
+		return versionMatcher;
 	}
 
 	private static long getBuildParameter(@NotNull String[] tags, @NotNull String parameter)
@@ -171,7 +178,7 @@ public class Version implements Comparable<Version>
 	 */
 	public static boolean isValidVersionString(@NotNull String version)
 	{
-		return version.matches(VERSION_STING_FORMAT);
+		return VERSION_STING_FORMAT_PATTERN.matcher(version).matches();
 	}
 
 	/**
@@ -244,7 +251,7 @@ public class Version implements Comparable<Version>
 		return preRelease;
 	}
 
-	//region comparision functions
+	//region Comparision functions
 	/**
 	 * Checks if the version is newer than the given version.
 	 *
@@ -355,6 +362,13 @@ public class Version implements Comparable<Version>
 	 */
 	public static class InvalidVersionStringException extends IllegalArgumentException
 	{
+		private static final String DEFAULT_ERROR = "The version string must be in the format: " + VERSION_STING_FORMAT;
+
+		public InvalidVersionStringException()
+		{
+			this(DEFAULT_ERROR);
+		}
+
 		public InvalidVersionStringException(String string)
 		{
 			super(string);
