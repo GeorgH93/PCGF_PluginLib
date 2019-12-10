@@ -109,10 +109,11 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 		else if(MCVersion.is(MCVersion.MC_NMS_1_13_R2)) CURRENT_DATA_VERSION = 1631;
 		else if(MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_14_R1))
 		{
+			String getGameVersion = MCVersion.isOlderThan(MCVersion.MC_NMS_1_15_R1) ? "a" : "getGameVersion";
 			int version = -1;
 			try
 			{
-				Method methodSharedConstantsGetGameVersion = NmsReflector.INSTANCE.getNmsMethod("SharedConstants", "a");
+				Method methodSharedConstantsGetGameVersion = NmsReflector.INSTANCE.getNmsMethod("SharedConstants", getGameVersion);
 				Object gameVersion = methodSharedConstantsGetGameVersion.invoke(null);
 				Method methodGameVersionGetWorldVersion = OBCReflection.getMethod(OBCReflection.getClass("com.mojang.bridge.game.GameVersion"), "getWorldVersion");
 				version = (int) methodGameVersionGetWorldVersion.invoke(gameVersion);
@@ -179,8 +180,8 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 				int size = (int) METHOD_GET_INT.invoke(localNBTTagCompound, "size"), dataVersion = CURRENT_DATA_VERSION;
 				if((boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, "DataVersion", 3)) dataVersion = (int) METHOD_GET_INT.invoke(localNBTTagCompound, "DataVersion");
 				if(!(boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, "Inventory", 9)) convertOldFormatToNew(localNBTTagCompound, size);
-				if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) && dataVersion < CURRENT_DATA_VERSION) // MC 1.13 has moved the data-format update code out of the deserializer, so it needs to be done manually
-				{
+				if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) && dataVersion < CURRENT_DATA_VERSION)
+				{ // MC 1.13 has moved the data-format update code out of the deserializer, so it needs to be done manually
 					localNBTTagCompound = METHOD_DATA_FIXER_UPDATE.invoke(null, DATA_FIXER, ENUM_DATA_FIX_TYPE, localNBTTagCompound, dataVersion);
 				}
 				ItemStack[] its = new ItemStack[size];
@@ -277,6 +278,6 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 
 	public static boolean isMCVersionCompatible()
 	{
-		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_14_R1);
+		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_15_R1);
 	}
 }

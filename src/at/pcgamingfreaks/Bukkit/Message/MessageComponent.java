@@ -45,7 +45,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	//region Reflection Variables
 	private static final transient Class<?> CRAFT_STATISTIC = OBCReflection.getOBCClass("CraftStatistic");
 	@SuppressWarnings({ "ConstantConditions", "deprecation" })
-	private static final transient Method GET_NMS_ACHIEVEMENT =  (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? OBCReflection.getMethod(CRAFT_STATISTIC, "getNMSAchievement", Achievement.class) : null;
+	private static final transient Method GET_NMS_ACHIEVEMENT =  (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? OBCReflection.getMethod(CRAFT_STATISTIC, "getNMSAchievement", Reflection.getClass("org.bukkit.Achievement")) : null;
 	@SuppressWarnings("ConstantConditions")
 	private static final transient Method GET_NMS_STATISTIC = OBCReflection.getMethod(CRAFT_STATISTIC, "getNMSStatistic", Statistic.class);
 	private static final transient Method GET_MATERIAL_STATISTIC = OBCReflection.getMethod(CRAFT_STATISTIC, "getMaterialStatistic", Statistic.class, Material.class);
@@ -149,10 +149,11 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 * @param achievement The achievement to display.
 	 * @return This message component instance.
 	 */
-	public MessageComponent achievementTooltip(@SuppressWarnings("deprecation") Achievement achievement)
+	public MessageComponent achievementTooltip(Object achievement)
 	{
 		if(MCVersion.isOlderThan(MCVersion.MC_1_12))
 		{
+			assert achievement instanceof Achievement;
 			try
 			{
 				return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, getStatisticName(GET_NMS_ACHIEVEMENT.invoke(null, achievement)));
