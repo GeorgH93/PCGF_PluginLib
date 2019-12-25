@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -457,13 +457,27 @@ public final class UUIDConverter
 				{
 					try
 					{
-						if(connection != null && connection.getResponseCode() == 429)
+						if(connection != null)
 						{
-							System.out.println("Reached the request limit of the mojang api!\nConverting will be paused for 10 minutes and then continue!");
-							//TODO: better fail handling
-							Thread.sleep(MOJANG_QUERY_RETRY_TIME);
-							success = false;
-							continue;
+							if(connection.getResponseCode() == 429)
+							{
+								System.out.println("Reached the request limit of the mojang api!\nConverting will be paused for 10 minutes and then continue!");
+								//TODO: better fail handling
+								Thread.sleep(MOJANG_QUERY_RETRY_TIME);
+								success = false;
+								continue;
+							}
+							else
+							{
+								System.out.println("Mojang responded with status code: " + connection.getResponseCode() + " Message:");
+								InputStream errorStream = connection.getErrorStream();
+								int c = 0;
+								while ((c = errorStream.read()) != -1)
+								{
+									System.out.print((char)c);
+								}
+								System.out.println();
+							}
 						}
 						else
 						{
