@@ -34,6 +34,8 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Functions to get UUIDs to player names. This library doesn't cache the results! You will have to do this on your own!
@@ -41,6 +43,7 @@ import java.util.*;
  */
 public final class UUIDConverter
 {
+	private static final Pattern API_MAX_PROFILE_BATCH_SIZE_PATTERN = Pattern.compile("Not more that (?<batchSize>\\d+) profile name per call is allowed");
 	private static final String UUID_FORMAT_REGEX = "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})";
 	private static final String UUID_FORMAT_REPLACE_TO = "$1-$2-$3-$4-$5";
 	private static final long MOJANG_QUERY_RETRY_TIME;
@@ -378,7 +381,7 @@ public final class UUIDConverter
 
 	//region Multi querys
 	//TODO: JavaDoc Exception handling, more parameters, fallback
-	private static final int BATCH_SIZE = 100; // Limit from Mojang
+	private static int BATCH_SIZE = 100; // Limit from Mojang
 
 	public static Map<String, String> getUUIDsFromNames(@NotNull Collection<String> names, boolean onlineMode, boolean withSeparators)
 	{
@@ -471,12 +474,26 @@ public final class UUIDConverter
 							{
 								System.out.println("Mojang responded with status code: " + connection.getResponseCode() + " Message:");
 								InputStream errorStream = connection.getErrorStream();
-								int c = 0;
+								StringBuilder errorBuilder = new StringBuilder();
+								int c;
 								while ((c = errorStream.read()) != -1)
 								{
-									System.out.print((char)c);
+									errorBuilder.append((char) c);
 								}
-								System.out.println();
+								String errorMessage = errorBuilder.toString();
+								System.out.println(errorMessage);
+								Matcher matcher = API_MAX_PROFILE_BATCH_SIZE_PATTERN.matcher(errorMessage);
+								if(connection.getResponseCode() == 400 && matcher.matches())
+								{
+									BATCH_SIZE = Integer.parseInt(matcher.group("batchSize"));
+									System.out.println("Reducing batch size to " + BATCH_SIZE + " ...");
+									success = false;
+									continue;
+								}
+								else
+								{
+									e.printStackTrace();
+								}
 							}
 						}
 						else
@@ -485,6 +502,7 @@ public final class UUIDConverter
 						}
 					}
 					catch(InterruptedException | IOException ignore) {}
+					System.out.println("Could not convert all names to uuids because of an issue. Please check the log.");
 					return result;
 				}
 				batch.clear();
