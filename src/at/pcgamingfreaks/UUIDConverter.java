@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  */
 public final class UUIDConverter
 {
-	private static final Pattern API_MAX_PROFILE_BATCH_SIZE_PATTERN = Pattern.compile("Not more that (?<batchSize>\\d+) profile name per call is allowed");
+	private static final Pattern API_MAX_PROFILE_BATCH_SIZE_PATTERN = Pattern.compile(".*Not more that (?<batchSize>\\d+) profile name per call is allowed.*");
 	private static final String UUID_FORMAT_REGEX = "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})";
 	private static final String UUID_FORMAT_REPLACE_TO = "$1-$2-$3-$4-$5";
 	private static final long MOJANG_QUERY_RETRY_TIME;
@@ -485,9 +485,8 @@ public final class UUIDConverter
 								if(connection.getResponseCode() == 400 && matcher.matches())
 								{
 									BATCH_SIZE = Integer.parseInt(matcher.group("batchSize"));
-									System.out.println("Reducing batch size to " + BATCH_SIZE + " ...");
-									success = false;
-									continue;
+									System.out.println("Reducing batch size to " + BATCH_SIZE + " and try again ...");
+									return getUUIDsFromNamesAsUUIDs(names);
 								}
 								else
 								{

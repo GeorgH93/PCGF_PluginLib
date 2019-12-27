@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import sun.reflect.ReflectionFactory;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -196,6 +197,38 @@ public class UUIDConverterTest
 		namesUUIDs = UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
 		assertEquals("The user count of online mode users should match the given amount of users", testNames.size(), namesUUIDs.size());
 		assertEquals("All user UUIDs should match the given ones with separators", namesUUIDs, testNames);
+	}
+
+	@Test
+	@SuppressWarnings("SpellCheckingInspection")
+	public void testGetUUIDsWithCleanCache() throws IllegalAccessException, InvocationTargetException
+	{
+		Field cacheField = Reflection.getField(UUIDConverter.class, "UUID_CACHE");
+		UUIDCacheMap oldCache = new UUIDCacheMap();
+		oldCache.putAll((UUIDCacheMap) cacheField.get(null));
+		((UUIDCacheMap)cacheField.get(null)).clear();
+
+		final Map<String, String> testNamesSeparators = new TreeMap<>();
+		testNamesSeparators.put(TEST_USER_NAME, TEST_USER_UUID_SEPARATORS);
+		testNamesSeparators.put("Phei", "8abb0b91-429b-41e4-9be8-bd659923acd6");
+		testNamesSeparators.put("AFKMaster", "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc");
+		testNamesSeparators.put("CleoMalika", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
+		testNamesSeparators.put("Ghetto1996", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
+		testNamesSeparators.put("Watchdog", "4ec35d4f-609c-4245-8d53-f779c6160dd2");
+		testNamesSeparators.put("Artifexus", "27205e77-f8b4-4b31-b9a0-5bd97efc0560");
+		testNamesSeparators.put("RatzzFatzz", "7b5f80aa-093e-4057-aa28-3950f2f24d62");
+		testNamesSeparators.put("ArchonusIx", "341d63ce-39ba-4664-a02c-ee86375cf316");
+		testNamesSeparators.put("oOJoKeROo", "7a560f2e-374f-42a1-9d57-463b25db12a7");
+		testNamesSeparators.put("xPaddy93x", "9e25654d-266f-406a-8afe-598024af976f");
+		Map<String, String> namesUUIDs = UUIDConverter.getUUIDsFromNames(testNamesSeparators.keySet(), true, true);
+		assertEquals("The user count of online mode users should match the given amount of users", testNamesSeparators.size(), namesUUIDs.size());
+		for(Map.Entry<String, String> entry : testNamesSeparators.entrySet())
+		{
+			assertTrue("Expected profile " + entry.getKey() + " to exist.", namesUUIDs.containsKey(entry.getKey()));
+			assertEquals(entry.getValue(), namesUUIDs.get(entry.getKey()));
+		}
+
+		((UUIDCacheMap)cacheField.get(null)).putAll(oldCache); //Restore old cache
 	}
 
 	@Test
