@@ -76,54 +76,51 @@ public class ParticleSpawnerTest
 		ParticleSpawner effect = new ParticleSpawnerBukkit_1_7();
 		Method spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, MaterialData.class, double.class);
 		spawnParticle.invoke(effect, mockedLocation, Particle.ITEM_CRACK, new MaterialData(Material.ACACIA_DOOR), 100.0);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle.invoke(effect, mockedLocation, Particle.BLOCK_DUST, new MaterialData(Material.REDSTONE_COMPARATOR_ON), 300.0);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new MaterialData(Material.ACTIVATOR_RAIL), 200.0);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle.invoke(effect, mockedLocation, Particle.EXPLOSION, new MaterialData(Material.TNT), 10.0);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, double.class);
 		spawnParticle.invoke(effect, mockedLocation, Particle.SLIME, 10.0);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, ItemStack.class, double.class);
 		spawnParticle.invoke(effect, mockedLocation, Particle.ITEM_CRACK, new ItemStack(Material.ACTIVATOR_RAIL, 10), 10.0);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, Object.class, double.class, int.class, float.class, float.class, float.class, float.class);
 		spawnParticle.invoke(effect, mockedLocation, Particle.ITEM_CRACK, null, 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, null, 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new MaterialData(Material.TNT), 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new ItemStack(Material.TNT, 20), 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new TestBukkitPlayer(), 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 	}
 
 	@Test
-	@SuppressWarnings("SpellCheckingInspection")
 	public void testGetParticleSpawner() throws NoSuchFieldException, IllegalAccessException
 	{
 		TestObjects.setBukkitVersion("0_7_R1");
 		assertNull("The effect object should be null", ParticleSpawner.getParticleSpawner());
 		TestObjects.setBukkitVersion("1_7_R1");
-		//noinspection ConstantConditions
 		assertEquals("The effect class should be correct", ParticleSpawnerBukkit_1_7.class, ParticleSpawner.getParticleSpawner().getClass());
 		TestObjects.setBukkitVersion("1_9_R1");
-		//noinspection ConstantConditions
 		assertEquals("The effect class should be correct", ParticleSpawnerBukkit_1_8_to_1_12.class, ParticleSpawner.getParticleSpawner().getClass());
 	}
 }

@@ -66,33 +66,32 @@ public class ChatSenderTest
 	public void testSend() throws Exception
 	{
 		int sendPacketCalls = 0;
-		//noinspection SpellCheckingInspection
 		TestBukkitPlayer player = new TestBukkitPlayer();
 		List<Player> players = new ArrayList<>();
 		players.add(player);
 		players.add(player);
 		int playerCount = players.size();
 		ChatSender.send(player, new Message(""));
-		verifyStatic(times(++sendPacketCalls));
+		verifyStatic(Utils.class, times(++sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		ChatSender.send(players, new Message(""));
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		ChatSender chatSender = new ChatSender();
 		chatSender.doSend(player, "");
-		verifyStatic(times(++sendPacketCalls));
+		verifyStatic(Utils.class, times(++sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		chatSender.doSend(player, "", 21);
-		verifyStatic(times(++sendPacketCalls));
+		verifyStatic(Utils.class, times(++sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		chatSender.doSend(players, "");
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		chatSender.doSend(players, "", false);
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
@@ -102,10 +101,10 @@ public class ChatSenderTest
 		Method chatSerializerMethodA = (Method) chatSerializerMethodAField.get(null);
 		chatSerializerMethodAField.set(null, null);
 		ChatSender.send(player, "", (byte) 2);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		ChatSender.send(players, "", (byte) 7);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		chatSerializerMethodAField.set(null, chatSerializerMethodA);
 		modifiers.set(chatSerializerMethodAField, chatSerializerMethodAField.getModifiers() | Modifier.FINAL);
@@ -116,10 +115,10 @@ public class ChatSenderTest
 		Constructor<?> packetPlayOutChatConstructor = (Constructor<?>) packetPlayOutChatConstructorField.get(null);
 		packetPlayOutChatConstructorField.set(null, null);
 		ChatSender.send(player, "", (byte) 5);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		ChatSender.send(players, "", (byte) 8);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		packetPlayOutChatConstructorField.set(null, packetPlayOutChatConstructor);
 		modifiers.set(packetPlayOutChatConstructorField, packetPlayOutChatConstructorField.getModifiers() | Modifier.FINAL);
@@ -128,10 +127,10 @@ public class ChatSenderTest
 		mockStatic(BaseSender.class);
 		doThrow(new IllegalAccessException()).when(BaseSender.class, "finalizeJson", anyString());
 		ChatSender.send(player, "", (byte) 89);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		ChatSender.send(players, "", (byte) 12);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 	}
 
@@ -143,16 +142,16 @@ public class ChatSenderTest
 		int playerCount = Bukkit.getOnlinePlayers().size();
 		ChatSender.broadcast(new Message(""));
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		ChatSender chatSender = new ChatSender();
 		chatSender.doBroadcast("");
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 		chatSender.doBroadcast("", 34);
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), anyObject());
 	}
 }

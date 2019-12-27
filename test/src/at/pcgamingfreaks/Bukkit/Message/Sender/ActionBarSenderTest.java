@@ -72,26 +72,26 @@ public class ActionBarSenderTest
 		players.add(player);
 		int playerCount = players.size();
 		ActionBarSender.send(player, new Message(""));
-		verifyStatic(times(++sendPacketCalls));
+		verifyStatic(Utils.class, times(++sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		ActionBarSender.send(players, new Message(""));
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		ActionBarSender actionBarSender = new ActionBarSender();
 		actionBarSender.doSend(player, "");
-		verifyStatic(times(++sendPacketCalls));
+		verifyStatic(Utils.class, times(++sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		actionBarSender.doSend(player, "", false);
-		verifyStatic(times(++sendPacketCalls));
+		verifyStatic(Utils.class, times(++sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		actionBarSender.doSend(players, "");
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		actionBarSender.doSend(players, "", true);
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 	}
 
@@ -103,16 +103,16 @@ public class ActionBarSenderTest
 		int playerCount = Bukkit.getOnlinePlayers().size();
 		ActionBarSender.broadcast(new Message(""));
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		ActionBarSender actionBarSender = new ActionBarSender();
 		actionBarSender.doBroadcast("");
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		actionBarSender.doBroadcast("", 34);
 		sendPacketCalls += playerCount;
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 	}
 }

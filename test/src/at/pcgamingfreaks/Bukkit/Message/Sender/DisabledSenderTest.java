@@ -71,16 +71,16 @@ public class DisabledSenderTest
 		players.add(player);
 		DisabledSender disabledSender = new DisabledSender();
 		disabledSender.doSend(player, "");
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		disabledSender.doSend(player, "", false);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		disabledSender.doSend(players, "");
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		disabledSender.doSend(players, "", true);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 	}
 
@@ -91,10 +91,10 @@ public class DisabledSenderTest
 		int sendPacketCalls = 0;
 		DisabledSender disabledSender = new DisabledSender();
 		disabledSender.doBroadcast("");
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		disabledSender.doBroadcast("", 34);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 	}
 }

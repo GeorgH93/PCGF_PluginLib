@@ -50,7 +50,6 @@ import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class, Utils.class })
-@SuppressWarnings("SpellCheckingInspection")
 public class ParticleSpawnerBukkit_1_7Test
 {
 	@BeforeClass
@@ -82,17 +81,17 @@ public class ParticleSpawnerBukkit_1_7Test
 		doReturn(players).when(mockedWorld).getPlayers();
 		ParticleSpawnerBukkit_1_7 effect = new ParticleSpawnerBukkit_1_7();
 		effect.spawnParticle(mockedLocation, Particle.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
-		verifyStatic(times(++sendPacketCalls));
+		verifyStatic(Utils.class, times(++sendPacketCalls));
 		Utils.sendPacket(any(TestBukkitPlayer.class), anyObject());
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
 		Field packetConstructorField = ParticleSpawnerBukkit_1_7.class.getDeclaredField("PACKET_CONSTRUCTOR");
 		packetConstructorField.setAccessible(true);
 		modifiers.set(packetConstructorField, packetConstructorField.getModifiers() & ~Modifier.FINAL);
-		Constructor packetConstructor = (Constructor) packetConstructorField.get(null);
+		Constructor<?> packetConstructor = (Constructor<?>) packetConstructorField.get(null);
 		packetConstructorField.set(null, null);
 		effect.spawnParticle(mockedLocation, Particle.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(TestBukkitPlayer.class), anyObject());
 		packetConstructorField.set(null, packetConstructor);
 		modifiers.set(packetConstructorField, packetConstructorField.getModifiers() | Modifier.FINAL);

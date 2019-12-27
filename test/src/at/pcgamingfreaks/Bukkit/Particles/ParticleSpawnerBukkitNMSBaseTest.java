@@ -49,7 +49,6 @@ import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class, Utils.class })
-@SuppressWarnings("SpellCheckingInspection")
 public class ParticleSpawnerBukkitNMSBaseTest
 {
 	@BeforeClass
@@ -73,7 +72,7 @@ public class ParticleSpawnerBukkitNMSBaseTest
 		Method spawnParticle = ParticleSpawnerBukkitNMSBase.class.getDeclaredMethod("spawnParticle", Location.class, double.class, Object.class);
 		spawnParticle.setAccessible(true);
 		spawnParticle.invoke(effect, null, 0.0, null);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		List<Entity> players = new ArrayList<>();
 		Location mockedLocation = mock(Location.class);
@@ -89,11 +88,11 @@ public class ParticleSpawnerBukkitNMSBaseTest
 		doReturn(mockedLocation2).when(mockedPlayer).getLocation();
 		players.add(mockedPlayer);
 		spawnParticle.invoke(effect, mockedLocation, 10.0, Particle.CLOUD);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		doReturn(mockedLocation).when(mockedPlayer).getLocation();
 		spawnParticle.invoke(effect, mockedLocation, -10.0, Particle.CLOUD);
-		verifyStatic(times(0));
+		verifyStatic(Utils.class, times(0));
 		Utils.sendPacket(any(Player.class), anyObject());
 		spawnParticle.setAccessible(false);
 	}

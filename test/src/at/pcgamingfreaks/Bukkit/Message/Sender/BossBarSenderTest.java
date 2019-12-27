@@ -65,26 +65,25 @@ public class BossBarSenderTest
 	public void testSend() throws InvocationTargetException, IllegalAccessException
 	{
 		int sendPacketCalls = 0;
-		//noinspection SpellCheckingInspection
 		TestBukkitPlayer player = new TestBukkitPlayer();
 		List<Player> players = new ArrayList<>();
 		players.add(player);
 		players.add(player);
 		BossBarSender.send(player, new Message(""));
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		BossBarSender bossBarSender = new BossBarSender();
 		bossBarSender.doSend(player, "");
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		bossBarSender.doSend(player, "", false);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		bossBarSender.doSend(players, "");
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		bossBarSender.doSend(players, "", true);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 	}
 
@@ -94,14 +93,14 @@ public class BossBarSenderTest
 		TestObjects.initBukkitOnlinePlayers();
 		int sendPacketCalls = 0;
 		BossBarSender.broadcast(new Message(""));
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		BossBarSender bossBarSender = new BossBarSender();
 		bossBarSender.doBroadcast("");
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 		bossBarSender.doBroadcast("", 34);
-		verifyStatic(times(sendPacketCalls));
+		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), Matchers.anyObject());
 	}
 }
