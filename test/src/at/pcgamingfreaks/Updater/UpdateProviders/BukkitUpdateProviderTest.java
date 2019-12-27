@@ -21,14 +21,11 @@ import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 
-import com.google.common.base.Supplier;
 import com.google.gson.Gson;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -39,6 +36,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,7 +50,6 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ BukkitUpdateProvider.class, Gson.class, ReleaseType.class, URL.class })
-@SuppressWarnings("SpellCheckingInspection")
 public class BukkitUpdateProviderTest
 {
 	@BeforeClass
@@ -68,35 +65,20 @@ public class BukkitUpdateProviderTest
 		int currentSevere = 0;
 		final int[] loggerCalls = new int[] { 0, 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock)
-			{
-				loggerCalls[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			loggerCalls[0]++;
+			return null;
 		}).when(mockedLogger).warning(anyString());
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock)
-			{
-				loggerCalls[1]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			loggerCalls[1]++;
+			return null;
 		}).when(mockedLogger).severe(anyString());
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock)
-			{
-				loggerCalls[1]++;
-				return null;
-			}
-		}).when(mockedLogger).log(any(Level.class), String.valueOf(any(Supplier.class)), any(Throwable.class));
-		Class versionClass = BukkitUpdateProvider.class.getDeclaredClasses()[0];
-		Constructor versionConstructor = versionClass.getDeclaredConstructors()[0];
+		doAnswer(invocationOnMock -> {
+			loggerCalls[1]++;
+			return null;
+		}).when(mockedLogger).log(any(Level.class), any(), any(Throwable.class));
+		Class<?> versionClass = BukkitUpdateProvider.class.getDeclaredClasses()[0];
+		Constructor<?> versionConstructor = versionClass.getDeclaredConstructors()[0];
 		versionConstructor.setAccessible(true);
 		BukkitUpdateProvider bukkitUpdateProvider = new BukkitUpdateProvider(-3, mockedLogger);
 		Field url = TestUtils.setAccessible(BukkitUpdateProvider.class, bukkitUpdateProvider, "url", null);
@@ -126,14 +108,11 @@ public class BukkitUpdateProviderTest
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
-		Class devBukkitVersionClass = BukkitUpdateProvider.class.getDeclaredClasses()[0];
+		Class<?> devBukkitVersionClass = BukkitUpdateProvider.class.getDeclaredClasses()[0];
 		Object devBukkitVersions = Array.newInstance(devBukkitVersionClass, 3);
 		Object devBukkitVersion = devBukkitVersionClass.newInstance();
 		Field latestNameField = TestUtils.setAccessible(devBukkitVersionClass, devBukkitVersion, "name", "INVALID-VERSION-STRING");
-		for(int i = 0; i < ((Object[]) devBukkitVersions).length; i++)
-		{
-			((Object[]) devBukkitVersions)[i] = devBukkitVersion;
-		}
+		Arrays.fill((Object[]) devBukkitVersions, devBukkitVersion);
 		PowerMockito.doReturn(devBukkitVersions).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);

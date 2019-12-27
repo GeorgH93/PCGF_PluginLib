@@ -19,7 +19,6 @@ package at.pcgamingfreaks;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -27,11 +26,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.doReturn;
-import static org.powermock.api.mockito.PowerMockito.mock;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Matcher.class, Pattern.class })
@@ -638,17 +632,8 @@ public class VersionTest
 	}
 
 	@Test
-	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public void testPreRelease()
 	{
-		Matcher mockedMatcher = mock(Matcher.class);
-		doReturn(true).when(mockedMatcher).matches();
-		doReturn("Hallo Welt!").when(mockedMatcher).group(anyString());
-		Pattern mockedPattern = mock(Pattern.class);
-		doReturn(mockedMatcher).when(mockedPattern).matcher(anyString());
-		PowerMockito.mockStatic(Pattern.class);
-		//noinspection MagicConstant
-		when(Pattern.compile(anyString(), anyInt())).thenReturn(mockedPattern);
 		Version version = new Version("1.11.2-snapshot");
 		assertTrue("The version should be a pre release version", version.isPreRelease());
 	}
