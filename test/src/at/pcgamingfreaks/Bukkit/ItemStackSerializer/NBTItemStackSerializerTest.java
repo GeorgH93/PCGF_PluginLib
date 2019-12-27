@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+@SuppressWarnings("deprecation")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class })
 public class NBTItemStackSerializerTest
@@ -82,7 +83,6 @@ public class NBTItemStackSerializerTest
 		field = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "METHOD_HAS_KEY_OF_TYPE", null);
 		assertNull("Deserialized data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
 		TestUtils.setUnaccessible(field, null, true);
-		//noinspection SpellCheckingInspection
 		field = TestUtils.setAccessible(NBTItemStackSerializer.class, null, "METHOD_AS_BUKKIT_COPY", null);
 		assertNotNull("Deserialized data should be null", deserializer.deserialize(new byte[] { 1, 2, 3 }));
 		TestUtils.setUnaccessible(field, null, true);

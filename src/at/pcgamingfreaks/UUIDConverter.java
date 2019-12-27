@@ -472,7 +472,6 @@ public final class UUIDConverter
 							}
 							else
 							{
-								System.out.println("Mojang responded with status code: " + connection.getResponseCode() + " Message:");
 								InputStream errorStream = connection.getErrorStream();
 								StringBuilder errorBuilder = new StringBuilder();
 								int c;
@@ -481,7 +480,7 @@ public final class UUIDConverter
 									errorBuilder.append((char) c);
 								}
 								String errorMessage = errorBuilder.toString();
-								System.out.println(errorMessage);
+								System.out.println("Mojang responded with status code: " + connection.getResponseCode() + " Message: " + errorMessage);
 								Matcher matcher = API_MAX_PROFILE_BATCH_SIZE_PATTERN.matcher(errorMessage);
 								if(connection.getResponseCode() == 400 && matcher.matches())
 								{

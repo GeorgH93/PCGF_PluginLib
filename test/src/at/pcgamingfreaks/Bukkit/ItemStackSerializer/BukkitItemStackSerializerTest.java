@@ -44,7 +44,6 @@ import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ BukkitItemStackSerializer.class, BukkitObjectInputStream.class, BukkitObjectOutputStream.class })
-@SuppressWarnings("SpellCheckingInspection")
 public class BukkitItemStackSerializerTest
 {
 	@BeforeClass
@@ -78,7 +77,7 @@ public class BukkitItemStackSerializerTest
 		doNothing().when(mockedOutputStream).flush();
 		whenNew(BukkitObjectOutputStream.class).withArguments(any(ByteArrayOutputStream.class)).thenReturn(mockedOutputStream);
 		assertNotNull("Serialized data should not be null", serializer.serialize(new ItemStack[] { new ItemStack(Material.APPLE, 10) }));
-		doThrow(new IOException()).when(mockedOutputStream).writeObject(any(at.pcgamingfreaks.TestClasses.NMS.ItemStack[].class));
+		doThrow(new IOException()).when(mockedOutputStream).writeObject(any(ItemStack[].class));
 		assertNull("Serialized data should be null when an error occurs", serializer.serialize(new ItemStack[] { new ItemStack(Material.APPLE, 10) }));
 	}
 

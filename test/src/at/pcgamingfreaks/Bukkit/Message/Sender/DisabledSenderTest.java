@@ -64,7 +64,6 @@ public class DisabledSenderTest
 	public void testSend() throws InvocationTargetException, IllegalAccessException
 	{
 		int sendPacketCalls = 0;
-		//noinspection SpellCheckingInspection
 		TestBukkitPlayer player = new TestBukkitPlayer();
 		List<Player> players = new ArrayList<>();
 		players.add(player);

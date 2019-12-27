@@ -50,6 +50,7 @@ import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.*;
 
+@SuppressWarnings("deprecation")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class, Utils.class })
 public class ParticleSpawnerTest
@@ -69,7 +70,7 @@ public class ParticleSpawnerTest
 	}
 
 	@Test
-	public void testSpawnParticle() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, NoSuchFieldException
+	public void testSpawnParticle() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException
 	{
 		World mockedWorld = mock(World.class);
 		Location mockedLocation = spy(new Location(mockedWorld, 10.0, 20.0, 30.0));
