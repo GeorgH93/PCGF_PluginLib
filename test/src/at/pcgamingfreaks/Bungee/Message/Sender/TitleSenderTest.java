@@ -21,7 +21,7 @@ import at.pcgamingfreaks.Bungee.Message.Message;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.protocol.packet.Chat;
+import net.md_5.bungee.protocol.packet.Title;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,34 +52,35 @@ public class TitleSenderTest
 		TitleSender titleSender = new TitleSender();
 		titleSender.doSend(TestObjects.getPlayer(), "");
 		sendCalls += 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		titleSender.doSend(TestObjects.getPlayer(), "", 1);
 		sendCalls += 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		titleSender.doSend(TestObjects.getPlayer(), "", new TitleMetadata());
 		sendCalls += 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		TitleSender.send(TestObjects.getPlayer(), new Message(""));
 		sendCalls += 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		TitleSender.send(TestObjects.getPlayer(), new Message(""), new TitleMetadata(10, 10, 20));
 		sendCalls += 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		titleSender.doSend(players, "");
 		sendCalls += playerCount * 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		titleSender.doSend(players, "", 1);
 		sendCalls += playerCount * 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		titleSender.doSend(players, "", new TitleMetadata());
 		sendCalls += playerCount * 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		TitleSender.send(players, new Message(""));
 		sendCalls += playerCount * 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
+		//noinspection deprecation
 		TitleSender.send(players, new Message(""), new TitleMetadata(true));
 		sendCalls += playerCount * 3;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 	}
 
 	@Test
@@ -91,18 +92,18 @@ public class TitleSenderTest
 		TitleSender titleSender = new TitleSender();
 		titleSender.doBroadcast("");
 		sendCalls += playerCount * 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		titleSender.doBroadcast("", 1);
 		sendCalls += playerCount * 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		titleSender.doBroadcast("", new TitleMetadata());
 		sendCalls += playerCount * 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		TitleSender.broadcast(new Message(""));
 		sendCalls += playerCount * 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 		TitleSender.broadcast(new Message(""), TitleMetadata.fromJson("[{\"fadeIn\": 10, \"fadeOut\": 20, \"stay\": 30, \"subtitle\": false}]"));
 		sendCalls += playerCount * 2;
-		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Chat.class));
+		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 	}
 }

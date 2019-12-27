@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Version;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
@@ -32,7 +33,7 @@ public class BaseOnlineProviderTest
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public void testGetLatestReleaseType() throws NotSuccessfullyQueriedException
 	{
-		BaseOnlineProvider provider = mock(JenkinsUpdateProvider.class);
+		BaseOnlineProvider provider = mock(BaseOnlineProvider.class, Mockito.CALLS_REAL_METHODS);
 		Version mockedVersion = mock(Version.class);
 		doReturn(true).when(mockedVersion).isPreRelease();
 		doReturn("Minecraft-1.11.2-invalid").when(mockedVersion).toString();
