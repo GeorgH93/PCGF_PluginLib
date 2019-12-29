@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 public class Configuration extends YamlFileManager implements LanguageConfiguration
 {
 	protected static final String DEFAULT_CONFIG_FILE_NAME = "config" + YAML_FILE_EXT;
+	private final Object plugin;
 	protected String languageKey = "Language", languageUpdateKey = "LanguageUpdateMode"; // Allow to change the keys for the language and the language update mode setting
 
 	//region constructors
@@ -40,9 +41,9 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param baseDir The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
 	 * @param version current version of the config
 	 */
-	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version)
+	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version)
 	{
-		this(logger, baseDir, version, -1, DEFAULT_CONFIG_FILE_NAME);
+		this(plugin, logger, baseDir, version, -1, DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -51,9 +52,9 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param version The current version of the config
 	 * @param path    The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path)
+	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path)
 	{
-		this(logger, baseDir, version, -1, path);
+		this(plugin, logger, baseDir, version, -1, path);
 	}
 
 	/**
@@ -62,9 +63,9 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param version          The current version of the config
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
-	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold)
+	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold)
 	{
-		this(logger, baseDir, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
+		this(plugin, logger, baseDir, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -74,9 +75,9 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path)
+	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path)
 	{
-		this(logger, baseDir, version, upgradeThreshold, path, "");
+		this(plugin, logger, baseDir, version, upgradeThreshold, path, "");
 	}
 
 	/**
@@ -87,15 +88,16 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 * @param inJarPrefix      The prefix for the file in the jar (e.g. bungee_)
 	 */
-	public Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix)
+	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix)
 	{
-		this(logger, baseDir, version, upgradeThreshold, path, inJarPrefix, null);
+		this(plugin, logger, baseDir, version, upgradeThreshold, path, inJarPrefix, null);
 	}
 	//endregion
 
-	private Configuration(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix, @Nullable YAML oldConfig)
+	private Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix, @Nullable YAML oldConfig)
 	{
 		super(logger, baseDir, version, upgradeThreshold, null, path, inJarPrefix, oldConfig);
+		this.plugin = plugin;
 		if(oldConfig == null)
 		{
 			load();
@@ -316,5 +318,11 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 		{
 			super("The config file has not been loaded successful");
 		}
+	}
+
+	@Override
+	protected Class<?> JarClass()
+	{
+		return plugin.getClass();
 	}
 }

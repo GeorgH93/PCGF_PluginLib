@@ -116,4 +116,10 @@ public class Language extends at.pcgamingfreaks.Language
 		//noinspection ConstantConditions
 		return super.getMessage(escapeStringFormatCharacters, path);
 	}
+
+	@Override
+	protected Class<?> JarClass()
+	{
+		return plugin.getClass();
+	}
 }

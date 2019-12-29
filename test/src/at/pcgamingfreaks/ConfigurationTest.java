@@ -99,15 +99,15 @@ public class ConfigurationTest
 	@Test
 	public void testExtendedConfiguration() throws YamlKeyNotFoundException
 	{
-		Configuration oldConfiguration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1, "config.yml");
-		Configuration upgradeThresholdConfig = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1, 1);
+		Configuration oldConfiguration = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1, "config.yml");
+		Configuration upgradeThresholdConfig = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1, 1);
 		assertEquals("The configuration with the current version as upgrade threshold should return the same configuration", oldConfiguration.getConfig().getString("Version"), upgradeThresholdConfig.getConfig().getString("Version"));
 	}
 
 	@Test
 	public void testSaveConfig() throws FileNotFoundException, YamlKeyNotFoundException
 	{
-		Configuration configuration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1);
+		Configuration configuration = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1);
 		configuration.set("NewlySavedValue", true);
 		configuration.save();
 		configuration.reload();
@@ -117,7 +117,7 @@ public class ConfigurationTest
 	@Test
 	public void testUpdate()
 	{
-		Configuration configuration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1);
+		Configuration configuration = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1);
 		int currentLoggedInfo = loggedInfos;
 		configuration.doUpdate();
 		assertEquals("The log count should be one more than before because the update function has been called", currentLoggedInfo + 1, loggedInfos);
@@ -138,7 +138,7 @@ public class ConfigurationTest
 			count[1]++;
 			return null;
 		}).when(mockedLogger).info(anyString());
-		Configuration configuration = spy(new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1));
+		Configuration configuration = spy(new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1));
 		doNothing().when(configuration).extractFile();
 		doNothing().when(configuration).save();
 		doReturn(false).when(configuration).newConfigCreated();
@@ -181,7 +181,7 @@ public class ConfigurationTest
 	@Test
 	public void testGetter() throws IllegalAccessException, NoSuchFieldException, YamlKeyNotFoundException
 	{
-		Configuration configuration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1);
+		Configuration configuration = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1);
 		YAML mockedYAML = mock(YAML.class);
 		Field yamlField = TestUtils.setAccessible(YamlFileManager.class, configuration, "yaml", mockedYAML);
 		doReturn(123).when(mockedYAML).getInt(anyString());
@@ -210,7 +210,7 @@ public class ConfigurationTest
 	@Test
 	public void testSetter() throws NoSuchFieldException, IllegalAccessException
 	{
-		Configuration configuration = new Configuration(mockedLogger, new File(System.getProperty("user.dir")), 1);
+		Configuration configuration = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1);
 		YAML mockedYAML = mock(YAML.class);
 		final int[] count = { 0 };
 		doAnswer(invocationOnMock -> {

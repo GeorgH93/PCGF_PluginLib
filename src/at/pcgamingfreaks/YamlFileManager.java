@@ -297,8 +297,13 @@ public class YamlFileManager
 
 	protected void extractFile()
 	{
-		Utils.extractFile(getClass(), logger, inJarPrefix + file, yamlFile);
+		Utils.extractFile(JarClass(), logger, inJarPrefix + file, yamlFile);
 		extracted = true;
+	}
+
+	protected Class<?> JarClass()
+	{
+		return getClass();
 	}
 	//endregion
 

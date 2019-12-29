@@ -76,7 +76,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 */
 	public Configuration(@NotNull Plugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix)
 	{
-		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, inJarPrefix);
+		super(plugin, plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, inJarPrefix);
 		this.plugin = plugin;
 	}
 }
