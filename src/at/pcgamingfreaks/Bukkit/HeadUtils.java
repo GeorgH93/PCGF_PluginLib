@@ -28,7 +28,7 @@ import java.util.UUID;
 
 public class HeadUtils
 {
-	private static final Material HEAD_MATERIAL = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Material.valueOf("PLAYER_HEAD") : Material.valueOf("SKULL");
+	public static final Material HEAD_MATERIAL = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Material.valueOf("PLAYER_HEAD") : Material.valueOf("SKULL");
 
 	public static ItemStack createHeadItemStack()
 	{
