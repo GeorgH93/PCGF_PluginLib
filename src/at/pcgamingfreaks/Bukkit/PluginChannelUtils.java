@@ -84,7 +84,7 @@ public class PluginChannelUtils
 
 	public static void sendPluginMessageUnchecked(Plugin plugin, Player player, String channel, byte[] message)
 	{
-		if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13))
+		if(CONSTRUCTOR_PACKED_DATA_SERIALIZER != null)
 			try
 			{
 				Object packedMsg = CONSTRUCTOR_PACKED_DATA_SERIALIZER.newInstance(METHOD_UNPOOLED_WRAPPED_BUFFER.invoke(null, message));
