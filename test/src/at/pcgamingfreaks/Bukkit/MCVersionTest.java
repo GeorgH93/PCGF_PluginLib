@@ -127,4 +127,15 @@ public class MCVersionTest
 		assertTrue(MCVersion.MC_1_8.areUUIDsSupported());
 		assertTrue(MCVersion.isUUIDsSupportAvailable());
 	}
+
+	@Test
+	public void testIsDualWielding()
+	{
+		assertFalse(MCVersion.isDualWieldingMC());
+		for(MCVersion version : MCVersion.values())
+		{
+			boolean dualWielding = version.newerOrEqualThan(MCVersion.MC_1_9);
+			assertEquals("MC version " + version.toString() + " should " + (dualWielding ? "" : "not ") + "be dual wielding!", dualWielding, version.isDualWielding());
+		}
+	}
 }

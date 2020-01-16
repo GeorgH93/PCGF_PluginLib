@@ -92,8 +92,8 @@ public enum MCVersion
 	MC_1_15(91, 573, "1_15"),
 	MC_1_15_1(91, 575, "1_15", MC_1_15),
 	MC_NMS_1_15_R1(91, 575, "1_15", MC_1_15),
-	MC_1_16(101, -1, "1_16"),
-	MC_NMS_1_16_R1(101, -1, "1_16", MC_1_16);
+	MC_1_16(101, Integer.MAX_VALUE, "1_16"),
+	MC_NMS_1_16_R1(101, Integer.MAX_VALUE, "1_16", MC_1_16);
 
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new ConcurrentHashMap<>();
 	private static final Map<Integer, MCVersion> PROTOCOL_VERSION_MAP = new ConcurrentHashMap<>();
@@ -133,6 +133,7 @@ public enum MCVersion
 	private final String identifier;
 	private final MCVersion mainVersion;
 	private final boolean supportsUUIDs;
+	@Getter private final boolean dualWielding;
 
 	MCVersion(int versionID, int protocolVersion, String mainVersionString)
 	{
@@ -146,6 +147,7 @@ public enum MCVersion
 		this.identifier = mainVersionString + "_R" + versionID % 10;
 		this.mainVersion = this;
 		this.supportsUUIDs = supportsUUIDs;
+		dualWielding = protocolVersion >= 107;
 	}
 
 	MCVersion(int versionID, int protocolVersion, String mainVersionString, MCVersion mainVersion)
@@ -160,6 +162,7 @@ public enum MCVersion
 		this.identifier = mainVersionString + "_R" + versionID % 10;
 		this.mainVersion = mainVersion;
 		this.supportsUUIDs = supportsUUIDs;
+		dualWielding = protocolVersion >= 107;
 	}
 
 	public MCVersion getMajorMinecraftVersion()
@@ -249,6 +252,8 @@ public enum MCVersion
 	}
 
 	public static boolean isUUIDsSupportAvailable() { return CURRENT_VERSION.areUUIDsSupported(); }
+
+	public static boolean isDualWieldingMC() { return CURRENT_VERSION.isDualWielding(); }
 
 	public static @NotNull MCVersion getFromServerVersion(final @NotNull String serverVersion)
 	{
