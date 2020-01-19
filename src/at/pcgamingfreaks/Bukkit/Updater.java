@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2018 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -31,15 +31,53 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 	private final JavaPlugin plugin;
 	private Thread thread;
 
+	/**
+	 * @param plugin The plugin for which the updater should be initialized.
+	 * @param file The jar file of the plugin.
+	 * @param announceDownloadProgress If set to true the download progress will be logged in the console.
+	 * @param updateProvider The update provider that should be used.
+	 * @deprecated There now is a version that no longer needs the file parameter.
+	 */
+	@Deprecated
 	public Updater(JavaPlugin plugin, File file, boolean announceDownloadProgress, UpdateProvider updateProvider)
 	{
 		this(plugin, file, announceDownloadProgress, false, updateProvider);
 	}
 
+	/**
+	 * @param plugin The plugin for which the updater should be initialized.
+	 * @param file The jar file of the plugin.
+	 * @param announceDownloadProgress If set to true the download progress will be logged in the console.
+	 * @param downloadDependencies If set to true dependencies will be downloaded (if provided from the update provider).
+	 * @param updateProvider The update provider that should be used.
+	 * @deprecated There now is a version that no longer needs the file parameter.
+	 */
+	@Deprecated
 	public Updater(JavaPlugin plugin, File file, boolean announceDownloadProgress, boolean downloadDependencies, UpdateProvider updateProvider)
 	{
 		super(plugin.getDataFolder().getParentFile(), Bukkit.getUpdateFolderFile(), announceDownloadProgress, downloadDependencies, plugin.getLogger(), updateProvider, plugin.getDescription().getVersion(), file.getName());
 		this.plugin = plugin;
+	}
+
+	/**
+	 * @param plugin The plugin for which the updater should be initialized.
+	 * @param announceDownloadProgress If set to true the download progress will be logged in the console.
+	 * @param updateProvider The update provider that should be used.
+	 */
+	public Updater(JavaPlugin plugin, boolean announceDownloadProgress, UpdateProvider updateProvider)
+	{
+		this(plugin, announceDownloadProgress, false, updateProvider);
+	}
+
+	/**
+	 * @param plugin The plugin for which the updater should be initialized.
+	 * @param announceDownloadProgress If set to true the download progress will be logged in the console.
+	 * @param downloadDependencies If set to true dependencies will be downloaded (if provided from the update provider).
+	 * @param updateProvider The update provider that should be used.
+	 */
+	public Updater(JavaPlugin plugin, boolean announceDownloadProgress, boolean downloadDependencies, UpdateProvider updateProvider)
+	{
+		this(plugin, Utils.getPluginJarFile(plugin), announceDownloadProgress, downloadDependencies, updateProvider);
 	}
 
 	@Override

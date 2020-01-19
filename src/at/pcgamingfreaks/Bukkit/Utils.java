@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.ConsoleColor;
+import at.pcgamingfreaks.Reflection;
 
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -26,8 +27,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,6 +45,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NmsReflector.INSTANCE.getNmsClass("NBTTagCompound");
 	private static final Method AS_NMS_COPY_METHOD = NMSReflection.getOBCMethod("inventory.CraftItemStack", "asNMSCopy", ItemStack.class);
 	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NmsReflector.INSTANCE.getNmsMethod("ItemStack", "save", NBT_TAG_COMPOUND_CLASS);
+	private static final Method METHOD_JAVA_PLUGIN_GET_FILE = Reflection.getMethod(JavaPlugin.class, "getFile");
 	//region Reflection constants for the send packet method
 	private static final Class<?> ENTITY_PLAYER = NmsReflector.INSTANCE.getNmsClass("EntityPlayer");
 	private static final Class<?> PACKET = NmsReflector.INSTANCE.getNmsClass("Packet");
@@ -312,5 +316,25 @@ public class Utils extends at.pcgamingfreaks.Utils
 			}
 		}
 		if(clearInventory) inventory.clear();
+	}
+
+	/**
+	 * Gets the jar file of a Bukkit JavaPlugin.
+	 *
+	 * @param plugin The plugin to get the jar file of.
+	 * @return The jar file of the given plugin.
+	 * @throws RuntimeException If there was a problem obtaining the plugin.
+	 */
+	public static File getPluginJarFile(JavaPlugin plugin) throws RuntimeException
+	{
+		try
+		{
+			//noinspection ConstantConditions
+			return (File) METHOD_JAVA_PLUGIN_GET_FILE.invoke(plugin);
+		}
+		catch(Exception e)
+		{
+			throw new RuntimeException("Failed to retrieve jar file for plugin " + plugin.getName(), e);
+		}
 	}
 }
