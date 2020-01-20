@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 
 		if(this.config.getBool("Misc.AutoUpdate", true))
 		{
-			Updater updater = new Updater(this, this.getFile(), true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
+			Updater updater = new Updater(this, true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
 			updater.update();
 		}
 
@@ -111,7 +111,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 
 	public @NotNull Updater update(@Nullable at.pcgamingfreaks.Updater.Updater.UpdaterResponse responseCallback)
 	{
-		Updater updater = new Updater(this, this.getFile(), true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
+		Updater updater = new Updater(this, true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
 		updater.update(responseCallback);
 		return updater;
 	}

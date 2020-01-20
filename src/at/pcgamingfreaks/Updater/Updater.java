@@ -309,7 +309,7 @@ public abstract class Updater
 	 *
 	 * @return The latest remote version of the last query. Null if there wasn't a successful query before.
 	 */
-	protected Version getRemoteVersion()
+	protected @Nullable Version getRemoteVersion()
 	{
 		try
 		{
@@ -324,7 +324,16 @@ public abstract class Updater
 		update(null);
 	}
 
-	public void update(@Nullable final UpdaterResponse response)
+	/**
+	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
+	 */
+	@Deprecated
+	public void update(final @Nullable UpdaterResponse response)
+	{
+		update((UpdateResponseCallback) response);
+	}
+
+	public void update(final @Nullable UpdateResponseCallback response)
 	{
 		if(result == UpdateResult.DISABLED) return;
 		runAsync(() -> {
@@ -363,7 +372,16 @@ public abstract class Updater
 		});
 	}
 
-	public void checkForUpdate(final UpdaterResponse response)
+	/**
+	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
+	 */
+	@Deprecated
+	public void checkForUpdate(final @Nullable UpdaterResponse response)
+	{
+		checkForUpdate((UpdateResponseCallback) response);
+	}
+
+	public void checkForUpdate(final @Nullable UpdateResponseCallback response)
 	{
 		if(result == UpdateResult.DISABLED) return;
 		runAsync(() -> {
@@ -372,11 +390,11 @@ public abstract class Updater
 			{
 				result = versionCheck(getRemoteVersion()) ? UpdateResult.UPDATE_AVAILABLE : UpdateResult.NO_UPDATE;
 			}
-			runSync(() -> response.onDone(result));
+			if(response != null) runSync(() -> response.onDone(result));
 		});
 	}
 
-	public void update(final @NotNull UpdateMode updateMode, final @Nullable UpdaterResponse response)
+	public void update(final @NotNull UpdateMode updateMode, final @Nullable UpdateResponseCallback response)
 	{
 		if(updateMode == UpdateMode.UPDATE)
 			update(response);
@@ -385,8 +403,9 @@ public abstract class Updater
 
 	}
 
-	public interface UpdaterResponse
-	{
-		void onDone(UpdateResult result);
-	}
+	/**
+	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
+	 */
+	@Deprecated
+	public interface UpdaterResponse extends UpdateResponseCallback {}
 }
