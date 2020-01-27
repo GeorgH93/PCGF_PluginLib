@@ -27,9 +27,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class })
@@ -137,5 +135,36 @@ public class MCVersionTest
 			boolean dualWielding = version.newerOrEqualThan(MCVersion.MC_1_9);
 			assertEquals("MC version " + version.toString() + " should " + (dualWielding ? "" : "not ") + "be dual wielding!", dualWielding, version.isDualWielding());
 		}
+	}
+
+	@Test
+	public void testProtocolVersion()
+	{
+		assertEquals(3, MCVersion.MC_1_7.getProtocolVersion());
+		assertEquals(3, MCVersion.MC_1_7_1.getProtocolVersion());
+		assertEquals(4, MCVersion.MC_1_7_2.getProtocolVersion());
+		assertEquals(4, MCVersion.MC_1_7_3.getProtocolVersion());
+		assertEquals(4, MCVersion.MC_1_7_4.getProtocolVersion());
+		assertEquals(5, MCVersion.MC_1_7_5.getProtocolVersion());
+		assertEquals(5, MCVersion.MC_1_7_6.getProtocolVersion());
+		assertEquals(5, MCVersion.MC_1_7_7.getProtocolVersion());
+		assertEquals(5, MCVersion.MC_1_7_8.getProtocolVersion());
+		assertEquals(5, MCVersion.MC_1_7_9.getProtocolVersion());
+		assertEquals(5, MCVersion.MC_1_7_10.getProtocolVersion());
+		assertEquals(4, MCVersion.MC_NMS_1_7_R1.getProtocolVersion());
+		assertEquals(5, MCVersion.MC_NMS_1_7_R2.getProtocolVersion());
+		assertEquals(5, MCVersion.MC_NMS_1_7_R3.getProtocolVersion());
+		assertEquals(5, MCVersion.MC_NMS_1_7_R4.getProtocolVersion());
+		assertEquals(47, MCVersion.MC_1_8_2.getProtocolVersion());
+		assertEquals(340, MCVersion.MC_1_12_2.getProtocolVersion());
+		assertEquals(404, MCVersion.MC_1_13_2.getProtocolVersion());
+	}
+
+	@Test
+	public void testGetFromProtocolVersion()
+	{
+		assertEquals(MCVersion.MC_1_8_9, MCVersion.getFromProtocolVersion(47));
+		assertEquals(MCVersion.MC_1_12_2, MCVersion.getFromProtocolVersion(340));
+		assertEquals(MCVersion.MC_1_13_2, MCVersion.getFromProtocolVersion(404));
 	}
 }
