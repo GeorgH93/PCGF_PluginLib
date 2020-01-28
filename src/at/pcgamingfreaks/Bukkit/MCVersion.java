@@ -17,12 +17,15 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import lombok.Getter;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This enum allows to compare minecraft version. Useful for reflection and version depending stuff.
@@ -30,74 +33,77 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("unused")
 public enum MCVersion
 {
-	UNKNOWN(0, -1, ""),
-	MC_1_7(11, 3, "1_7", false),
-	MC_1_7_1(11, 3, "1_7", MC_1_7, false),
-	MC_1_7_2(11, 4, "1_7", MC_1_7, false),
-	MC_1_7_3(11, 4, "1_7", MC_1_7, false),
-	MC_1_7_4(11, 4, "1_7", MC_1_7, false),
-	MC_NMS_1_7_R1(11, 4, "1_7", MC_1_7, false),
-	MC_1_7_5(12, 5, "1_7", MC_1_7),
-	MC_1_7_6(12, 5, "1_7", MC_1_7),
-	MC_1_7_7(12, 5, "1_7", MC_1_7),
-	MC_NMS_1_7_R2(12, 5, "1_7", MC_1_7),
-	MC_1_7_8(13, 5, "1_7", MC_1_7),
-	MC_1_7_9(13, 5, "1_7", MC_1_7),
-	MC_NMS_1_7_R3(13, 5, "1_7", MC_1_7),
-	MC_1_7_10(14, 5, "1_7", MC_1_7),
-	MC_NMS_1_7_R4(14, 5, "1_7", MC_1_7),
-	MC_1_8(21, 47, "1_8"),
-	MC_1_8_1(21, 47, "1_8", MC_1_8),
-	MC_1_8_2(21, 47, "1_8", MC_1_8),
-	MC_NMS_1_8_R1(21, 47, "1_8", MC_1_8),
-	MC_1_8_3(22, 47, "1_8", MC_1_8),
-	MC_1_8_4(22, 47, "1_8", MC_1_8),
-	MC_1_8_5(22, 47, "1_8", MC_1_8),
-	MC_1_8_6(22, 47, "1_8", MC_1_8),
-	MC_1_8_7(22, 47, "1_8", MC_1_8),
-	MC_NMS_1_8_R2(22, 47, "1_8", MC_1_8),
-	MC_1_8_8(23, 47, "1_8", MC_1_8),
-	MC_1_8_9(23, 47, "1_8", MC_1_8),
-	MC_NMS_1_8_R3(23, 47, "1_8", MC_1_8),
-	MC_1_9(31, 107, "1_9"),
-	MC_1_9_1(31, 108, "1_9", MC_1_9),
-	MC_1_9_2(31, 109, "1_9", MC_1_9),
-	MC_NMS_1_9_R1(31, 109, "1_9", MC_1_9),
-	MC_1_9_3(32, 110, "1_9", MC_1_9),
-	MC_1_9_4(32, 110, "1_9", MC_1_9),
-	MC_NMS_1_9_R2(32, 110, "1_9", MC_1_9),
-	MC_1_10(41, 210, "1_10"),
-	MC_1_10_1(41, 210, "1_10", MC_1_10),
-	MC_1_10_2(41, 210, "1_10", MC_1_10),
-	MC_NMS_1_10_R1(41, 210, "1_10", MC_1_10),
-	MC_1_11(51, 315, "1_11"),
-	MC_1_11_1(51, 316, "1_11", MC_1_11),
-	MC_1_11_2(51, 316, "1_11", MC_1_11),
-	MC_NMS_1_11_R1(51, 316, "1_11"),
-	MC_1_12(61, 335, "1_12"),
-	MC_1_12_1(61, 338, "1_12", MC_1_12),
-	MC_1_12_2(61, 340, "1_12", MC_1_12),
-	MC_NMS_1_12_R1(61, 340, "1_12", MC_1_12),
-	MC_1_13(71, 393, "1_13"),
-	MC_NMS_1_13_R1(71, 393, "1_13", MC_1_13),
-	MC_1_13_1(72, 401, "1_13", MC_1_13),
-	MC_1_13_2(72, 404, "1_13", MC_1_13),
-	MC_NMS_1_13_R2(72, 404, "1_13", MC_1_13),
-	MC_1_14(81, 477, "1_14"),
-	MC_NMS_1_14_R1(81, 498, "1_14", MC_1_14),
-	MC_1_14_1(81, 480, "1_14", MC_1_14),
-	MC_1_14_2(81, 485, "1_14", MC_1_14),
-	MC_1_14_3(81, 490, "1_14", MC_1_14),
-	MC_1_14_4(81, 498, "1_14", MC_1_14),
-	MC_1_15(91, 573, "1_15"),
-	MC_1_15_1(91, 575, "1_15", MC_1_15),
-	MC_1_15_2(91, 578, "1_15", MC_1_15),
-	MC_NMS_1_15_R1(91, 578, "1_15", MC_1_15),
-	MC_1_16(101, Integer.MAX_VALUE, "1_16"),
-	MC_NMS_1_16_R1(101, Integer.MAX_VALUE, "1_16", MC_1_16);
+	UNKNOWN(0, -1, "", ""),
+	MC_1_7(11, 3, "1_7", "1.7", false),
+	MC_1_7_1(11, 3, "1_7", "1.7.1", MC_1_7, false),
+	MC_1_7_2(11, 4, "1_7", "1.7.2", MC_1_7, false),
+	MC_1_7_3(11, 4, "1_7", "1.7.3", MC_1_7, false),
+	MC_1_7_4(11, 4, "1_7", "1.7.4", MC_1_7, false),
+	MC_NMS_1_7_R1(11, 4, "1_7", "1.7_NMS_R1", MC_1_7, false),
+	MC_1_7_5(12, 5, "1_7", "1.7.5", MC_1_7),
+	MC_1_7_6(12, 5, "1_7", "1.7.6", MC_1_7),
+	MC_1_7_7(12, 5, "1_7", "1.7.7", MC_1_7),
+	MC_NMS_1_7_R2(12, 5, "1_7", "1.7_NMS_R2", MC_1_7),
+	MC_1_7_8(13, 5, "1_7", "1.7.8", MC_1_7),
+	MC_1_7_9(13, 5, "1_7", "1.7.9", MC_1_7),
+	MC_NMS_1_7_R3(13, 5, "1_7", "1.7_NMS_R3", MC_1_7),
+	MC_1_7_10(14, 5, "1_7", "1.7.10", MC_1_7),
+	MC_NMS_1_7_R4(14, 5, "1_7", "1.7_NMS_R4", MC_1_7),
+	MC_1_8(21, 47, "1_8", "1.8"),
+	MC_1_8_1(21, 47, "1_8", "1.8.1", MC_1_8),
+	MC_1_8_2(21, 47, "1_8", "1.8.2", MC_1_8),
+	MC_NMS_1_8_R1(21, 47, "1_8", "1.8_NMS_R1", MC_1_8),
+	MC_1_8_3(22, 47, "1_8", "1.8.3", MC_1_8),
+	MC_1_8_4(22, 47, "1_8", "1.8.4", MC_1_8),
+	MC_1_8_5(22, 47, "1_8", "1.8.5", MC_1_8),
+	MC_1_8_6(22, 47, "1_8", "1.8.6", MC_1_8),
+	MC_1_8_7(22, 47, "1_8", "1.8.7", MC_1_8),
+	MC_NMS_1_8_R2(22, 47, "1_8", "1.8_NMS_R2", MC_1_8),
+	MC_1_8_8(23, 47, "1_8", "1.8.8", MC_1_8),
+	MC_1_8_9(23, 47, "1_8", "1.8.9", MC_1_8),
+	MC_NMS_1_8_R3(23, 47, "1_8", "1.8_NMS_R3", MC_1_8),
+	MC_1_9(31, 107, "1_9", "1.9"),
+	MC_1_9_1(31, 108, "1_9", "1.9.1", MC_1_9),
+	MC_1_9_2(31, 109, "1_9", "1.9.2", MC_1_9),
+	MC_NMS_1_9_R1(31, 109, "1_9", "1.9_NMS_R1", MC_1_9),
+	MC_1_9_3(32, 110, "1_9", "1.9.3", MC_1_9),
+	MC_1_9_4(32, 110, "1_9", "1.9.4", MC_1_9),
+	MC_NMS_1_9_R2(32, 110, "1_9", "1.9_NMS_R2", MC_1_9),
+	MC_1_10(41, 210, "1_10", "1.10"),
+	MC_1_10_1(41, 210, "1_10", "1.10.1", MC_1_10),
+	MC_1_10_2(41, 210, "1_10", "1.10.2", MC_1_10),
+	MC_NMS_1_10_R1(41, 210, "1_10", "1.10_NMS_R1", MC_1_10),
+	MC_1_11(51, 315, "1_11", "1.11"),
+	MC_1_11_1(51, 316, "1_11", "1.11.1", MC_1_11),
+	MC_1_11_2(51, 316, "1_11", "1.11.2", MC_1_11),
+	MC_NMS_1_11_R1(51, 316, "1_11", "1.11_NMS_R1"),
+	MC_1_12(61, 335, "1_12", "1.12"),
+	MC_1_12_1(61, 338, "1_12", "1.12.1", MC_1_12),
+	MC_1_12_2(61, 340, "1_12", "1.12.2", MC_1_12),
+	MC_NMS_1_12_R1(61, 340, "1_12", "1.12_NMS_R1", MC_1_12),
+	MC_1_13(71, 393, "1_13", "1.13"),
+	MC_NMS_1_13_R1(71, 393, "1_13", "1.13_NMS_R1", MC_1_13),
+	MC_1_13_1(72, 401, "1_13", "1.13.1", MC_1_13),
+	MC_1_13_2(72, 404, "1_13", "1.13.2", MC_1_13),
+	MC_NMS_1_13_R2(72, 404, "1_13", "1.13_NMS_R2", MC_1_13),
+	MC_1_14(81, 477, "1_14", "1.14"),
+	MC_NMS_1_14_R1(81, 498, "1_14", "1.14_NMS_R1", MC_1_14),
+	MC_1_14_1(81, 480, "1_14", "1.14.1", MC_1_14),
+	MC_1_14_2(81, 485, "1_14", "1.14.2", MC_1_14),
+	MC_1_14_3(81, 490, "1_14", "1.14.3", MC_1_14),
+	MC_1_14_4(81, 498, "1_14", "1.14.4", MC_1_14),
+	MC_1_15(91, 573, "1_15", "1.15"),
+	MC_1_15_1(91, 575, "1_15", "1.15.1", MC_1_15),
+	MC_1_15_2(91, 578, "1_15", "1.15.2", MC_1_15),
+	MC_NMS_1_15_R1(91, 578, "1_15", "1.15_NMS_R1", MC_1_15),
+	MC_1_16(101, Integer.MAX_VALUE, "1_16", "1.16"),
+	MC_NMS_1_16_R1(101, Integer.MAX_VALUE, "1_16", "1.16_NMS_R1", MC_1_16);
 
-	private static final Map<String, MCVersion> NMS_VERSION_MAP = new ConcurrentHashMap<>();
-	private static final Map<Integer, MCVersion> PROTOCOL_VERSION_MAP = new ConcurrentHashMap<>();
+	private static final Map<String, MCVersion> VERSION_MAP = new HashMap<>();
+	private static final Map<String, MCVersion> NMS_VERSION_MAP = new HashMap<>();
+	private static final Map<Integer, MCVersion> PROTOCOL_VERSION_MAP = new HashMap<>();
+
+	private static final Pattern VERSION_PATTERN = Pattern.compile("\\(MC: (?<version>\\d.\\d+(.\\d+)?)\\)");
 
 	/**
 	 * The current version of the minecraft server.
@@ -114,13 +120,22 @@ public enum MCVersion
 			}
 			else
 			{
+				VERSION_MAP.put(version.name, version);
 				PROTOCOL_VERSION_MAP.put(version.protocolVersion, version);
 			}
 		}
 		MCVersion currentVersion = UNKNOWN;
 		try
 		{
-			currentVersion = getFromServerVersion(NMSReflection.getVersion());
+			Matcher matcher = VERSION_PATTERN.matcher(Bukkit.getVersion());
+			if(matcher.find())
+			{
+				currentVersion = getFromVersionName(matcher.group("version"));
+			}
+			else
+			{ // Could not identify version from API, trying to use NMS
+				currentVersion = getFromServerVersion(NMSReflection.getVersion());
+			}
 		}
 		catch(Throwable ignored)
 		{
@@ -135,34 +150,37 @@ public enum MCVersion
 	private final MCVersion mainVersion;
 	private final boolean supportsUUIDs;
 	@Getter private final boolean dualWielding;
+	@Getter private final String name;
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString)
+	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString)
 	{
-		this(versionID, protocolVersion, mainVersionString, true);
+		this(versionID, protocolVersion, mainVersionString, versionString, true);
 	}
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString, boolean supportsUUIDs)
+	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, boolean supportsUUIDs)
 	{
 		this.versionID = versionID;
 		this.protocolVersion = protocolVersion;
 		this.identifier = mainVersionString + "_R" + versionID % 10;
 		this.mainVersion = this;
 		this.supportsUUIDs = supportsUUIDs;
+		this.name = versionString;
 		dualWielding = protocolVersion >= 107;
 	}
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString, MCVersion mainVersion)
+	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, MCVersion mainVersion)
 	{
-		this(versionID, protocolVersion, mainVersionString, mainVersion, true);
+		this(versionID, protocolVersion, mainVersionString, versionString, mainVersion, true);
 	}
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString, MCVersion mainVersion, boolean supportsUUIDs)
+	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, MCVersion mainVersion, boolean supportsUUIDs)
 	{
 		this.versionID = versionID;
 		this.protocolVersion = protocolVersion;
 		this.identifier = mainVersionString + "_R" + versionID % 10;
 		this.mainVersion = mainVersion;
 		this.supportsUUIDs = supportsUUIDs;
+		this.name = versionString;
 		dualWielding = protocolVersion >= 107;
 	}
 
@@ -271,6 +289,13 @@ public enum MCVersion
 	public static @NotNull MCVersion getFromProtocolVersion(final int protocolVersion)
 	{
 		MCVersion version = PROTOCOL_VERSION_MAP.get(protocolVersion);
+		if(version == null) version = UNKNOWN;
+		return version;
+	}
+
+	public static @NotNull MCVersion getFromVersionName(final String versionName)
+	{
+		MCVersion version = VERSION_MAP.get(versionName);
 		if(version == null) version = UNKNOWN;
 		return version;
 	}
