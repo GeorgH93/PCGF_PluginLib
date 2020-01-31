@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TimeSpanTest
 {
-	private static final long TIME1 = 1501948524000L, TIME2 = 1470412524000L, TIME3 = TIME2 + 1000L;
+	private static final long TIME1 = 1501948524000L, TIME2 = 1470412524000L, TIME3 = TIME2 + 1000L, TIME4 = 1580508509763L;
 
 	@Test
 	public void testTimeSpanLong()
@@ -54,6 +54,8 @@ public class TimeSpanTest
 		assertArrayEquals(new int[] { 0, 0, 0, 0, 0, 1, 0 }, new TimeSpan(new Date(System.currentTimeMillis() - 1000L), true).getArray());
 		assertArrayEquals(new int[] { 1, 0, 0, 0, 0, 0, 365 }, new TimeSpan(date1, date2, true).getArray());
 		assertArrayEquals(new int[] { 0, 11, 29, 23, 59, 59, 364 }, new TimeSpan(date1, date3, true).getArray());
+		assertArrayEquals(new int[] { 0, 0, 0, 0, 0, 1, 0 }, new TimeSpan(new Date(TIME4), new Date(TIME4 - 1000L)).getArray());
+		assertArrayEquals(new int[] { 0, 0, 0, 0, 0, 1, 0 }, new TimeSpan(new Date(TIME4), new Date(TIME4 - 1000L), true).getArray());
 	}
 
 	@Test

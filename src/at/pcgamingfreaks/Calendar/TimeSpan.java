@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -176,6 +176,12 @@ public class TimeSpan
 				toDate = Calendar.getInstance();
 				toDate.setTimeInMillis(to);
 			}
+			if(toDate.before(fromDate))
+			{
+				Calendar tmpDate = fromDate;
+				fromDate = toDate;
+				toDate = tmpDate;
+			}
 			calcCalendar(totalDiffSeconds, fromDate, toDate);
 		}
 	}
@@ -219,21 +225,21 @@ public class TimeSpan
 	@SuppressWarnings("MagicConstant")
 	private void timeSpanDaysCalendar(@NotNull Calendar fromDate, @NotNull Calendar toDate)
 	{
-		fromDate = (Calendar) fromDate.clone();
 		timeSpan[YEAR] = timeSpan[MONTH] = timeSpan[DAY] = -1;
-		boolean future = toDate.after(fromDate);
-		for(int i = 0, dayOfMonth = fromDate.get(Calendar.DAY_OF_MONTH); i < CAL_TYPES.length; i++)
+		Calendar from = (Calendar) fromDate.clone(), backup = (Calendar) from.clone();
+		for(int i = 0, dayOfMonth = from.get(Calendar.DAY_OF_MONTH); i < CAL_TYPES.length; i++)
 		{
-			while((future && !fromDate.after(toDate)) || (!future && !fromDate.before(toDate)))
+			while(!from.after(toDate))
 			{
-				fromDate.add(CAL_TYPES[i], future ? 1 : -1);
-				if(CAL_TYPES[i] != Calendar.DAY_OF_MONTH && fromDate.get(Calendar.DAY_OF_MONTH) < dayOfMonth && fromDate.get(Calendar.DAY_OF_MONTH) < fromDate.getActualMaximum(Calendar.DAY_OF_MONTH))
+				backup = (Calendar) from.clone();
+				from.add(CAL_TYPES[i], 1);
+				if(CAL_TYPES[i] != Calendar.DAY_OF_MONTH && from.get(Calendar.DAY_OF_MONTH) < dayOfMonth && from.get(Calendar.DAY_OF_MONTH) < from.getActualMaximum(Calendar.DAY_OF_MONTH))
 				{
-					fromDate.set(Calendar.DAY_OF_MONTH, Math.min(fromDate.getActualMaximum(Calendar.DAY_OF_MONTH), dayOfMonth));
+					from.set(Calendar.DAY_OF_MONTH, Math.min(from.getActualMaximum(Calendar.DAY_OF_MONTH), dayOfMonth));
 				}
 				timeSpan[i]++;
 			}
-			fromDate.add(CAL_TYPES[i], future ? -1 : 1);
+			from = backup;
 		}
 	}
 	//endregion
