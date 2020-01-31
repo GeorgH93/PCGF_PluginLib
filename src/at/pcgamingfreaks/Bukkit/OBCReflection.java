@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,8 +28,18 @@ import java.lang.reflect.Method;
 
 public class OBCReflection extends Reflection
 {
-	protected static final String BUKKIT_VERSION = Bukkit.getServer().getClass().getName().split("\\.")[3];
+	protected static final String BUKKIT_VERSION = getBukkitVersion();
 	private static final String OBC_CLASS_PATH = "org.bukkit.craftbukkit." + BUKKIT_VERSION + ".";
+
+	private static String getBukkitVersion()
+	{
+		try
+		{
+			return Bukkit.getServer().getClass().getName().split("\\.")[3];
+		}
+		catch(Throwable ignored) {}
+		return "unknown";
+	}
 
 	public static String getVersion()
 	{

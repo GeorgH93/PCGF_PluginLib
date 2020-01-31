@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 public class Utils extends at.pcgamingfreaks.Utils
 {
 	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NmsReflector.INSTANCE.getNmsClass("NBTTagCompound");
-	private static final Method AS_NMS_COPY_METHOD = NMSReflection.getOBCMethod("inventory.CraftItemStack", "asNMSCopy", ItemStack.class);
+	private static final Method AS_NMS_COPY_METHOD = OBCReflection.getOBCMethod("inventory.CraftItemStack", "asNMSCopy", ItemStack.class);
 	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NmsReflector.INSTANCE.getNmsMethod("ItemStack", "save", NBT_TAG_COMPOUND_CLASS);
 	private static final Method METHOD_JAVA_PLUGIN_GET_FILE = Reflection.getMethod(JavaPlugin.class, "getFile");
 	//region Reflection constants for the send packet method
