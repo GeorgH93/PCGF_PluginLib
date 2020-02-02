@@ -141,14 +141,8 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 */
 	public void setSendMethod(@Nullable SendMethod method)
 	{
-		if(method == null)
-		{
-			method = SendMethod.DISABLED;
-		}
-		else if(PRE_1_8_MC && method != SendMethod.DISABLED)
-		{
-			method = SendMethod.CHAT_CLASSIC;
-		}
+		if(method == null) method = SendMethod.DISABLED;
+		else if(!method.isAvailable()) method = method.getFallbackSendMethod();
 		this.method = method;
 	}
 

@@ -55,6 +55,8 @@ public class MessageTest
 	{
 		Bukkit.setServer(new TestBukkitServer());
 		TestObjects.initNMSReflection();
+		//noinspection unused
+		SendMethod tmp = SendMethod.CHAT_CLASSIC; // Init class, do not remove!
 	}
 
 	@Test(expected = ClassCastException.class)
@@ -64,15 +66,6 @@ public class MessageTest
 		Message message = new Message("");
 		assertEquals("The send method should be correct", SendMethod.CHAT_CLASSIC, message.getSendMethod());
 		Message.class.getDeclaredMethod("send", Object.class, Object[].class).invoke(message, new Object(), new Object[] {});
-	}
-
-	@Test
-	public void testMessageWithOldServer() throws NoSuchFieldException, IllegalAccessException
-	{
-		setVersion("1_7");
-		Message message = new Message("", SendMethod.ACTION_BAR);
-		assertNotNull("The message object should not be null", message);
-		assertEquals("The send method of the message should match", SendMethod.CHAT_CLASSIC, message.getSendMethod());
 	}
 
 	@Test

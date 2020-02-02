@@ -28,8 +28,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class })
@@ -48,5 +47,19 @@ public class SendMethodTest
 		SendMethod sendMethod = SendMethod.TITLE;
 		assertEquals("The metadata class should match", TitleMetadata.class, sendMethod.getMetadataClass());
 		assertNotNull("The fromJson Method should be returned", sendMethod.getMetadataFromJsonMethod());
+	}
+
+	@Test
+	public void testIsAvailable()
+	{
+		assertTrue(SendMethod.CHAT.isAvailable());
+		//assertFalse(SendMethod.BOSS_BAR.isAvailable());
+	}
+
+	@Test
+	public void testHasMetadata()
+	{
+		assertFalse(SendMethod.CHAT.hasMetadata());
+		assertTrue(SendMethod.TITLE.hasMetadata());
 	}
 }
