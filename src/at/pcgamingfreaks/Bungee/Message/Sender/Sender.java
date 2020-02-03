@@ -15,12 +15,17 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Message.Sender;
+package at.pcgamingfreaks.Bungee.Message.Sender;
 
+import at.pcgamingfreaks.Bungee.Message.Message;
 import at.pcgamingfreaks.Message.Sender.ISenderGeneric;
 
-import org.bukkit.entity.Player;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public interface Sender extends ISenderGeneric<Player>
+/**
+ * This abstract class is used as base class for all senders.
+ * This way we can tell the {@link Message} class which sender should get used without using reflection.
+ */
+public interface Sender extends ISenderGeneric<ProxiedPlayer>
 {
 }

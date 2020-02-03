@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -35,11 +35,11 @@ public enum SendMethod implements ISendMethod
 	//BOSS_BAR(new BossBarSender(), null), //TODO
 	DISABLED(new DisabledSender(), null);
 
-	@Getter private final BaseSender sender;
+	@Getter private final Sender sender;
 	@Getter private final Class<?> metadataClass;
 	@Getter private final Method metadataFromJsonMethod;
 
-	SendMethod(@NotNull BaseSender sender, @Nullable Class<?> metadataClass)
+	SendMethod(@NotNull Sender sender, @Nullable Class<?> metadataClass)
 	{
 		this.sender = sender;
 		this.metadataClass = metadataClass;

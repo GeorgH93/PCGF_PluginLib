@@ -15,32 +15,24 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bungee.Message.Sender;
-
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+package at.pcgamingfreaks.Message.Sender;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public final class DisabledSender implements Sender
+public interface ISenderGeneric<PLAYER>
 {
-	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json)	{}
+	void doSend(@NotNull PLAYER player, @NotNull String json);
 
-	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable Object optional) {}
+	void doSend(@NotNull PLAYER player, @NotNull String json, @Nullable Object optional);
 
-	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json) {}
+	void doSend(@NotNull Collection<? extends PLAYER> players, @NotNull String json);
 
-	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional) {}
+	void doSend(@NotNull Collection<? extends PLAYER> players, @NotNull String json, @Nullable Object optional);
 
-	@Override
-	public void doBroadcast(@NotNull String json) {}
+	void doBroadcast(@NotNull String json);
 
-	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optional) {}
+	void doBroadcast(@NotNull String json, @Nullable Object optional);
 }

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class TitleSender extends BaseSender
+public class TitleSender implements Sender
 {
 	private static final TitleMetadata METADATA = new TitleMetadata(); // Default metadata object
 
