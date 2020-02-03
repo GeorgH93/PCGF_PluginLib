@@ -20,14 +20,17 @@ package at.pcgamingfreaks.Bungee.Message.Sender;
 import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.Reflection;
 
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import lombok.Getter;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 
-public enum SendMethod implements ISendMethod
+public enum SendMethod implements ISendMethod, Sender
 {
 	CHAT(new ChatSender(), null),
 	TITLE(new TitleSender(), TitleMetadata.class),
@@ -44,5 +47,41 @@ public enum SendMethod implements ISendMethod
 		this.sender = sender;
 		this.metadataClass = metadataClass;
 		this.metadataFromJsonMethod = (metadataClass != null) ? Reflection.getMethod(metadataClass, "fromJson", String.class) : null;
+	}
+
+	@Override
+	public void doSend(@NotNull ProxiedPlayer proxiedPlayer, @NotNull String json)
+	{
+		sender.doSend(proxiedPlayer, json);
+	}
+
+	@Override
+	public void doSend(@NotNull ProxiedPlayer proxiedPlayer, @NotNull String json, @Nullable Object optionalMetadata)
+	{
+		sender.doSend(proxiedPlayer, json, optionalMetadata);
+	}
+
+	@Override
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> proxiedPlayers, @NotNull String json)
+	{
+		sender.doSend(proxiedPlayers, json);
+	}
+
+	@Override
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> proxiedPlayers, @NotNull String json, @Nullable Object optionalMetadata)
+	{
+		sender.doSend(proxiedPlayers, json, optionalMetadata);
+	}
+
+	@Override
+	public void doBroadcast(@NotNull String json)
+	{
+		sender.doBroadcast(json);
+	}
+
+	@Override
+	public void doBroadcast(@NotNull String json, @Nullable Object optionalMetadata)
+	{
+		sender.doBroadcast(json, optionalMetadata);
 	}
 }

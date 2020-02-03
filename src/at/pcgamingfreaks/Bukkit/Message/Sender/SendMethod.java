@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,16 +21,18 @@ import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.Reflection;
 
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import lombok.Getter;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 import static at.pcgamingfreaks.Bukkit.MCVersion.MC_1_8;
 
-public enum SendMethod implements ISendMethod
+public enum SendMethod implements ISendMethod, Sender
 {
 	CHAT_CLASSIC(null, null, null),
 	CHAT(MCVersion.isOlderThan(MC_1_8) ? null : new ChatSender(), null, CHAT_CLASSIC),
@@ -40,6 +42,7 @@ public enum SendMethod implements ISendMethod
 	DISABLED(new DisabledSender(), null, null);
 
 	@Getter @Nullable private final Sender sender;
+	@Getter @NotNull private final Sender activeSender;
 	@Getter @Nullable private final Class<?> metadataClass;
 	@Getter @Nullable private final Method metadataFromJsonMethod;
 	@Getter @NotNull private final SendMethod fallbackSendMethod;
@@ -61,6 +64,7 @@ public enum SendMethod implements ISendMethod
 		}
 		else fallback = this;
 		fallbackSendMethod = fallback;
+		activeSender = (isAvailable()) ? sender : fallback.getActiveSender();
 	}
 
 	/**
@@ -81,5 +85,42 @@ public enum SendMethod implements ISendMethod
 	public boolean hasMetadata()
 	{
 		return metadataClass != null;
+	}
+
+
+	@Override
+	public void doSend(@NotNull Player player, @NotNull String json)
+	{
+		activeSender.doSend(player, json);
+	}
+
+	@Override
+	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optionalMetadata)
+	{
+		activeSender.doSend(player, json, optionalMetadata);
+	}
+
+	@Override
+	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
+	{
+		activeSender.doSend(players, json);
+	}
+
+	@Override
+	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optionalMetadata)
+	{
+		activeSender.doSend(players, json, optionalMetadata);
+	}
+
+	@Override
+	public void doBroadcast(@NotNull String json)
+	{
+		activeSender.doBroadcast(json);
+	}
+
+	@Override
+	public void doBroadcast(@NotNull String json, @Nullable Object optionalMetadata)
+	{
+		activeSender.doBroadcast(json, optionalMetadata);
 	}
 }
