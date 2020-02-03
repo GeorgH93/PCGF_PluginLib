@@ -16,7 +16,7 @@ and provides cross version support for a lot of Minecraft features
 * UUID converter
 * Auto-updater
     * Supports multiple sites for checking and downloading of updates
-        * spigotmc.org (checking + downloading)
+        * spigotmc.org (checking + downloading (free and hosted on spigotmc.org))
         * dev.bukkit.org (checking + downloading)
         * GitHub (checking + downloading)
         * Jenkins build servers (checking + downloading)
@@ -37,7 +37,7 @@ and provides cross version support for a lot of Minecraft features
 
 ## Requirements:
 * Java 8 (or newer)
-* Bukkit, Spigot, Paper, Uranium or BungeeCord for MC 1.7 or newer
+* Bukkit, Spigot, Paper, Uranium for MC 1.7 or newer or BungeeCord for MC 1.8 or newer
 * (Optional) PlaceholderAPI (to use it with the provided message API)
 
 ## Adding it to your plugin
