@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 public enum MCVersion
 {
-	UNKNOWN(0, -1, "", ""),
+	UNKNOWN(0, -1, "", "UNKNOWN"),
 	MC_1_7(11, 3, "1_7", "1.7", false),
 	MC_1_7_1(11, 3, "1_7", "1.7.1", MC_1_7, false),
 	MC_1_7_2(11, 4, "1_7", "1.7.2", MC_1_7, false),
@@ -298,5 +298,11 @@ public enum MCVersion
 		MCVersion version = VERSION_MAP.get(versionName);
 		if(version == null) version = UNKNOWN;
 		return version;
+	}
+
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 }

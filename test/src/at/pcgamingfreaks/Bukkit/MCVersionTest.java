@@ -166,6 +166,7 @@ public class MCVersionTest
 		assertEquals(MCVersion.MC_1_8_9, MCVersion.getFromProtocolVersion(47));
 		assertEquals(MCVersion.MC_1_12_2, MCVersion.getFromProtocolVersion(340));
 		assertEquals(MCVersion.MC_1_13_2, MCVersion.getFromProtocolVersion(404));
+		assertEquals(MCVersion.UNKNOWN, MCVersion.getFromProtocolVersion(Integer.MIN_VALUE));
 	}
 
 	@Test
@@ -177,6 +178,9 @@ public class MCVersionTest
 		assertEquals("1.12.2", MCVersion.MC_1_12_2.getName());
 		assertEquals("1.13.2", MCVersion.MC_1_13_2.getName());
 		assertEquals("1.15.2", MCVersion.MC_1_15_2.getName());
+		assertEquals("1.15_NMS_R1", MCVersion.MC_NMS_1_15_R1.getName());
+		assertEquals("UNKNOWN", MCVersion.UNKNOWN.getName());
+		assertEquals("1.15.2", MCVersion.MC_1_15_2.toString());
 	}
 
 	@Test
@@ -187,5 +191,8 @@ public class MCVersionTest
 		assertEquals(MCVersion.MC_1_12_2, MCVersion.getFromVersionName("1.12.2"));
 		assertEquals(MCVersion.MC_1_13_2, MCVersion.getFromVersionName("1.13.2"));
 		assertEquals(MCVersion.MC_1_15_2, MCVersion.getFromVersionName("1.15.2"));
+		assertEquals(MCVersion.UNKNOWN, MCVersion.getFromVersionName("1.1.2"));
+		assertEquals(MCVersion.UNKNOWN, MCVersion.getFromVersionName("nothing"));
+		assertEquals(MCVersion.UNKNOWN, MCVersion.getFromVersionName("UNKNOWN"));
 	}
 }
