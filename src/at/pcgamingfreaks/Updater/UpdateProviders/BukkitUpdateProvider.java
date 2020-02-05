@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -68,6 +68,12 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 		}
 		catch(MalformedURLException ignored) {} //Should never happen
 		this.url = url;
+	}
+
+	@Override
+	public @NotNull String getName()
+	{
+		return "dev.bukkit.org";
 	}
 
 	@Override
@@ -155,6 +161,12 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 	}
 
 	@Override
+	public boolean providesMinecraftVersions()
+	{
+		return false;
+	}
+
+	@Override
 	public boolean providesChangelog()
 	{
 		return false;
@@ -204,6 +216,12 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 	public @NotNull UpdateFile[] getLatestDependencies() throws RequestTypeNotAvailableException
 	{
 		throw new RequestTypeNotAvailableException("The dev.bukkit.org API does not provide a list of dependencies to download!");
+	}
+
+	@Override
+	public @NotNull String[] getLatestMinecraftVersions() throws RequestTypeNotAvailableException
+	{
+		throw new RequestTypeNotAvailableException("The dev.bukkit.org API does not provide a list of supported minecraft versions!");
 	}
 
 	@Override

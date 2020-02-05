@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017, 2018 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -99,6 +99,12 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 		this.host = host;
 		this.token = token;
 		this.artifactSearchRegex = artifactSearchRegex;
+	}
+
+	@Override
+	public @NotNull String getName()
+	{
+		return "Jenkins";
 	}
 
 	@Override
@@ -228,6 +234,18 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 	{
 		//TODO add it!
 		throw new RequestTypeNotAvailableException("The jenkins API does not provide an update history.");
+	}
+
+	@Override
+	public @NotNull String[] getLatestMinecraftVersions() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		throw new RequestTypeNotAvailableException("The jenkins update provider does not provide a list of supported minecraft versions!");
+	}
+
+	@Override
+	public boolean providesMinecraftVersions()
+	{
+		return false;
 	}
 	//endregion
 

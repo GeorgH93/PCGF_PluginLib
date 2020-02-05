@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -73,6 +74,12 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 	}
 
 	@Override
+	public @NotNull String getName()
+	{
+		return "SpigotMC";
+	}
+
+	@Override
 	public @NotNull UpdateResult query()
 	{
 		try
@@ -96,7 +103,22 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 				}
 				result.setName(resObject.get("name").getAsString());
 				result.setFileName(filename);
-				result.setGameVersion(resObject.get("testedVersions").getAsJsonArray().toString());
+				JsonArray jsonGameVersions = resObject.get("testedVersions").getAsJsonArray();
+				String[] gameVersions = new String[jsonGameVersions.size()];
+				for(int i = 0; i < jsonGameVersions.size(); i++)
+				{
+					gameVersions[i] = jsonGameVersions.get(i).getAsString();
+				}
+				if(gameVersions.length == 0)
+				{
+					result.setGameVersions(null);
+					result.setGameVersion(null);
+				}
+				else
+				{
+					result.setGameVersions(gameVersions);
+					result.setGameVersion(gameVersions[gameVersions.length - 1]);
+				}
 			}
 			connection.disconnect();
 			//region get version
@@ -152,6 +174,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 	public @NotNull String getLatestMinecraftVersion() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		if(lastResult == null) throw new NotSuccessfullyQueriedException();
+		if(lastResult.getGameVersion() == null) throw new RequestTypeNotAvailableException("The plugin does not provide a list of compatible minecraft versions!");
 		return lastResult.getGameVersion();
 	}
 
@@ -178,6 +201,14 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 	{
 		throw new RequestTypeNotAvailableException("The spigot update provider does not provide an update history!");
 	}
+
+	@Override
+	public @NotNull String[] getLatestMinecraftVersions() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		if(lastResult == null) throw new NotSuccessfullyQueriedException();
+		if(lastResult.getGameVersion() == null) throw new RequestTypeNotAvailableException("The plugin does not provide a list of compatible minecraft versions!");
+		return lastResult.getGameVersions();
+	}
 	//endregion
 
 	//region provider property's
@@ -185,12 +216,6 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 	public final boolean providesDownloadURL()
 	{
 		return downloadable;
-	}
-
-	@Override
-	public boolean providesMinecraftVersion()
-	{
-		return true;
 	}
 
 	@Override
@@ -215,6 +240,20 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 	public boolean providesDependencies()
 	{
 		return false;
+	}
+
+	@Override
+	public boolean providesMinecraftVersion()
+	{
+		if(lastResult != null) return lastResult.getGameVersion() != null;
+		return true;
+	}
+
+	@Override
+	public boolean providesMinecraftVersions()
+	{
+		if(lastResult != null) return lastResult.getGameVersions() != null;
+		return true;
 	}
 	//endregion
 }

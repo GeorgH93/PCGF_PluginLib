@@ -17,9 +17,13 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.Updater.UpdateProviders.BukkitUpdateProvider;
+import at.pcgamingfreaks.Updater.UpdateProviders.NotSuccessfullyQueriedException;
+import at.pcgamingfreaks.Updater.UpdateProviders.RequestTypeNotAvailableException;
+import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -30,7 +34,6 @@ import org.junit.rules.Timeout;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -41,8 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 
@@ -55,56 +57,41 @@ public class UpdaterTest
 	private static PluginDescriptionFile mockedPluginDescription;
 	private static String runnableStatus = "";
 
-	private Runnable syncRunnable = new Runnable()
-	{
-		@Override
-		public void run()
-		{
-			runnableStatus = "SYNC";
-		}
-	};
+	private Runnable syncRunnable = () -> runnableStatus = "SYNC";
 
-	private Runnable asyncRunnable = new Runnable()
-	{
-		@Override
-		public void run()
+	private Runnable asyncRunnable = () -> {
+		runnableStatus = "ASYNC";
+		try
 		{
-			runnableStatus = "ASYNC";
-			try
-			{
-				Thread.sleep(200);
-			}
-			catch(InterruptedException e)
-			{
-				e.printStackTrace();
-			}
+			Thread.sleep(200);
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
 		}
 	};
 
 	@BeforeClass
-	public static void prepareTestData()
+	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
 		File updateFolder = new File("plugins/updates");
 		//noinspection ResultOfMethodCallIgnored
 		updateFolder.mkdirs();
+
+		Bukkit.setServer(new TestBukkitServer());
+		TestObjects.initNMSReflection();
+		TestObjects.setBukkitVersion("1_8_R1");
 	}
 
 	@Before
 	public void prepareTestObjects() throws Exception
 	{
 		TestObjects.initMockedJavaPlugin();
-		whenNew(at.pcgamingfreaks.Updater.Updater.class).withAnyArguments().thenAnswer(new Answer<Object>()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock)
-			{
-				return null;
-			}
-		});
+		whenNew(at.pcgamingfreaks.Updater.Updater.class).withAnyArguments().thenAnswer(invocationOnMock -> null);
 		suppress(at.pcgamingfreaks.Updater.Updater.class.getDeclaredMethods());
 		mockedPluginDescription = mock(PluginDescriptionFile.class);
 		when(mockedPluginDescription.getVersion()).thenReturn("v1.8.2-SNAPSHOT");
-		when(mockedPluginDescription.getAuthors()).thenReturn(new ArrayList<String>());
+		when(mockedPluginDescription.getAuthors()).thenReturn(new ArrayList<>());
 		when(TestObjects.getJavaPlugin().getDescription()).thenReturn(mockedPluginDescription);
 		mockStatic(Bukkit.class);
 		when(Bukkit.getUpdateFolderFile()).thenReturn(new File("plugins/updates"));
@@ -128,16 +115,11 @@ public class UpdaterTest
 		updater.runAsync(asyncRunnable);
 		updater.waitForAsyncOperation();
 		assertEquals("No author should be found", "", updater.getAuthor());
-		when(mockedPluginDescription.getAuthors()).thenAnswer(new Answer<List<String>>()
-		{
-			@Override
-			public List<String> answer(InvocationOnMock invocationOnMock)
-			{
-				List<String> authorList = new ArrayList<>();
-				authorList.add("MarkusWME");
-				authorList.add("GeorgH93");
-				return authorList;
-			}
+		when(mockedPluginDescription.getAuthors()).thenAnswer((Answer<List<String>>) invocationOnMock -> {
+			List<String> authorList = new ArrayList<>();
+			authorList.add("MarkusWME");
+			authorList.add("GeorgH93");
+			return authorList;
 		});
 		assertEquals("The author should match", "MarkusWME", updater.getAuthor());
 		updater.waitForAsyncOperation();
@@ -177,39 +159,29 @@ public class UpdaterTest
 	{
 		TestUtils.initReflection();
 		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, new BukkitUpdateProvider(74734, TestObjects.getJavaPlugin().getLogger()));
-		final Thread mockedThread = new Thread(new Runnable()
-		{
-			@Override
-			public void run()
+		final Thread mockedThread = new Thread(() -> {
+			int i = 0;
+			//noinspection InfiniteLoopStatement
+			while(true)
 			{
-				int i = 0;
-				//noinspection InfiniteLoopStatement
-				while(true)
+				i++;
+				if(i > 1000000000)
 				{
-					i++;
-					if(i > 1000000000)
-					{
-						i = -1000000000;
-					}
+					i = -1000000000;
 				}
 			}
 		});
-		Thread starterThread = new Thread(new Runnable()
-		{
-			@Override
-			public void run()
+		Thread starterThread = new Thread(() -> {
+			mockedThread.start();
+			try
 			{
-				mockedThread.start();
-				try
-				{
-					Thread.sleep(1000);
-					mockedThread.interrupt();
-					Thread.currentThread().interrupt();
-				}
-				catch(InterruptedException e)
-				{
-					e.printStackTrace();
-				}
+				Thread.sleep(1000);
+				mockedThread.interrupt();
+				Thread.currentThread().interrupt();
+			}
+			catch(InterruptedException e)
+			{
+				e.printStackTrace();
 			}
 		});
 		Field thread = TestUtils.setAccessible(Updater.class, updater, "thread", mockedThread);
@@ -217,6 +189,18 @@ public class UpdaterTest
 		Thread.sleep(100);
 		updater.waitForAsyncOperation();
 		TestUtils.setUnaccessible(thread, updater, false);
+	}
+
+	@Test
+	public void testCheckCompatibility() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+
+		UpdateProvider mockedUpdateProvider = mock(BukkitUpdateProvider.class);
+		when(mockedUpdateProvider.getLatestMinecraftVersions()).thenReturn(new String[] {"1.7", "1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15"});
+		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, mockedUpdateProvider);
+		assertTrue(updater.checkCompatibility());
+		when(mockedUpdateProvider.getLatestMinecraftVersions()).thenReturn(new String[] {"1.7", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15"});
+		assertFalse(updater.checkCompatibility());
 	}
 
 	@AfterClass

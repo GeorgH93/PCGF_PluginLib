@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -81,6 +81,12 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 		projectRepo = githubProjectRepo;
 		assetJarPattern = Pattern.compile(jarSearchRegex, Pattern.CASE_INSENSITIVE);
 		assetMD5Pattern = (md5SearchRegex != null) ? Pattern.compile(md5SearchRegex, Pattern.CASE_INSENSITIVE) : null;
+	}
+
+	@Override
+	public @NotNull String getName()
+	{
+		return "GitHub";
 	}
 
 	@Override
@@ -207,6 +213,18 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 	public @NotNull UpdateFile[] getUpdateHistory() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		throw new RequestTypeNotAvailableException("The github update provider does not provide an update history."); //TODO
+	}
+
+	@Override
+	public @NotNull String[] getLatestMinecraftVersions() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		throw new RequestTypeNotAvailableException("The github update provider does not provide a list of supported minecraft versions!");
+	}
+
+	@Override
+	public boolean providesMinecraftVersions()
+	{
+		return false;
 	}
 	//endregion
 

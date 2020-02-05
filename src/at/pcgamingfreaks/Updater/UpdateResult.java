@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -58,6 +58,10 @@ public enum UpdateResult
 	 * The updater found an update, but the used provider doesn't provide us with a download link.
 	 */
 	UPDATE_AVAILABLE,
+	/**
+	 * The updater found an update, but the version is not compatible with your system.
+	 */
+	UPDATE_AVAILABLE_INCOMPATIBLE,
 	/**
 	 * The updater was able to update the main plugin, but failed downloading the dependencies.
 	 */

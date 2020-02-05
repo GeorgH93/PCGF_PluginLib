@@ -19,11 +19,13 @@ package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 public class Updater extends at.pcgamingfreaks.Updater.Updater
@@ -113,5 +115,28 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 				plugin.getLogger().log(Level.SEVERE, null, e);
 			}
 		}
+	}
+
+	@Override
+	protected boolean checkCompatibility()
+	{
+		try
+		{
+			String[] versions = updateProvider.getLatestMinecraftVersions();
+			MCVersion[] mcVersions = new MCVersion[versions.length];
+			for(int i = 0; i < versions.length; i++)
+			{
+				mcVersions[i] = MCVersion.getFromVersionName(versions[i]);
+			}
+			boolean supported = ArrayUtils.contains(mcVersions, MCVersion.CURRENT_VERSION.getMajorMinecraftVersion());
+			if(!supported) logger.info("Update found but it is not compatible with the used Minecraft version. Using: " + MCVersion.CURRENT_VERSION.getMajorMinecraftVersion().getName() + " Compatible: " + Arrays.toString(mcVersions));
+			return supported;
+		}
+		catch(Exception e)
+		{
+			logger.severe("Failed to check if Minecraft version is compatible with update!");
+			e.printStackTrace();
+		}
+		return true;
 	}
 }

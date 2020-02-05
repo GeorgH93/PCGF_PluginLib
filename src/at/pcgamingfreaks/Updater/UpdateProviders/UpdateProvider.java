@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,10 +24,17 @@ import at.pcgamingfreaks.Version;
 
 import org.jetbrains.annotations.NotNull;
 
+import lombok.Data;
+
 import java.net.URL;
 
 public interface UpdateProvider
 {
+	/**
+	 * @return The name of the update provider.
+	 */
+	@NotNull String getName();
+
 	/**
 	 * Make a connection to the provider an requests the file's details.
 	 *
@@ -80,6 +87,15 @@ public interface UpdateProvider
 	@NotNull String getLatestMinecraftVersion() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
 
 	/**
+	 * Get the latest version's compatible game versions as an string array (each element is a compatible version such as "CB 1.7.2-R0.3" or "1.9").
+	 *
+	 * @return latest version's game version.
+	 * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
+	 * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
+	 */
+	@NotNull String[] getLatestMinecraftVersions() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException;
+
+	/**
 	 * Get the latest version's release type.
 	 *
 	 * @return latest version's release type.
@@ -130,6 +146,8 @@ public interface UpdateProvider
 
 	boolean providesMinecraftVersion();
 
+	boolean providesMinecraftVersions();
+
 	boolean providesChangelog();
 
 	/**
@@ -144,11 +162,13 @@ public interface UpdateProvider
 	boolean providesDependencies();
 	//endregion
 
+	@Data
 	class UpdateFile
 	{
 		private URL downloadURL = null;
 		private String name = null, fileName = null, checksum = null, changelog = "", gameVersion = null;
 		private Version version = null;
+		private String[] gameVersions = null;
 
 		public UpdateFile() {}
 
@@ -160,76 +180,6 @@ public interface UpdateProvider
 			this.fileName = fileName;
 			this.checksum = checksum;
 			this.changelog = changelog;
-			this.gameVersion = gameVersion;
-		}
-
-		public void setName(String name)
-		{
-			this.name = name;
-		}
-
-		public void setChecksum(String checksum)
-		{
-			this.checksum = checksum;
-		}
-
-		public void setDownloadURL(URL downloadURL)
-		{
-			this.downloadURL = downloadURL;
-		}
-
-		public void setFileName(String fileName)
-		{
-			this.fileName = fileName;
-		}
-
-		public void setVersion(Version version)
-		{
-			this.version = version;
-		}
-
-		public URL getDownloadURL()
-		{
-			return downloadURL;
-		}
-
-		public String getName()
-		{
-			return name;
-		}
-
-		public String getFileName()
-		{
-			return fileName;
-		}
-
-		public Version getVersion()
-		{
-			return version;
-		}
-
-		public String getChecksum()
-		{
-			return checksum;
-		}
-
-		public String getChangelog()
-		{
-			return changelog;
-		}
-
-		public void setChangelog(String changelog)
-		{
-			this.changelog = changelog;
-		}
-
-		public String getGameVersion()
-		{
-			return gameVersion;
-		}
-
-		public void setGameVersion(String gameVersion)
-		{
 			this.gameVersion = gameVersion;
 		}
 	}

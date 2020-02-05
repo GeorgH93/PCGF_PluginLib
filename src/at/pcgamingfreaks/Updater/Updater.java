@@ -31,6 +31,9 @@ import com.google.common.io.ByteStreams;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -52,11 +55,12 @@ public abstract class Updater
 	private static final int BUFFER_SIZE = 1024;
 
 	private final File pluginsFolder, updateFolder;
-	private final UpdateProvider updateProvider;
+	protected final UpdateProvider updateProvider;
 	private final boolean announceDownloadProgress, downloadDependencies;
-	private final Logger logger;
+	protected final Logger logger;
 	private final String targetFileName;
 	private final Version localVersion;
+	@Getter @Setter	private boolean checkMinecraftVersion = false;
 
 	private UpdateResult result;
 
@@ -146,6 +150,10 @@ public abstract class Updater
 			logger.warning("You should contact the plugin author (" + getAuthor() + ") about this!");
 			result = UpdateResult.FAIL_NO_VERSION_FOUND;
 			return false;
+		}
+		if(updateProvider.providesMinecraftVersions() && isCheckMinecraftVersion()) // Update provider provides supported MC version. Lets check it.
+		{
+			return checkCompatibility();
 		}
 		return true;
 	}
@@ -401,6 +409,11 @@ public abstract class Updater
 		else if(updateMode == UpdateMode.CHECK)
 			checkForUpdate(response);
 
+	}
+
+	protected boolean checkCompatibility()
+	{
+		return true;
 	}
 
 	/**

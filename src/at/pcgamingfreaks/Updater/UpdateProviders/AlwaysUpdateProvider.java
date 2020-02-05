@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016-2018 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -111,6 +111,13 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	}
 	//endregion
 
+
+	@Override
+	public @NotNull String getName()
+	{
+		return "static URL";
+	}
+
 	@Override
 	public @NotNull UpdateResult query()
 	{
@@ -177,6 +184,18 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	public @NotNull UpdateFile[] getUpdateHistory() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
 		throw new RequestTypeNotAvailableException("This provider does not provide an update history.");
+	}
+
+	@Override
+	public @NotNull String[] getLatestMinecraftVersions() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
+	{
+		throw new RequestTypeNotAvailableException("The update provider does not provide a list of supported minecraft versions!");
+	}
+
+	@Override
+	public boolean providesMinecraftVersions()
+	{
+		return false;
 	}
 
 	//region provider property's
