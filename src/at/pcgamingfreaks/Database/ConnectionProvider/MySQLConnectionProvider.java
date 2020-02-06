@@ -45,6 +45,8 @@ public class MySQLConnectionProvider extends PooledConnectionProvider
 		poolConfig.setPassword(connectionConfiguration.getSQLPassword());
 		poolConfig.setMinimumIdle(1);
 		poolConfig.setMaximumPoolSize(connectionConfiguration.getSQLMaxConnections());
+		if(connectionConfiguration.getSQLMaxLifetime() > 0) poolConfig.setMaxLifetime(connectionConfiguration.getSQLMaxLifetime());
+		if(connectionConfiguration.getSQLIdleTimeout() > 0) poolConfig.setIdleTimeout(connectionConfiguration.getSQLIdleTimeout());
 		return poolConfig;
 	}
 

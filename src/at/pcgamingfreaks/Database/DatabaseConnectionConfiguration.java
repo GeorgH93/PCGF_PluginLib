@@ -75,4 +75,14 @@ public interface DatabaseConnectionConfiguration
 	{
 		return Math.max(1, getConfigE().getInt("Database.SQL.MaxConnections", 2));
 	}
+
+	default long getSQLMaxLifetime()
+	{
+		return getConfigE().getLong("Database.SQL.MaxLifetime", -1) * 1000;
+	}
+
+	default long getSQLIdleTimeout()
+	{
+		return getConfigE().getLong("Database.SQL.IdleTimeout", -1) * 1000;
+	}
 }
