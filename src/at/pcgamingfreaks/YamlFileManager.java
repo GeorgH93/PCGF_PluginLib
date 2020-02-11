@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,7 +25,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -117,19 +119,30 @@ public class YamlFileManager
 	 */
 	protected void doUpgrade(@NotNull YamlFileManager oldYamlFile)
 	{
-		logger.info("No custom " + fileDescription + " upgrade code. Copying data from old file to new one.");
+		doUpgrade(oldYamlFile, new HashMap<>());
+	}
+
+	/**
+	 * Allows inheriting classes to implement own code for the yaml file upgrade
+	 * If no special code is implemented all keys (which exists in both files) will be copied 1:1 into the new yaml file
+	 *
+	 * @param oldYamlFile the old yaml file
+	 */
+	protected void doUpgrade(@NotNull YamlFileManager oldYamlFile, @NotNull Map<String, String> configKeyReMappings)
+	{
 		for(String key : yaml.getKeys())
 		{
-			if(oldYamlFile.yaml.isSet(key))
+			if(key.equals(KEY_YAML_VERSION)) continue;
+			String oldKey = configKeyReMappings.getOrDefault(key, key);
+			if(oldYamlFile.yaml.isSet(oldKey))
 			{
-				if(key.equals(KEY_YAML_VERSION)) continue;
-				if(oldYamlFile.yaml.isList(key))
+				if(oldYamlFile.yaml.isList(oldKey))
 				{
-					yaml.set(key, oldYamlFile.yaml.getStringList(key, new LinkedList<>()));
+					yaml.set(key, oldYamlFile.yaml.getStringList(oldKey, new LinkedList<>()));
 				}
 				else
 				{
-					yaml.set(key, oldYamlFile.yaml.getString(key, null));
+					yaml.set(key, oldYamlFile.yaml.getString(oldKey, null));
 				}
 			}
 		}

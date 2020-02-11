@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93, MarkusWME
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -44,16 +45,10 @@ public class YamlFileManagerTest
 	@Test
 	public void testDoUpgrade() throws YamlInvalidContentException
 	{
-		final int[] infoCount = { 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(invocationOnMock -> {
-			infoCount[0]++;
-			return null;
-		}).when(mockedLogger).info(anyString());
 		YamlFileManager testFileManager = new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", new YAML("Version: 7\nTest: 2\nHallo: Welt"));
 		YamlFileManager oldFileManager = new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", new YAML("Version: 2\nTest: 5"));
 		testFileManager.doUpgrade(oldFileManager);
-		assertEquals("An info should be written to the console", 1, infoCount[0]);
 	}
 
 	@Test
@@ -241,12 +236,12 @@ public class YamlFileManagerTest
 		doNothing().when(mockedYAML).set(anyString(), anyString());
 		Field yamlField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "yaml", mockedYAML);
 		testFileManager.upgrade();
-		infos += 3;
+		infos += 2;
 		assertEquals("No warning should be written out", warnings, count[0]);
 		assertEquals("Much info should be written out on no upgrade", infos, count[1]);
 		doReturn(true).when(testFileManager).isLoaded();
 		testFileManager.upgrade();
-		infos += 3;
+		infos += 2;
 		assertEquals("No warning should be written out", warnings, count[0]);
 		assertEquals("Much info should be written out on no upgrade", infos, count[1]);
 		doReturn(false).when(testFileManager).isLoaded();
