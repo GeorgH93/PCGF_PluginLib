@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,8 +21,10 @@ import at.pcgamingfreaks.TestClasses.TestBlock;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -34,7 +36,7 @@ import static org.mockito.Mockito.*;
 
 public class ItemNameResolverTest
 {
-	@SuppressWarnings({ "ConstantConditions", "ResultOfMethodCallIgnored" })
+	@SuppressWarnings({ "ConstantConditions" })
 	@Test
 	public void testGetName() throws YamlKeyNotFoundException
 	{
@@ -42,7 +44,6 @@ public class ItemNameResolverTest
 		assertEquals("The name of the block should match", "air", itemNameResolver.getName(new TestBlock()));
 		assertEquals("The name of the material should match", "stone", itemNameResolver.getName(Material.STONE));
 		assertEquals("The name of the Minecraft material should match", "cobblestone", itemNameResolver.getName(MinecraftMaterial.fromInput("Cobblestone")));
-		assertEquals("The name of the item stack should match", "birch_fence", itemNameResolver.getName(new ItemStack(Material.BIRCH_FENCE)));
 		final int[] counts = { 0 };
 		Logger mockedLogger = mock(Logger.class);
 		doAnswer(invocationOnMock -> {
@@ -103,5 +104,51 @@ public class ItemNameResolverTest
 		assertEquals("The name of the material should match", "Stone", itemNameResolver.getName(Material.STONE, (short) -8));
 		assertEquals("The name of the material should match", "sapling", itemNameResolver.getName(Material.SAPLING, (short) -1));
 		assertEquals("The name of the material should match", "sapling", itemNameResolver.getName(Material.SAPLING, (short) -20));
+	}
+
+	@Test
+	public void testGetNameFromItemStack()
+	{
+		ItemNameResolver itemNameResolver = new ItemNameResolver();
+		// Setup item
+		ItemStack stack = mock(ItemStack.class);
+		doReturn(Material.BIRCH_FENCE).when(stack).getType();
+		doReturn((short) 1).when(stack).getDurability();
+		doReturn(false).when(stack).hasItemMeta();
+		assertEquals("The name of the item stack should match", "birch_fence", itemNameResolver.getName(stack)); // Test without custom item name
+		// Setup item meta
+		doReturn(true).when(stack).hasItemMeta();
+		ItemMeta meta = mock(ItemMeta.class);
+		doReturn(meta).when(stack).getItemMeta();
+		doReturn(false).when(meta).hasDisplayName();
+		assertEquals("The name of the item stack should match", "birch_fence", itemNameResolver.getName(stack)); // Test item with meta, but without custom item name
+		doReturn(true).when(meta).hasDisplayName();
+		doReturn("Magic Fence").when(meta).getDisplayName();
+		assertEquals("The name of the item stack should match", "Magic Fence", itemNameResolver.getName(stack)); // Test item with custom name without color
+		doReturn(ChatColor.BLUE + "Magic Fence").when(meta).getDisplayName();
+		assertEquals("The name of the item stack should match", "Magic Fence", itemNameResolver.getName(stack)); // Test item with custom name with color
+	}
+
+	@Test
+	public void testGetDisplayName()
+	{
+		ItemNameResolver itemNameResolver = new ItemNameResolver();
+		// Setup item
+		ItemStack stack = mock(ItemStack.class);
+		doReturn(Material.BIRCH_FENCE).when(stack).getType();
+		doReturn((short) 1).when(stack).getDurability();
+		doReturn(false).when(stack).hasItemMeta();
+		assertEquals("The name of the item stack should match", ChatColor.GRAY + "birch_fence", itemNameResolver.getDisplayName(stack)); // Test without custom item name
+		// Setup item meta
+		doReturn(true).when(stack).hasItemMeta();
+		ItemMeta meta = mock(ItemMeta.class);
+		doReturn(meta).when(stack).getItemMeta();
+		doReturn(false).when(meta).hasDisplayName();
+		assertEquals("The name of the item stack should match", ChatColor.GRAY + "birch_fence", itemNameResolver.getDisplayName(stack)); // Test item with meta, but without custom item name
+		doReturn(true).when(meta).hasDisplayName();
+		doReturn("Magic Fence").when(meta).getDisplayName();
+		assertEquals("The name of the item stack should match", "Magic Fence", itemNameResolver.getDisplayName(stack)); // Test item with custom name without color
+		doReturn(ChatColor.BLUE + "Magic Fence").when(meta).getDisplayName();
+		assertEquals("The name of the item stack should match", ChatColor.BLUE + "Magic Fence", itemNameResolver.getDisplayName(stack)); // Test item with custom name with color
 	}
 }

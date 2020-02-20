@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import org.apache.commons.lang3.Validate;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -100,7 +100,7 @@ public class ItemNameResolver
 	 * @param material  The material to get the name for.
 	 * @return The translated material name.
 	 */
-	public String getName(@NotNull Material material)
+	public @NotNull String getName(@NotNull Material material)
 	{
 		return getName(material, (short) -1);
 	}
@@ -112,9 +112,8 @@ public class ItemNameResolver
 	 * @param dataValue The data-value for sub materials.
 	 * @return The translated material name.
 	 */
-	public String getName(@NotNull Material material, short dataValue)
+	public @NotNull String getName(@NotNull Material material, short dataValue)
 	{
-		Validate.notNull(material);
 		Map<Short, String> namesForMaterial = names.get(material);
 		if(namesForMaterial != null)
 		{
@@ -137,9 +136,8 @@ public class ItemNameResolver
 	 * @param material  The material to get the name for.
 	 * @return The translated material name.
 	 */
-	public String getName(@NotNull MinecraftMaterial material)
+	public @NotNull String getName(@NotNull MinecraftMaterial material)
 	{
-		Validate.notNull(material);
 		return getName(material.getMaterial(), material.getDataValue());
 	}
 
@@ -149,9 +147,8 @@ public class ItemNameResolver
 	 * @param block The block to get the name for.
 	 * @return The translated block material name.
 	 */
-	public String getName(@NotNull Block block)
+	public @NotNull String getName(@NotNull Block block)
 	{
-		Validate.notNull(block);
 		//noinspection deprecation
 		return getName(block.getType(), block.getData());
 	}
@@ -162,10 +159,27 @@ public class ItemNameResolver
 	 * @param itemStack The item-stack to get the name for.
 	 * @return The translated item-stack material name.
 	 */
-	public String getName(@NotNull ItemStack itemStack)
+	public @NotNull String getName(@NotNull ItemStack itemStack)
 	{
-		Validate.notNull(itemStack);
-		//noinspection deprecation
+		if(itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName())
+		{
+			return ChatColor.stripColor(itemStack.getItemMeta().getDisplayName());
+		}
 		return getName(itemStack.getType(), itemStack.getDurability());
+	}
+
+	/**
+	 * Gets the translated name for an item-stack.
+	 *
+	 * @param itemStack The item-stack to get the name for.
+	 * @return The translated item-stack material name.
+	 */
+	public @NotNull String getDisplayName(@NotNull ItemStack itemStack)
+	{
+		if(itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName())
+		{
+			return itemStack.getItemMeta().getDisplayName();
+		}
+		return ChatColor.GRAY + getName(itemStack.getType(), itemStack.getDurability());
 	}
 }
