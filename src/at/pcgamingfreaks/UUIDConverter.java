@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -409,7 +409,7 @@ public final class UUIDConverter
 
 	public static Map<String, UUID> getUUIDsFromNamesAsUUIDs(@NotNull Collection<String> names)
 	{
-		List<String> batch = new LinkedList<>();
+		List<String> batch = new ArrayList<>(BATCH_SIZE);
 		Iterator<String> players = names.iterator();
 		Map<String, UUID> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		boolean success;

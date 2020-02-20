@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -116,7 +116,7 @@ public class StringUtils
 	{
 		Validate.notNull(source);
 		Validate.notNull(searchFor);
-		List<String> result = new LinkedList<>();
+		List<String> result = new ArrayList<>(source.length);
 		for(String str : source)
 		{
 			//noinspection ConstantConditions
@@ -132,7 +132,7 @@ public class StringUtils
 	{
 		Validate.notNull(source);
 		Validate.notNull(searchFor);
-		List<String> result = new LinkedList<>();
+		List<String> result = new ArrayList<>(source.length);
 		for(String str : source)
 		{
 			//noinspection ConstantConditions

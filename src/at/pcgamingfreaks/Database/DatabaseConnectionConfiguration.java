@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import at.pcgamingfreaks.yaml.YAML;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface DatabaseConnectionConfiguration
@@ -40,7 +40,7 @@ public interface DatabaseConnectionConfiguration
 
 	default @NotNull List<String> getSQLConnectionPropertiesList()
 	{
-		return getConfigE().getStringList("Database.SQL.Properties", new LinkedList<>());
+		return getConfigE().getStringList("Database.SQL.Properties", new ArrayList<>());
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -504,7 +504,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 				if (extra == null) continue;
 				if(this.extra == null)
 				{
-					this.extra = new LinkedList<>();
+					this.extra = new ArrayList<>();
 				}
 				this.extra.add(extra);
 			}
@@ -919,7 +919,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 			return setHoverEvent(null);
 		}
 
-		List<MessageComponent> components = new LinkedList<>();
+		List<MessageComponent> components = new ArrayList<>();
 
 		for(int i = 0; i < lines.length; i++)
 		{
@@ -1013,7 +1013,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	 */
 	protected List<T> fromJsonArrayWorker(JsonArray componentArray)
 	{
-		List<T> components = new LinkedList<>();
+		List<T> components = new ArrayList<>();
 		for(JsonElement component : componentArray)
 		{
 			if(component instanceof JsonPrimitive)

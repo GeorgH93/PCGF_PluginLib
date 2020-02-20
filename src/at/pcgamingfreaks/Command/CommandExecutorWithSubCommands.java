@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,12 +24,12 @@ import java.util.*;
 public abstract class CommandExecutorWithSubCommands<SUB_COMMAND extends SubCommand>
 {
 	protected Map<String, SUB_COMMAND> subCommandMap = new HashMap<>();
-	protected Collection<SUB_COMMAND> commands = new LinkedList<>();
+	protected Collection<SUB_COMMAND> commands = new ArrayList<>();
 	protected SUB_COMMAND defaultSubCommand = null;
 
 	public void close()
 	{
-		for(SubCommand command : commands)
+		for(SUB_COMMAND command : commands)
 		{
 			command.close();
 		}

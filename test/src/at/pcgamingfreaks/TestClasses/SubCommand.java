@@ -22,7 +22,7 @@ import at.pcgamingfreaks.Command.HelpData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SubCommand extends at.pcgamingfreaks.Command.SubCommand<TestBukkitPlayer>
@@ -42,7 +42,7 @@ public class SubCommand extends at.pcgamingfreaks.Command.SubCommand<TestBukkitP
 
 	@Nullable
 	@Override
-	public List<HelpData> getHelp(@NotNull TestBukkitPlayer requester) { return new LinkedList<>(); }
+	public List<HelpData> getHelp(@NotNull TestBukkitPlayer requester) { return new ArrayList<>(); }
 
 	@Override
 	public void doExecute(@NotNull TestBukkitPlayer testBukkitPlayer, @NotNull String mainCommandAlias, @NotNull String alias, @NotNull String[] args) { }

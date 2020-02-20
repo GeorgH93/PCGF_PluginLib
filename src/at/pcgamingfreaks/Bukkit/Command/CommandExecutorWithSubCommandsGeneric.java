@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubComman
 			{
 				return subCommand.doTabComplete(sender, alias, args[0], Arrays.copyOfRange(args, 1, args.length));
 			}
-			List<String> results = new LinkedList<>();
+			List<String> results = new ArrayList<>(subCommandMap.size());
 			if(args.length == 1)
 			{
 				for(Map.Entry<String, SUB_COMMAND> cmd : subCommandMap.entrySet())

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import com.zaxxer.hikari.HikariConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 class MySQLConnectionPool extends DatabaseConnectionPoolBase
@@ -48,7 +48,7 @@ class MySQLConnectionPool extends DatabaseConnectionPoolBase
 
 	private String getSQLConnectionProperties()
 	{
-		List<String> list = config.getConfig().getStringList("Database.SQL.Properties", new LinkedList<String>());
+		List<String> list = config.getConfig().getStringList("Database.SQL.Properties", new ArrayList<>());
 		StringBuilder str = new StringBuilder();
 		if(list != null)
 		{

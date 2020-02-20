@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message, STYLE extends Enum>
 {
-	private List<COMPONENT> messageList = new LinkedList<>();
+	private List<COMPONENT> messageList = new ArrayList<>();
 	private COMPONENT current;
 	private static Constructor EMPTY_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR = null, MESSAGE_CONSTRUCTOR = null;
 	@SuppressWarnings("unused")
@@ -534,7 +534,6 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	{
 		try
 		{
-			//noinspection ConstantConditions
 			return (MESSAGE) MESSAGE_CONSTRUCTOR.newInstance(getJsonMessageAsList());
 		}
 		catch(Exception e)

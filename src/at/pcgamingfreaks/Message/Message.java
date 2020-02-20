@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> implements IMessage<PLAYER, COMMAND_SENDER>
@@ -83,7 +82,7 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 	protected Message(@NotNull Collection<? extends MessageComponent> message)
 	{
 		Validate.notEmpty(message, "The message should not be empty!");
-		messageComponents = new LinkedList<>(message); // Lets save our deserialized JSON into an array (maybe we will need it at a later point, you never know)
+		messageComponents = new ArrayList<>(message); // Lets save our deserialized JSON into an array (maybe we will need it at a later point, you never know)
 		fallback = getClassicMessage(); // We need a fallback for the console and everything else that isn't a player
 		json = GSON.toJson(message); // We need a JSON string to send to the player, so lets generate one from the component list
 		hashCode = json.hashCode();  // Store the hashCode
@@ -107,7 +106,7 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 	 */
 	public @NotNull MessageComponent[] getMessageComponents()
 	{
-		return messageComponents.toArray(new MessageComponent[messageComponents.size()]);
+		return messageComponents.toArray(new MessageComponent[0]);
 	}
 
 	/**

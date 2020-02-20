@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -162,7 +162,7 @@ public class Version implements Comparable<Version>
 
 	private static @NotNull List<String> getAll(@NotNull String[] source, @NotNull String[] searchForArray)
 	{
-		List<String> result = new LinkedList<>();
+		List<String> result = new ArrayList<>();
 		for(String searchFor : searchForArray)
 		{
 			result.addAll(StringUtils.getAllContainingIgnoreCase(source, searchFor));
