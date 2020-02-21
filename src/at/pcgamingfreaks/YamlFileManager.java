@@ -25,9 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -127,10 +125,26 @@ public class YamlFileManager
 	 * If no special code is implemented all keys (which exists in both files) will be copied 1:1 into the new yaml file
 	 *
 	 * @param oldYamlFile the old yaml file
+	 * @param configKeyReMappings map of keys that should get remapped, key = new key, value = old key
 	 */
 	protected void doUpgrade(@NotNull YamlFileManager oldYamlFile, @NotNull Map<String, String> configKeyReMappings)
 	{
-		for(String key : yaml.getKeys())
+		doUpgrade(oldYamlFile, configKeyReMappings, new ArrayList<>());
+	}
+
+	/**
+	 * Allows inheriting classes to implement own code for the yaml file upgrade
+	 * If no special code is implemented all keys (which exists in both files) will be copied 1:1 into the new yaml file
+	 *
+	 * @param oldYamlFile the old yaml file
+	 * @param configKeyReMappings map of keys that should get remapped, key = new key, value = old key
+	 * @param keysToKeep a collection of keys that should be keep even if they do not exist in the new config
+	 */
+	protected void doUpgrade(@NotNull YamlFileManager oldYamlFile, @NotNull Map<String, String> configKeyReMappings, @NotNull Collection<String> keysToKeep)
+	{
+		List<String> keysToProcess = new ArrayList<>(yaml.getKeys());
+		keysToProcess.addAll(keysToKeep);
+		for(String key : keysToProcess)
 		{
 			if(key.equals(KEY_YAML_VERSION)) continue;
 			String oldKey = configKeyReMappings.getOrDefault(key, key);
