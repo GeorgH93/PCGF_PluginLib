@@ -24,6 +24,7 @@ import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -34,6 +35,9 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -325,7 +329,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @return The jar file of the given plugin.
 	 * @throws RuntimeException If there was a problem obtaining the plugin.
 	 */
-	public static File getPluginJarFile(JavaPlugin plugin) throws RuntimeException
+	public static File getPluginJarFile(final @NotNull JavaPlugin plugin) throws RuntimeException
 	{
 		try
 		{
@@ -336,5 +340,18 @@ public class Utils extends at.pcgamingfreaks.Utils
 		{
 			throw new RuntimeException("Failed to retrieve jar file for plugin " + plugin.getName(), e);
 		}
+	}
+
+	public static @NotNull List<String> getPlayerNamesStartingWith(@NotNull String startingWith, final @NotNull CommandSender exclude)
+	{
+		String excludeName = exclude.getName().toLowerCase(Locale.ROOT);
+		startingWith = startingWith.toLowerCase(Locale.ROOT);
+		List<String> names = new ArrayList<>();
+		for(Player player : Bukkit.getOnlinePlayers())
+		{
+			String nameLower = player.getName().toLowerCase(Locale.ROOT);
+			if(!nameLower.equals(excludeName) && nameLower.startsWith(startingWith)) names.add(player.getName());
+		}
+		return names;
 	}
 }
