@@ -161,6 +161,12 @@
 			<version>0.8.4</version>
 			<classifier>runtime</classifier>
 		</dependency>
+		<!--<dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>-->
 		<!-- endregion -->
 	</dependencies>
 
@@ -246,7 +252,8 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<createDependencyReducedPom>true</createDependencyReducedPom>
+							<dependencyReducedPomLocation>${basedir}/.dependency-reduced-pom.xml</dependencyReducedPomLocation>
 							<minimizeJar>true</minimizeJar>
 							<artifactSet>
 								<includes>

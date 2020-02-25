@@ -28,7 +28,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -45,6 +46,7 @@ Temporary Items
 .apdisk
 
 
+*.sh
 
 # =========================
 # IDE Project Files
@@ -56,3 +58,5 @@ Temporary Items
 /bin/
 *.iml
 /.idea/
+
+.dependency-reduced-pom.xml
