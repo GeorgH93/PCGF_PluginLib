@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Bukkit.Debug;
 
+import org.bukkit.entity.Item;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 
@@ -43,5 +45,20 @@ public class EventToStringUtil
 		return String.format("InventoryDragEvent { cursor: %s; oldCursor: %s; slots: %s; raw-slots: %s whoClicked: %s (%s) }",
 		                     event.getCursor() != null ? event.getCursor().getType().name() : "null", event.getOldCursor().getType().name(), event.getInventorySlots().toString(),
 		                     event.getRawSlots().toString(), event.getWhoClicked().getName(), event.getWhoClicked().getUniqueId().toString());
+	}
+
+
+	public static void logEvent(Logger logger, EntityPickupItemEvent event) { logger.info(toString(event)); }
+
+	public static String toString(EntityPickupItemEvent event)
+	{
+		return String.format("EntityPickupItemEvent { item: %s; remaining: %d; entity: %s (%s) }",
+		                     toString(event.getItem()), event.getRemaining(), event.getEntity().getName(), event.getEntity().getUniqueId().toString());
+	}
+
+	private static String toString(Item item)
+	{
+		return String.format("{ pickupDelay: %d; itemStack: { type: %s; amount: %d; durability: %d }}",
+		                     item.getPickupDelay(), item.getItemStack().getType().name(), item.getItemStack().getAmount(), item.getItemStack().getDurability()); //TODO add material data and meta
 	}
 }
