@@ -33,9 +33,9 @@ public class EventToStringUtil
 
 	public static String toString(InventoryClickEvent event)
 	{
-		return String.format("InventoryClickEvent { action: %s; click: %s; currentItem: %s; cursor: %s; slot: %d; slotType: %s; whoClicked: %s (%s) }", event.getAction().name(), event.getClick().name(),
+		return String.format("InventoryClickEvent { action: %s; click: %s; currentItem: %s; cursor: %s; slot: %d; rawSlot: %d; slotType: %s; whoClicked: %s (%s) }", event.getAction().name(), event.getClick().name(),
 		                     event.getCurrentItem() != null ? event.getCurrentItem().getType().name() : "null", event.getCursor() != null ? event.getCursor().getType().name() : "null",
-		                     event.getSlot(), event.getSlotType().name(), event.getWhoClicked().getName(), event.getWhoClicked().getUniqueId().toString());
+		                     event.getSlot(), event.getRawSlot(), event.getSlotType().name(), event.getWhoClicked().getName(), event.getWhoClicked().getUniqueId().toString());
 	}
 
 	public static void logEvent(Logger logger, InventoryDragEvent event) { logger.info(toString(event)); }
