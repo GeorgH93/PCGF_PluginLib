@@ -40,12 +40,12 @@ and provides cross version support for a lot of Minecraft features
 * Bukkit, Spigot, Paper, Uranium for MC 1.7 or newer or BungeeCord for MC 1.8 or newer
 * (Optional) PlaceholderAPI (to use it with the provided message API)
 
-## Adding it to your plugin
+## Adding it to your plugin:
 The library can be added in two ways to your plugin.
 1. Requiring it to be installed as a plugin (will be published on dev.bukkit.org and spigotmc.org soon)
 2. Shading it into your plugin (requires more RAM and some features will not work)
 
-### Adding the library as an dependency with maven
+### Adding the library as an dependency with maven:
 #### Repository:
 ```xml
 <repository>
@@ -63,11 +63,11 @@ The library can be added in two ways to your plugin.
 </dependency>
 ```
 
-### Requiring the library to be installed as a standalone plugin
+### Requiring the library to be installed as a standalone plugin:
 Add `PCGF_PluginLib` as a dependency for your Bukkit/Spigot or BungeeCord plugin.
 The users will have to install the library as a plugin. Download: https://ci.pcgamingfreaks.at/job/PluginLib/
 
-### Shading the library into your plugin with maven
+### Shading the library into your plugin with maven:
 By adding the library to your plugin through shading it will require more memory (if multiple plugins using the library are installed) and some features (DB connection sharing, translation sharing) will not be available.
 The recommended shading settings:
 ```xml
