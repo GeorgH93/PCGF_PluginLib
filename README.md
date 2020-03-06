@@ -1,9 +1,18 @@
 [ci]: https://ci.pcgamingfreaks.at/job/PluginLib/
+[ciImg]: https://ci.pcgamingfreaks.at/job/PluginLib/badge/icon
+[versionImg]: https://img.shields.io/maven-metadata/v?color=blue&label=version&metadataUrl=https%3A%2F%2Frepo.pcgamingfreaks.at%2Frepository%2Fmaven-snapshots%2Fat%2Fpcgamingfreaks%2FPluginLib%2Fmaven-metadata.xml
+[coverageImg]:https://coveralls.io/repos/github/GeorgH93/PCGF_PluginLib/badge.svg
+[coverage]: https://coveralls.io/github/GeorgH93/PCGF_PluginLib
+[license]: https://github.com/GeorgH93/PCGF_PluginLib/blob/master/LICENSE
+[licenseImg]: https://img.shields.io/github/license/GeorgH93/PCGF_PluginLib.svg
+[javadoc]: https://ci.pcgamingfreaks.at/job/PluginLib/javadoc/
 
 # PCGF - PluginLib
 A library for Bukkit, Spigot, Paper and BungeeCord, that provides commonly used functions
 and provides cross version support for a lot of Minecraft features
 (some of which are no longer supported or support for them has been added later by Bukkit/Spigot/Paper).
+
+[![Build Status][ciImg]][ci] [![Coverage Status][coverageImg]][coverage] ![Version][versionImg] [![licenseImg]][license]
 
 ## Download:
 [Build Server][ci]
@@ -14,6 +23,12 @@ and provides cross version support for a lot of Minecraft features
     * File upgrade support (copy old values in new file)
     * Comment support
 * UUID converter
+  * Supports Name -> UUID, UUID -> Name or UUID -> Name changes
+  * Supports online and offline mode UUIDs
+  * Batch converting and automatic batch size detection (in case Mojang decides to reduce the maximum batch size again)
+  * Caching
+    * If the lib is running as a Plugin the cache can be shared by all plugins using it
+    * Preloads UUIDs from the Minecraft servers UUID cache
 * Auto-updater
     * Supports multiple sites for checking and downloading of updates
         * spigotmc.org (checking + downloading (free and hosted on spigotmc.org))
@@ -59,13 +74,13 @@ The library can be added in two ways to your plugin.
 <dependency>
  	<groupId>at.pcgamingfreaks</groupId>
  	<artifactId>PluginLib</artifactId>
- 	<version>1.0.22-SNAPSHOT</version>
+ 	<version>1.0.22-SNAPSHOT</version><!-- Check version shield for newest version -->
 </dependency>
 ```
 
 ### Requiring the library to be installed as a standalone plugin:
 Add `PCGF_PluginLib` as a dependency for your Bukkit/Spigot or BungeeCord plugin.
-The users will have to install the library as a plugin. Download: https://ci.pcgamingfreaks.at/job/PluginLib/
+The users will have to install the library as a plugin. Download: [https://ci.pcgamingfreaks.at/job/PluginLib/][ci]
 
 ### Shading the library into your plugin with maven:
 By adding the library to your plugin through shading it will require more memory (if multiple plugins using the library are installed) and some features (DB connection sharing, translation sharing) will not be available.
@@ -83,19 +98,21 @@ The recommended shading settings:
             </goals>
             <configuration>
                 <createDependencyReducedPom>false</createDependencyReducedPom>
-                <minimizeJar>true</minimizeJar>
+                <minimizeJar>true</minimizeJar><!-- No need to include everything if you are only using some of the features -->
                 <artifactSet>
                     <includes>
                         <include>at.pcgamingfreaks:PluginLib</include>
                     </includes>
                 </artifactSet>
                 <relocations>
+                    <!-- Relocate the lib to prevent conflicts with other plugins using it -->
                     <relocation>
                         <pattern>at.pcgamingfreaks</pattern>
                         <shadedPattern>your_package.libs.at.pcgamingfreaks</shadedPattern>
                     </relocation>
                 </relocations>
                 <filters>
+                    <!-- Don't copy bungee.yml, bungee_config.yml, config.yml and plugin.yml to prevent conflicts with your plugin -->
                     <filter>
                         <artifact>at.pcgamingfreaks:PluginLib</artifact>
                         <excludes>
@@ -108,12 +125,12 @@ The recommended shading settings:
     </executions>
 </plugin>
 ```
-Replace `your_package` with the package of your plugin.
+Replace `your_package` with the package of your plugin.  
 **Do not shade this library into your plugin without relocation!!!**
 
 ## Links:
-* [Build Server ![Build Status](https://ci.pcgamingfreaks.at/job/PluginLib/badge/icon)][ci]
-* [Code Coverage ![Coverage Status](https://coveralls.io/repos/github/GeorgH93/PCGF_PluginLib/badge.svg)](https://coveralls.io/github/GeorgH93/PCGF_PluginLib)
-* [Javadoc](https://ci.pcgamingfreaks.at/job/PluginLib/javadoc/)
+* [Build Server ![Build Status][ciImg]][ci]
+* [Code Coverage ![Coverage Status][coverageImg]][coverage]
+* [Javadoc][javadoc]
 * Spigot (TBA)
 * Dev Bukkit (TBA)
