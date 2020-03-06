@@ -59,7 +59,7 @@ The library can be added in two ways to your plugin.
 <dependency>
  	<groupId>at.pcgamingfreaks</groupId>
  	<artifactId>PluginLib</artifactId>
- 	<version>1.0.12-SNAPSHOT</version>
+ 	<version>1.0.22-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -74,7 +74,7 @@ The recommended shading settings:
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-shade-plugin</artifactId>
-    <version>3.1.0</version>
+    <version>3.2.1</version>
     <executions>
         <execution>
             <phase>package</phase>
@@ -95,6 +95,14 @@ The recommended shading settings:
                         <shadedPattern>your_package.libs.at.pcgamingfreaks</shadedPattern>
                     </relocation>
                 </relocations>
+                <filters>
+                    <filter>
+                        <artifact>at.pcgamingfreaks:PluginLib</artifact>
+                        <excludes>
+                            <exclude>*.yml</exclude>
+                        </excludes>
+                    </filter>
+                </filters>
             </configuration>
         </execution>
     </executions>
