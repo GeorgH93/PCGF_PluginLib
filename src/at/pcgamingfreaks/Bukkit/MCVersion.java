@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import lombok.Getter;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -142,6 +143,16 @@ public enum MCVersion
 			System.out.println("Failed to obtain server version!");
 		}
 		CURRENT_VERSION = currentVersion;
+	}
+
+	public static Collection<MCVersion> getProtocolVersions()
+	{
+		return PROTOCOL_VERSION_MAP.values();
+	}
+
+	public static Collection<MCVersion> getVersions()
+	{
+		return VERSION_MAP.values();
 	}
 
 	private final int versionID;
