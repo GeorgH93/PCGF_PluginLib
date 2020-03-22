@@ -21,6 +21,8 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.logging.Logger;
 
@@ -56,9 +58,22 @@ public class EventToStringUtil
 		                     toString(event.getItem()), event.getRemaining(), event.getEntity().getName(), event.getEntity().getUniqueId().toString());
 	}
 
-	private static String toString(Item item)
+	public static String toString(Item item)
 	{
-		return String.format("{ pickupDelay: %d; itemStack: { type: %s; amount: %d; durability: %d }}",
-		                     item.getPickupDelay(), item.getItemStack().getType().name(), item.getItemStack().getAmount(), item.getItemStack().getDurability()); //TODO add material data and meta
+		return String.format("{ pickupDelay: %d; itemStack: %s}",
+		                     item.getPickupDelay(), toString(item.getItemStack())); //TODO add material data and meta
+	}
+
+	public static String toString(ItemStack itemStack)
+	{
+		return String.format("{ type: %s; amount: %d; durability: %d }", itemStack.getType().name(), itemStack.getAmount(), itemStack.getDurability());
+	}
+
+	public static void logEvent(Logger logger, PlayerInteractEvent event) { logger.info(toString(event)); }
+
+	public static String toString(PlayerInteractEvent event)
+	{
+		return String.format("PlayerInteractEvent { action: %s; player: %s (%s); item: %s; hand: %s }",
+		                     event.getAction().name(), event.getPlayer().getName(), event.getPlayer().getUniqueId().toString(), toString(event.getItem()), event.getHand());
 	}
 }
