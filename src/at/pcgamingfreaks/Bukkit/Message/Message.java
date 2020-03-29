@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	private static final boolean PRE_1_8_MC = MCVersion.isOlderThan(MCVersion.MC_1_8);
 
 	private SendMethod method = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
-	private boolean placeholderApiEnabled = false;
+	private boolean placeholderApiEnabled = false, legacy = PRE_1_8_MC;
 	//endregion
 
 	//region Constructors
@@ -54,6 +54,11 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	public Message(@NotNull String message)
 	{
 		super(message, MessageComponent.class);
+		if(fallback == message)
+		{
+			legacy = true;
+			method = SendMethod.CHAT_CLASSIC;
+		}
 	}
 
 	/**
@@ -65,6 +70,10 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	public Message(@NotNull String message, @NotNull SendMethod method)
 	{
 		this(message);
+		if(fallback == message)
+		{
+			legacy = true;
+		}
 		setSendMethod(method);
 	}
 
@@ -143,6 +152,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	{
 		if(method == null) method = SendMethod.DISABLED;
 		else if(!method.isAvailable()) method = method.getFallbackSendMethod();
+		if(method == SendMethod.CHAT && legacy) method = SendMethod.CHAT_CLASSIC;
 		this.method = method;
 	}
 

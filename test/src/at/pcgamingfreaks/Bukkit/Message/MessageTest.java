@@ -103,7 +103,7 @@ public class MessageTest
 		CommandSender mockedCommandSender = mock(CommandSender.class);
 		TestBukkitPlayer player = new TestBukkitPlayer();
 		setVersion("1_8");
-		Message message = new Message("");
+		Message message = new Message("[\"\",{\"text\":\"You don't have the permission to do that.\",\"color\":\"red\"}]");
 		message.setSendMethod(null);
 		message.send(player);
 		assertEquals("The send method should be called as often as given", playerCalls, doSendCalls[0]);
@@ -168,7 +168,7 @@ public class MessageTest
 		int currentCalls = 0;
 		final int[] broadcastCalls = { 0 };
 		setVersion("1_9");
-		Message message = new Message("");
+		Message message = new Message("[\"\",{\"text\":\"You don't have the permission to do that.\",\"color\":\"red\"}]");
 		BaseSender mockedSender = mock(ChatSender.class);
 		doAnswer(invocationOnMock -> {
 			broadcastCalls[0]++;
