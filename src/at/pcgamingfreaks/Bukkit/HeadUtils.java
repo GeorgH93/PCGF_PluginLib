@@ -35,27 +35,37 @@ public class HeadUtils
 		return createHeadItemStack(1);
 	}
 
-	public static ItemStack createHeadItemStack(int amount)
+	public static ItemStack createHeadItemStack(final int amount)
 	{
 		return (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13)) ? new ItemStack(HEAD_MATERIAL, amount) : new ItemStack(HEAD_MATERIAL, amount, (byte) 3);
 	}
 
-	public static ItemStack fromUrl(@NotNull String url, @Nullable String itemName, @Nullable UUID ownerUUID)
+	public static ItemStack fromUrl(final @NotNull String url, final @Nullable String itemName, final @Nullable UUID ownerUUID)
 	{
 		return fromBase64(encodeUrl(url), itemName, ownerUUID);
 	}
 
-	public static ItemStack fromUrl(@NotNull ItemStack item, @NotNull String url, @Nullable String itemName, @Nullable UUID ownerUUID)
+	public static ItemStack fromUrl(final @NotNull String url, final @Nullable String itemName, final @Nullable UUID ownerUUID, final int amount)
+	{
+		return fromBase64(encodeUrl(url), itemName, ownerUUID, amount);
+	}
+
+	public static ItemStack fromUrl(final @NotNull ItemStack item, final @NotNull String url, final @Nullable String itemName, final @Nullable UUID ownerUUID)
 	{
 		return fromBase64(item, encodeUrl(url), itemName, ownerUUID);
 	}
 
-	public static ItemStack fromBase64(@NotNull String value, @Nullable String itemName, @Nullable UUID ownerUUID)
+	public static ItemStack fromBase64(final @NotNull String value, final @Nullable String itemName, final @Nullable UUID ownerUUID)
 	{
 		return fromBase64(createHeadItemStack(), value, itemName, ownerUUID);
 	}
 
-	public static ItemStack fromBase64(@NotNull ItemStack item, @NotNull String value, @Nullable String itemName, @Nullable UUID ownerUUID)
+	public static ItemStack fromBase64(final @NotNull String value, @Nullable String itemName, @Nullable UUID ownerUUID, int amount)
+	{
+		return fromBase64(createHeadItemStack(amount), value, itemName, ownerUUID);
+	}
+
+	public static ItemStack fromBase64(final @NotNull ItemStack item, final @NotNull String value, final @Nullable String itemName, @Nullable UUID ownerUUID)
 	{
 		String name = "";
 		if(itemName != null)
