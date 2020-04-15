@@ -26,10 +26,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -353,5 +355,12 @@ public class Utils extends at.pcgamingfreaks.Utils
 			if(!nameLower.equals(excludeName) && nameLower.startsWith(startingWith)) names.add(player.getName());
 		}
 		return names;
+	}
+
+	public static @Nullable Inventory getClickedInventory(final @NotNull InventoryClickEvent event)
+	{
+		if (event.getRawSlot() < 0) return null;
+
+			return event.getRawSlot() < event.getView().getTopInventory().getSize() ? event.getView().getTopInventory() : event.getView().getBottomInventory();
 	}
 }
