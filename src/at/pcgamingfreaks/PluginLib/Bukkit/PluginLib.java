@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.PluginLib.Bukkit;
 
+import at.pcgamingfreaks.Bukkit.GUI.GuiListener;
 import at.pcgamingfreaks.Bukkit.ItemNameResolver;
 import at.pcgamingfreaks.Bukkit.Language;
 import at.pcgamingfreaks.Bukkit.MCVersion;
@@ -33,6 +34,7 @@ import at.pcgamingfreaks.Updater.UpdateProviders.JenkinsUpdateProvider;
 import at.pcgamingfreaks.Version;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -95,6 +97,8 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 			}
 		}
 
+		getServer().getPluginManager().registerEvents(new GuiListener(), this);
+
 		setInstance(this);
 		this.getLogger().info(StringUtils.getPluginEnabledMessage(this.getDescription().getFullName()));
 	}
@@ -104,6 +108,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 	{
 		setInstance(null);
 		Updater updater =  (this.config.getBool("Misc.AutoUpdate", true)) ? update(null) : null;
+		HandlerList.unregisterAll(this); // Stop the listeners
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.shutdown();
 		if(updater != null) updater.waitForAsyncOperation();
 		this.getLogger().info(StringUtils.getPluginDisabledMessage(this.getDescription().getFullName()));
