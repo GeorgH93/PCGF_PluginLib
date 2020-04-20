@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -37,4 +37,11 @@ public interface ConnectionProvider
 	 * Closes the connection provider and frees resources used by it.
 	 */
 	void close();
+
+	/**
+	 * Checks if the connection provider was initialized correctly.
+	 *
+	 * @return true if the connection provider was initialized correctly. false if not.
+	 */
+	boolean isAvailable();
 }

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -55,7 +55,8 @@ public abstract class PooledConnectionProvider implements ConnectionProvider
 		}
 		catch(Exception e)
 		{
-			logger.warning(ConsoleColor.RED + "There was a problem creating the connection pool for the SQL server! Please check your configuration." + ConsoleColor.RESET);
+			logger.severe(ConsoleColor.RED + "There was a problem creating the connection pool for the SQL server! Please check your configuration." + ConsoleColor.RESET);
+			logger.severe("Error: " + e.getMessage());
 		}
 	}
 
@@ -80,5 +81,11 @@ public abstract class PooledConnectionProvider implements ConnectionProvider
 			dataSource.close();
 			dataSource = null;
 		}
+	}
+
+	@Override
+	public boolean isAvailable()
+	{
+		return dataSource != null;
 	}
 }

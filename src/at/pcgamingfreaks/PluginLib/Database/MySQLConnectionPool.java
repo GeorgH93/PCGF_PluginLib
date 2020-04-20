@@ -65,4 +65,10 @@ class MySQLConnectionPool extends DatabaseConnectionPoolBase
 	{
 		return "mysql";
 	}
+
+	@Override
+	public boolean isAvailable()
+	{
+		return true;
+	}
 }
