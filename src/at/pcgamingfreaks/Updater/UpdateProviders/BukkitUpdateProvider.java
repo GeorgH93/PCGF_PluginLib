@@ -42,7 +42,7 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 {
 	//region static stuff
 	private static final String HOST = "https://api.curseforge.com/servermods/files?projectIds=";
-	private static final Pattern VERSION_PATTERN = Pattern.compile(Version.VERSION_STING_FORMAT); // Used for locating version numbers in file names, bukkit doesn't provide the version on it's own :(
+	private static final Pattern VERSION_PATTERN = Pattern.compile(Version.VERSION_STING_FORMAT); // Used for locating version numbers in file names, bukkit doesn't provide the version on its own :(
 	//endregion
 
 	private final int projectID;
@@ -51,12 +51,12 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 
 	private UpdateFile[] lastHistory = null;
 
-	public BukkitUpdateProvider(int projectID, @NotNull Logger logger)
+	public BukkitUpdateProvider(final int projectID, final @NotNull Logger logger)
 	{
 		this(projectID, null, logger);
 	}
 
-	public BukkitUpdateProvider(int projectID, @Nullable String apiKey, @NotNull Logger logger)
+	public BukkitUpdateProvider(final int projectID, final @Nullable String apiKey, final @NotNull Logger logger)
 	{
 		super(logger);
 		this.projectID = projectID;
@@ -121,7 +121,7 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 					}
 					catch(MalformedURLException e)
 					{
-						logger.warning(ConsoleColor.RED + "Failed to interpret download url \"" + devBukkitVersions[devBukkitVersions.length - 1].downloadUrl + "\"!" + ConsoleColor.RESET);
+						logger.warning(ConsoleColor.RED + "Failed to interpret the download url \"" + devBukkitVersions[devBukkitVersions.length - 1].downloadUrl + "\"!" + ConsoleColor.RESET);
 						e.printStackTrace();
 						return UpdateResult.FAIL_FILE_NOT_FOUND;
 					}

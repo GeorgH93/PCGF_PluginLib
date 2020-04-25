@@ -43,7 +43,6 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	/**
 	 * @param url The url to the file that should be downloaded.
 	 */
-	@Deprecated
 	public AlwaysUpdateProvider(@NotNull String url)
 	{
 		this(url, "file.jar");
@@ -53,7 +52,6 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param url      The url to the file that should be downloaded.
 	 * @param fileName The name of the file.
 	 */
-	@Deprecated
 	public AlwaysUpdateProvider(@NotNull String url, String fileName)
 	{
 		this(url, fileName, ReleaseType.RELEASE);
@@ -64,7 +62,6 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 * @param fileName    The name of the file.
 	 * @param releaseType The release type.
 	 */
-	@Deprecated
 	public AlwaysUpdateProvider(@NotNull String url, String fileName, ReleaseType releaseType)
 	{
 		this.releaseType = releaseType;
