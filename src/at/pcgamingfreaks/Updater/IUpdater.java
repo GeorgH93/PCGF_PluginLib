@@ -17,8 +17,15 @@
 
 package at.pcgamingfreaks.Updater;
 
-@FunctionalInterface
-public interface UpdateResponseCallback
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public interface IUpdater
 {
-	void onDone(UpdateResult result);
+	void checkForUpdate(final @Nullable UpdateResponseCallback response);
+	void update();
+	void update(final @Nullable UpdateResponseCallback response);
+	void update(final @NotNull UpdateMode updateMode, final @Nullable UpdateResponseCallback response);
+	void waitForAsyncOperation();
+	boolean isRunning();
 }

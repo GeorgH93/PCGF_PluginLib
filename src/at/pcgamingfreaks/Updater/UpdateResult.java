@@ -27,7 +27,7 @@ public enum UpdateResult
 	 */
 	SUCCESS,
 	/**
-	 * The updater did not find an update, and nothing was downloaded.
+	 * The updater did not find an update, and nothing has been downloaded.
 	 */
 	NO_UPDATE,
 	/**
@@ -65,5 +65,9 @@ public enum UpdateResult
 	/**
 	 * The updater was able to update the main plugin, but failed downloading the dependencies.
 	 */
-	SUCCESS_DEPENDENCY_DOWNLOAD_FAILED
+	SUCCESS_DEPENDENCY_DOWNLOAD_FAILED,
+	/**
+	 * The updater was unable to run because it has already been started.
+	 */
+	FAIL_UPDATE_ALREADY_IN_PROGRESS
 }

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2017 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.MockRepository;
@@ -55,14 +54,15 @@ import java.util.zip.ZipFile;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.*;
 
+@SuppressWarnings("UnstableApiUsage")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ByteStreams.class, FileOutputStream.class, Updater.class, Utils.class })
 public class UpdaterTest
@@ -96,6 +96,12 @@ public class UpdaterTest
 
 			@Override
 			public void waitForAsyncOperation() {}
+
+			@Override
+			public boolean isRunning()
+			{
+				return false;
+			}
 		};
 	}
 
@@ -118,7 +124,6 @@ public class UpdaterTest
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException
 	{
-		//noinspection SpellCheckingInspection
 		bukkitProvider = new BukkitUpdateProvider(74734, LOGGER); // 74734 is the Bukkit id of Marriage Master
 		//noinspection ResultOfMethodCallIgnored
 		new File("plugins/updates").mkdirs();
@@ -127,7 +132,6 @@ public class UpdaterTest
 		TestUtils.initReflection();
 	}
 
-	@SuppressWarnings("SpellCheckingInspection")
 	@Test
 	public void testBukkitUpdateProviderProperties()
 	{
@@ -138,36 +142,21 @@ public class UpdaterTest
 		assertTrue(bukkitProvider.providesUpdateHistory());
 	}
 
-	@SuppressWarnings("SpellCheckingInspection")
 	@Test
 	public void testBukkitUpdateProvider()
 	{
-		assertEquals("The result of the query should be success.", UpdateResult.SUCCESS, bukkitProvider.query());
+		assertEquals("The result of the query should be \"SUCCESS\".", UpdateResult.SUCCESS, bukkitProvider.query());
 	}
 
 	@Test
 	public void testUpdateCheck() throws NoSuchFieldException, IllegalAccessException
 	{
 		Updater updater = getUpdater("1.0");
-		updater.checkForUpdate(new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result2)
-			{
-				assertEquals(UpdateResult.UPDATE_AVAILABLE, result2);
-			}
-		});
+		updater.checkForUpdate(result2 -> assertEquals(UpdateResult.UPDATE_AVAILABLE, result2));
 		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
 		doReturn(UpdateResult.DISABLED).when(mockedUpdateProvider).query();
 		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
-		updater.checkForUpdate(new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result2)
-			{
-				assertEquals(UpdateResult.DISABLED, result2);
-			}
-		});
+		updater.checkForUpdate(result2 -> assertEquals(UpdateResult.DISABLED, result2));
 		TestUtils.setUnaccessible(updateProvider, updater, true);
 	}
 
@@ -175,14 +164,7 @@ public class UpdaterTest
 	public void testUpdateCheckNoUpdateAvailable()
 	{
 		Updater updater = getUpdater("99.0");
-		updater.checkForUpdate(new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result2)
-			{
-				assertEquals(UpdateResult.NO_UPDATE, result2);
-			}
-		});
+		updater.checkForUpdate(result2 -> assertEquals(UpdateResult.NO_UPDATE, result2));
 	}
 
 	@Test
@@ -208,14 +190,9 @@ public class UpdaterTest
 	public void testUpdateDownloadNoUpdateAvailable()
 	{
 		Updater updater = getUpdater("99.0");
-		updater.update(new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result2)
-			{
-				assertEquals("The update result should be correct", UpdateResult.NO_UPDATE, result2);
-				assertFalse("The target file should not exist", TARGET_FILE.exists());
-			}
+		updater.update(result2 -> {
+			assertEquals("The update result should be correct", UpdateResult.NO_UPDATE, result2);
+			assertFalse("The target file should not exist", TARGET_FILE.exists());
 		});
 	}
 
@@ -224,14 +201,7 @@ public class UpdaterTest
 	{
 		int shouldHaveUpdateResponses = 0;
 		final int[] updateResponses = { 0 };
-		final Updater.UpdaterResponse updaterResponse = new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result)
-			{
-				updateResponses[0]++;
-			}
-		};
+		final Updater.UpdaterResponse updaterResponse = result -> updateResponses[0]++;
 		final Updater updater = spy(getUpdater("1.0"));
 		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
 		doReturn(UpdateResult.DISABLED).when(mockedUpdateProvider).query();
@@ -260,84 +230,44 @@ public class UpdaterTest
 		UpdateProvider.UpdateFile updateFile = new UpdateProvider.UpdateFile(new URL("http://www.test.download.link"), "DepFile", new Version("1.0"), "", "", "", "");
 		doReturn(new UpdateProvider.UpdateFile[] { updateFile }).when(mockedUpdateProvider).getLatestDependencies();
 		Field downloadDependencies = TestUtils.setAccessible(Updater.class, updater, "downloadDependencies", true);
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				result.set(updater, UpdateResult.SUCCESS);
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			result.set(updater, UpdateResult.SUCCESS);
+			return null;
 		}).when(updater).download(any(URL.class), anyString());
-		updater.update(new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result)
-			{
-				updateResponses[0]++;
-				assertEquals("The update result should be correct", UpdateResult.SUCCESS, result);
-			}
+		updater.update(result15 -> {
+			updateResponses[0]++;
+			assertEquals("The update result should be correct", UpdateResult.SUCCESS, result15);
 		});
 		shouldHaveUpdateResponses++;
 		doReturn("").when(mockedUpdateProvider).getLatestFileName();
-		doAnswer(new Answer()
-		{
-			@Override
-			public Void answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				result.set(updater, UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED);
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			result.set(updater, UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED);
+			return null;
 		}).when(updater).download(updateFile.getDownloadURL(), updateFile.getFileName());
-		updater.update(new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result)
-			{
-				updateResponses[0]++;
-				assertEquals("The update result should be correct", UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED, result);
-			}
+		updater.update(result1 -> {
+			updateResponses[0]++;
+			assertEquals("The update result should be correct", UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED, result1);
 		});
 		shouldHaveUpdateResponses++;
 		doReturn(null).when(mockedUpdateProvider).getLatestDependencies();
-		updater.update(new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result)
-			{
-				updateResponses[0]++;
-				assertEquals("The update result should be correct", UpdateResult.SUCCESS, result);
-			}
+		updater.update(result12 -> {
+			updateResponses[0]++;
+			assertEquals("The update result should be correct", UpdateResult.SUCCESS, result12);
 		});
 		shouldHaveUpdateResponses++;
 		doReturn(false).when(mockedUpdateProvider).providesDependencies();
-		updater.update(new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result)
-			{
-				updateResponses[0]++;
-				assertEquals("The update result should be correct", UpdateResult.SUCCESS, result);
-			}
+		updater.update(result14 -> {
+			updateResponses[0]++;
+			assertEquals("The update result should be correct", UpdateResult.SUCCESS, result14);
 		});
 		shouldHaveUpdateResponses++;
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				result.set(updater, UpdateResult.FAIL_DOWNLOAD);
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			result.set(updater, UpdateResult.FAIL_DOWNLOAD);
+			return null;
 		}).when(updater).download(any(URL.class), anyString());
-		updater.update(new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result)
-			{
-				updateResponses[0]++;
-				assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result);
-			}
+		updater.update(result13 -> {
+			updateResponses[0]++;
+			assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result13);
 		});
 		updater.update();
 		TestUtils.setUnaccessible(result, updater, true);
@@ -355,7 +285,6 @@ public class UpdaterTest
 		updater.unzip(new File("Not-Found.zip"));
 		URL zipArchive = Updater.class.getResource("/ZIP-Archive.zip");
 		setFile(zipArchive, file);
-		//noinspection ResultOfMethodCallIgnored
 		updater.unzip(file);
 		File jarFile = new File("plugins/updates/Test-JAR.jar");
 		assertTrue("The jar file should be unzipped", jarFile.exists());
@@ -373,35 +302,18 @@ public class UpdaterTest
 		ZipEntry mockedZipEntry = mock(ZipEntry.class);
 		doReturn("Test-JAR.jar").when(mockedZipEntry).getName();
 		final Enumeration mockedEnumeration = mock(Enumeration.class);
-		doAnswer(new Answer()
-		{
-			@Override
-			public Boolean answer(InvocationOnMock invocationOnMock)
-			{
-				hasMore[0] = !hasMore[0];
-				return hasMore[0];
-			}
+		doAnswer(invocationOnMock -> {
+			hasMore[0] = !hasMore[0];
+			return hasMore[0];
 		}).when(mockedEnumeration).hasMoreElements();
 		doReturn(mockedZipEntry).when(mockedEnumeration).nextElement();
-		doAnswer(new Answer()
-		{
-			@Override
-			public Enumeration answer(InvocationOnMock invocationOnMock)
-			{
-				hasMore[0] = false;
-				return mockedEnumeration;
-			}
+		doAnswer(invocationOnMock -> {
+			hasMore[0] = false;
+			return mockedEnumeration;
 		}).when(mockedZipFile).entries();
 		whenNew(ZipFile.class).withAnyArguments().thenReturn(mockedZipFile);
 		mockStatic(ByteStreams.class);
-		PowerMockito.doAnswer(new Answer<Long>()
-		{
-			@Override
-			public Long answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				return (long) ((InputStream) invocationOnMock.getArguments()[0]).available();
-			}
-		}).when(ByteStreams.class, "copy", any(BufferedInputStream.class), any(BufferedOutputStream.class));
+		PowerMockito.doAnswer((Answer<Long>) invocationOnMock -> (long) ((InputStream) invocationOnMock.getArguments()[0]).available()).when(ByteStreams.class, "copy", any(BufferedInputStream.class), any(BufferedOutputStream.class));
 		updater.unzip(file);
 		BufferedOutputStream mockedOutputStream = mock(BufferedOutputStream.class);
 		doThrow(new IOException()).when(mockedOutputStream).flush();
@@ -467,7 +379,6 @@ public class UpdaterTest
 		assertEquals("The exception should be the correct one", NullPointerException.class, exception.getClass());
 		//noinspection ResultOfMethodCallIgnored
 		file.delete();
-		//noinspection ResultOfMethodCallIgnored
 		File testJAR = new File("plugins/updates/Test-JAR.jar");
 		//noinspection ResultOfMethodCallIgnored
 		testJAR.delete();

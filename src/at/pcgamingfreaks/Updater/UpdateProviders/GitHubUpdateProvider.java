@@ -244,7 +244,7 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 	@Override
 	public @NotNull ChecksumType providesChecksum()
 	{
-		return (assetMD5Pattern != null && (lastResult == null || !lastResult.getChecksum().isEmpty())) ? ChecksumType.MD5 : ChecksumType.NONE;
+		return (assetMD5Pattern != null && (lastResult == null || (lastResult.getChecksum() != null && !lastResult.getChecksum().isEmpty()))) ? ChecksumType.MD5 : ChecksumType.NONE;
 	}
 
 	@Override

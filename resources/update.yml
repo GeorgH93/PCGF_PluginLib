@@ -1,0 +1,10 @@
+UpdateProviders:
+  Jenkins:
+    Type: Jenkins
+    Server: "https://ci.pcgamingfreaks.at"
+    Job: "PluginLib"
+
+UpdateChannels:
+  Master: [ Jenkins ]
+
+DefaultChannel: Master

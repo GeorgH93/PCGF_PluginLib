@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -88,11 +89,11 @@ public class Utils
 	 *
 	 * @param pluginClass The main-class of the plugin that holds the file to be extracted.
 	 * @param logger      The logger to be used for messages.
-	 * @param inJarPath   The files path in the jar file.
+	 * @param inJarPath   The file's path in the jar file.
 	 * @param targetFile  The file where the content should be extracted to.
 	 * @return True if the file has been extracted successful, false if not.
 	 */
-	public static boolean extractFile(@NotNull Class<?> pluginClass, @NotNull Logger logger, @NotNull String inJarPath, @NotNull File targetFile)
+	public static boolean extractFile(final @NotNull Class<?> pluginClass, final @NotNull Logger logger, @NotNull String inJarPath, final @NotNull File targetFile)
 	{
 		try
 		{
@@ -179,7 +180,7 @@ public class Utils
 	}
 
 	/**
-	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 * Parses a string into a number. Unlike Java's implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
 	 *
 	 * @param string The string that should be parsed.
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
@@ -279,6 +280,22 @@ public class Utils
 		catch(IOException e)
 		{
 			e.printStackTrace();
+		}
+	}
+
+	public static @Nullable InputStream getResource(final @NotNull Class<?> pluginMainClass, final @NotNull String filename)
+	{
+		try
+		{
+			final URL url = pluginMainClass.getClassLoader().getResource(filename);
+			if (url == null) return null;
+			URLConnection connection = url.openConnection();
+			connection.setUseCaches(false);
+			return connection.getInputStream();
+		}
+		catch (IOException ignored)
+		{
+			return null;
 		}
 	}
 }

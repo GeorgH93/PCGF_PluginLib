@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +31,7 @@ import java.util.logging.Level;
 
 public class Updater extends at.pcgamingfreaks.Updater.Updater
 {
-	private final JavaPlugin plugin;
+	private final Plugin plugin;
 	private Thread thread;
 
 	/**
@@ -104,7 +105,7 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 	@Override
 	public void waitForAsyncOperation()
 	{
-		if (thread != null && thread.isAlive())
+		if (isRunning())
 		{
 			try
 			{
@@ -115,6 +116,12 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 				plugin.getLogger().log(Level.SEVERE, null, e);
 			}
 		}
+	}
+
+	@Override
+	public boolean isRunning()
+	{
+		return thread != null && thread.isAlive();
 	}
 
 	@Override

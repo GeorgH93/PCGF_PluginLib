@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,18 +18,16 @@
 package at.pcgamingfreaks.PluginLib.Bungee;
 
 import at.pcgamingfreaks.Bungee.Configuration;
-import at.pcgamingfreaks.Bungee.Updater;
+import at.pcgamingfreaks.Bungee.ManagedUpdater;
 import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.*;
 import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
-import at.pcgamingfreaks.Updater.UpdateProviders.JenkinsUpdateProvider;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import lombok.AccessLevel;
@@ -42,6 +40,7 @@ public final class PluginLib extends Plugin implements PluginLibrary
 {
 	@Getter @Setter(AccessLevel.PRIVATE) private static PluginLibrary instance = null;
 
+	private ManagedUpdater updater;
 	private Configuration config;
 	@Getter private Version version;
 	@Getter private DatabaseConnectionPoolBase databaseConnectionPool;
@@ -49,6 +48,7 @@ public final class PluginLib extends Plugin implements PluginLibrary
 	@Override
 	public void onEnable()
 	{
+		this.updater = new ManagedUpdater(this);
 		this.version = new Version(this.getDescription().getVersion());
 		this.config = new Configuration(this, 1);
 		if(!this.config.isLoaded())
@@ -59,11 +59,7 @@ public final class PluginLib extends Plugin implements PluginLibrary
 
 		this.databaseConnectionPool = DatabaseConnectionPoolBase.startPool(this.config, this.getLogger(), this.getDataFolder());
 
-		if(this.config.getBool("Misc.AutoUpdate", true))
-		{
-			Updater updater = new Updater(this, true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
-			updater.update();
-		}
+		if(this.config.getBool("Misc.AutoUpdate", true)) updater.update();
 
 		Language commonLanguage = new at.pcgamingfreaks.Bungee.Language(this, 2, File.separator + "lang", "common_");
 		commonLanguage.load(config.getLanguage(), config.getLanguageUpdateMode());
@@ -89,17 +85,10 @@ public final class PluginLib extends Plugin implements PluginLibrary
 	public void onDisable()
 	{
 		setInstance(null);
-		Updater updater =  (this.config.getBool("Misc.AutoUpdate", true)) ? update(null) : null;
+		if(this.config.getBool("Misc.AutoUpdate", true)) updater.update();
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.shutdown();
 		if(updater != null) updater.waitForAsyncOperation();
 		this.getLogger().info(StringUtils.getPluginDisabledMessage(this.getDescription().getName(), version));
-	}
-
-	public @NotNull Updater update(@Nullable Updater.UpdaterResponse responseCallback)
-	{
-		Updater updater = new Updater(this, true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
-		updater.update(responseCallback);
-		return updater;
 	}
 
 	@Override

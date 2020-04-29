@@ -48,14 +48,14 @@ import java.util.zip.ZipFile;
 
 /**
  * This is a very raw implementation of a plugin updater only using java functions.
- * This way we can use the same code on Bukkit/Spigot and BungeeCord
+ * This way we can use the same code on Bukkit/Spigot and BungeeCord.
  */
-public abstract class Updater
+public abstract class Updater implements IUpdater
 {
 	private static final int BUFFER_SIZE = 1024;
 
 	private final File pluginsFolder, updateFolder;
-	protected final UpdateProvider updateProvider;
+	@Setter @Getter protected UpdateProvider updateProvider;
 	private final boolean announceDownloadProgress, downloadDependencies;
 	protected final Logger logger;
 	private final String targetFileName;
@@ -81,7 +81,7 @@ public abstract class Updater
 		this.targetFileName = targetFileName;
 
 		//region Check if updater is disabled globally
-		// Check if there is a updater config and if updating is globally disabled.
+		// Check if there is an updater config and if updating is globally disabled.
 		final File updaterConfigFile = new File(pluginsFolder, "Updater" + File.separator + "config.yml");
 		if(updaterConfigFile.exists())
 		{
@@ -151,7 +151,7 @@ public abstract class Updater
 			result = UpdateResult.FAIL_NO_VERSION_FOUND;
 			return false;
 		}
-		if(updateProvider.providesMinecraftVersions() && isCheckMinecraftVersion()) // Update provider provides supported MC version. Lets check it.
+		if(updateProvider.providesMinecraftVersions() && isCheckMinecraftVersion()) // Update provider provides supported MC version. Let's check it.
 		{
 			return checkCompatibility();
 		}
@@ -228,7 +228,7 @@ public abstract class Updater
 				String MD5Download = Utils.byteArrayToHex(hashGenerator.digest()).toLowerCase(Locale.ROOT), MD5Target = updateProvider.getLatestChecksum().toLowerCase(Locale.ROOT);
 				if(!MD5Download.equals(MD5Target))
 				{
-					logger.warning("The auto-updater was able to download the file, but the checksum did not match! Delete file.");
+					logger.warning("The auto-updater was able to download the file, but the checksum did not match! Deleting file.");
 					logger.warning("Checksum expected: " + MD5Target + " Checksum download: " + MD5Download);
 					result = UpdateResult.FAIL_DOWNLOAD;
 					if(!downloadFile.delete())
@@ -256,13 +256,11 @@ public abstract class Updater
 		catch(NotSuccessfullyQueriedException e)
 		{
 			logger.warning(ConsoleColor.RED + "The update provider was not queried successfully!" + ConsoleColor.RESET);
-			e.printStackTrace();
 			result = UpdateResult.FAIL_NO_VERSION_FOUND;
 		}
 		catch(IOException e)
 		{
-			logger.warning("The auto-updater tried to download a new update, but was unsuccessful.");
-			e.printStackTrace();
+			logger.warning("The auto-updater tried to download a new update, but was unsuccessful.\n\t\tReason: " + e.toString());
 			result = UpdateResult.FAIL_DOWNLOAD;
 		}
 	}
@@ -304,7 +302,6 @@ public abstract class Updater
 
 	protected boolean isPluginFile(String name)
 	{
-		//noinspection ConstantConditions
 		for(final File file : pluginsFolder.listFiles())
 		{
 			if(file.getName().equals(name)) return true;
@@ -327,6 +324,7 @@ public abstract class Updater
 		return null;
 	}
 
+	@Override
 	public void update()
 	{
 		update(null);
@@ -341,8 +339,14 @@ public abstract class Updater
 		update((UpdateResponseCallback) response);
 	}
 
+	@Override
 	public void update(final @Nullable UpdateResponseCallback response)
 	{
+		if(isRunning())
+		{
+			if(response != null) response.onDone(UpdateResult.FAIL_UPDATE_ALREADY_IN_PROGRESS);
+			return;
+		}
 		if(result == UpdateResult.DISABLED) return;
 		runAsync(() -> {
 			result = updateProvider.query();
@@ -389,8 +393,14 @@ public abstract class Updater
 		checkForUpdate((UpdateResponseCallback) response);
 	}
 
+	@Override
 	public void checkForUpdate(final @Nullable UpdateResponseCallback response)
 	{
+		if(isRunning())
+		{
+			if(response != null) response.onDone(UpdateResult.FAIL_UPDATE_ALREADY_IN_PROGRESS);
+			return;
+		}
 		if(result == UpdateResult.DISABLED) return;
 		runAsync(() -> {
 			result = updateProvider.query();
@@ -402,13 +412,13 @@ public abstract class Updater
 		});
 	}
 
+	@Override
 	public void update(final @NotNull UpdateMode updateMode, final @Nullable UpdateResponseCallback response)
 	{
 		if(updateMode == UpdateMode.UPDATE)
 			update(response);
 		else if(updateMode == UpdateMode.CHECK)
 			checkForUpdate(response);
-
 	}
 
 	protected boolean checkCompatibility()

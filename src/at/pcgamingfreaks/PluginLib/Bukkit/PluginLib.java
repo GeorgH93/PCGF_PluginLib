@@ -19,9 +19,7 @@ package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.GUI.GuiListener;
 import at.pcgamingfreaks.Bukkit.ItemNameResolver;
-import at.pcgamingfreaks.Bukkit.Language;
-import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.Updater;
+import at.pcgamingfreaks.Bukkit.*;
 import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.ConsoleColor;
@@ -30,7 +28,7 @@ import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
 import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.StringUtils;
-import at.pcgamingfreaks.Updater.UpdateProviders.JenkinsUpdateProvider;
+import at.pcgamingfreaks.Updater.UpdateResponseCallback;
 import at.pcgamingfreaks.Version;
 
 import org.bukkit.Bukkit;
@@ -49,6 +47,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 {
 	@Getter @Setter(AccessLevel.PRIVATE) private static PluginLibrary instance = null;
 
+	private ManagedUpdater updater;
 	private Config config;
 	@Getter private Version version;
 	@Getter private DatabaseConnectionPoolBase databaseConnectionPool;
@@ -57,6 +56,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 	@Override
 	public void onEnable()
 	{
+		updater = new ManagedUpdater(this);
 		this.version = new Version(this.getDescription().getVersion());
 		this.config = new Config(this, 1);
 		if(!this.config.isLoaded())
@@ -65,6 +65,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 			this.setEnabled(false);
 			return;
 		}
+		if(this.config.getBool("Misc.AutoUpdate", true)) updater.update();
 
 		if(MCVersion.is(MCVersion.UNKNOWN))
 		{
@@ -72,12 +73,6 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 		}
 
 		this.databaseConnectionPool = DatabaseConnectionPoolBase.startPool(this.config, this.getLogger(), this.getDataFolder());
-
-		if(this.config.getBool("Misc.AutoUpdate", true))
-		{
-			Updater updater = new Updater(this, true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
-			updater.update();
-		}
 
 		itemNameResolver = new at.pcgamingfreaks.PluginLib.Bukkit.ItemNameResolver(this);
 
@@ -107,18 +102,23 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 	public void onDisable()
 	{
 		setInstance(null);
-		Updater updater =  (this.config.getBool("Misc.AutoUpdate", true)) ? update(null) : null;
+		if(this.config.getBool("Misc.AutoUpdate", true)) updater.update();
 		HandlerList.unregisterAll(this); // Stop the listeners
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.shutdown();
-		if(updater != null) updater.waitForAsyncOperation();
+		updater.waitForAsyncOperation();
 		this.getLogger().info(StringUtils.getPluginDisabledMessage(this.getDescription().getFullName()));
 	}
 
+	@Deprecated
 	public @NotNull Updater update(@Nullable at.pcgamingfreaks.Updater.Updater.UpdaterResponse responseCallback)
 	{
-		Updater updater = new Updater(this, true, new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", getLogger()));
+		update((UpdateResponseCallback) responseCallback);
+		return updater.getUpdater();
+	}
+
+	public void update(final @Nullable UpdateResponseCallback responseCallback)
+	{
 		updater.update(responseCallback);
-		return updater;
 	}
 
 	Config getConfiguration()

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016, 2018 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,12 +20,14 @@ package at.pcgamingfreaks.Bungee;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import org.jetbrains.annotations.NotNull;
 
 public class Updater extends at.pcgamingfreaks.Updater.Updater
 {
 	private final Plugin plugin;
+	private ScheduledTask task = null;
 
 	public Updater(Plugin plugin, boolean announceDownloadProgress, UpdateProvider updateProvider)
 	{
@@ -42,12 +44,13 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 	protected void runSync(Runnable runnable)
 	{
 		runnable.run(); // BungeeCord runs everything async
+		task = null;
 	}
 
 	@Override
 	protected void runAsync(Runnable runnable)
 	{
-		plugin.getProxy().getScheduler().runAsync(plugin, runnable);
+		task = plugin.getProxy().getScheduler().runAsync(plugin, runnable);
 	}
 
 
@@ -59,4 +62,10 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 
 	@Override
 	public void waitForAsyncOperation() {} // We can't wait for the async operation to finish, BungeeCord doesn't allow us to start threads
+
+	@Override
+	public boolean isRunning()
+	{
+		return task != null;
+	}
 }
