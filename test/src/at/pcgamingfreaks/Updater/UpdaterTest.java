@@ -169,21 +169,16 @@ public class UpdaterTest
 
 	@Test
 	public void testUpdateDownload()
-	{ //TODO re-enable once curseforge fixes its servers
-		/*Updater updater = getUpdater("1.0");
+	{
+		Updater updater = getUpdater("1.0");
 		//noinspection ResultOfMethodCallIgnored
 		new File("plugins/updates").delete();
-		updater.update(new Updater.UpdaterResponse()
-		{
-			@Override
-			public void onDone(UpdateResult result2)
-			{
-				assertEquals("The update result should be correct", UpdateResult.SUCCESS, result2);
-				assertTrue("The target file should exist", TARGET_FILE.exists());
-				//noinspection ResultOfMethodCallIgnored
-				TARGET_FILE.delete();
-			}
-		});*/
+		updater.update(result2 -> {
+			assertEquals("The update result should be correct", UpdateResult.SUCCESS, result2);
+			assertTrue("The target file should exist", TARGET_FILE.exists());
+			//noinspection ResultOfMethodCallIgnored
+			TARGET_FILE.delete();
+		});
 	}
 
 	@Test
