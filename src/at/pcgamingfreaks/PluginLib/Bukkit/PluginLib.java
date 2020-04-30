@@ -47,7 +47,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 {
 	@Getter @Setter(AccessLevel.PRIVATE) private static PluginLibrary instance = null;
 
-	private ManagedUpdater updater;
+	@Getter private ManagedUpdater updater;
 	private Config config;
 	@Getter private Version version;
 	@Getter private DatabaseConnectionPoolBase databaseConnectionPool;
@@ -116,6 +116,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 		return updater.getUpdater();
 	}
 
+	@Deprecated
 	public void update(final @Nullable UpdateResponseCallback responseCallback)
 	{
 		updater.update(responseCallback);

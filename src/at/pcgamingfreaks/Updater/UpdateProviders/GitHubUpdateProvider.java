@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("RedundantThrows")
 public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 { //TODO allow to chose checksum type
-	private static final Pattern IN_MD_5_SEARCH_PATTERN = Pattern.compile("(?<hash>[\\da-fA-F]{32}) \\*(?<file>.*)");
+	private static final Pattern IN_MD_5_SEARCH_PATTERN = Pattern.compile("(?<hash>[\\da-fA-F]{32})\\s+\\*?(?<file>.*)");
 	private final URL url;
 	private final @NotNull Pattern assetJarPattern;
 	private final @Nullable Pattern assetMD5Pattern;

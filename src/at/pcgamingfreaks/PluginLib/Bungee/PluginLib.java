@@ -40,7 +40,7 @@ public final class PluginLib extends Plugin implements PluginLibrary
 {
 	@Getter @Setter(AccessLevel.PRIVATE) private static PluginLibrary instance = null;
 
-	private ManagedUpdater updater;
+	@Getter private ManagedUpdater updater;
 	private Configuration config;
 	@Getter private Version version;
 	@Getter private DatabaseConnectionPoolBase databaseConnectionPool;
