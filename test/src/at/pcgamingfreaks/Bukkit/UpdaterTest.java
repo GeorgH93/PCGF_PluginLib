@@ -57,9 +57,9 @@ public class UpdaterTest
 	private static PluginDescriptionFile mockedPluginDescription;
 	private static String runnableStatus = "";
 
-	private Runnable syncRunnable = () -> runnableStatus = "SYNC";
+	private final Runnable syncRunnable = () -> runnableStatus = "SYNC";
 
-	private Runnable asyncRunnable = () -> {
+	private final Runnable asyncRunnable = () -> {
 		runnableStatus = "ASYNC";
 		try
 		{
@@ -159,35 +159,22 @@ public class UpdaterTest
 	{
 		TestUtils.initReflection();
 		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, new BukkitUpdateProvider(74734, TestObjects.getJavaPlugin().getLogger()));
-		final Thread mockedThread = new Thread(() -> {
-			int i = 0;
-			//noinspection InfiniteLoopStatement
-			while(true)
-			{
-				i++;
-				if(i > 1000000000)
-				{
-					i = -1000000000;
-				}
-			}
-		});
-		Thread starterThread = new Thread(() -> {
-			mockedThread.start();
+		final Thread dummyThread = new Thread(() -> {
 			try
 			{
-				Thread.sleep(1000);
-				mockedThread.interrupt();
-				Thread.currentThread().interrupt();
+				Thread.sleep(100);
 			}
 			catch(InterruptedException e)
 			{
 				e.printStackTrace();
 			}
 		});
-		Field thread = TestUtils.setAccessible(Updater.class, updater, "thread", mockedThread);
-		starterThread.start();
+		Field thread = TestUtils.setAccessible(Updater.class, updater, "thread", dummyThread);
+		dummyThread.start();
+		assertTrue(updater.isRunning());
 		Thread.sleep(100);
 		updater.waitForAsyncOperation();
+		assertFalse(updater.isRunning());
 		TestUtils.setUnaccessible(thread, updater, false);
 	}
 

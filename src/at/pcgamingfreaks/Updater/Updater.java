@@ -55,7 +55,8 @@ public abstract class Updater implements IUpdater
 	private static final int BUFFER_SIZE = 1024;
 
 	private final File pluginsFolder, updateFolder;
-	@Setter @Getter protected UpdateProvider updateProvider;
+	protected final UpdateProvider[] updateProviders;
+	protected UpdateProvider updateProvider;
 	private final boolean announceDownloadProgress, downloadDependencies;
 	protected final Logger logger;
 	private final String targetFileName;
@@ -64,17 +65,29 @@ public abstract class Updater implements IUpdater
 
 	private UpdateResult result;
 
-	protected Updater(File pluginsFolder, boolean announceDownloadProgress, boolean downloadDependencies, Logger logger, UpdateProvider updateProvider, String localVersion, String targetFileName)
+	protected Updater(final File pluginsFolder, final boolean announceProgress, final boolean downloadDependencies, final Logger logger, final UpdateProvider updateProvider, final String localVersion, final String targetFileName)
 	{
-		this(pluginsFolder, new File(pluginsFolder, "updates"), announceDownloadProgress, downloadDependencies, logger, updateProvider, localVersion, targetFileName);
+		this(pluginsFolder, new File(pluginsFolder, "updates"), announceProgress, downloadDependencies, logger, updateProvider, localVersion, targetFileName);
 	}
 
-	protected Updater(File pluginsFolder, File updateFolder, boolean announceDownloadProgress, boolean downloadDependencies, Logger logger, UpdateProvider updateProvider, String localVersion, String targetFileName)
+	protected Updater(final File pluginsFolder, final File updateFolder, final boolean announceProgress, final boolean downloadDependencies, final Logger logger, final UpdateProvider updateProvider, final String localVersion, final String targetFileName)
 	{
+		this(pluginsFolder, updateFolder, announceProgress, downloadDependencies, logger, new UpdateProvider[] {updateProvider}, localVersion, targetFileName);
+	}
+
+	protected Updater(final File pluginsFolder, final boolean announceProgress, final boolean downloadDependencies, final Logger logger, final UpdateProvider[] updateProviders, final String localVersion, final String targetFileName)
+	{
+		this(pluginsFolder, new File(pluginsFolder, "updates"), announceProgress, downloadDependencies, logger, updateProviders, localVersion, targetFileName);
+	}
+
+	protected Updater(final File pluginsFolder, final File updateFolder, final boolean announceProgress, final boolean downloadDependencies, final Logger logger, final UpdateProvider[] updateProviders, final String localVersion, final String targetFileName)
+	{
+		assert updateProviders.length > 0;
 		this.pluginsFolder = pluginsFolder;
 		this.updateFolder = updateFolder;
-		this.updateProvider = updateProvider;
-		this.announceDownloadProgress = announceDownloadProgress;
+		this.updateProviders = updateProviders;
+		this.updateProvider = updateProviders[0];
+		this.announceDownloadProgress = announceProgress;
 		this.downloadDependencies = downloadDependencies;
 		this.logger = logger;
 		this.localVersion = new Version(localVersion);
@@ -242,10 +255,10 @@ public abstract class Updater implements IUpdater
 			{
 				unzip(downloadFile);
 			}
-			if(result != UpdateResult.FAIL_DOWNLOAD && announceDownloadProgress)
+			if(result != UpdateResult.FAIL_DOWNLOAD)
 			{
 				result = UpdateResult.SUCCESS;
-				logger.info("Finished updating.");
+				if(announceDownloadProgress) logger.info("Finished updating.");
 			}
 		}
 		catch(RequestTypeNotAvailableException e)
@@ -287,6 +300,7 @@ public abstract class Updater implements IUpdater
 				destinationFilePath = new File(updateFolder, entry.getName());
 				try(BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry)); BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destinationFilePath), BUFFER_SIZE))
 				{
+					//noinspection UnstableApiUsage
 					ByteStreams.copy(bis, bos);
 					bos.flush();
 				}
@@ -325,91 +339,86 @@ public abstract class Updater implements IUpdater
 	}
 
 	@Override
-	public void update()
-	{
-		update(null);
-	}
-
-	/**
-	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
-	 */
-	@Deprecated
-	public void update(final @Nullable UpdaterResponse response)
-	{
-		update((UpdateResponseCallback) response);
-	}
-
-	@Override
 	public void update(final @Nullable UpdateResponseCallback response)
 	{
+		prepUpdateOrCheck(response, () -> doUpdate(response, 0));
+	}
+
+	protected void prepUpdateOrCheck(final @Nullable UpdateResponseCallback response, final @NotNull Runnable runnable)
+	{
 		if(isRunning())
 		{
 			if(response != null) response.onDone(UpdateResult.FAIL_UPDATE_ALREADY_IN_PROGRESS);
 			return;
 		}
 		if(result == UpdateResult.DISABLED) return;
-		runAsync(() -> {
-			result = updateProvider.query();
-			if(result == UpdateResult.SUCCESS)
-			{
-				if(versionCheck(getRemoteVersion()))
-				{
-					result = UpdateResult.UPDATE_AVAILABLE;
-					try
-					{
-						if(updateProvider.providesDownloadURL())
-						{
-							download(updateProvider.getLatestFileURL(), (updateProvider.getLatestFileName().toLowerCase(Locale.ROOT).endsWith(".zip")) ? updateProvider.getLatestFileName() : targetFileName);
-							if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.providesDependencies())
-							{
-								for(UpdateProvider.UpdateFile update : updateProvider.getLatestDependencies())
-								{
-									download(update.getDownloadURL(), update.getFileName());
-								}
-								result = (result == UpdateResult.SUCCESS) ? UpdateResult.SUCCESS : UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED;
-							}
-						}
-					}
-					catch(Exception e)
-					{
-						e.printStackTrace();
-					}
-				}
-				else
-				{
-					result = UpdateResult.NO_UPDATE;
-				}
-			}
-			if(response != null) runSync(() -> response.onDone(result));
-		});
+		runAsync(runnable);
 	}
 
-	/**
-	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
-	 */
-	@Deprecated
-	public void checkForUpdate(final @Nullable UpdaterResponse response)
+	private void query()
 	{
-		checkForUpdate((UpdateResponseCallback) response);
+		if(result == UpdateResult.DISABLED) return;
+		result = updateProvider.query();
+		if(result == UpdateResult.SUCCESS)
+		{
+			result = versionCheck(getRemoteVersion()) ? UpdateResult.UPDATE_AVAILABLE : UpdateResult.NO_UPDATE;
+		}
+	}
+
+	protected void doUpdate(final @Nullable UpdateResponseCallback responseCallback, final int updaterId)
+	{
+		updateProvider = updateProviders[updaterId];
+		query();
+		if(result == UpdateResult.UPDATE_AVAILABLE)
+		{
+			try
+			{
+				if(updateProvider.providesDownloadURL())
+				{
+					download(updateProvider.getLatestFileURL(), (updateProvider.getLatestFileName().toLowerCase(Locale.ROOT).endsWith(".zip")) ? updateProvider.getLatestFileName() : targetFileName);
+					if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.providesDependencies())
+					{
+						for(UpdateProvider.UpdateFile update : updateProvider.getLatestDependencies())
+						{
+							download(update.getDownloadURL(), update.getFileName());
+						}
+						result = (result == UpdateResult.SUCCESS) ? UpdateResult.SUCCESS : UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED;
+					}
+				}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		if((result.name().startsWith("FAIL") || result == UpdateResult.UPDATE_AVAILABLE || (result == UpdateResult.NO_UPDATE && updaterId > 0)) && updaterId + 1 < updateProviders.length)
+		{
+			doUpdate(responseCallback, updaterId + 1);
+		}
+		else
+		{
+			if(responseCallback != null) runSync(() -> responseCallback.onDone(result));
+		}
+	}
+
+	public void doCheckForUpdate(final @Nullable UpdateResponseCallback responseCallback, final int updaterId)
+	{
+		updateProvider = updateProviders[updaterId];
+		query();
+		if(result.name().startsWith("FAIL") && updaterId + 1 < updateProviders.length)
+		{
+			doCheckForUpdate(responseCallback, updaterId + 1);
+		}
+		else
+		{
+			if(responseCallback != null) runSync(() -> responseCallback.onDone(result));
+		}
 	}
 
 	@Override
-	public void checkForUpdate(final @Nullable UpdateResponseCallback response)
+	public void checkForUpdate(final @NotNull UpdateResponseCallback response)
 	{
-		if(isRunning())
-		{
-			if(response != null) response.onDone(UpdateResult.FAIL_UPDATE_ALREADY_IN_PROGRESS);
-			return;
-		}
-		if(result == UpdateResult.DISABLED) return;
-		runAsync(() -> {
-			result = updateProvider.query();
-			if(result == UpdateResult.SUCCESS)
-			{
-				result = versionCheck(getRemoteVersion()) ? UpdateResult.UPDATE_AVAILABLE : UpdateResult.NO_UPDATE;
-			}
-			if(response != null) runSync(() -> response.onDone(result));
-		});
+		prepUpdateOrCheck(response, () -> doCheckForUpdate(response, 0));
 	}
 
 	@Override
@@ -426,9 +435,29 @@ public abstract class Updater implements IUpdater
 		return true;
 	}
 
+	//region deprecated
 	/**
 	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
 	 */
 	@Deprecated
 	public interface UpdaterResponse extends UpdateResponseCallback {}
+
+	/**
+	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
+	 */
+	@Deprecated
+	public void checkForUpdate(final @NotNull UpdaterResponse response)
+	{
+		checkForUpdate((UpdateResponseCallback) response);
+	}
+
+	/**
+	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
+	 */
+	@Deprecated
+	public void update(final @Nullable UpdaterResponse response)
+	{
+		update((UpdateResponseCallback) response);
+	}
+	//endregion
 }

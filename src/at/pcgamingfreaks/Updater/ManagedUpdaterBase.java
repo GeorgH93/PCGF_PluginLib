@@ -39,7 +39,7 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 	protected final PLUGIN plugin;
 	protected final Logger logger;
 	@Getter @Setter private boolean announceDownloadProgress = true, downloadDependencies = false;
-	@Getter private final UPDATER updater;
+	@Getter private @Nullable UPDATER updater = null;
 	protected final UpdateProvider[] providers;
 
 	protected ManagedUpdaterBase(final @NotNull PLUGIN plugin, final @NotNull Logger logger)
@@ -69,10 +69,9 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 		{
 			e.printStackTrace();
 		}
-		if(providers == null) providers = new ArrayList<>(0);
+		if(providers == null) providers = new ArrayList<>(1);
 		if(providers.size() == 0) providers.add(new NullUpdateProvider());
 		this.providers = providers.toArray(new UpdateProvider[0]);
-		updater = makeUpdater(new NullUpdateProvider());
 	}
 
 	private static @NotNull Map<String, UpdateProvider> getUpdateProviders(final @NotNull YAML config, final @NotNull Logger logger)
@@ -147,12 +146,6 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 	}
 
 	@Override
-	public void update()
-	{
-		update(null);
-	}
-
-	@Override
 	public void update(final @Nullable UpdateResponseCallback callback)
 	{
 		if(isRunning())
@@ -160,54 +153,26 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 			if(callback != null) callback.onDone(UpdateResult.FAIL_UPDATE_ALREADY_IN_PROGRESS);
 			return;
 		}
-		update(callback, 0);
-	}
-
-	protected void update(final @Nullable UpdateResponseCallback callback, final int id)
-	{
-		updater.setUpdateProvider(providers[id]);
-		updater.update(result -> {
-			if(result.name().startsWith("FAIL") && id + 1 < providers.length)
-			{
-				update(callback, id + 1);
-			}
-			else
-			{
-				if(callback != null) callback.onDone(result);
-			}
-		});
+		if(updater == null) updater = makeUpdater(providers);
+		updater.update(callback);
 	}
 
 	@Override
 	public void waitForAsyncOperation()
 	{
-		updater.waitForAsyncOperation();
+		if(updater != null) updater.waitForAsyncOperation();
 	}
 
 	@Override
-	public void checkForUpdate(final @Nullable UpdateResponseCallback response)
+	public void checkForUpdate(final @NotNull UpdateResponseCallback response)
 	{
 		if(isRunning())
 		{
 			if(response != null) response.onDone(UpdateResult.FAIL_UPDATE_ALREADY_IN_PROGRESS);
 			return;
 		}
-		checkForUpdate(response);
-	}
-
-	protected void checkForUpdate(final @Nullable UpdateResponseCallback callback, final int id)
-	{
-		updater.setUpdateProvider(providers[id]);
-		updater.checkForUpdate(result -> {
-			if(result.name().startsWith("FAIL") && id + 1 < providers.length)
-			{
-				checkForUpdate(callback, id + 1);
-			}
-			else
-			{
-				if(callback != null) callback.onDone(result);
-			}
-		});
+		if(updater == null) updater = makeUpdater(providers);
+		updater.checkForUpdate(response);
 	}
 
 	@Override
@@ -220,8 +185,9 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 	@Override
 	public boolean isRunning()
 	{
+		if(updater == null) return false;
 		return updater.isRunning();
 	}
 
-	protected abstract UPDATER makeUpdater(final @NotNull UpdateProvider updateProvider);
+	protected abstract UPDATER makeUpdater(final @NotNull UpdateProvider[] updateProvider);
 }

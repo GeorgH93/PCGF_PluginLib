@@ -50,8 +50,8 @@ public class ManagedUpdater extends ManagedUpdaterBase<Updater, Plugin>
 	}
 
 	@Override
-	protected Updater makeUpdater(final @NotNull UpdateProvider updateProvider)
+	protected Updater makeUpdater(final @NotNull UpdateProvider[] updateProviders)
 	{
-		return new Updater(plugin, isAnnounceDownloadProgress(), isDownloadDependencies(), updateProvider);
+		return new Updater(plugin, isAnnounceDownloadProgress(), isDownloadDependencies(), updateProviders);
 	}
 }

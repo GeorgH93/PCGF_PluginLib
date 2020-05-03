@@ -29,6 +29,7 @@ import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,7 +54,6 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -74,7 +74,12 @@ public class UpdaterTest
 
 	private Updater getUpdater(String version)
 	{
-		return new Updater(PLUGINS_FOLDER, true, false, LOGGER, bukkitProvider, version, TARGET_FILE.getName())
+		return getUpdater(version, bukkitProvider);
+	}
+
+	private Updater getUpdater(String version, UpdateProvider provider)
+	{
+		return new Updater(PLUGINS_FOLDER, false, false, LOGGER, provider, version, TARGET_FILE.getName())
 		{
 			@Override
 			protected void runSync(Runnable runnable)
@@ -151,10 +156,12 @@ public class UpdaterTest
 	@Test
 	public void testUpdateCheck() throws NoSuchFieldException, IllegalAccessException
 	{
-		Updater updater = getUpdater("1.0");
+		IUpdater updater = getUpdater("1.0");
 		updater.checkForUpdate(result2 -> assertEquals(UpdateResult.UPDATE_AVAILABLE, result2));
+
 		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
 		doReturn(UpdateResult.DISABLED).when(mockedUpdateProvider).query();
+		updater = getUpdater("1.0", mockedUpdateProvider);
 		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
 		updater.checkForUpdate(result2 -> assertEquals(UpdateResult.DISABLED, result2));
 		TestUtils.setUnaccessible(updateProvider, updater, true);
@@ -163,28 +170,26 @@ public class UpdaterTest
 	@Test
 	public void testUpdateCheckNoUpdateAvailable()
 	{
-		Updater updater = getUpdater("99.0");
+		IUpdater updater = getUpdater("99.0");
 		updater.checkForUpdate(result2 -> assertEquals(UpdateResult.NO_UPDATE, result2));
 	}
 
 	@Test
 	public void testUpdateDownload()
 	{
-		Updater updater = getUpdater("1.0");
+		IUpdater updater = getUpdater("1.0");
 		//noinspection ResultOfMethodCallIgnored
 		new File("plugins/updates").delete();
 		updater.update(result2 -> {
 			assertEquals("The update result should be correct", UpdateResult.SUCCESS, result2);
 			assertTrue("The target file should exist", TARGET_FILE.exists());
-			//noinspection ResultOfMethodCallIgnored
-			TARGET_FILE.delete();
 		});
 	}
 
 	@Test
 	public void testUpdateDownloadNoUpdateAvailable()
 	{
-		Updater updater = getUpdater("99.0");
+		IUpdater updater = getUpdater("99.0");
 		updater.update(result2 -> {
 			assertEquals("The update result should be correct", UpdateResult.NO_UPDATE, result2);
 			assertFalse("The target file should not exist", TARGET_FILE.exists());
@@ -196,11 +201,10 @@ public class UpdaterTest
 	{
 		int shouldHaveUpdateResponses = 0;
 		final int[] updateResponses = { 0 };
-		final Updater.UpdaterResponse updaterResponse = result -> updateResponses[0]++;
-		final Updater updater = spy(getUpdater("1.0"));
+		final UpdateResponseCallback updaterResponse = result -> updateResponses[0]++;
 		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
 		doReturn(UpdateResult.DISABLED).when(mockedUpdateProvider).query();
-		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
+		final Updater updater = spy(getUpdater("1.0", mockedUpdateProvider));
 		updater.update(updaterResponse);
 		assertEquals("There should be an update response", ++shouldHaveUpdateResponses, updateResponses[0]);
 		final Field result = TestUtils.setAccessible(Updater.class, updater, "result", UpdateResult.NO_UPDATE);
@@ -236,7 +240,7 @@ public class UpdaterTest
 		shouldHaveUpdateResponses++;
 		doReturn("").when(mockedUpdateProvider).getLatestFileName();
 		doAnswer(invocationOnMock -> {
-			result.set(updater, UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED);
+			result.set(updater, UpdateResult.FAIL_FILE_NOT_FOUND);
 			return null;
 		}).when(updater).download(updateFile.getDownloadURL(), updateFile.getFileName());
 		updater.update(result1 -> {
@@ -267,8 +271,6 @@ public class UpdaterTest
 		updater.update();
 		TestUtils.setUnaccessible(result, updater, true);
 		TestUtils.setUnaccessible(downloadDependencies, updater, true);
-		TestUtils.setUnaccessible(updateProvider, updater, true);
-		Thread.sleep(100);
 		assertEquals("The onDone method should be called as often as given", ++shouldHaveUpdateResponses, updateResponses[0]);
 	}
 
@@ -296,7 +298,7 @@ public class UpdaterTest
 		ZipFile mockedZipFile = mock(ZipFile.class);
 		ZipEntry mockedZipEntry = mock(ZipEntry.class);
 		doReturn("Test-JAR.jar").when(mockedZipEntry).getName();
-		final Enumeration mockedEnumeration = mock(Enumeration.class);
+		final Enumeration<?> mockedEnumeration = mock(Enumeration.class);
 		doAnswer(invocationOnMock -> {
 			hasMore[0] = !hasMore[0];
 			return hasMore[0];
@@ -490,6 +492,14 @@ public class UpdaterTest
 		TestUtils.setUnaccessible(announceDownload, updater, true);
 		TestUtils.setUnaccessible(updateProvider, updater, true);
 		TestUtils.setUnaccessible(result, updater, true);
+	}
+
+	@After
+	public void cleanupAfterTest()
+	{
+		if(TARGET_FILE.exists())
+			//noinspection ResultOfMethodCallIgnored
+			TARGET_FILE.delete();
 	}
 
 	@AfterClass

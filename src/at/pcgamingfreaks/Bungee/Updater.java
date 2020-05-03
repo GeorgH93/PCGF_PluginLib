@@ -40,6 +40,12 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 		this.plugin = plugin;
 	}
 
+	public Updater(Plugin plugin, boolean announceDownloadProgress, boolean downloadDependencies, UpdateProvider[] updateProviders)
+	{
+		super(plugin.getDataFolder().getAbsoluteFile(), announceDownloadProgress, downloadDependencies, plugin.getLogger(), updateProviders, plugin.getDescription().getVersion(), plugin.getDescription().getFile().getName());
+		this.plugin = plugin;
+	}
+
 	@Override
 	protected void runSync(Runnable runnable)
 	{

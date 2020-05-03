@@ -22,8 +22,8 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IUpdater
 {
-	void checkForUpdate(final @Nullable UpdateResponseCallback response);
-	void update();
+	void checkForUpdate(final @NotNull UpdateResponseCallback response);
+	default void update() { update(null); }
 	void update(final @Nullable UpdateResponseCallback response);
 	void update(final @NotNull UpdateMode updateMode, final @Nullable UpdateResponseCallback response);
 	void waitForAsyncOperation();
