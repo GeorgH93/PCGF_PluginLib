@@ -40,7 +40,9 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 	protected final Logger logger;
 	@Getter @Setter private boolean announceDownloadProgress = true, downloadDependencies = false;
 	@Getter private @Nullable UPDATER updater = null;
-	protected final UpdateProvider[] providers;
+	protected final Map<String, List<UpdateProvider>> updateChannelMap;
+	protected UpdateProvider[] providers;
+	protected final String defaultChannel, releaseType;
 
 	protected ManagedUpdaterBase(final @NotNull PLUGIN plugin, final @NotNull Logger logger)
 	{
@@ -52,25 +54,39 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 		this.plugin = plugin;
 		this.logger = logger;
 		InputStream stream = Utils.getResource(plugin.getClass(), "update.yml");
-		List<UpdateProvider> providers = null;
+		Map<String, List<UpdateProvider>> updateChannelMap;
+		String defaultChannel = "", releaseType = "";
 		try
 		{
 			if(stream == null) throw new IllegalStateException("update.yml missing!");
 			final YAML config = new YAML(stream);
 			final Map<String, UpdateProvider> providerMap = getUpdateProviders(config, logger);
-			final Map<String, List<UpdateProvider>> updateChannelMap = getUpdateChannels(config, logger, providerMap);
-			if(channel == null) channel = config.getString("DefaultChannel");
-			final String releaseType = config.getString("ReleaseType", "");
-			if(releaseType.length() >= 1) channel += '.' + releaseType;
-			providers = updateChannelMap.get(channel);
-			if(providers == null) logger.warning("No update providers for channel: " + channel);
+			updateChannelMap = getUpdateChannels(config, logger, providerMap);
+			defaultChannel = config.getString("DefaultChannel");
+			releaseType = config.getString("ReleaseType", "");
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			updateChannelMap = new HashMap<>();
 		}
+		this.defaultChannel = defaultChannel;
+		this.releaseType = releaseType;
+		this.updateChannelMap = updateChannelMap;
+		setChannel(channel);
+	}
+
+	public void setChannel(@Nullable String channel)
+	{
+		if(channel == null) channel = defaultChannel;
+		if(releaseType.length() >= 1) channel += '.' + releaseType;
+		List<UpdateProvider> providers = updateChannelMap.get(channel);
 		if(providers == null) providers = new ArrayList<>(1);
-		if(providers.size() == 0) providers.add(new NullUpdateProvider());
+		if(providers.size() == 0)
+		{
+			logger.warning("No update providers for channel: " + channel);
+			providers.add(new NullUpdateProvider());
+		}
 		this.providers = providers.toArray(new UpdateProvider[0]);
 	}
 
@@ -164,7 +180,7 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 	}
 
 	@Override
-	public void checkForUpdate(final @NotNull UpdateResponseCallback response)
+	public void checkForUpdate(final @Nullable UpdateResponseCallback response)
 	{
 		if(isRunning())
 		{

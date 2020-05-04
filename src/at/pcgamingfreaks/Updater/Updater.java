@@ -416,7 +416,7 @@ public abstract class Updater implements IUpdater
 	}
 
 	@Override
-	public void checkForUpdate(final @NotNull UpdateResponseCallback response)
+	public void checkForUpdate(final @Nullable UpdateResponseCallback response)
 	{
 		prepUpdateOrCheck(response, () -> doCheckForUpdate(response, 0));
 	}
