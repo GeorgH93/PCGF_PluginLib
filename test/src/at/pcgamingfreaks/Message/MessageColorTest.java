@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Message;
@@ -20,7 +20,6 @@ package at.pcgamingfreaks.Message;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNull;
 
 public class MessageColorTest
 {
@@ -108,7 +107,46 @@ public class MessageColorTest
 	@Test
 	public void testMessageColorArrayFromStylesArray()
 	{
-		assertNull("No styles should return null", MessageColor.messageColorArrayFromStylesArray((Enum[]) null));
+		assertNull("No styles should return null", MessageColor.messageColorArrayFromStylesArray((Enum<?>[]) null));
 		assertNull("No styles should return null", MessageColor.messageColorArrayFromStylesArray());
+	}
+
+	@Test
+	public void testGetFromCode()
+	{
+		for(MessageColor color : MessageColor.values())
+	    {
+		    assertEquals(color, MessageColor.getFromCode(color.getCode()));
+		    assertEquals(color, MessageColor.getFromCode(Character.toUpperCase(color.getCode())));
+	    }
+
+		try
+		{
+			MessageColor.getFromCode('X');
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertEquals("Unknown format code 'X'!", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testTranslateAlternateColorCodes()
+	{
+		assertNull(MessageColor.translateAlternateColorCodes(null));
+		assertEquals(MessageColor.BLUE + "test", MessageColor.translateAlternateColorCodes("&9test"));
+	}
+
+	@Test
+	public void testTranslateToAlternateColorCodes()
+	{
+		assertNull(MessageColor.translateToAlternateColorCodes(null));
+		assertEquals("&9test", MessageColor.translateToAlternateColorCodes(MessageColor.BLUE + "test"));
+	}
+
+	@Test
+	public void testStripFormatting()
+	{
+		assertEquals("test", MessageColor.stripFormatting(MessageColor.BLUE + "test"));
 	}
 }

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,11 +19,15 @@ package at.pcgamingfreaks.Message;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public enum  MessageColor
 {
@@ -133,7 +137,12 @@ public enum  MessageColor
 	RESET('r');
 
 	public static final char COLOR_CHAR = '\u00A7';
-	private final char code;
+	public static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
+
+	private static final Pattern STRIP_FORMAT_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-FK-OR]");
+
+	@Getter private final char code;
+	private final String codeString;
 	private final boolean isFormat;
 
 	MessageColor(char code)
@@ -145,6 +154,7 @@ public enum  MessageColor
 	{
 		this.code = code;
 		this.isFormat = isFormat;
+		this.codeString = new String(new char[]{COLOR_CHAR, code});
 	}
 
 	/**
@@ -153,13 +163,13 @@ public enum  MessageColor
 	 * @param styles The style elements to be converted.
 	 * @return The converted {@link MessageColor} elements.
 	 */
-	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum... styles)
+	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum<?>... styles)
 	{
 		if(styles != null && styles.length > 0)
 		{
 			MessageColor[] msgStyles = new MessageColor[styles.length];
 			int i = 0;
-			for(Enum style : styles)
+			for(Enum<?> style : styles)
 			{
 				if(style != null)
 				{
@@ -181,7 +191,7 @@ public enum  MessageColor
 	 * @param style The style element to be converted.
 	 * @return The converted {@link MessageColor} element.
 	 */
-	public static @NotNull MessageColor messageColorFromStyle(@NotNull Enum style)
+	public static @NotNull MessageColor messageColorFromStyle(@NotNull Enum<?> style)
 	{
 		return valueOf(style.name().toUpperCase(Locale.ROOT));
 	}
@@ -189,7 +199,7 @@ public enum  MessageColor
 	@Override
 	public String toString()
 	{
-		return new String(new char[]{COLOR_CHAR, code});
+		return codeString;
 	}
 
 	/**
@@ -210,5 +220,62 @@ public enum  MessageColor
 	public boolean isColor()
 	{
 		return !isFormat && this != RESET;
+	}
+
+	public static @NotNull MessageColor getFromCode(char code) throws IllegalArgumentException
+	{
+		if(code >= '0' && code <= '9') return values()[code - '0'];
+		if(code >= 'A' && code <= 'R') code = (char)(code - 'A' + 'a'); // convert to lower case
+		if(code >= 'a' && code <= 'f') return values()[code - 'a' + 10];
+		if(code >= 'k' && code <= 'o') return values()[code - 'k' + 16];
+		if(code == 'r') return RESET;
+		throw new IllegalArgumentException("Unknown format code '" + code + "'!");
+	}
+
+	@Contract("null->null")
+	public static @Nullable String stripFormatting(final @Nullable String input)
+	{
+		if(input == null) return null;
+		return STRIP_FORMAT_PATTERN.matcher(input).replaceAll("");
+	}
+
+	@Contract("!null->!null")
+	public static @Nullable String translateAlternateColorCodes(final @Nullable String textToTranslate)
+	{
+		return translateAlternateColorCodes('&', textToTranslate);
+	}
+
+	@Contract("_,!null->!null")
+	public static @Nullable String translateAlternateColorCodes(char altColorChar, @Nullable String textToTranslate)
+	{
+		return translateColorCode(altColorChar, COLOR_CHAR, textToTranslate);
+	}
+
+	@Contract("!null->!null")
+	public static @Nullable String translateToAlternateColorCodes(final @Nullable String textToTranslate)
+	{
+		return translateToAlternateColorCodes('&', textToTranslate);
+	}
+
+	@Contract("_,!null->!null")
+	public static @Nullable String translateToAlternateColorCodes(char altColorChar, @Nullable String textToTranslate)
+	{
+		return translateColorCode(COLOR_CHAR, altColorChar, textToTranslate);
+	}
+
+	@Contract("_,_,!null->!null")
+	private static @Nullable String translateColorCode(char from, char to, @Nullable String textToTranslate)
+	{
+		if(textToTranslate == null || textToTranslate.length() < 2) return textToTranslate;
+		char[] chars = textToTranslate.toCharArray();
+		for(int i = 0; i + 1 < chars.length; i++)
+		{
+			if(chars[i] == from && ALL_CODES.indexOf(chars[i + 1]) > -1)
+			{
+				chars[i] = to;
+				chars[i + 1] = Character.toLowerCase(chars[i + 1]);
+			}
+		}
+		return new String(chars);
 	}
 }
