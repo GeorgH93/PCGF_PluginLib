@@ -147,6 +147,6 @@ public class MessageColorTest
 	@Test
 	public void testStripFormatting()
 	{
-		assertEquals("test", MessageColor.stripFormatting(MessageColor.BLUE + "test"));
+		assertEquals("test", MessageColor.stripColorAndFormat(MessageColor.BLUE + "test"));
 	}
 }

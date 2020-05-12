@@ -139,7 +139,9 @@ public enum  MessageColor
 	public static final char COLOR_CHAR = '\u00A7';
 	public static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
 
-	private static final Pattern STRIP_FORMAT_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-FK-OR]");
+	private static final Pattern STRIP_FORMAT_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[K-OR]");
+	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-F]");
+	private static final Pattern STRIP_COLOR_AND_FORMAT_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-FK-OR]");
 
 	@Getter private final char code;
 	private final String codeString;
@@ -232,38 +234,58 @@ public enum  MessageColor
 		throw new IllegalArgumentException("Unknown format code '" + code + "'!");
 	}
 
-	@Contract("null->null")
-	public static @Nullable String stripFormatting(final @Nullable String input)
+	public @Nullable String strip(final @Nullable String input)
+	{
+		if(input == null) return null;
+		return input.replaceAll(toString(), "");
+	}
+
+	@Contract("!null->!null; null->null")
+	public static @Nullable String stripColorAndFormat(final @Nullable String input)
+	{
+		if(input == null) return null;
+		return STRIP_COLOR_AND_FORMAT_PATTERN.matcher(input).replaceAll("");
+	}
+
+	@Contract("!null->!null; null->null")
+	public static @Nullable String stripColor(final @Nullable String input)
+	{
+		if(input == null) return null;
+		return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
+	}
+
+	@Contract("!null->!null; null->null")
+	public static @Nullable String stripFormat(final @Nullable String input)
 	{
 		if(input == null) return null;
 		return STRIP_FORMAT_PATTERN.matcher(input).replaceAll("");
 	}
 
-	@Contract("!null->!null")
+	@Contract("!null->!null; null->null")
 	public static @Nullable String translateAlternateColorCodes(final @Nullable String textToTranslate)
 	{
 		return translateAlternateColorCodes('&', textToTranslate);
 	}
 
-	@Contract("_,!null->!null")
+	@Contract("_,!null->!null; _,null->null")
 	public static @Nullable String translateAlternateColorCodes(char altColorChar, @Nullable String textToTranslate)
 	{
 		return translateColorCode(altColorChar, COLOR_CHAR, textToTranslate);
 	}
 
-	@Contract("!null->!null")
+	@Contract("!null->!null; null->null")
 	public static @Nullable String translateToAlternateColorCodes(final @Nullable String textToTranslate)
 	{
 		return translateToAlternateColorCodes('&', textToTranslate);
 	}
 
-	@Contract("_,!null->!null")
+	@Contract("_,!null->!null; _,null->null")
 	public static @Nullable String translateToAlternateColorCodes(char altColorChar, @Nullable String textToTranslate)
 	{
 		return translateColorCode(COLOR_CHAR, altColorChar, textToTranslate);
 	}
 
-	@Contract("_,_,!null->!null")
+	@Contract("_,_,!null->!null; _,_,null->null")
 	private static @Nullable String translateColorCode(char from, char to, @Nullable String textToTranslate)
 	{
 		if(textToTranslate == null || textToTranslate.length() < 2) return textToTranslate;
