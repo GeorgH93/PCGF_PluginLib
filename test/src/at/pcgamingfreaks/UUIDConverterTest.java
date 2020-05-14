@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -180,13 +179,13 @@ public class UUIDConverterTest
 		testNames.put("Phei", "8abb0b91429b41e49be8bd659923acd6");
 		testNames.put("AFKMaster", "175c57e4cd4b4fb3bfea1c28d094f5dc");
 		testNames.put("CleoMalika", "fc4b363ba4474ab98778d0ee353151ee");
-		testNames.put("Ghetto1996", "5d44a19304d94ebaaa3f630b8c95b48a");
+		testNames.put("NotAnt0_", "5d44a19304d94ebaaa3f630b8c95b48a");
 		final Map<String, String> testNamesSeparators = new TreeMap<>();
 		testNamesSeparators.put(TEST_USER_NAME, TEST_USER_UUID_SEPARATORS);
 		testNamesSeparators.put("Phei", "8abb0b91-429b-41e4-9be8-bd659923acd6");
 		testNamesSeparators.put("AFKMaster", "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc");
 		testNamesSeparators.put("CleoMalika", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
-		testNamesSeparators.put("Ghetto1996", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
+		testNamesSeparators.put("NotAnt0_", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
 		Map<String, String> namesUUIDs = UUIDConverter.getUUIDsFromNames(testNamesSeparators.keySet(), true, true);
 		assertEquals("The user count of online mode users should match the given amount of users", testNamesSeparators.size(), namesUUIDs.size());
 		assertEquals("All user UUIDs should match the given ones with separators", namesUUIDs, testNamesSeparators);
@@ -197,7 +196,7 @@ public class UUIDConverterTest
 
 	@Test
 	@SuppressWarnings("SpellCheckingInspection")
-	public void testGetUUIDsWithCleanCache() throws IllegalAccessException, InvocationTargetException
+	public void testGetUUIDsWithCleanCache() throws IllegalAccessException
 	{
 		Field cacheField = Reflection.getField(UUIDConverter.class, "UUID_CACHE");
 		UUIDCacheMap oldCache = new UUIDCacheMap();
@@ -209,7 +208,7 @@ public class UUIDConverterTest
 		testNamesSeparators.put("Phei", "8abb0b91-429b-41e4-9be8-bd659923acd6");
 		testNamesSeparators.put("AFKMaster", "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc");
 		testNamesSeparators.put("CleoMalika", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
-		testNamesSeparators.put("Ghetto1996", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
+		testNamesSeparators.put("NotAnt0_", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
 		testNamesSeparators.put("Watchdog", "4ec35d4f-609c-4245-8d53-f779c6160dd2");
 		testNamesSeparators.put("Artifexus", "27205e77-f8b4-4b31-b9a0-5bd97efc0560");
 		testNamesSeparators.put("RatzzFatzz", "7b5f80aa-093e-4057-aa28-3950f2f24d62");
@@ -237,13 +236,13 @@ public class UUIDConverterTest
 		testNames.put("Phei", "8abb0b91429b41e49be8bd659923acd6");
 		testNames.put("AFKMaster", "175c57e4cd4b4fb3bfea1c28d094f5dc");
 		testNames.put("CleoMalika", "fc4b363ba4474ab98778d0ee353151ee");
-		testNames.put("Ghetto1996", "5d44a19304d94ebaaa3f630b8c95b48a");
+		testNames.put("NotAnt0_", "5d44a19304d94ebaaa3f630b8c95b48a");
 		final Map<String, String> testNamesSeparators = new TreeMap<>();
 		testNamesSeparators.put(TEST_USER_NAME, TEST_USER_UUID_SEPARATORS);
 		testNamesSeparators.put("Phei", "8abb0b91-429b-41e4-9be8-bd659923acd6");
 		testNamesSeparators.put("AFKMaster", "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc");
 		testNamesSeparators.put("CleoMalika", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
-		testNamesSeparators.put("Ghetto1996", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
+		testNamesSeparators.put("NotAnt0_", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
 		Field uuidCache = UUIDConverter.class.getDeclaredField("UUID_CACHE");
 		uuidCache.setAccessible(true);
 		Field modifiers = uuidCache.getClass().getDeclaredField("modifiers");
