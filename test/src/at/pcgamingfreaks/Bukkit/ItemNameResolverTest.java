@@ -17,11 +17,11 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.TestClasses.TestBlock;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -125,7 +125,7 @@ public class ItemNameResolverTest
 		doReturn(true).when(meta).hasDisplayName();
 		doReturn("Magic Fence").when(meta).getDisplayName();
 		assertEquals("The name of the item stack should match", "Magic Fence", itemNameResolver.getName(stack)); // Test item with custom name without color
-		doReturn(ChatColor.BLUE + "Magic Fence").when(meta).getDisplayName();
+		doReturn(MessageColor.BLUE + "Magic Fence").when(meta).getDisplayName();
 		assertEquals("The name of the item stack should match", "Magic Fence", itemNameResolver.getName(stack)); // Test item with custom name with color
 	}
 
@@ -138,17 +138,17 @@ public class ItemNameResolverTest
 		doReturn(Material.BIRCH_FENCE).when(stack).getType();
 		doReturn((short) 1).when(stack).getDurability();
 		doReturn(false).when(stack).hasItemMeta();
-		assertEquals("The name of the item stack should match", ChatColor.GRAY + "birch_fence", itemNameResolver.getDisplayName(stack)); // Test without custom item name
+		assertEquals("The name of the item stack should match", MessageColor.GRAY + "birch_fence", itemNameResolver.getDisplayName(stack)); // Test without custom item name
 		// Setup item meta
 		doReturn(true).when(stack).hasItemMeta();
 		ItemMeta meta = mock(ItemMeta.class);
 		doReturn(meta).when(stack).getItemMeta();
 		doReturn(false).when(meta).hasDisplayName();
-		assertEquals("The name of the item stack should match", ChatColor.GRAY + "birch_fence", itemNameResolver.getDisplayName(stack)); // Test item with meta, but without custom item name
+		assertEquals("The name of the item stack should match", MessageColor.GRAY + "birch_fence", itemNameResolver.getDisplayName(stack)); // Test item with meta, but without custom item name
 		doReturn(true).when(meta).hasDisplayName();
 		doReturn("Magic Fence").when(meta).getDisplayName();
 		assertEquals("The name of the item stack should match", "Magic Fence", itemNameResolver.getDisplayName(stack)); // Test item with custom name without color
-		doReturn(ChatColor.BLUE + "Magic Fence").when(meta).getDisplayName();
-		assertEquals("The name of the item stack should match", ChatColor.BLUE + "Magic Fence", itemNameResolver.getDisplayName(stack)); // Test item with custom name with color
+		doReturn(MessageColor.BLUE + "Magic Fence").when(meta).getDisplayName();
+		assertEquals("The name of the item stack should match", MessageColor.BLUE + "Magic Fence", itemNameResolver.getDisplayName(stack)); // Test item with custom name with color
 	}
 }

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@ import at.pcgamingfreaks.Bukkit.Message.Message;
 import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Reflection;
 
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -91,18 +90,6 @@ public class Language extends at.pcgamingfreaks.Language
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, inJarPrefix);
 		this.plugin = plugin;
-	}
-
-	/**
-	 * Gets the message from the language file and replaces bukkit color codes (&amp;) to minecraft color codes (§)
-	 *
-	 * @param path the path to the searched language value
-	 * @return returns the language data
-	 */
-	@Override
-	public @NotNull String getTranslated(@NotNull String path)
-	{
-		return ChatColor.translateAlternateColorCodes('&', get(path));
 	}
 
 	public @NotNull Message getMessage(@NotNull String path)

@@ -19,7 +19,6 @@ package at.pcgamingfreaks.Bukkit.GUI;
 
 import at.pcgamingfreaks.Bukkit.Utils;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,7 +26,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 
 public final class GuiListener implements Listener
 {
@@ -39,8 +37,6 @@ public final class GuiListener implements Listener
 		InventoryHolder holder = clickedInventory.getHolder();
 		if(!(holder instanceof IGui)) return;
 		event.setCancelled(true);
-		final ItemStack clickedItem = event.getCurrentItem();
-		if(clickedItem == null || clickedItem.getType() == Material.AIR) return; // Ignore empty slots
 		((IGui) holder).onClick(event);
 	}
 

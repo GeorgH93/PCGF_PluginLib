@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.Message.Message;
+import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
@@ -319,9 +320,15 @@ public class Language extends YamlFileManager
 		return getLangE();
 	}
 
+	/**
+	 * Gets the message from the language file and replaces bukkit color codes (&amp;) to minecraft color codes (§)
+	 *
+	 * @param path the path to the searched language value
+	 * @return returns the language data
+	 */
 	public @NotNull String getTranslated(@NotNull String path)
 	{
-		return get(path);
+		return MessageColor.translateAlternateColorCodes(get(path));
 	}
 
 	protected @Nullable <T extends Message> T getMessage(boolean escapeStringFormatCharacters, @NotNull String path)

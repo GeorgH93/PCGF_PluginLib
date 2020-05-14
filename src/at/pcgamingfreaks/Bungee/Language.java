@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@ package at.pcgamingfreaks.Bungee;
 
 import at.pcgamingfreaks.Bungee.Message.Message;
 import at.pcgamingfreaks.Bungee.Message.Sender.SendMethod;
+import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Reflection;
 
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -110,26 +110,15 @@ public class Language extends at.pcgamingfreaks.Language
 	}
 
 	// Getter
+	@Deprecated
 	public @NotNull String getString(@NotNull String option)
 	{
-		return ChatColor.translateAlternateColorCodes('&', get(option));
+		return MessageColor.translateAlternateColorCodes(get(option));
 	}
 
 	public @NotNull BaseComponent[] getReady(@NotNull String option)
 	{
-		return TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', get(option)));
-	}
-
-	/**
-	 * Gets the message from the language file and replaces bukkit color codes (&amp;) to minecraft color codes (§)
-	 *
-	 * @param path the path to the searched language value
-	 * @return returns the language data
-	 */
-	@Override
-	public @NotNull String getTranslated(@NotNull String path)
-	{
-		return ChatColor.translateAlternateColorCodes('&', get(path));
+		return TextComponent.fromLegacyText(MessageColor.translateAlternateColorCodes(get(option)));
 	}
 
 	public @NotNull Message getMessage(@NotNull String path)

@@ -17,7 +17,8 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import org.bukkit.ChatColor;
+import at.pcgamingfreaks.Message.MessageColor;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -49,7 +50,7 @@ public class ItemNameResolver
 			if(mat == null) continue;
 			if(!names.containsKey(mat))
 			{
-				names.put(mat, new HashMap<Short, String>());
+				names.put(mat, new HashMap<>());
 			}
 			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
 			translationCount++;
@@ -86,7 +87,7 @@ public class ItemNameResolver
 			if(mat == null) continue;
 			if(!names.containsKey(mat))
 			{
-				names.put(mat, new HashMap<Short, String>());
+				names.put(mat, new HashMap<>());
 			}
 			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
 			translationCount++;
@@ -163,7 +164,8 @@ public class ItemNameResolver
 	{
 		if(itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName())
 		{
-			return ChatColor.stripColor(itemStack.getItemMeta().getDisplayName());
+			//noinspection ConstantConditions
+			return MessageColor.stripColorAndFormat(itemStack.getItemMeta().getDisplayName());
 		}
 		return getName(itemStack.getType(), itemStack.getDurability());
 	}
@@ -180,6 +182,6 @@ public class ItemNameResolver
 		{
 			return itemStack.getItemMeta().getDisplayName();
 		}
-		return ChatColor.GRAY + getName(itemStack.getType(), itemStack.getDurability());
+		return MessageColor.GRAY + getName(itemStack.getType(), itemStack.getDurability());
 	}
 }
