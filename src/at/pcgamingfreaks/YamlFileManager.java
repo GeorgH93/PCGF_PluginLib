@@ -23,6 +23,8 @@ import at.pcgamingfreaks.yaml.YamlGetter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -44,7 +46,7 @@ public class YamlFileManager
 	protected YAML yaml; // The object holding the parsed content of the yaml file
 	protected File yamlFile; // The loaded yaml file
 	protected YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.UPDATE; // Defines the update behavior for yaml files
-	protected String fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
+	@Getter protected String fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
 
 	YamlFileManager(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @Nullable String file, @NotNull String inJarPrefix, @Nullable YAML oldConfig)
 	{
@@ -167,7 +169,7 @@ public class YamlFileManager
 	 */
 	protected void doUpdate()
 	{
-		logger.info("No " + fileDescription + " update code implemented! Just updating version!");
+		logger.info("No " + getFileDescription() + " update code implemented! Just updating version!");
 	}
 
 	/**
@@ -182,7 +184,7 @@ public class YamlFileManager
 
 	protected void loaded()
 	{
-		logger.info(ConsoleColor.GREEN + fileDescriptionCapitalized + " file successfully loaded." + ConsoleColor.RESET);
+		logger.info(ConsoleColor.GREEN + getFileDescriptionCapitalized() + " file successfully loaded." + ConsoleColor.RESET);
 	}
 	//endregion
 
@@ -230,7 +232,7 @@ public class YamlFileManager
 		}
 		catch(Exception e)
 		{
-			logger.warning("Failed to load " + fileDescription + " file!");
+			logger.warning("Failed to load " + getFileDescription() + " file!");
 			e.printStackTrace();
 		}
 	}
@@ -241,13 +243,13 @@ public class YamlFileManager
 		{
 			if(extracted)
 			{
-				logger.warning(ConsoleColor.YELLOW + "The " + fileDescription + " file (" + file + ") is outdated in the jar!" + ConsoleColor.RESET);
+				logger.warning(ConsoleColor.YELLOW + "The " + getFileDescription() + " file (" + file + ") is outdated in the jar!" + ConsoleColor.RESET);
 			}
 			if(updateMode == YamlFileUpdateMethod.OVERWRITE && !extracted)
 			{
 				extractFile();
 				load();
-				logger.info(ConsoleColor.GREEN + "Successful updated " + fileDescription + " file." + ConsoleColor.RESET);
+				logger.info(ConsoleColor.GREEN + "Successful updated " + getFileDescription() + " file." + ConsoleColor.RESET);
 			}
 			else
 			{
@@ -256,7 +258,7 @@ public class YamlFileManager
 		}
 		else
 		{
-			if(expectedVersion < getVersion()) logger.info(fileDescriptionCapitalized + " file version newer than expected! Expected: " + expectedVersion + " Is: " + getVersion());
+			if(expectedVersion < getVersion()) logger.info(getFileDescriptionCapitalized() + " file version newer than expected! Expected: " + expectedVersion + " Is: " + getVersion());
 			loaded();
 		}
 	}
@@ -275,17 +277,17 @@ public class YamlFileManager
 
 	protected void update()
 	{
-		logger.info(fileDescriptionCapitalized + " version: " + getVersion() + " => " + fileDescriptionCapitalized + " outdated! Updating ...");
+		logger.info(getFileDescriptionCapitalized() + " version: " + getVersion() + " => " + getFileDescriptionCapitalized() + " outdated! Updating ...");
 		try
 		{
 			doUpdate();
 			yaml.set(KEY_YAML_VERSION, expectedVersion);
 			save();
-			logger.info(ConsoleColor.GREEN + "Successful updated " + fileDescription + " file." + ConsoleColor.RESET);
+			logger.info(ConsoleColor.GREEN + "Successful updated " + getFileDescription() + " file." + ConsoleColor.RESET);
 		}
 		catch(Exception e)
 		{
-			logger.warning("Failed to update " + fileDescription + "!");
+			logger.warning("Failed to update " + getFileDescription() + "!");
 			e.printStackTrace();
 			yaml = null;
 		}
@@ -293,15 +295,15 @@ public class YamlFileManager
 
 	protected void upgrade()
 	{
-		logger.info(fileDescriptionCapitalized + " version: " + getVersion() + " => " + fileDescriptionCapitalized + " outdated! Upgrading ...");
+		logger.info(getFileDescriptionCapitalized() + " version: " + getVersion() + " => " + getFileDescriptionCapitalized() + " outdated! Upgrading ...");
 		try
 		{
 			int oldVersion = getVersion();
 			File oldFile = new File(yamlFile + ".old_v" + oldVersion);
-			if(oldFile.exists() && !oldFile.delete()) logger.warning("Failed to delete old " + fileDescription + " file backup!");
+			if(oldFile.exists() && !oldFile.delete()) logger.warning("Failed to delete old " + getFileDescription() + " file backup!");
 			if(!yamlFile.renameTo(oldFile))
 			{
-				logger.warning("Failed to rename old " + fileDescription + " file! Could not do upgrade!");
+				logger.warning("Failed to rename old " + getFileDescription() + " file! Could not do upgrade!");
 				return;
 			}
 			YAML oldYAML = yaml;
@@ -312,11 +314,11 @@ public class YamlFileManager
 			}
 			yaml.set(KEY_YAML_VERSION, expectedVersion);
 			save();
-			logger.info(ConsoleColor.GREEN + "Successful upgraded " + fileDescription + " file." + ConsoleColor.RESET);
+			logger.info(ConsoleColor.GREEN + "Successful upgraded " + getFileDescription() + " file." + ConsoleColor.RESET);
 		}
 		catch(Exception e)
 		{
-			logger.warning("Failed to upgrade " + fileDescription + " file.");
+			logger.warning("Failed to upgrade " + getFileDescription() + " file.");
 			e.printStackTrace();
 			yaml = null;
 		}

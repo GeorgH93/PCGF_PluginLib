@@ -405,7 +405,7 @@ public class Language extends YamlFileManager
 	 */
 	protected static class MessageClassesReflectionDataHolder
 	{
-		public MessageClassesReflectionDataHolder(Constructor messageConstructor, Method setSendMethod, Class<? extends ISendMethod> enumType)
+		public MessageClassesReflectionDataHolder(Constructor<?> messageConstructor, Method setSendMethod, Class<? extends ISendMethod> enumType)
 		{
 			this.enumType = enumType;
 			this.setSendMethod = setSendMethod;
@@ -413,8 +413,8 @@ public class Language extends YamlFileManager
 		}
 
 		public Class enumType;
-		public Constructor messageConstructor;
 		public Method setSendMethod;
+		public Constructor<?> messageConstructor;
 	}
 	//endregion
 
