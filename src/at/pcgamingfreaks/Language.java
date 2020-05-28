@@ -326,9 +326,14 @@ public class Language extends YamlFileManager
 	 * @param path the path to the searched language value
 	 * @return returns the language data
 	 */
-	public @NotNull String getTranslated(@NotNull String path)
+	public @NotNull String getTranslated(final @NotNull String path)
 	{
-		return MessageColor.translateAlternateColorCodes(get(path));
+		return translateColorCodes(get(path));
+	}
+
+	public @NotNull String translateColorCodes(final @NotNull String string)
+	{
+		return MessageColor.translateAlternateColorCodes(string);
 	}
 
 	protected @Nullable <T extends Message> T getMessage(boolean escapeStringFormatCharacters, @NotNull String path)
