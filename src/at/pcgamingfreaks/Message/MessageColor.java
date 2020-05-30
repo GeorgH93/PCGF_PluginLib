@@ -27,6 +27,7 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum  MessageColor
@@ -39,7 +40,7 @@ public enum  MessageColor
 	/**
 	 * Represents dark blue.
 	 */
-	@SerializedName("dark_blue")
+	@SerializedName(value = "dark_blue")
 	DARK_BLUE('1'),
 	/**
 	 * Represents dark green.
@@ -142,6 +143,7 @@ public enum  MessageColor
 	private static final Pattern STRIP_FORMAT_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[K-OR]");
 	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-F]");
 	private static final Pattern STRIP_COLOR_AND_FORMAT_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-FK-OR]");
+	private static final Pattern TRY_TO_READ_COLOR = Pattern.compile("(?<descriptor>LIGHT|DARK)(?<color>[A-Z]+)");
 
 	@Getter private final char code;
 	private final String codeString;
@@ -232,6 +234,51 @@ public enum  MessageColor
 		if(code >= 'k' && code <= 'o') return values()[code - 'k' + 16];
 		if(code == 'r') return RESET;
 		throw new IllegalArgumentException("Unknown format code '" + code + "'!");
+	}
+
+	public static @Nullable MessageColor getColor(@NotNull String color)
+	{
+		if(color.length() == 0) return null;
+		if(color.charAt(0) == '&' || color.charAt(0) == COLOR_CHAR) color = color.substring(1);
+		if(color.length() == 0) return null;
+		if(color.length() == 1)
+		{
+			try
+			{
+				return getFromCode(color.charAt(0));
+			}
+			catch(IllegalArgumentException ignored)
+			{
+				return null;
+			}
+		}
+		else if(color.length() == 2)
+		{
+			try
+			{
+				return values()[Integer.parseInt(color)];
+			}
+			catch(NumberFormatException | IndexOutOfBoundsException ignored)
+			{
+				return null;
+			}
+		}
+		color = color.toUpperCase(Locale.ENGLISH);
+		try
+		{
+			return valueOf(color);
+		}
+		catch(IllegalArgumentException ignored) {}
+		Matcher matcher = TRY_TO_READ_COLOR.matcher(color);
+		if(matcher.matches())
+		{
+			try
+			{
+				return valueOf(matcher.group("descriptor") + '_' + matcher.group("color"));
+			}
+			catch(IllegalArgumentException ignored) {}
+		}
+		return null;
 	}
 
 	public @Nullable String strip(final @Nullable String input)

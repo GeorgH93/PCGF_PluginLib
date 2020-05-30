@@ -149,4 +149,25 @@ public class MessageColorTest
 	{
 		assertEquals("test", MessageColor.stripColorAndFormat(MessageColor.BLUE + "test"));
 	}
+
+	@Test
+	public void testGetColor()
+	{
+		assertNull(MessageColor.getColor(""));
+		assertNull(MessageColor.getColor("&"));
+		assertNull(MessageColor.getColor("nothing"));
+		assertNull(MessageColor.getColor("99"));
+		assertNull(MessageColor.getColor("X"));
+		assertEquals(MessageColor.RED, MessageColor.getColor("c"));
+		assertEquals(MessageColor.RED, MessageColor.getColor("&c"));
+		assertEquals(MessageColor.RED, MessageColor.getColor("12"));
+		assertEquals(MessageColor.RED, MessageColor.getColor("red"));
+		assertEquals(MessageColor.RED, MessageColor.getColor("RED"));
+		assertEquals(MessageColor.DARK_RED, MessageColor.getColor("4"));
+		assertEquals(MessageColor.DARK_RED, MessageColor.getColor("&4"));
+		assertEquals(MessageColor.DARK_RED, MessageColor.getColor("darkred"));
+		assertEquals(MessageColor.DARK_RED, MessageColor.getColor("dark_red"));
+		assertEquals(MessageColor.LIGHT_PURPLE, MessageColor.getColor("lightpurple"));
+		assertEquals(MessageColor.LIGHT_PURPLE, MessageColor.getColor("light_purple"));
+	}
 }
