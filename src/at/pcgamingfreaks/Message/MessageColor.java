@@ -39,82 +39,82 @@ public enum  MessageColor
 	 * Represents black.
 	 */
 	@SerializedName("black")
-	BLACK('0'),
+	BLACK('0', "000000"),
 	/**
 	 * Represents dark blue.
 	 */
 	@SerializedName(value = "dark_blue")
-	DARK_BLUE('1'),
+	DARK_BLUE('1', "0000AA"),
 	/**
 	 * Represents dark green.
 	 */
 	@SerializedName("dark_green")
-	DARK_GREEN('2'),
+	DARK_GREEN('2', "00AA00"),
 	/**
 	 * Represents dark blue (aqua).
 	 */
 	@SerializedName("dark_aqua")
-	DARK_AQUA('3'),
+	DARK_AQUA('3', "00AAAA"),
 	/**
 	 * Represents dark red.
 	 */
 	@SerializedName("dark_red")
-	DARK_RED('4'),
+	DARK_RED('4', "AA0000"),
 	/**
 	 * Represents dark purple.
 	 */
 	@SerializedName("dark_purple")
-	DARK_PURPLE('5'),
+	DARK_PURPLE('5', "AA00AA"),
 	/**
 	 * Represents gold.
 	 */
 	@SerializedName("gold")
-	GOLD('6'),
+	GOLD('6', "FFAA00"),
 	/**
 	 * Represents gray.
 	 */
 	@SerializedName("gray")
-	GRAY('7'),
+	GRAY('7', "AAAAAA"),
 	/**
 	 * Represents dark gray.
 	 */
 	@SerializedName("dark_gray")
-	DARK_GRAY('8'),
+	DARK_GRAY('8', "555555"),
 	/**
 	 * Represents blue.
 	 */
 	@SerializedName("blue")
-	BLUE('9'),
+	BLUE('9', "5555FF"),
 	/**
 	 * Represents green.
 	 */
 	@SerializedName("green")
-	GREEN('a'),
+	GREEN('a', "55FF55"),
 	/**
 	 * Represents aqua.
 	 */
 	@SerializedName("aqua")
-	AQUA('b'),
+	AQUA('b', "55FFFF"),
 	/**
 	 * Represents red.
 	 */
 	@SerializedName("red")
-	RED('c'),
+	RED('c', "FF5555"),
 	/**
 	 * Represents light purple.
 	 */
 	@SerializedName("light_purple")
-	LIGHT_PURPLE('d'),
+	LIGHT_PURPLE('d', "FF55FF"),
 	/**
 	 * Represents yellow.
 	 */
 	@SerializedName("yellow")
-	YELLOW('e'),
+	YELLOW('e', "FFFF55"),
 	/**
 	 * Represents white.
 	 */
 	@SerializedName("white")
-	WHITE('f'),
+	WHITE('f', "FFFFFF"),
 	/**
 	 * Represents magical characters that change around randomly.
 	 */
@@ -138,7 +138,7 @@ public enum  MessageColor
 	/**
 	 * Resets all previous chat colors or formats.
 	 */
-	RESET('r');
+	RESET('r', false);
 
 	public static final char COLOR_CHAR = '\u00A7';
 	public static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
@@ -150,11 +150,17 @@ public enum  MessageColor
 
 	@Getter private final char code;
 	private final String codeString;
+	@Getter private final String rgbColor;
 	private final boolean isFormat;
+	private final int[] rgb;
 
-	MessageColor(char code)
+	MessageColor(char code, String rgbColor)
 	{
-		this(code, false);
+		this.code = code;
+		this.isFormat = false;
+		this.codeString = new String(new char[]{COLOR_CHAR, code});
+		this.rgbColor = '#' + rgbColor;
+		this.rgb = new int[] { Integer.parseInt(rgbColor.substring(0, 2), 16), Integer.parseInt(rgbColor.substring(2, 4), 16), Integer.parseInt(rgbColor.substring(4, 6), 16) };
 	}
 
 	MessageColor(char code, boolean isFormat)
@@ -162,6 +168,8 @@ public enum  MessageColor
 		this.code = code;
 		this.isFormat = isFormat;
 		this.codeString = new String(new char[]{COLOR_CHAR, code});
+		this.rgbColor = null;
+		this.rgb = null;
 	}
 
 	/**
@@ -274,6 +282,24 @@ public enum  MessageColor
 			{
 				return null;
 			}
+		}
+		else if(color.length() == 7 && color.matches("#[\\da-fA-F]{6}"))
+		{
+			int[] newRGB = new int[] { Integer.parseInt(color.substring(1, 3), 16), Integer.parseInt(color.substring(3, 5), 16), Integer.parseInt(color.substring(5, 7), 16) };
+			int nearest = Integer.MAX_VALUE;
+			MessageColor nearestColor = null;
+			for(int i = 0; i < 16; i++)
+			{
+				MessageColor c = values()[i];
+				int r = c.rgb[0] - newRGB[0], g = c.rgb[1] - newRGB[1], b = c.rgb[2] - newRGB[2];
+				int dist = r * r + g * g + b * b;
+				if(dist < nearest)
+				{
+					nearest = dist;
+					nearestColor = c;
+				}
+			}
+			return nearestColor;
 		}
 		color = color.toUpperCase(Locale.ENGLISH);
 		try

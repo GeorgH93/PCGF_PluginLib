@@ -169,5 +169,6 @@ public class MessageColorTest
 		assertEquals(MessageColor.DARK_RED, MessageColor.getColor("dark_red"));
 		assertEquals(MessageColor.LIGHT_PURPLE, MessageColor.getColor("lightpurple"));
 		assertEquals(MessageColor.LIGHT_PURPLE, MessageColor.getColor("light_purple"));
+		assertEquals(MessageColor.DARK_RED, MessageColor.getColor("#fF0000"));
 	}
 }
