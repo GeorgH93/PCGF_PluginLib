@@ -71,7 +71,9 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 *
 	 * @param text   The text for the {@link MessageComponent}.
 	 * @param styles The style for the {@link MessageComponent}.
+	 * @deprecated Use {@link MessageColor} instead!
 	 */
+	@Deprecated
 	public MessageComponent(String text, @Nullable ChatColor[] styles)
 	{
 		super(text, styles);

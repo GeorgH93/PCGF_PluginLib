@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Message;
 
+import at.pcgamingfreaks.Reflection;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.jetbrains.annotations.Contract;
@@ -25,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import lombok.Getter;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -195,9 +198,18 @@ public enum  MessageColor
 	 * @param style The style element to be converted.
 	 * @return The converted {@link MessageColor} element.
 	 */
-	public static @NotNull MessageColor messageColorFromStyle(@NotNull Enum<?> style)
+	@Deprecated
+	public static @NotNull MessageColor messageColorFromStyle(final @NotNull Object style)
 	{
-		return valueOf(style.name().toUpperCase(Locale.ROOT));
+		if(!style.getClass().getSimpleName().equals("ChatColor")) throw new IllegalArgumentException("style musst be of type ChatColor!");
+		try
+		{
+			return valueOf(((String) Reflection.getMethodIncludeParents(style.getClass(), "name").invoke(style)).toUpperCase(Locale.ROOT));
+		}
+		catch(IllegalAccessException | InvocationTargetException e)
+		{
+			throw new IllegalArgumentException("The style object is not a valide ChatColor object.", e);
+		}
 	}
 
 	@Override

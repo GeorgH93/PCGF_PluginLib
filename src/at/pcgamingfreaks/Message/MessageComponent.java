@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("unchecked")
-public abstract class MessageComponent<T extends MessageComponent, STYLES extends Enum> implements JsonDeserializer<T>
+public abstract class MessageComponent<T extends MessageComponent, STYLES> implements JsonDeserializer<T>
 {
 	//region JSON Variables
 	protected MessageClickEvent clickEvent = null;
@@ -279,6 +279,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES extend
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
 	 */
+	@Deprecated
 	public T setColor(STYLES color) throws IllegalArgumentException
 	{
 		return setColor(MessageColor.messageColorFromStyle(color));
