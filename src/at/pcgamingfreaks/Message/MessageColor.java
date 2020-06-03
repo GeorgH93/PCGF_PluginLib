@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Reflection;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -152,15 +153,15 @@ public enum  MessageColor
 	private final String codeString;
 	@Getter private final String rgbColor;
 	private final boolean isFormat;
-	private final int[] rgb;
+	private final int rgb;
 
-	MessageColor(char code, String rgbColor)
+	MessageColor(final char code, final String rgbColor)
 	{
 		this.code = code;
 		this.isFormat = false;
 		this.codeString = new String(new char[]{COLOR_CHAR, code});
 		this.rgbColor = '#' + rgbColor;
-		this.rgb = new int[] { Integer.parseInt(rgbColor.substring(0, 2), 16), Integer.parseInt(rgbColor.substring(2, 4), 16), Integer.parseInt(rgbColor.substring(4, 6), 16) };
+		this.rgb = Integer.parseInt(rgbColor, 16);
 	}
 
 	MessageColor(char code, boolean isFormat)
@@ -169,7 +170,7 @@ public enum  MessageColor
 		this.isFormat = isFormat;
 		this.codeString = new String(new char[]{COLOR_CHAR, code});
 		this.rgbColor = null;
-		this.rgb = null;
+		this.rgb = Integer.MIN_VALUE;
 	}
 
 	/**
@@ -285,13 +286,13 @@ public enum  MessageColor
 		}
 		else if(color.length() == 7 && color.matches("#[\\da-fA-F]{6}"))
 		{
-			int[] newRGB = new int[] { Integer.parseInt(color.substring(1, 3), 16), Integer.parseInt(color.substring(3, 5), 16), Integer.parseInt(color.substring(5, 7), 16) };
+			int newRGB = Integer.parseInt(color.substring(1), 16);
 			int nearest = Integer.MAX_VALUE;
 			MessageColor nearestColor = null;
 			for(int i = 0; i < 16; i++)
 			{
 				MessageColor c = values()[i];
-				int r = c.rgb[0] - newRGB[0], g = c.rgb[1] - newRGB[1], b = c.rgb[2] - newRGB[2];
+				int r = (c.rgb >> 16) - (newRGB >> 16), g = ((c.rgb >> 8) & 0xff) - ((newRGB >> 8) & 0xff), b = (c.rgb & 0xff) - (newRGB & 0xff);
 				int dist = r * r + g * g + b * b;
 				if(dist < nearest)
 				{
