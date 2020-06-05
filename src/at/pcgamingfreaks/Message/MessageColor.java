@@ -119,18 +119,22 @@ public enum  MessageColor
 	/**
 	 * Represents magical characters that change around randomly.
 	 */
+	@Deprecated
 	MAGIC('k', true),
 	/**
 	 * Makes the text bold.
 	 */
+	@Deprecated
 	BOLD('l', true),
 	/**
 	 * Makes a line appear through the text.
 	 */
+	@Deprecated
 	STRIKETHROUGH('m', true),
 	/**
 	 * Makes the text appear underlined.
 	 */
+	@Deprecated
 	UNDERLINE('n', true),
 	/**
 	 * Makes the text italic.
@@ -179,6 +183,7 @@ public enum  MessageColor
 	 * @param styles The style elements to be converted.
 	 * @return The converted {@link MessageColor} elements.
 	 */
+	@Deprecated
 	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum<?>... styles)
 	{
 		if(styles != null && styles.length > 0)
@@ -232,6 +237,7 @@ public enum  MessageColor
 	 *
 	 * @return True if the instance is a format code.
 	 */
+	@Deprecated
 	public boolean isFormat()
 	{
 		return isFormat;
@@ -242,6 +248,7 @@ public enum  MessageColor
 	 *
 	 * @return True if the instance is a color code.
 	 */
+	@Deprecated
 	public boolean isColor()
 	{
 		return !isFormat && this != RESET;
