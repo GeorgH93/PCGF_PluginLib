@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bungee.Message;
 
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Message.MessageFormat;
 import at.pcgamingfreaks.Reflection;
 
 import com.google.gson.GsonBuilder;
@@ -26,6 +27,7 @@ import com.google.gson.JsonDeserializer;
 
 import net.md_5.bungee.api.ChatColor;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -33,7 +35,7 @@ import java.util.Locale;
 
 public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent, ChatColor> implements JsonDeserializer<MessageComponent>
 {
-	private static final transient at.pcgamingfreaks.Message.MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
+	private static final transient MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
 	private static final transient MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 
 	static
@@ -44,7 +46,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	}
 
 	@Override
-	protected at.pcgamingfreaks.Message.MessageComponent getNewLineComponent()
+	protected MessageComponent getNewLineComponent()
 	{
 		return NEW_LINE_HELPER;
 	}
@@ -59,9 +61,33 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 * Creates a new empty MessageComponent instance.
 	 *
 	 * @param text   The text for the {@link MessageComponent}.
+	 * @param formats The style for the {@link MessageComponent}.
+	 */
+	public MessageComponent(String text, final MessageFormat... formats)
+	{
+		super(text, formats);
+	}
+
+	/**
+	 * Creates a new empty MessageComponent instance.
+	 *
+	 * @param text    The text for the {@link MessageComponent}.
+	 * @param color   The color for the {@link MessageComponent}.
+	 * @param formats The style for the {@link MessageComponent}.
+	 */
+	public MessageComponent(final @NotNull String text, final @Nullable MessageColor color, final MessageFormat... formats)
+	{
+		super(text, color, formats);
+	}
+
+	/**
+	 * Creates a new empty MessageComponent instance.
+	 *
+	 * @param text   The text for the {@link MessageComponent}.
 	 * @param styles The style for the {@link MessageComponent}.
 	 */
-	public MessageComponent(String text, MessageColor... styles)
+	@Deprecated
+	public MessageComponent(String text, MessageColor[] styles)
 	{
 		super(text, styles);
 	}
@@ -110,6 +136,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 *
 	 * @return The color of the component as a {@link ChatColor}, null if no color is defined.
 	 */
+	@Deprecated
 	public ChatColor getChatColor()
 	{
 		return ChatColor.valueOf(getColorString().toUpperCase(Locale.ROOT));

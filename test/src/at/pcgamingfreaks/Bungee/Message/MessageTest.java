@@ -22,6 +22,7 @@ import at.pcgamingfreaks.Bungee.Message.Sender.ChatSender;
 import at.pcgamingfreaks.Bungee.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Bungee.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Message.MessageFormat;
 
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -54,7 +55,7 @@ public class MessageTest
 	{
 		assertEquals("The basic message text should be equal", "Test Message", new Message("Test Message").getClassicMessage());
 		assertEquals("The send method of the new message should match", SendMethod.TITLE, new Message("Another test message", SendMethod.TITLE).getSendMethod());
-		assertEquals("The extended message should match", MessageColor.ITALIC.toString() + MessageColor.BLUE.toString() + "Test Message 3" + MessageColor.RESET, new Message(new MessageComponent[] { new MessageComponent("Test Message 3", MessageColor.BLUE, MessageColor.ITALIC) }, SendMethod.ACTION_BAR).getClassicMessage());
+		assertEquals("The extended message should match", MessageColor.ITALIC.toString() + MessageColor.BLUE.toString() + "Test Message 3" + MessageColor.RESET, new Message(new MessageComponent[] { new MessageComponent("Test Message 3", MessageColor.BLUE, MessageFormat.ITALIC) }, SendMethod.ACTION_BAR).getClassicMessage());
 		List<MessageComponent> messageComponents = new ArrayList<>();
 		messageComponents.add(new MessageComponent("Test message 2"));
 		assertEquals("The message should match", "Test message 2" + MessageColor.RESET, new Message(messageComponents, SendMethod.DISABLED).getClassicMessage());

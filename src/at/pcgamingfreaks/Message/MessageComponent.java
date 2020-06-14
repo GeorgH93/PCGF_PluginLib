@@ -65,10 +65,37 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	/**
 	 * Creates a new empty MessageComponent instance.
 	 *
+	 * @param text    The text for the {@link MessageComponent}.
+	 * @param formats The style for the {@link MessageComponent}.
+	 */
+	protected MessageComponent(final String text, MessageFormat... formats)
+	{
+		setText(text);
+		if(formats != null) setFormats(formats);
+	}
+
+	/**
+	 * Creates a new empty MessageComponent instance.
+	 *
+	 * @param text    The text for the {@link MessageComponent}.
+	 * @param color   The color for the {@link MessageComponent}.
+	 * @param formats The style for the {@link MessageComponent}.
+	 */
+	protected MessageComponent(final String text, final @Nullable MessageColor color, MessageFormat... formats)
+	{
+		setText(text);
+		if(color != null) setColor(color);
+		if(formats != null) setFormats(formats);
+	}
+
+	/**
+	 * Creates a new empty MessageComponent instance.
+	 *
 	 * @param text   The text for the {@link MessageComponent}.
 	 * @param styles The style for the {@link MessageComponent}.
 	 */
-	protected MessageComponent(String text, MessageColor... styles)
+	@Deprecated
+	protected MessageComponent(String text, MessageColor[] styles)
 	{
 		setText(text);
 		if(styles != null) setStyles(styles);
@@ -80,6 +107,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 * @param text   The text for the {@link MessageComponent}.
 	 * @param styles The style for the {@link MessageComponent}.
 	 */
+	@Deprecated
 	protected MessageComponent(String text, @Nullable STYLES[] styles)
 	{
 		setText(text);
@@ -226,7 +254,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	/**
 	 * Gets the color of the component.
 	 *
-	 * @return The color of the component as a {@link String}, null if no color is defined.
+	 * @return The color of the component as a {@link MessageColor}, null if no color is defined.
 	 */
 	public MessageColor getColor()
 	{
@@ -236,7 +264,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	/**
 	 * Gets the color of the component.
 	 *
-	 * @return The color of the component as a {@link MessageColor}, null if no color is defined.
+	 * @return The color of the component as a {@link String}, null if no color is defined.
 	 */
 	public String getColorString()
 	{
@@ -251,7 +279,9 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 */
 	public T setColor(final @NotNull String color)
 	{
-		return setColor(MessageColor.valueOf(color.toUpperCase(Locale.ROOT)));
+		MessageColor c = MessageColor.getColor(color);
+		if(c == null) throw new IllegalArgumentException(color + " not a valid color!");
+		return setColor(c);
 	}
 
 	/**
@@ -520,6 +550,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
+	@Deprecated
 	public T setFormats(MessageColor... formats) throws IllegalArgumentException
 	{
 		if(formats != null)
@@ -543,12 +574,40 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 
 	/**
 	 * Sets the formats of the component.
+	 *
+	 * @param formats The array of formats to apply to the component.
+	 * @return This message component instance.
+	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 */
+	public T setFormats(MessageFormat... formats)
+	{
+		if(formats != null)
+		{
+			for(MessageFormat format : formats)
+			{
+				switch(format)
+				{
+					case ITALIC: setItalic(); break;
+					case BOLD: setBold(); break;
+					case UNDERLINE: setUnderlined(); break;
+					case STRIKETHROUGH: setStrikethrough(); break;
+					case MAGIC: setObfuscated(); break;
+					case RESET: break;
+				}
+			}
+		}
+		return (T)this;
+	}
+
+	/**
+	 * Sets the formats of the component.
 	 * Use {@link MessageColor} for better performance!
 	 *
 	 * @param formats The array of formats to apply to the component.
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
+	@Deprecated
 	public T setFormats(@Nullable STYLES... formats) throws IllegalArgumentException
 	{
 		if(formats == null || formats.length == 0) return (T)this;
@@ -561,6 +620,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 * @param styles The array of styles to apply to the component.
 	 * @return This message component instance.
 	 */
+	@Deprecated
 	public T setStyles(MessageColor... styles)
 	{
 		if(styles != null)
@@ -588,6 +648,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 * @param styles The array of styles to apply to the component.
 	 * @return This message component instance.
 	 */
+	@Deprecated
 	public T setStyles(@Nullable STYLES... styles)
 	{
 		if(styles == null || styles.length == 0) return (T)this;
@@ -637,6 +698,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 * @param color The new color of the component.
 	 * @return This message component instance.
 	 */
+	@Deprecated
 	public T color(STYLES color) throws IllegalArgumentException
 	{
 		return setColor(color);
@@ -649,6 +711,19 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
+	public T format(MessageFormat... formats) throws IllegalArgumentException
+	{
+		return setFormats(formats);
+	}
+
+	/**
+	 * Sets the format of the component.
+	 *
+	 * @param formats The array of format to apply to the component.
+	 * @return This message component instance.
+	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 */
+	@Deprecated
 	public T format(MessageColor... formats) throws IllegalArgumentException
 	{
 		return setFormats(formats);
@@ -662,6 +737,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
+	@Deprecated
 	public T format(STYLES... formats) throws IllegalArgumentException
 	{
 		return setFormats(formats);
@@ -674,6 +750,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 * @param styles The array of styles to apply to the component.
 	 * @return This message component instance.
 	 */
+	@Deprecated
 	public T style(STYLES... styles)
 	{
 		return setStyles(styles);
@@ -685,6 +762,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 * @param styles The array of styles to apply to the component.
 	 * @return This message component instance.
 	 */
+	@Deprecated
 	public T style(MessageColor... styles)
 	{
 		return setStyles(styles);
@@ -905,7 +983,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 		return onHover(MessageHoverEvent.HoverEventAction.SHOW_TEXT, builder.toString());
 	}
 
-	protected abstract MessageComponent getNewLineComponent();
+	protected abstract T getNewLineComponent();
 
 	/**
 	 * Set the behavior of the component to display the specified lines of formatted text when the client hovers over the text.
@@ -974,7 +1052,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 		}
 		//Strings
 		if(componentAsJsonObject.get("text") != null) component.text = componentAsJsonObject.get("text").getAsString();
-		if(componentAsJsonObject.get("color") != null) component.color = MessageColor.valueOf(componentAsJsonObject.get("color").getAsString().toUpperCase(Locale.ROOT));
+		if(componentAsJsonObject.get("color") != null) component.color = MessageColor.getColor(componentAsJsonObject.get("color").getAsString());
 		if(componentAsJsonObject.get("insertion") != null) component.insertion = componentAsJsonObject.get("insertion").getAsString();
 		//Booleans
 		if(componentAsJsonObject.get("bold") != null) component.bold = componentAsJsonObject.get("bold").getAsBoolean();

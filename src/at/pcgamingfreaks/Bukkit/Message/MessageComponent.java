@@ -22,6 +22,7 @@ import at.pcgamingfreaks.Bukkit.NmsReflector;
 import at.pcgamingfreaks.Bukkit.OBCReflection;
 import at.pcgamingfreaks.Bukkit.Utils;
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Message.MessageFormat;
 import at.pcgamingfreaks.Message.MessageHoverEvent;
 import at.pcgamingfreaks.Reflection;
 
@@ -33,6 +34,7 @@ import org.bukkit.*;
 import org.bukkit.Statistic.Type;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -44,7 +46,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 {
 	//region Reflection Variables
 	private static final transient Class<?> CRAFT_STATISTIC = OBCReflection.getOBCClass("CraftStatistic");
-	@SuppressWarnings({ "ConstantConditions", "deprecation" })
+	@SuppressWarnings({ "ConstantConditions" })
 	private static final transient Method GET_NMS_ACHIEVEMENT =  (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? OBCReflection.getMethod(CRAFT_STATISTIC, "getNMSAchievement", Reflection.getClass("org.bukkit.Achievement")) : null;
 	@SuppressWarnings("ConstantConditions")
 	private static final transient Method GET_NMS_STATISTIC = OBCReflection.getMethod(CRAFT_STATISTIC, "getNMSStatistic", Statistic.class);
@@ -54,7 +56,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	private static final transient Field FIELD_STATISTIC_NAME = MCVersion.isOlderThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsField("Statistic", "name") : null;
 	//endregion
 
-	private static final transient at.pcgamingfreaks.Message.MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
+	private static final transient MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
 	private static final transient MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 
 	static
@@ -65,7 +67,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	}
 
 	@Override
-	protected at.pcgamingfreaks.Message.MessageComponent getNewLineComponent()
+	protected MessageComponent getNewLineComponent()
 	{
 		return NEW_LINE_HELPER;
 	}
@@ -80,9 +82,33 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 * Creates a new empty MessageComponent instance.
 	 *
 	 * @param text   The text for the {@link MessageComponent}.
+	 * @param formats The style for the {@link MessageComponent}.
+	 */
+	public MessageComponent(String text, final MessageFormat... formats)
+	{
+		super(text, formats);
+	}
+
+	/**
+	 * Creates a new empty MessageComponent instance.
+	 *
+	 * @param text    The text for the {@link MessageComponent}.
+	 * @param color   The color for the {@link MessageComponent}.
+	 * @param formats The style for the {@link MessageComponent}.
+	 */
+	public MessageComponent(final @NotNull String text, final @Nullable MessageColor color, final MessageFormat... formats)
+	{
+		super(text, color, formats);
+	}
+
+	/**
+	 * Creates a new empty MessageComponent instance.
+	 *
+	 * @param text   The text for the {@link MessageComponent}.
 	 * @param styles The style for the {@link MessageComponent}.
 	 */
-	public MessageComponent(String text, MessageColor... styles)
+	@Deprecated
+	public MessageComponent(String text, MessageColor[] styles)
 	{
 		super(text, styles);
 	}
@@ -93,6 +119,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 * @param text   The text for the {@link MessageComponent}.
 	 * @param styles The style for the {@link MessageComponent}.
 	 */
+	@Deprecated
 	public MessageComponent(String text, @Nullable ChatColor[] styles)
 	{
 		super(text, styles);

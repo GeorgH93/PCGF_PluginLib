@@ -24,7 +24,7 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 @SuppressWarnings("unchecked")
-public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message, STYLE extends Enum>
+public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message, STYLE>
 {
 	private List<COMPONENT> messageList = new ArrayList<>();
 	private COMPONENT current;
@@ -75,7 +75,6 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	{
 		try
 		{
-			//noinspection ConstantConditions
 			return append((COMPONENT) EMPTY_COMPONENT_CONSTRUCTOR.newInstance());
 		}
 		catch(Exception e)
@@ -92,6 +91,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param styles The style information for the new {@link MessageComponent} that will be added to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
+	@Deprecated
 	public T append(String text, STYLE[] styles)
 	{
 
@@ -106,12 +106,34 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param styles The style information for the new {@link MessageComponent} that will be added to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
+	@Deprecated
 	public T append(String text, MessageColor... styles)
 	{
 		try
 		{
-			//noinspection ConstantConditions
 			return append((COMPONENT) INIT_COMPONENT_CONSTRUCTOR.newInstance(text, styles));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return (T) this;
+	}
+
+	/**
+	 * Adds a new {@link MessageComponent} to the builder, generated from a text and optional style data.
+	 *
+	 * @param text    The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
+	 * @param color   The color information for the new {@link MessageComponent} that will be added to the builder.
+	 * @param formats The style information for the new {@link MessageComponent} that will be added to the builder.
+	 * @return The message builder instance (for chaining).
+	 */
+	@Deprecated
+	public T append(String text, MessageColor color, MessageFormat formats)
+	{
+		try
+		{
+			return append((COMPONENT) INIT_COMPONENT_CONSTRUCTOR.newInstance(text, color, formats));
 		}
 		catch(Exception e)
 		{
@@ -226,6 +248,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param color The new color of the current component.
 	 * @return The message builder instance (for chaining).
 	 */
+	@Deprecated
 	public T color(STYLE color)
 	{
 		getCurrentComponent().setColor(color);
@@ -239,6 +262,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @return The message builder instance (for chaining).
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
+	@Deprecated
 	public T format(STYLE... formats) throws IllegalArgumentException
 	{
 		getCurrentComponent().setFormats(formats);
@@ -252,7 +276,21 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @return The message builder instance (for chaining).
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
+	@Deprecated
 	public T format(MessageColor... formats) throws IllegalArgumentException
+	{
+		getCurrentComponent().setFormats(formats);
+		return (T) this;
+	}
+
+	/**
+	 * Sets the format of the current component
+	 *
+	 * @param formats The array of formats to apply to the current component.
+	 * @return The message builder instance (for chaining).
+	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 */
+	public T format(MessageFormat... formats) throws IllegalArgumentException
 	{
 		getCurrentComponent().setFormats(formats);
 		return (T) this;
@@ -264,6 +302,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param styles The array of styles to apply to the current component.
 	 * @return The message builder instance (for chaining).
 	 */
+	@Deprecated
 	public T style(STYLE... styles)
 	{
 		getCurrentComponent().setStyles(styles);
@@ -276,6 +315,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param styles The array of styles to apply to the current component.
 	 * @return The message builder instance (for chaining).
 	 */
+	@Deprecated
 	public T style(MessageColor... styles)
 	{
 		getCurrentComponent().setStyles(styles);

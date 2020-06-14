@@ -109,8 +109,6 @@ public class MessageComponentTest
 		messageComponent.setFormats(MessageColor.RESET);
 		TestUtils.setUnaccessible(isFormatField, MessageColor.RESET, true);
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.format();
-		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.setStyles((MessageColor[]) null);
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.setStyles((MessageColor) null);
@@ -244,7 +242,6 @@ public class MessageComponentTest
 	public void testSpecialCases()
 	{
 		TestMessageComponent messageComponent = new TestMessageComponent("Text", null);
-		messageComponent.setFormats();
 		Gson gson = new Gson();
 		JsonElement json = gson.fromJson("{\"text\":\"Text\", \"bold\":\"null\", \"italic\":\"false\", \"underlined\":\"null\", \"obfuscated\":\"null\", \"strikethrough\":\"null\"}", JsonElement.class);
 		messageComponent.deserialize(json, null, null);

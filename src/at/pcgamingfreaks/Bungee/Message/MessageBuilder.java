@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bungee.Message;
 
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Message.MessageFormat;
 import at.pcgamingfreaks.Reflection;
 
 import net.md_5.bungee.api.ChatColor;
@@ -67,10 +68,33 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	/**
 	 * Creates a new MessageBuilder from a given text and format information.
 	 *
+	 * @param text    The text that should be used to initialize the first {@link MessageComponent} of the message.
+	 */
+	public MessageBuilder(String text)
+	{
+		this(new MessageComponent(text));
+	}
+
+	/**
+	 * Creates a new MessageBuilder from a given text and format information.
+	 *
+	 * @param text    The text that should be used to initialize the first {@link MessageComponent} of the message.
+	 * @param color   The color the should be used to initialize the first {@link MessageComponent} of the message.
+	 * @param formats The style the should be used to initialize the first {@link MessageComponent} of the message.
+	 */
+	public MessageBuilder(String text, MessageColor color, MessageFormat... formats)
+	{
+		this(new MessageComponent(text, color, formats));
+	}
+
+	/**
+	 * Creates a new MessageBuilder from a given text and format information.
+	 *
 	 * @param text   The text that should be used to initialize the first {@link MessageComponent} of the message.
 	 * @param styles The style the should be used to initialize the first {@link MessageComponent} of the message.
 	 */
-	public MessageBuilder(String text, MessageColor... styles)
+	@Deprecated
+	public MessageBuilder(String text, MessageColor[] styles)
 	{
 		this(new MessageComponent(text, styles));
 	}
@@ -81,6 +105,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @param text   The text that should be used to initialize the first {@link MessageComponent} of the message.
 	 * @param styles The style the should be used to initialize the first {@link MessageComponent} of the message.
 	 */
+	@Deprecated
 	public MessageBuilder(String text, ChatColor[] styles)
 	{
 		this(new MessageComponent(text, styles));

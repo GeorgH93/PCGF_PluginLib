@@ -21,7 +21,6 @@ import at.pcgamingfreaks.Reflection;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -139,6 +138,7 @@ public enum  MessageColor
 	/**
 	 * Makes the text italic.
 	 */
+	@Deprecated
 	ITALIC('o', true),
 	/**
 	 * Resets all previous chat colors or formats.
@@ -347,6 +347,7 @@ public enum  MessageColor
 		return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
 	}
 
+	@Deprecated
 	@Contract("!null->!null; null->null")
 	public static @Nullable String stripFormat(final @Nullable String input)
 	{
