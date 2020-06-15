@@ -27,7 +27,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -91,8 +90,7 @@ public class MessageBuilderTest
 	}
 
 	@Test
-	@SuppressWarnings("SpellCheckingInspection, unchecked")
-	public void testAppend() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
+	public void testAppend() throws NoSuchFieldException, IllegalAccessException
 	{
 		String currentMessage = "Init§r\n§r";
 		TestMessageBuilder messageBuilder = new TestMessageBuilder(initComponent);
@@ -106,7 +104,7 @@ public class MessageBuilderTest
 		assertEquals("The append method should not append a new component", currentMessage, messageBuilder.append("new text", new Enum[] {}).getClassicMessage());
 		currentMessage += "§9new text§r";
 		assertEquals("The append method should append a new component", currentMessage, messageBuilder.append("new text", new Enum[] { ChatColor.BLUE }).getClassicMessage());
-		constructor = TestUtils.setAccessible(MessageBuilder.class, null, "INIT_COMPONENT_CONSTRUCTOR", null);
+		constructor = TestUtils.setAccessible(MessageBuilder.class, null, "INIT_COMPONENT_CONSTRUCTOR_TEXT_AND_FORMAT", null);
 		assertEquals("The append method should not append a new component", currentMessage, messageBuilder.append("new text").getClassicMessage());
 		TestUtils.setUnaccessible(constructor, null, false);
 		assertEquals("The append method should not append a new component", currentMessage, messageBuilder.append((TestMessageComponent[]) null).getClassicMessage());

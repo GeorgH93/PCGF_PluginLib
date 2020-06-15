@@ -24,6 +24,7 @@ import at.pcgamingfreaks.TestClasses.TestUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import org.bukkit.ChatColor;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -123,9 +124,9 @@ public class MessageComponentTest
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.format(new Enum[] {});
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.format(new Enum[] { MessageColor.BOLD });
+		messageComponent.format(ChatColor.BOLD);
 		assertTrue("The message should now be bold", messageComponent.isBold());
-		messageComponent.style(new Enum[] { MessageColor.ITALIC });
+		messageComponent.style(ChatColor.ITALIC);
 		assertTrue("The message should now be italic", messageComponent.isItalic());
 	}
 
@@ -241,7 +242,7 @@ public class MessageComponentTest
 	@Test
 	public void testSpecialCases()
 	{
-		TestMessageComponent messageComponent = new TestMessageComponent("Text", null);
+		TestMessageComponent messageComponent = new TestMessageComponent("Text");
 		Gson gson = new Gson();
 		JsonElement json = gson.fromJson("{\"text\":\"Text\", \"bold\":\"null\", \"italic\":\"false\", \"underlined\":\"null\", \"obfuscated\":\"null\", \"strikethrough\":\"null\"}", JsonElement.class);
 		messageComponent.deserialize(json, null, null);
@@ -251,7 +252,7 @@ public class MessageComponentTest
 	@Test(expected = NullPointerException.class)
 	public void testSetFormatWithError()
 	{
-		TestMessageComponent messageComponent = new TestMessageComponent("Text", null);
+		TestMessageComponent messageComponent = new TestMessageComponent("Text");
 		messageComponent.setFormats((MessageColor) null);
 	}
 

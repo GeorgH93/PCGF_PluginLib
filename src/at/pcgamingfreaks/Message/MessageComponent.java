@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "UnusedReturnValue" })
 public abstract class MessageComponent<T extends MessageComponent, STYLES> implements JsonDeserializer<T>
 {
 	//region JSON Variables
@@ -172,11 +172,11 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	public String getClassicFormats()
 	{
 		StringBuilder stringBuilder = new StringBuilder();
-		if (isBold()) stringBuilder.append(MessageColor.BOLD);
-		if (isItalic()) stringBuilder.append(MessageColor.ITALIC);
-		if (isObfuscated()) stringBuilder.append(MessageColor.MAGIC);
-		if (isUnderlined()) stringBuilder.append(MessageColor.UNDERLINE);
-		if (isStrikethrough()) stringBuilder.append(MessageColor.STRIKETHROUGH);
+		if (isBold()) stringBuilder.append(MessageFormat.BOLD);
+		if (isItalic()) stringBuilder.append(MessageFormat.ITALIC);
+		if (isObfuscated()) stringBuilder.append(MessageFormat.MAGIC);
+		if (isUnderlined()) stringBuilder.append(MessageFormat.UNDERLINE);
+		if (isStrikethrough()) stringBuilder.append(MessageFormat.STRIKETHROUGH);
 		if (color != null) stringBuilder.append(getColor().toString().toLowerCase(Locale.ROOT));
 		return stringBuilder.toString();
 	}
@@ -611,7 +611,8 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	public T setFormats(@Nullable STYLES... formats) throws IllegalArgumentException
 	{
 		if(formats == null || formats.length == 0) return (T)this;
-		return setFormats(MessageColor.messageColorArrayFromStylesArray((Enum[]) formats));
+		//noinspection RedundantCast
+		return setFormats(MessageColor.messageColorArrayFromStylesArray((Object[]) formats));
 	}
 
 	/**
@@ -652,7 +653,8 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	public T setStyles(@Nullable STYLES... styles)
 	{
 		if(styles == null || styles.length == 0) return (T)this;
-		return setStyles(MessageColor.messageColorArrayFromStylesArray((Enum[]) styles));
+		//noinspection RedundantCast
+		return setStyles(MessageColor.messageColorArrayFromStylesArray((Object[]) styles));
 	}
 	//endregion
 

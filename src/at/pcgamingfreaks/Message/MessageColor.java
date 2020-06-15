@@ -184,17 +184,17 @@ public enum  MessageColor
 	 * @return The converted {@link MessageColor} elements.
 	 */
 	@Deprecated
-	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Enum<?>... styles)
+	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Object... styles)
 	{
 		if(styles != null && styles.length > 0)
 		{
 			MessageColor[] msgStyles = new MessageColor[styles.length];
 			int i = 0;
-			for(Enum<?> style : styles)
+			for(Object style : styles)
 			{
 				if(style != null)
 				{
-					msgStyles[i++] = valueOf(style.name().toUpperCase(Locale.ROOT));
+					msgStyles[i++] = messageColorFromStyle(style);
 				}
 			}
 			if(msgStyles.length > i)

@@ -23,12 +23,12 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "UnusedReturnValue" })
 public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message, STYLE>
 {
-	private List<COMPONENT> messageList = new ArrayList<>();
+	private final List<COMPONENT> messageList = new ArrayList<>();
 	private COMPONENT current;
-	private static Constructor EMPTY_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR = null, MESSAGE_CONSTRUCTOR = null;
+	private static Constructor EMPTY_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR_TEXT_AND_FORMAT = null, MESSAGE_CONSTRUCTOR = null;
 	@SuppressWarnings("unused")
 	private static Class<? extends MessageComponent> COMPONENT_CLASS;
 	private static MessageComponent NEW_LINE_HELPER = null;
@@ -96,7 +96,8 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	{
 
 		if(styles == null || styles.length == 0) return (T)this;
-		return append(text, MessageColor.messageColorArrayFromStylesArray((Enum[]) styles));
+		//noinspection RedundantCast
+		return append(text, MessageColor.messageColorArrayFromStylesArray((Object[]) styles));
 	}
 
 	/**
@@ -107,11 +108,31 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @return The message builder instance (for chaining).
 	 */
 	@Deprecated
-	public T append(String text, MessageColor... styles)
+	public T append(String text, MessageColor[] styles)
 	{
 		try
 		{
-			return append((COMPONENT) INIT_COMPONENT_CONSTRUCTOR.newInstance(text, styles));
+			append(text);
+			style(styles);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return (T) this;
+	}
+
+	/**
+	 * Adds a new {@link MessageComponent} to the builder, generated from a text and optional style data.
+	 *
+	 * @param text    The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
+	 * @return The message builder instance (for chaining).
+	 */
+	public T append(String text, MessageFormat... formats)
+	{
+		try
+		{
+			return append((COMPONENT) INIT_COMPONENT_CONSTRUCTOR_TEXT_AND_FORMAT.newInstance(text, formats));
 		}
 		catch(Exception e)
 		{
@@ -128,8 +149,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param formats The style information for the new {@link MessageComponent} that will be added to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
-	@Deprecated
-	public T append(String text, MessageColor color, MessageFormat formats)
+	public T append(String text, MessageColor color, MessageFormat... formats)
 	{
 		try
 		{
@@ -473,7 +493,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param value  The value the client should use for the action.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T onHover(MessageHoverEvent.HoverEventAction action, Collection<? extends MessageComponent> value)
+	public T onHover(MessageHoverEvent.HoverEventAction action, Collection<? extends COMPONENT> value)
 	{
 		getCurrentComponent().onHover(action, value);
 		return (T) this;
@@ -533,7 +553,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param text The formatted text which will be displayed to the client upon hovering.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T formattedTooltip(MessageComponent... text) throws IllegalArgumentException
+	public T formattedTooltip(COMPONENT... text) throws IllegalArgumentException
 	{
 		getCurrentComponent().formattedTooltip(text);
 		return (T) this;
@@ -545,7 +565,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param lines The lines of formatted text which will be displayed to the client upon hovering.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T formattedTooltip(Message... lines) throws IllegalArgumentException
+	public T formattedTooltip(MESSAGE... lines) throws IllegalArgumentException
 	{
 		getCurrentComponent().formattedTooltip(lines);
 		return (T) this;
@@ -557,7 +577,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param extras The extras to be added to the current component.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T extra(MessageComponent... extras)
+	public T extra(COMPONENT... extras)
 	{
 		getCurrentComponent().extra(extras);
 		return (T) this;

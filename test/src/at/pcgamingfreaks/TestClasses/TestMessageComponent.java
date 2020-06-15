@@ -19,6 +19,7 @@ package at.pcgamingfreaks.TestClasses;
 
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageComponent;
+import at.pcgamingfreaks.Message.MessageFormat;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -51,7 +52,17 @@ public class TestMessageComponent extends MessageComponent<MessageComponent, Enu
 		super(text);
 	}
 
-	public TestMessageComponent(String text, MessageColor... styles)
+	public TestMessageComponent(String text, MessageFormat... formats)
+	{
+		super(text, formats);
+	}
+
+	public TestMessageComponent(String text, MessageColor color, MessageFormat... formats)
+	{
+		super(text, color, formats);
+	}
+
+	public TestMessageComponent(String text, MessageColor[] styles)
 	{
 		super(text, styles);
 	}
