@@ -67,18 +67,31 @@ public class HeadUtils
 
 	public static ItemStack fromBase64(final @NotNull ItemStack item, final @NotNull String value, final @Nullable String itemName, @Nullable UUID ownerUUID)
 	{
-		String name = "";
+		if(ownerUUID == null) ownerUUID = UUID.randomUUID();
+		StringBuilder builder = new StringBuilder("{");
 		if(itemName != null)
 		{
-			name = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13)) ? "{\\\"text\\\":\\\"" + itemName + "\\\"}" : itemName;
-			name = "display:{Name:\"" + name + "\"},";
+			builder.append("display:{Name:\"");
+			if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13))
+				builder.append("{\\\"text\\\":\\\"").append(itemName).append("\\\"}");
+			else
+				builder.append(itemName);
+			builder.append("\"},");
 		}
-		if(ownerUUID == null)
+		builder.append("SkullOwner:{Id:");
+		if(MCVersion.isOlderThan(MCVersion.MC_1_16))
 		{
-			ownerUUID = UUID.randomUUID();
+			builder.append('"').append(ownerUUID.toString()).append('"');
 		}
-		String str = "{" + name + "SkullOwner:{Id:\"" + ownerUUID + "\",Properties:{textures:[{Value:\"" + value + "\"}]}}}";
-		Bukkit.getUnsafe().modifyItemStack(item, str);
+		else
+		{
+			long most = ownerUUID.getMostSignificantBits(), least = ownerUUID.getLeastSignificantBits();
+			builder.append("[I;");
+			builder.append((int) (most >> 32)).append(',').append((int) most).append(',');
+			builder.append((int) (least >> 32)).append(',').append((int) least).append(']');
+		}
+		builder.append(",Properties:{textures:[{Value:\"").append(value).append("\"}]}}}");
+		Bukkit.getUnsafe().modifyItemStack(item, builder.toString());
 		return item;
 	}
 
