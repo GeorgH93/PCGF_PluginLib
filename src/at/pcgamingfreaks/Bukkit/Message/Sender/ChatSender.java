@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,9 +32,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.UUID;
 
 public class ChatSender extends BaseSender
 {
+	private static final UUID EMPTY_UUID = new UUID(0, 0);
 	//region Reflection stuff
 	private static final Class<?> PACKET_PLAY_OUT_CHAT = NmsReflector.INSTANCE.getNmsClass("PacketPlayOutChat");
 	private static final Constructor<?> PACKET_PLAY_OUT_CHAT_CONSTRUCTOR;
@@ -50,8 +52,11 @@ public class ChatSender extends BaseSender
 		else
 		{
 			Class<?> chatMessageType = NmsReflector.INSTANCE.getNmsClass("ChatMessageType");
-			PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, chatMessageType);
 			BYTE_TO_MESSAGE_TYPE_ENUM = NmsReflector.INSTANCE.getNmsMethod(chatMessageType, "a", Byte.TYPE);
+			if(MCVersion.isOlderThan(MCVersion.MC_1_16))
+				PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, chatMessageType);
+			else
+				PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, chatMessageType, UUID.class);
 		}
 	}
 	//endregion
@@ -160,7 +165,10 @@ public class ChatSender extends BaseSender
 
 	private static Object createPacket(@NotNull String json, byte action) throws InvocationTargetException, IllegalAccessException, InstantiationException
 	{
-		return PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(finalizeJson(json), (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? action : BYTE_TO_MESSAGE_TYPE_ENUM.invoke(null, action));
+		if(MCVersion.isOlderThan(MCVersion.MC_1_16))
+			return PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(finalizeJson(json), (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? action : BYTE_TO_MESSAGE_TYPE_ENUM.invoke(null, action));
+		else
+			return PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(finalizeJson(json), BYTE_TO_MESSAGE_TYPE_ENUM.invoke(null, action), EMPTY_UUID);
 	}
 
 	protected static void send(@NotNull Player player, @NotNull String json, byte action)
