@@ -19,6 +19,8 @@ package at.pcgamingfreaks.Message;
 
 import com.google.gson.Gson;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -339,6 +341,12 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	public T style(MessageColor... styles)
 	{
 		getCurrentComponent().setStyles(styles);
+		return (T) this;
+	}
+
+	public T font(final @Nullable String font)
+	{
+		getCurrentComponent().setFont(font);
 		return (T) this;
 	}
 

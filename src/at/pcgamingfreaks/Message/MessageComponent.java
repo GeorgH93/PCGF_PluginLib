@@ -22,6 +22,8 @@ import com.google.gson.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +40,11 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	protected MessageColor color;
 	protected Boolean bold, italic, underlined, strikethrough, obfuscated;
 	protected List<T> extra = null;
+
+	/**
+	 * The font of the component. null = default font
+	 */
+	@Getter @Nullable protected String font = null;
 
 	@SuppressWarnings("unused")
 	protected Object selector, score, translate; // We don't use them now, maybe later
@@ -656,6 +663,18 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 		//noinspection RedundantCast
 		return setStyles(MessageColor.messageColorArrayFromStylesArray((Object[]) styles));
 	}
+
+	/**
+	 * Sets the font of the component.
+	 *
+	 * @param font The name of the font that should be used.
+	 * @return This message component instance.
+	 */
+	public T setFont(final @Nullable String font)
+	{
+		this.font = font;
+		return (T)this;
+	}
 	//endregion
 
 	//region Short message modifier (setter)
@@ -768,6 +787,17 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	public T style(MessageColor... styles)
 	{
 		return setStyles(styles);
+	}
+
+	/**
+	 * Sets the font of the component.
+	 *
+	 * @param font The name of the font that should be used.
+	 * @return This message component instance.
+	 */
+	public T font(final @Nullable String font)
+	{
+		return setFont(font);
 	}
 
 	/**
@@ -1056,6 +1086,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 		if(componentAsJsonObject.get("text") != null) component.text = componentAsJsonObject.get("text").getAsString();
 		if(componentAsJsonObject.get("color") != null) component.color = MessageColor.getColor(componentAsJsonObject.get("color").getAsString());
 		if(componentAsJsonObject.get("insertion") != null) component.insertion = componentAsJsonObject.get("insertion").getAsString();
+		if(componentAsJsonObject.get("font") != null) component.font = componentAsJsonObject.get("font").getAsString();
 		//Booleans
 		if(componentAsJsonObject.get("bold") != null) component.bold = componentAsJsonObject.get("bold").getAsBoolean();
 		if(componentAsJsonObject.get("italic") != null) component.italic =  componentAsJsonObject.get("italic").getAsBoolean();
