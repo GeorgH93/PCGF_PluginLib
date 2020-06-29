@@ -26,7 +26,7 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 @SuppressWarnings({ "unchecked", "UnusedReturnValue" })
-public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message, STYLE>
+public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message>
 {
 	private final List<COMPONENT> messageList = new ArrayList<>();
 	private COMPONENT current;
@@ -84,22 +84,6 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 			e.printStackTrace();
 		}
 		return (T) this;
-	}
-
-	/**
-	 * Adds a new {@link MessageComponent} to the builder, generated from a text and optional style data.
-	 *
-	 * @param text   The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
-	 * @param styles The style information for the new {@link MessageComponent} that will be added to the builder.
-	 * @return The message builder instance (for chaining).
-	 */
-	@Deprecated
-	public T append(String text, STYLE[] styles)
-	{
-
-		if(styles == null || styles.length == 0) return (T)this;
-		//noinspection RedundantCast
-		return append(text, MessageColor.messageColorArrayFromStylesArray((Object[]) styles));
 	}
 
 	/**
@@ -265,33 +249,6 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	}
 
 	/**
-	 * Sets the color of the current component.
-	 *
-	 * @param color The new color of the current component.
-	 * @return The message builder instance (for chaining).
-	 */
-	@Deprecated
-	public T color(STYLE color)
-	{
-		getCurrentComponent().setColor(color);
-		return (T) this;
-	}
-
-	/**
-	 * Sets the format of the current component
-	 *
-	 * @param formats The array of formats to apply to the current component.
-	 * @return The message builder instance (for chaining).
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
-	 */
-	@Deprecated
-	public T format(STYLE... formats) throws IllegalArgumentException
-	{
-		getCurrentComponent().setFormats(formats);
-		return (T) this;
-	}
-
-	/**
 	 * Sets the format of the current component
 	 *
 	 * @param formats The array of formats to apply to the current component.
@@ -315,19 +272,6 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	public T format(MessageFormat... formats) throws IllegalArgumentException
 	{
 		getCurrentComponent().setFormats(formats);
-		return (T) this;
-	}
-
-	/**
-	 * Sets the style of the current component.
-	 *
-	 * @param styles The array of styles to apply to the current component.
-	 * @return The message builder instance (for chaining).
-	 */
-	@Deprecated
-	public T style(STYLE... styles)
-	{
-		getCurrentComponent().setStyles(styles);
 		return (T) this;
 	}
 

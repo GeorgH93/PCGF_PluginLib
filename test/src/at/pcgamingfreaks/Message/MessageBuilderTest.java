@@ -22,7 +22,6 @@ import at.pcgamingfreaks.TestClasses.TestMessageBuilder;
 import at.pcgamingfreaks.TestClasses.TestMessageComponent;
 import at.pcgamingfreaks.TestClasses.TestUtils;
 
-import org.bukkit.ChatColor;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -100,10 +99,8 @@ public class MessageBuilderTest
 		Field constructor = TestUtils.setAccessible(MessageBuilder.class, null, "EMPTY_COMPONENT_CONSTRUCTOR", null);
 		assertEquals("The append method should fail", currentMessage, messageBuilder.append().getClassicMessage());
 		TestUtils.setUnaccessible(constructor, null, false);
-		assertEquals("The append method should not append a new component", currentMessage, messageBuilder.append("new text", (Enum[]) null).getClassicMessage());
-		assertEquals("The append method should not append a new component", currentMessage, messageBuilder.append("new text", new Enum[] {}).getClassicMessage());
 		currentMessage += "§9new text§r";
-		assertEquals("The append method should append a new component", currentMessage, messageBuilder.append("new text", new Enum[] { ChatColor.BLUE }).getClassicMessage());
+		assertEquals("The append method should append a new component", currentMessage, messageBuilder.append("new text", MessageColor.BLUE).getClassicMessage());
 		constructor = TestUtils.setAccessible(MessageBuilder.class, null, "INIT_COMPONENT_CONSTRUCTOR_TEXT_AND_FORMAT", null);
 		assertEquals("The append method should not append a new component", currentMessage, messageBuilder.append("new text").getClassicMessage());
 		TestUtils.setUnaccessible(constructor, null, false);
@@ -118,7 +115,7 @@ public class MessageBuilderTest
 	public void testGetMessage() throws NoSuchFieldException, IllegalAccessException
 	{
 		TestMessageBuilder messageBuilder = new TestMessageBuilder(initComponent);
-		messageBuilder.color(ChatColor.BLUE).color(MessageColor.DARK_RED).style(ChatColor.BOLD).style(MessageColor.UNDERLINE).format(ChatColor.MAGIC).format(MessageColor.MAGIC);
+		messageBuilder.color(MessageColor.BLUE).color(MessageColor.DARK_RED).style(MessageColor.BOLD).style(MessageColor.UNDERLINE).format(MessageColor.MAGIC).format(MessageColor.MAGIC);
 		assertEquals("The message should match", "§l§k§n§4Init§r", messageBuilder.getMessage().getClassicMessage());
 		Field constructor = TestUtils.setAccessible(MessageBuilder.class, null, "MESSAGE_CONSTRUCTOR", null);
 		assertNull("The creation of a new message should fail", messageBuilder.getMessage());

@@ -28,9 +28,11 @@ import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, MessageComponent, Message, ChatColor>
+public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, MessageComponent, Message>
 {
 	static
 	{
@@ -150,6 +152,21 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 			return append(json);
 		}
 	}
+
+	/**
+	 * Adds a new {@link MessageComponent} to the builder, generated from a text and optional style data.
+	 *
+	 * @param text   The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
+	 * @param styles The style information for the new {@link MessageComponent} that will be added to the builder.
+	 * @return The message builder instance (for chaining).
+	 */
+	public MessageBuilder append(String text, ChatColor[] styles)
+	{
+
+		if(styles == null || styles.length == 0) return this;
+		append(text);
+		return style(styles);
+	}
 	//endregion
 
 	//region Modifier for the current component
@@ -215,6 +232,56 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	public MessageBuilder itemTooltip(ItemStack itemStack)
 	{
 		getCurrentComponent().itemTooltip(itemStack);
+		return this;
+	}
+
+
+	/**
+	 * Sets the color of the current component.
+	 *
+	 * @param color The new color of the current component.
+	 * @return The message builder instance (for chaining).
+	 */
+	public MessageBuilder color(ChatColor color)
+	{
+		if(!color.isColor()) throw new IllegalArgumentException(color.name() + " is not a color!");
+		getCurrentComponent().setColor(MessageColor.valueOf(color.name()));
+		return this;
+	}
+
+	/**
+	 * Sets the format of the current component
+	 *
+	 * @param formats The array of formats to apply to the current component.
+	 * @return The message builder instance (for chaining).
+	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 */
+	public MessageBuilder format(ChatColor... formats) throws IllegalArgumentException
+	{
+		List<MessageFormat> formatsList = new ArrayList<>(formats.length);
+		for(ChatColor format : formats)
+		{
+			if(!format.isFormat()) throw new IllegalArgumentException(format.name() + " is not a format!");
+			formatsList.add(MessageFormat.valueOf(format.name()));
+		}
+		getCurrentComponent().setFormats(formatsList);
+		return this;
+	}
+
+	/**
+	 * Sets the style of the current component.
+	 *
+	 * @param styles The array of styles to apply to the current component.
+	 * @return The message builder instance (for chaining).
+	 */
+	public MessageBuilder style(ChatColor... styles)
+	{
+		for(ChatColor style : styles)
+		{
+			if(style == ChatColor.RESET) { color(MessageColor.RESET); format(MessageFormat.RESET); }
+			else if(style.isColor()) color(style);
+			else format(style);
+		}
 		return this;
 	}
 	//endregion

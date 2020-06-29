@@ -24,7 +24,7 @@ import at.pcgamingfreaks.Reflection;
 
 import java.util.Collection;
 
-public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestMessageComponent, TestMessage, Enum>
+public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestMessageComponent, TestMessage>
 {
 	public boolean appendNewLineFromFatherClass = false;
 

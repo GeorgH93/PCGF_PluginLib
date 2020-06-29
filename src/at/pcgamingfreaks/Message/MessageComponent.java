@@ -606,6 +606,20 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 		return (T)this;
 	}
 
+
+	/**
+	 * Sets the formats of the component.
+	 *
+	 * @param formats The collection of formats to apply to the component.
+	 * @return This message component instance.
+	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 */
+	public T setFormats(Collection<MessageFormat> formats)
+	{
+		formats.forEach(this::setFormats);
+		return (T) this;
+	}
+
 	/**
 	 * Sets the formats of the component.
 	 * Use {@link MessageColor} for better performance!
@@ -733,6 +747,18 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
 	public T format(MessageFormat... formats) throws IllegalArgumentException
+	{
+		return setFormats(formats);
+	}
+
+	/**
+	 * Sets the format of the component.
+	 *
+	 * @param formats The array of format to apply to the component.
+	 * @return This message component instance.
+	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 */
+	public T format(Collection<MessageFormat> formats) throws IllegalArgumentException
 	{
 		return setFormats(formats);
 	}
