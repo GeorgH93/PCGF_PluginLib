@@ -571,7 +571,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 					case UNDERLINE: setUnderlined(); break;
 					case STRIKETHROUGH: setStrikethrough(); break;
 					case MAGIC: setObfuscated(); break;
-					case RESET: break;
+					case RESET: color = null; break;
 					default: throw new IllegalArgumentException(format.name() + " is not a formatter");
 				}
 			}
@@ -599,7 +599,7 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 					case UNDERLINE: setUnderlined(); break;
 					case STRIKETHROUGH: setStrikethrough(); break;
 					case MAGIC: setObfuscated(); break;
-					case RESET: break;
+					case RESET: italic = bold = underlined = strikethrough = obfuscated = false; break;
 				}
 			}
 		}

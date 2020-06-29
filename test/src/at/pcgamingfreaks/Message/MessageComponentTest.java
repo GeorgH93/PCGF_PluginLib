@@ -107,7 +107,7 @@ public class MessageComponentTest
 		messageComponent.setFormats((Enum[]) null);
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		Field isFormatField = TestUtils.setAccessible(MessageColor.class, MessageColor.RESET, "isFormat", true);
-		messageComponent.setFormats(MessageColor.RESET);
+		messageComponent.setFormats(MessageFormat.RESET);
 		TestUtils.setUnaccessible(isFormatField, MessageColor.RESET, true);
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.setStyles((MessageColor[]) null);
