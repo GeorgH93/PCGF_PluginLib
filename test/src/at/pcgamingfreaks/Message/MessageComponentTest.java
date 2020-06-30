@@ -24,7 +24,6 @@ import at.pcgamingfreaks.TestClasses.TestUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-import org.bukkit.ChatColor;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,8 +34,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.bukkit.ChatColor.BLUE;
-import static org.bukkit.ChatColor.GREEN;
 import static org.junit.Assert.*;
 
 public class MessageComponentTest
@@ -85,10 +82,10 @@ public class MessageComponentTest
 		assertFalse("The message should not be strikethrough", messageComponent.isStrikethrough());
 		messageComponent.color("Aqua");
 		assertEquals("The message color should be aqua", MessageColor.AQUA, messageComponent.getColor());
-		assertEquals("The message text should be equal", "Test text§r", new TestMessageComponent("Test text", (Enum[]) null).getClassicMessage());
-		assertEquals("The message text should be equal", "§aTest text§r", new TestMessageComponent("Test text", new Enum[] { GREEN }).getClassicMessage());
-		messageComponent.color(BLUE);
-		assertEquals("The color should match the ChatColor", BLUE.toString(), messageComponent.getColor().toString());
+		assertEquals("The message text should be equal", "Test text§r", new TestMessageComponent("Test text").getClassicMessage());
+		assertEquals("The message text should be equal", "§aTest text§r", new TestMessageComponent("Test text", MessageColor.GREEN).getClassicMessage());
+		messageComponent.color(MessageColor.BLUE);
+		assertEquals("The color should match the ChatColor", MessageColor.BLUE.toString(), messageComponent.getColor().toString());
 		messageComponent.setBold(false);
 		assertFalse("The message should not be bold", messageComponent.isBold());
 		messageComponent.setItalic(false);
@@ -102,9 +99,9 @@ public class MessageComponentTest
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.setFormats((MessageColor[]) null);
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setFormats((Enum) null);
+		messageComponent.setFormats(new MessageFormat[]{});
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setFormats((Enum[]) null);
+		messageComponent.setFormats(new MessageFormat[]{});
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		Field isFormatField = TestUtils.setAccessible(MessageColor.class, MessageColor.RESET, "isFormat", true);
 		messageComponent.setFormats(MessageFormat.RESET);
@@ -114,19 +111,19 @@ public class MessageComponentTest
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.setStyles((MessageColor) null);
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setStyles((Enum[]) null);
+		messageComponent.setStyles();
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setStyles((Enum) null);
+		messageComponent.setStyles();
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.style();
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.style(new Enum[] {});
+		messageComponent.style();
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.format(new Enum[] {});
+		messageComponent.format(new MessageFormat[] {});
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.format(ChatColor.BOLD);
+		messageComponent.format(MessageFormat.BOLD);
 		assertTrue("The message should now be bold", messageComponent.isBold());
-		messageComponent.style(ChatColor.ITALIC);
+		messageComponent.style(MessageColor.ITALIC);
 		assertTrue("The message should now be italic", messageComponent.isItalic());
 	}
 

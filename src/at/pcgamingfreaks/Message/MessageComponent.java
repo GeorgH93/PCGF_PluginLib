@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings({ "unchecked", "UnusedReturnValue" })
-public abstract class MessageComponent<T extends MessageComponent, STYLES> implements JsonDeserializer<T>
+public abstract class MessageComponent<T extends MessageComponent> implements JsonDeserializer<T>
 {
 	//region JSON Variables
 	protected MessageClickEvent clickEvent = null;
@@ -103,19 +103,6 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	 */
 	@Deprecated
 	protected MessageComponent(String text, MessageColor[] styles)
-	{
-		setText(text);
-		if(styles != null) setStyles(styles);
-	}
-
-	/**
-	 * Creates a new empty MessageComponent instance.
-	 *
-	 * @param text   The text for the {@link MessageComponent}.
-	 * @param styles The style for the {@link MessageComponent}.
-	 */
-	@Deprecated
-	protected MessageComponent(String text, @Nullable STYLES[] styles)
 	{
 		setText(text);
 		if(styles != null) setStyles(styles);
@@ -306,20 +293,6 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 		}
 		this.color = color;
 		return (T)this;
-	}
-
-	/**
-	 * Sets the color of the component.
-	 * Use {@link MessageColor} for better performance!
-	 *
-	 * @param color The new color of the component.
-	 * @return This message component instance.
-	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
-	 */
-	@Deprecated
-	public T setColor(STYLES color) throws IllegalArgumentException
-	{
-		return setColor(MessageColor.messageColorFromStyle(color));
 	}
 
 	/**
@@ -621,22 +594,6 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	}
 
 	/**
-	 * Sets the formats of the component.
-	 * Use {@link MessageColor} for better performance!
-	 *
-	 * @param formats The array of formats to apply to the component.
-	 * @return This message component instance.
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
-	 */
-	@Deprecated
-	public T setFormats(@Nullable STYLES... formats) throws IllegalArgumentException
-	{
-		if(formats == null || formats.length == 0) return (T)this;
-		//noinspection RedundantCast
-		return setFormats(MessageColor.messageColorArrayFromStylesArray((Object[]) formats));
-	}
-
-	/**
 	 * Sets the style of the component.
 	 *
 	 * @param styles The array of styles to apply to the component.
@@ -661,21 +618,6 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 			}
 		}
 		return (T)this;
-	}
-
-	/**
-	 * Sets the style of the component.
-	 * Use {@link MessageColor} for better performance!
-	 *
-	 * @param styles The array of styles to apply to the component.
-	 * @return This message component instance.
-	 */
-	@Deprecated
-	public T setStyles(@Nullable STYLES... styles)
-	{
-		if(styles == null || styles.length == 0) return (T)this;
-		//noinspection RedundantCast
-		return setStyles(MessageColor.messageColorArrayFromStylesArray((Object[]) styles));
 	}
 
 	/**
@@ -727,19 +669,6 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	}
 
 	/**
-	 * Sets the color of the component.
-	 * Use {@link MessageColor} for better performance!
-	 *
-	 * @param color The new color of the component.
-	 * @return This message component instance.
-	 */
-	@Deprecated
-	public T color(STYLES color) throws IllegalArgumentException
-	{
-		return setColor(color);
-	}
-
-	/**
 	 * Sets the format of the component.
 	 *
 	 * @param formats The array of format to apply to the component.
@@ -774,33 +703,6 @@ public abstract class MessageComponent<T extends MessageComponent, STYLES> imple
 	public T format(MessageColor... formats) throws IllegalArgumentException
 	{
 		return setFormats(formats);
-	}
-
-	/**
-	 * Sets the format of the component.
-	 * Use {@link MessageColor} for better performance!
-	 *
-	 * @param formats The array of format to apply to the component.
-	 * @return This message component instance.
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
-	 */
-	@Deprecated
-	public T format(STYLES... formats) throws IllegalArgumentException
-	{
-		return setFormats(formats);
-	}
-
-	/**
-	 * Sets the style of the component.
-	 * Use {@link MessageColor} for better performance!
-	 *
-	 * @param styles The array of styles to apply to the component.
-	 * @return This message component instance.
-	 */
-	@Deprecated
-	public T style(STYLES... styles)
-	{
-		return setStyles(styles);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Locale;
 
-public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent, ChatColor> implements JsonDeserializer<MessageComponent>
+public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent> implements JsonDeserializer<MessageComponent>
 {
 	private static final transient MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
 	private static final transient MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
@@ -88,19 +88,6 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 */
 	@Deprecated
 	public MessageComponent(String text, MessageColor[] styles)
-	{
-		super(text, styles);
-	}
-
-	/**
-	 * Creates a new empty MessageComponent instance.
-	 *
-	 * @param text   The text for the {@link MessageComponent}.
-	 * @param styles The style for the {@link MessageComponent}.
-	 * @deprecated Use {@link MessageColor} instead!
-	 */
-	@Deprecated
-	public MessageComponent(String text, @Nullable ChatColor[] styles)
 	{
 		super(text, styles);
 	}

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 
-public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent, ChatColor> implements JsonDeserializer<MessageComponent>
+public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent> implements JsonDeserializer<MessageComponent>
 {
 	//region Reflection Variables
 	private static final transient Class<?> CRAFT_STATISTIC = OBCReflection.getOBCClass("CraftStatistic");
@@ -109,18 +109,6 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 */
 	@Deprecated
 	public MessageComponent(String text, MessageColor[] styles)
-	{
-		super(text, styles);
-	}
-
-	/**
-	 * Creates a new empty MessageComponent instance.
-	 *
-	 * @param text   The text for the {@link MessageComponent}.
-	 * @param styles The style for the {@link MessageComponent}.
-	 */
-	@Deprecated
-	public MessageComponent(String text, @Nullable ChatColor[] styles)
 	{
 		super(text, styles);
 	}
