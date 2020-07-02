@@ -152,7 +152,7 @@ public class MessageComponentTest
 		assertEquals("The given command should be found", "cmd run", messageComponent.getClickEvent().getValue());
 		messageComponent.onHover(MessageHoverEvent.HoverEventAction.SHOW_TEXT, "Text 1");
 		assertEquals("The hover message text should match", "Text 1", messageComponent.getHoverEvent().getValue());
-		List<MessageComponent> messageComponents = new ArrayList<>();
+		List<MessageComponent<?>> messageComponents = new ArrayList<>();
 		messageComponents.add(messageComponent);
 		messageComponent.onHover(MessageHoverEvent.HoverEventAction.SHOW_TEXT, messageComponents);
 		assertEquals("The hover message should be the current message object", messageComponents, messageComponent.getHoverEvent().getValue());
@@ -167,7 +167,7 @@ public class MessageComponentTest
 		messageComponent.formattedTooltip(new TestMessageComponent("Test text"));
 		assertEquals("The hover message text should match the formatted tooltip text", "{\"text\":\"Test text\"}", messageComponent.getHoverEvent().getValue());
 		messageComponents.clear();
-		messageComponent.formattedTooltip((Message[]) new TestMessage[0]);
+		messageComponent.formattedTooltip(new TestMessage[0]);
 		assertNull("The hover event should be null", messageComponent.getHoverEvent());
 		messageComponents.add(new TestMessageComponent("Another text"));
 		messageComponent.formattedTooltip(new TestMessage(messageComponents), new TestMessage(messageComponents));
@@ -223,45 +223,11 @@ public class MessageComponentTest
 		assertEquals("The color of the message should be green", "green", messageComponent.getColorString());
 	}
 
-	@Test
-	public void testDeserialize()
-	{
-		Gson gson = new Gson();
-		JsonElement json = gson.fromJson("{\"text\":\"JSON text\", \"color\":\"AQUA\", \"insertion\":\"insert\", \"bold\":\"true\", \"italic\":\"true\", \"underlined\":\"true\", \"obfuscated\":\"true\", \"strikethrough\":\"true\", \"extra\":[{\"text\":\"extra\"}], \"clickEvent\":{\"action\":\"run_command\", \"value\":\"cmd run\"}, \"hoverEvent\":{\"action\":\"show_text\", \"value\":\"Text 1\"}}", JsonElement.class);
-		TestMessageComponent messageComponent = new TestMessageComponent();
-		MessageComponent component = messageComponent.deserialize(json, null, null);
-		assertEquals("The text should match", "JSON text", component.getText());
-		JsonElement emptyJson = gson.fromJson("{}", JsonElement.class);
-		MessageComponent emptyComponent = messageComponent.deserialize(emptyJson, null, null);
-		assertNull("The text should match", emptyComponent.getText());
-	}
-
-	@Test
-	public void testSpecialCases()
-	{
-		TestMessageComponent messageComponent = new TestMessageComponent("Text");
-		Gson gson = new Gson();
-		JsonElement json = gson.fromJson("{\"text\":\"Text\", \"bold\":\"null\", \"italic\":\"false\", \"underlined\":\"null\", \"obfuscated\":\"null\", \"strikethrough\":\"null\"}", JsonElement.class);
-		messageComponent.deserialize(json, null, null);
-		assertFalse("The message should not be italic", messageComponent.isItalic());
-	}
-
 	@Test(expected = NullPointerException.class)
 	public void testSetFormatWithError()
 	{
 		TestMessageComponent messageComponent = new TestMessageComponent("Text");
-		messageComponent.setFormats((MessageColor) null);
-	}
-
-	@Test
-	public void testDeserializeWithError() throws NoSuchMethodException
-	{
-		Gson gson = new Gson();
-		JsonElement json = gson.fromJson("{\"text\":\"Another JSON text\"}", JsonElement.class);
-		TestMessageComponent messageComponent = new TestMessageComponent();
-		MessageComponent.messageComponentConstructor = null;
-		assertNull(messageComponent.deserialize(json, null, null));
-		MessageComponent.messageComponentConstructor = TestMessageComponent.class.getConstructor();
+		messageComponent.setFormats((MessageFormat) null);
 	}
 
 	@Test
@@ -285,7 +251,7 @@ public class MessageComponentTest
 		fromJsonWorker.setAccessible(true);
 		MessageComponent.messageComponentConstructor = null;
 		//noinspection unchecked
-		assertTrue("There should not be returned any message components", ((List<TestMessageComponent>) fromJsonWorker.invoke(messageComponent, "[\"String\"]")).size() == 0);
+		assertEquals("There should not be returned any message components", 0, ((List<TestMessageComponent>) fromJsonWorker.invoke(messageComponent, "[\"String\"]")).size());
 		MessageComponent.messageComponentConstructor = TestMessageComponent.class.getConstructor();
 		fromJsonWorker.setAccessible(false);
 	}

@@ -29,7 +29,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
@@ -47,7 +48,7 @@ public class MessageTest
 		message2.setOptionalParameters(5);
 		assertEquals("The message texts should match", "Message text", message2.getClassicMessage());
 		assertEquals("The other message texts should match", "Message text§r", message3.getClassicMessage());
-		assertTrue("The messages should be equal", message2.equals(message3));
+		assertEquals("The messages should be equal", message2, message3);
 		assertEquals("The message hash code should match", message2.hashCode(), message3.hashCode());
 		assertEquals("The message text should be correct", "[{\"text\":\"Message text\"}]", message3.toString());
 		//noinspection deprecation
@@ -57,10 +58,8 @@ public class MessageTest
 		message1.replaceAll("ext", "est");
 		message2.replaceAll("ext", "est");
 		assertEquals("The message texts should match", message1.getClassicMessage(), message2.getClassicMessage());
-		//noinspection EqualsBetweenInconvertibleTypes
-		assertFalse("A string should not equal a message object", message1.equals("False"));
-		//noinspection EqualsBetweenInconvertibleTypes
-		assertFalse("The messages should not be equal", message1.equals(message3));
+		assertNotEquals("A string should not equal a message object", "False", message1);
+		assertNotEquals("The messages should not be equal", message1, message3);
 	}
 
 	@Test
@@ -71,7 +70,7 @@ public class MessageTest
 	}
 
 	@Test
-	public void testMessageWithError() throws Exception
+	public void testMessageWithError()
 	{
 		assertEquals("The test message should be empty", "", new TestMessage("").getClassicMessage());
 		mockStatic(Reflection.class);
