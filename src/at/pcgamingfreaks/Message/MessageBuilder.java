@@ -89,28 +89,6 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	/**
 	 * Adds a new {@link MessageComponent} to the builder, generated from a text and optional style data.
 	 *
-	 * @param text   The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
-	 * @param styles The style information for the new {@link MessageComponent} that will be added to the builder.
-	 * @return The message builder instance (for chaining).
-	 */
-	@Deprecated
-	public T append(String text, MessageColor[] styles)
-	{
-		try
-		{
-			append(text);
-			style(styles);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return (T) this;
-	}
-
-	/**
-	 * Adds a new {@link MessageComponent} to the builder, generated from a text and optional style data.
-	 *
 	 * @param text    The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
@@ -255,20 +233,6 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @return The message builder instance (for chaining).
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
-	@Deprecated
-	public T format(MessageColor... formats) throws IllegalArgumentException
-	{
-		getCurrentComponent().setFormats(formats);
-		return (T) this;
-	}
-
-	/**
-	 * Sets the format of the current component
-	 *
-	 * @param formats The array of formats to apply to the current component.
-	 * @return The message builder instance (for chaining).
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
-	 */
 	public T format(MessageFormat... formats) throws IllegalArgumentException
 	{
 		getCurrentComponent().setFormats(formats);
@@ -276,18 +240,11 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	}
 
 	/**
-	 * Sets the style of the current component.
+	 * Sets the font of the current component
 	 *
-	 * @param styles The array of styles to apply to the current component.
+	 * @param font The font to be used. null = default font
 	 * @return The message builder instance (for chaining).
 	 */
-	@Deprecated
-	public T style(MessageColor... styles)
-	{
-		getCurrentComponent().setStyles(styles);
-		return (T) this;
-	}
-
 	public T font(final @Nullable String font)
 	{
 		getCurrentComponent().setFont(font);

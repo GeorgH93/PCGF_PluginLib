@@ -21,9 +21,7 @@ import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageFormat;
 import at.pcgamingfreaks.Reflection;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializer;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -77,18 +75,6 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	public MessageComponent(final @NotNull String text, final @Nullable MessageColor color, final MessageFormat... formats)
 	{
 		super(text, color, formats);
-	}
-
-	/**
-	 * Creates a new empty MessageComponent instance.
-	 *
-	 * @param text   The text for the {@link MessageComponent}.
-	 * @param styles The style for the {@link MessageComponent}.
-	 */
-	@Deprecated
-	public MessageComponent(String text, MessageColor[] styles)
-	{
-		super(text, styles);
 	}
 	//endregion
 

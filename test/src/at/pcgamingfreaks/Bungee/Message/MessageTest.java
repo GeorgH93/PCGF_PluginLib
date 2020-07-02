@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ public class MessageTest
 	{
 		assertEquals("The basic message text should be equal", "Test Message", new Message("Test Message").getClassicMessage());
 		assertEquals("The send method of the new message should match", SendMethod.TITLE, new Message("Another test message", SendMethod.TITLE).getSendMethod());
-		assertEquals("The extended message should match", MessageColor.ITALIC.toString() + MessageColor.BLUE.toString() + "Test Message 3" + MessageColor.RESET, new Message(new MessageComponent[] { new MessageComponent("Test Message 3", MessageColor.BLUE, MessageFormat.ITALIC) }, SendMethod.ACTION_BAR).getClassicMessage());
+		assertEquals("The extended message should match", MessageFormat.ITALIC.toString() + MessageColor.BLUE.toString() + "Test Message 3" + MessageColor.RESET, new Message(new MessageComponent[] { new MessageComponent("Test Message 3", MessageColor.BLUE, MessageFormat.ITALIC) }, SendMethod.ACTION_BAR).getClassicMessage());
 		List<MessageComponent> messageComponents = new ArrayList<>();
 		messageComponents.add(new MessageComponent("Test message 2"));
 		assertEquals("The message should match", "Test message 2" + MessageColor.RESET, new Message(messageComponents, SendMethod.DISABLED).getClassicMessage());

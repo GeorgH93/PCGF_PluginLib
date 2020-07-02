@@ -94,19 +94,6 @@ public abstract class MessageComponent<T extends MessageComponent>
 		if(color != null) setColor(color);
 		if(formats != null) setFormats(formats);
 	}
-
-	/**
-	 * Creates a new empty MessageComponent instance.
-	 *
-	 * @param text   The text for the {@link MessageComponent}.
-	 * @param styles The style for the {@link MessageComponent}.
-	 */
-	@Deprecated
-	protected MessageComponent(String text, MessageColor[] styles)
-	{
-		setText(text);
-		if(styles != null) setStyles(styles);
-	}
 	//endregion
 
 	//region converting JSON message into a classic mc chat message
@@ -530,35 +517,6 @@ public abstract class MessageComponent<T extends MessageComponent>
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
-	@Deprecated
-	public T setFormats(MessageColor... formats) throws IllegalArgumentException
-	{
-		if(formats != null)
-		{
-			for(MessageColor format : formats)
-			{
-				switch(format)
-				{
-					case ITALIC: setItalic(); break;
-					case BOLD: setBold(); break;
-					case UNDERLINE: setUnderlined(); break;
-					case STRIKETHROUGH: setStrikethrough(); break;
-					case MAGIC: setObfuscated(); break;
-					case RESET: color = null; break;
-					default: throw new IllegalArgumentException(format.name() + " is not a formatter");
-				}
-			}
-		}
-		return (T)this;
-	}
-
-	/**
-	 * Sets the formats of the component.
-	 *
-	 * @param formats The array of formats to apply to the component.
-	 * @return This message component instance.
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
-	 */
 	public T setFormats(MessageFormat... formats)
 	{
 		if(formats != null)
@@ -591,33 +549,6 @@ public abstract class MessageComponent<T extends MessageComponent>
 	{
 		formats.forEach(this::setFormats);
 		return (T) this;
-	}
-
-	/**
-	 * Sets the style of the component.
-	 *
-	 * @param styles The array of styles to apply to the component.
-	 * @return This message component instance.
-	 */
-	@Deprecated
-	public T setStyles(MessageColor... styles)
-	{
-		if(styles != null)
-		{
-			for(MessageColor style : styles)
-			{
-				if (style == null) continue;
-				if(style.isFormat())
-				{
-					setFormats(style);
-				}
-				if(style.isColor())
-				{
-					setColor(style);
-				}
-			}
-		}
-		return (T)this;
 	}
 
 	/**
@@ -690,31 +621,6 @@ public abstract class MessageComponent<T extends MessageComponent>
 	public T format(Collection<MessageFormat> formats) throws IllegalArgumentException
 	{
 		return setFormats(formats);
-	}
-
-	/**
-	 * Sets the format of the component.
-	 *
-	 * @param formats The array of format to apply to the component.
-	 * @return This message component instance.
-	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
-	 */
-	@Deprecated
-	public T format(MessageColor... formats) throws IllegalArgumentException
-	{
-		return setFormats(formats);
-	}
-
-	/**
-	 * Sets the style of the component.
-	 *
-	 * @param styles The array of styles to apply to the component.
-	 * @return This message component instance.
-	 */
-	@Deprecated
-	public T style(MessageColor... styles)
-	{
-		return setStyles(styles);
 	}
 
 	/**

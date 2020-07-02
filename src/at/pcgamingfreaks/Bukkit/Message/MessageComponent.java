@@ -97,18 +97,6 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	{
 		super(text, color, formats);
 	}
-
-	/**
-	 * Creates a new empty MessageComponent instance.
-	 *
-	 * @param text   The text for the {@link MessageComponent}.
-	 * @param styles The style for the {@link MessageComponent}.
-	 */
-	@Deprecated
-	public MessageComponent(String text, MessageColor[] styles)
-	{
-		super(text, styles);
-	}
 	//endregion
 
 	//region Deserializer and Deserializer Functions

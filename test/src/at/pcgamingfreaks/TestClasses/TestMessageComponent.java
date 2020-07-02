@@ -21,9 +21,6 @@ import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.MessageFormat;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,11 +54,6 @@ public class TestMessageComponent extends MessageComponent<MessageComponent>
 	public TestMessageComponent(String text, MessageColor color, MessageFormat... formats)
 	{
 		super(text, color, formats);
-	}
-
-	public TestMessageComponent(String text, MessageColor[] styles)
-	{
-		super(text, styles);
 	}
 
 	@Override

@@ -115,7 +115,7 @@ public class MessageBuilderTest
 	public void testGetMessage() throws NoSuchFieldException, IllegalAccessException
 	{
 		TestMessageBuilder messageBuilder = new TestMessageBuilder(initComponent);
-		messageBuilder.color(MessageColor.BLUE).color(MessageColor.DARK_RED).style(MessageColor.BOLD).style(MessageColor.UNDERLINE).format(MessageColor.MAGIC).format(MessageColor.MAGIC);
+		messageBuilder.color(MessageColor.BLUE).color(MessageColor.DARK_RED).format(MessageFormat.BOLD).format(MessageFormat.UNDERLINE).format(MessageFormat.MAGIC).format(MessageFormat.MAGIC);
 		assertEquals("The message should match", "§l§k§n§4Init§r", messageBuilder.getMessage().getClassicMessage());
 		Field constructor = TestUtils.setAccessible(MessageBuilder.class, null, "MESSAGE_CONSTRUCTOR", null);
 		assertNull("The creation of a new message should fail", messageBuilder.getMessage());

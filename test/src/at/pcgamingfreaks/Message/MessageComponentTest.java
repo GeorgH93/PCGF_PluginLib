@@ -21,13 +21,9 @@ import at.pcgamingfreaks.TestClasses.TestMessage;
 import at.pcgamingfreaks.TestClasses.TestMessageComponent;
 import at.pcgamingfreaks.TestClasses.TestUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -62,7 +58,7 @@ public class MessageComponentTest
 	}
 
 	@Test
-	public void testFormats() throws NoSuchFieldException, IllegalAccessException
+	public void testFormats()
 	{
 		TestMessageComponent messageComponent = new TestMessageComponent("This is a text");
 		messageComponent.bold().italic().obfuscated().strikethrough().underlined().color(MessageColor.BLACK).insert("Insertion");
@@ -97,33 +93,15 @@ public class MessageComponentTest
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.addExtra((TestMessageComponent) null);
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setFormats((MessageColor[]) null);
+		messageComponent.setFormats((MessageFormat[]) null);
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setFormats(new MessageFormat[]{});
+		messageComponent.setFormats();
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setFormats(new MessageFormat[]{});
-		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		Field isFormatField = TestUtils.setAccessible(MessageColor.class, MessageColor.RESET, "isFormat", true);
-		messageComponent.setFormats(MessageFormat.RESET);
-		TestUtils.setUnaccessible(isFormatField, MessageColor.RESET, true);
-		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setStyles((MessageColor[]) null);
-		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setStyles((MessageColor) null);
-		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setStyles();
-		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.setStyles();
-		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.style();
-		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.style();
-		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
-		messageComponent.format(new MessageFormat[] {});
+		messageComponent.format();
 		assertEquals("The message should not have been changed", currentMessage, messageComponent.getClassicMessage());
 		messageComponent.format(MessageFormat.BOLD);
 		assertTrue("The message should now be bold", messageComponent.isBold());
-		messageComponent.style(MessageColor.ITALIC);
+		messageComponent.format(MessageFormat.ITALIC);
 		assertTrue("The message should now be italic", messageComponent.isItalic());
 	}
 
@@ -215,10 +193,11 @@ public class MessageComponentTest
 		assertEquals("The text should match", "Textanother extra§r§r", messageComponent.getClassicMessage());
 		messageComponent.addExtra(new TestMessageComponent("Another extra"));
 		assertEquals("The message text should equal", "Textanother extra§rAnother extra§r§r", messageComponent.getClassicMessage());
-		messageComponent.format(MessageColor.UNDERLINE, MessageColor.ITALIC, MessageColor.BOLD, MessageColor.STRIKETHROUGH);
+		messageComponent.format(MessageFormat.UNDERLINE, MessageFormat.ITALIC, MessageFormat.BOLD, MessageFormat.STRIKETHROUGH);
 		assertTrue("The message should be underlined", messageComponent.isUnderlined());
 		assertFalse("The magic flag should not be set", messageComponent.isObfuscated());
-		messageComponent.style(MessageColor.MAGIC, MessageColor.GREEN);
+		messageComponent.format(MessageFormat.MAGIC);
+		messageComponent.color(MessageColor.GREEN);
 		assertTrue("The magic flag should now be set", messageComponent.isObfuscated());
 		assertEquals("The color of the message should be green", "green", messageComponent.getColorString());
 	}
@@ -254,17 +233,5 @@ public class MessageComponentTest
 		assertEquals("There should not be returned any message components", 0, ((List<TestMessageComponent>) fromJsonWorker.invoke(messageComponent, "[\"String\"]")).size());
 		MessageComponent.messageComponentConstructor = TestMessageComponent.class.getConstructor();
 		fromJsonWorker.setAccessible(false);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetColor()
-	{
-		new TestMessageComponent("Message").setColor(MessageColor.STRIKETHROUGH);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetFormats()
-	{
-		new TestMessageComponent().setFormats(MessageColor.BLUE);
 	}
 }

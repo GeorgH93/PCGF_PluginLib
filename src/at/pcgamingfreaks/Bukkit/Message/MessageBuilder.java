@@ -102,18 +102,6 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @param styles The style the should be used to initialize the first {@link MessageComponent} of the message.
 	 */
 	@Deprecated
-	public MessageBuilder(String text, MessageColor[] styles)
-	{
-		this(new MessageComponent(text, styles));
-	}
-
-	/**
-	 * Creates a new MessageBuilder from a given text and format information.
-	 *
-	 * @param text   The text that should be used to initialize the first {@link MessageComponent} of the message.
-	 * @param styles The style the should be used to initialize the first {@link MessageComponent} of the message.
-	 */
-	@Deprecated
 	public MessageBuilder(String text, ChatColor[] styles)
 	{
 		this(new MessageComponent(text));
