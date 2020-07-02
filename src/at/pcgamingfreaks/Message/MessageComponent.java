@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings({ "unchecked", "UnusedReturnValue" })
-public abstract class MessageComponent<T extends MessageComponent> implements JsonDeserializer<T>
+public abstract class MessageComponent<T extends MessageComponent>
 {
 	//region JSON Variables
 	protected MessageClickEvent clickEvent = null;
@@ -990,49 +990,11 @@ public abstract class MessageComponent<T extends MessageComponent> implements Js
 
 	//region Deserializer and Deserializer Functions
 	//region deserializer variables
-	protected transient static Gson GSON;
 	protected transient static Constructor messageComponentConstructor;
 	protected transient static Class messageComponentClass;
-	protected static final transient JsonParser JSON_PARSER = new JsonParser();
+	protected transient static final Gson GSON = new GsonBuilder().create();
+	protected transient static final JsonParser JSON_PARSER = new JsonParser();
 	//endregion
-
-	@Override
-	public T deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext context) throws JsonParseException
-	{
-		JsonObject componentAsJsonObject = json.getAsJsonObject();
-		T component;
-		try
-		{
-			component = (T) messageComponentConstructor.newInstance();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
-		//Strings
-		if(componentAsJsonObject.get("text") != null) component.text = componentAsJsonObject.get("text").getAsString();
-		if(componentAsJsonObject.get("color") != null) component.color = MessageColor.getColor(componentAsJsonObject.get("color").getAsString());
-		if(componentAsJsonObject.get("insertion") != null) component.insertion = componentAsJsonObject.get("insertion").getAsString();
-		if(componentAsJsonObject.get("font") != null) component.font = componentAsJsonObject.get("font").getAsString();
-		//Booleans
-		if(componentAsJsonObject.get("bold") != null) component.bold = componentAsJsonObject.get("bold").getAsBoolean();
-		if(componentAsJsonObject.get("italic") != null) component.italic =  componentAsJsonObject.get("italic").getAsBoolean();
-		if(componentAsJsonObject.get("underlined") != null) component.underlined = componentAsJsonObject.get("underlined").getAsBoolean();
-		if(componentAsJsonObject.get("obfuscated") != null) component.obfuscated = componentAsJsonObject.get("obfuscated").getAsBoolean();
-		if(componentAsJsonObject.get("strikethrough") != null) component.strikethrough = componentAsJsonObject.get("strikethrough").getAsBoolean();
-		//Extra List
-		if(componentAsJsonObject.get("extra") != null) component.extra = fromJsonArrayWorker(componentAsJsonObject.get("extra").getAsJsonArray());
-		//Events
-		if(componentAsJsonObject.get("clickEvent") != null) component.clickEvent = GSON.fromJson(componentAsJsonObject.get("clickEvent"), MessageClickEvent.class);
-		if(componentAsJsonObject.get("hoverEvent") == null) component.hoverEvent = GSON.fromJson(componentAsJsonObject.get("hoverEvent"), MessageHoverEvent.class);
-		//Other stuff
-		component.selector = componentAsJsonObject.get("with");
-		component.selector = componentAsJsonObject.get("score");
-		component.selector = componentAsJsonObject.get("selector");
-		component.selector = componentAsJsonObject.get("translate");
-		return component;
-	}
 
 	/**
 	 * Generates a MessageComponent list from a given JSON string.

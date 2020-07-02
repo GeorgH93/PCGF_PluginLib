@@ -26,9 +26,7 @@ import at.pcgamingfreaks.Message.MessageFormat;
 import at.pcgamingfreaks.Message.MessageHoverEvent;
 import at.pcgamingfreaks.Reflection;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializer;
 
 import org.bukkit.*;
 import org.bukkit.Statistic.Type;
@@ -42,7 +40,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 
-public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent> implements JsonDeserializer<MessageComponent>
+public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent>
 {
 	//region Reflection Variables
 	private static final transient Class<?> CRAFT_STATISTIC = OBCReflection.getOBCClass("CraftStatistic");
@@ -61,7 +59,6 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 
 	static
 	{
-		GSON = new GsonBuilder().registerTypeAdapter(at.pcgamingfreaks.Message.MessageComponent.class, MESSAGE_COMPONENT_INSTANCE).create();
 		messageComponentClass = MessageComponent.class;
 		messageComponentConstructor = Reflection.getConstructor(MessageComponent.class);
 	}

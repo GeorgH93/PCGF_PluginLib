@@ -31,7 +31,6 @@ public class TestMessageComponent extends MessageComponent<MessageComponent>
 {
 	static
 	{
-		GSON = new GsonBuilder().registerTypeAdapter(TestMessageComponent.class, new TestMessageComponent()).create();
 		messageComponentClass = TestMessageComponent.class;
 		try
 		{
@@ -78,7 +77,7 @@ public class TestMessageComponent extends MessageComponent<MessageComponent>
 		{
 			TestMessageComponent messageComponent = new TestMessageComponent();
 			List<MessageComponent> messageComponents = new ArrayList<>();
-			messageComponents.add(messageComponent.deserialize(GSON.fromJson(json, JsonElement.class), null, null));
+			messageComponents.add(GSON.fromJson(json, TestMessageComponent.class));
 			return messageComponents;
 		}
 		throw new IllegalArgumentException();

@@ -33,14 +33,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Locale;
 
-public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent> implements JsonDeserializer<MessageComponent>
+public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent>
 {
 	private static final transient MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
 	private static final transient MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 
 	static
 	{
-		GSON = new GsonBuilder().registerTypeAdapter(MessageComponent.class, MESSAGE_COMPONENT_INSTANCE).create();
 		messageComponentClass = MessageComponent.class;
 		messageComponentConstructor = Reflection.getConstructor(MessageComponent.class);
 	}
