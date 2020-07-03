@@ -42,12 +42,6 @@ public class MessageColorTest
 		assertTrue(MessageColor.LIGHT_PURPLE.isColor());
 		assertTrue(MessageColor.YELLOW.isColor());
 		assertTrue(MessageColor.WHITE.isColor());
-		assertFalse(MessageColor.RESET.isColor());
-		assertFalse(MessageColor.ITALIC.isColor());
-		assertFalse(MessageColor.BOLD.isColor());
-		assertFalse(MessageColor.MAGIC.isColor());
-		assertFalse(MessageColor.UNDERLINE.isColor());
-		assertFalse(MessageColor.STRIKETHROUGH.isColor());
 	}
 
 	@Test
@@ -70,11 +64,6 @@ public class MessageColorTest
 		assertFalse(MessageColor.YELLOW.isFormat());
 		assertFalse(MessageColor.WHITE.isFormat());
 		assertFalse(MessageColor.RESET.isFormat());
-		assertTrue(MessageColor.ITALIC.isFormat());
-		assertTrue(MessageColor.BOLD.isFormat());
-		assertTrue(MessageColor.MAGIC.isFormat());
-		assertTrue(MessageColor.UNDERLINE.isFormat());
-		assertTrue(MessageColor.STRIKETHROUGH.isFormat());
 	}
 
 	@Test
@@ -97,18 +86,6 @@ public class MessageColorTest
 		assertEquals(MessageColor.YELLOW.toString(), "\u00A7" + 'e');
 		assertEquals(MessageColor.WHITE.toString(), "\u00A7" + 'f');
 		assertEquals(MessageColor.RESET.toString(), "\u00A7" + 'r');
-		assertEquals(MessageColor.ITALIC.toString(), "\u00A7" + 'o');
-		assertEquals(MessageColor.BOLD.toString(), "\u00A7" + 'l');
-		assertEquals(MessageColor.MAGIC.toString(), "\u00A7" + 'k');
-		assertEquals(MessageColor.UNDERLINE.toString(), "\u00A7" + 'n');
-		assertEquals(MessageColor.STRIKETHROUGH.toString(), "\u00A7" + 'm');
-	}
-
-	@Test
-	public void testMessageColorArrayFromStylesArray()
-	{
-		assertNull("No styles should return null", MessageColor.messageColorArrayFromStylesArray((Enum<?>[]) null));
-		assertNull("No styles should return null", MessageColor.messageColorArrayFromStylesArray());
 	}
 
 	@Test
@@ -122,11 +99,11 @@ public class MessageColorTest
 
 		try
 		{
-			MessageColor.getFromCode('X');
+			MessageColor.getFromCode('Z');
 		}
 		catch(IllegalArgumentException e)
 		{
-			assertEquals("Unknown format code 'X'!", e.getMessage());
+			assertEquals("Unknown format code 'Z'!", e.getMessage());
 		}
 	}
 

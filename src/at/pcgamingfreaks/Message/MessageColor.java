@@ -17,9 +17,7 @@
 
 package at.pcgamingfreaks.Message;
 
-import at.pcgamingfreaks.Reflection;
-
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.*;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -27,239 +25,170 @@ import org.jetbrains.annotations.Nullable;
 
 import lombok.Getter;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Locale;
-import java.util.regex.Matcher;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
-public enum  MessageColor
+public final class MessageColor
 {
-	/**
-	 * Represents black.
-	 */
-	@SerializedName("black")
-	BLACK('0', "000000"),
-	/**
-	 * Represents dark blue.
-	 */
-	@SerializedName(value = "dark_blue")
-	DARK_BLUE('1', "0000AA"),
-	/**
-	 * Represents dark green.
-	 */
-	@SerializedName("dark_green")
-	DARK_GREEN('2', "00AA00"),
-	/**
-	 * Represents dark blue (aqua).
-	 */
-	@SerializedName("dark_aqua")
-	DARK_AQUA('3', "00AAAA"),
-	/**
-	 * Represents dark red.
-	 */
-	@SerializedName("dark_red")
-	DARK_RED('4', "AA0000"),
-	/**
-	 * Represents dark purple.
-	 */
-	@SerializedName("dark_purple")
-	DARK_PURPLE('5', "AA00AA"),
-	/**
-	 * Represents gold.
-	 */
-	@SerializedName("gold")
-	GOLD('6', "FFAA00"),
-	/**
-	 * Represents gray.
-	 */
-	@SerializedName("gray")
-	GRAY('7', "AAAAAA"),
-	/**
-	 * Represents dark gray.
-	 */
-	@SerializedName("dark_gray")
-	DARK_GRAY('8', "555555"),
-	/**
-	 * Represents blue.
-	 */
-	@SerializedName("blue")
-	BLUE('9', "5555FF"),
-	/**
-	 * Represents green.
-	 */
-	@SerializedName("green")
-	GREEN('a', "55FF55"),
-	/**
-	 * Represents aqua.
-	 */
-	@SerializedName("aqua")
-	AQUA('b', "55FFFF"),
-	/**
-	 * Represents red.
-	 */
-	@SerializedName("red")
-	RED('c', "FF5555"),
-	/**
-	 * Represents light purple.
-	 */
-	@SerializedName("light_purple")
-	LIGHT_PURPLE('d', "FF55FF"),
-	/**
-	 * Represents yellow.
-	 */
-	@SerializedName("yellow")
-	YELLOW('e', "FFFF55"),
-	/**
-	 * Represents white.
-	 */
-	@SerializedName("white")
-	WHITE('f', "FFFFFF"),
-	/**
-	 * Represents magical characters that change around randomly.
-	 */
-	@Deprecated
-	MAGIC('k', true),
-	/**
-	 * Makes the text bold.
-	 */
-	@Deprecated
-	BOLD('l', true),
-	/**
-	 * Makes a line appear through the text.
-	 */
-	@Deprecated
-	STRIKETHROUGH('m', true),
-	/**
-	 * Makes the text appear underlined.
-	 */
-	@Deprecated
-	UNDERLINE('n', true),
-	/**
-	 * Makes the text italic.
-	 */
-	@Deprecated
-	ITALIC('o', true),
-	/**
-	 * Resets all previous chat colors or formats.
-	 */
-	RESET('r', false);
+	private static final Map<String, MessageColor> BY_NAME = new HashMap<>();
+	private static final MessageColor[] COLORS = new MessageColor[17];
 
 	public static final char COLOR_CHAR = '\u00A7';
 	public static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRr";
 
-	private static final Pattern STRIP_FORMAT_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[K-OR]");
 	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-F]");
 	private static final Pattern STRIP_COLOR_AND_FORMAT_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-FK-OR]");
-	private static final Pattern TRY_TO_READ_COLOR = Pattern.compile("(?<descriptor>LIGHT|DARK)(?<color>[A-Z]+)");
+
+	//region default colors
+	/**
+	 * Represents black.
+	 */
+	public static final MessageColor BLACK = new MessageColor('0', "black", "000000");
+	/**
+	 * Represents dark blue.
+	 */
+	public static final MessageColor DARK_BLUE = new MessageColor('1', "dark_blue", "0000AA");
+	/**
+	 * Represents dark green.
+	 */
+	public static final MessageColor DARK_GREEN = new MessageColor('2', "dark_green", "00AA00");
+	/**
+	 * Represents dark blue (aqua).
+	 */
+	public static final MessageColor DARK_AQUA = new MessageColor('3', "dark_aqua", "00AAAA");
+	/**
+	 * Represents dark red.
+	 */
+	public static final MessageColor DARK_RED = new MessageColor('4', "dark_red", "AA0000");
+	/**
+	 * Represents dark purple.
+	 */
+	public static final MessageColor DARK_PURPLE = new MessageColor('5', "dark_purple", "AA00AA");
+	/**
+	 * Represents gold.
+	 */
+	public static final MessageColor GOLD = new MessageColor('6', "gold", "FFAA00");
+	/**
+	 * Represents gray.
+	 */
+	public static final MessageColor GRAY = new MessageColor('7', "gray", "AAAAAA");
+	/**
+	 * Represents dark gray.
+	 */
+	public static final MessageColor DARK_GRAY = new MessageColor('8', "dark_gray", "555555");
+	/**
+	 * Represents blue.
+	 */
+	public static final MessageColor BLUE = new MessageColor('9', "blue", "5555FF");
+	/**
+	 * Represents green.
+	 */
+	public static final MessageColor GREEN = new MessageColor('a', "green", "55FF55");
+	/**
+	 * Represents aqua.
+	 */
+	public static final MessageColor AQUA = new MessageColor('b', "aqua", "55FFFF");
+	/**
+	 * Represents red.
+	 */
+	public static final MessageColor RED = new MessageColor('c', "red", "FF5555");
+	/**
+	 * Represents light purple.
+	 */
+	public static final MessageColor LIGHT_PURPLE = new MessageColor('d', "light_purple", "FF55FF");
+	/**
+	 * Represents yellow.
+	 */
+	public static final MessageColor YELLOW = new MessageColor('e', "yellow", "FFFF55");
+	/**
+	 * Represents white.
+	 */
+	public static final MessageColor WHITE = new MessageColor('f', "white", "FFFFFF");
+	/**
+	 * Resets all previous chat colors.
+	 */
+	public static final MessageColor RESET = new MessageColor('r', null, null);
+	//endregion
 
 	@Getter private final char code;
-	private final String codeString;
-	@Getter private final String rgbColor;
-	private final boolean isFormat;
+	private final String toString;
+	@Getter private final String rgbColor, name;
 	private final int rgb;
+	@Getter private final MessageColor fallbackColor;
 
-	MessageColor(final char code, final String rgbColor)
+	private MessageColor(final char code, String name, final String rgbColor)
 	{
 		this.code = code;
-		this.isFormat = false;
-		this.codeString = new String(new char[]{COLOR_CHAR, code});
+		this.name = name;
+		this.toString = new String(new char[]{ COLOR_CHAR, code});
+		this.fallbackColor = this;
+		COLORS[ordinal()] = this;
+		if(name == null)
+		{
+			this.rgbColor = null;
+			this.rgb = -1;
+		}
+		else
+		{
+			this.rgbColor = '#' + rgbColor;
+			this.rgb = Integer.parseInt(rgbColor, 16);
+			BY_NAME.put(name, this);
+			BY_NAME.put(name.toUpperCase(Locale.ROOT), this);
+			if(name.contains("_"))
+			{
+				name = name.replaceAll("_", "");
+				BY_NAME.put(name, this);
+				BY_NAME.put(name.toUpperCase(Locale.ROOT), this);
+			}
+		}
+	}
+
+	private MessageColor(final String rgbColor)
+	{
+		this.code = 'x';
+		StringBuilder builder = new StringBuilder().append(COLOR_CHAR).append(code);
+		for(char code : rgbColor.toCharArray())
+		{
+			builder.append(COLOR_CHAR).append(code);
+		}
+		this.toString = builder.toString();
 		this.rgbColor = '#' + rgbColor;
+		this.name = null;
 		this.rgb = Integer.parseInt(rgbColor, 16);
+		fallbackColor = getNearestColor(rgb);
 	}
 
-	MessageColor(char code, boolean isFormat)
-	{
-		this.code = code;
-		this.isFormat = isFormat;
-		this.codeString = new String(new char[]{COLOR_CHAR, code});
-		this.rgbColor = null;
-		this.rgb = Integer.MIN_VALUE;
-	}
-
-	/**
-	 * Mass converts multiple Bukkit or BungeeCord ChatColor elements to the corresponding {@link MessageColor} elements.
-	 *
-	 * @param styles The style elements to be converted.
-	 * @return The converted {@link MessageColor} elements.
-	 */
-	@Deprecated
-	public static @Nullable MessageColor[] messageColorArrayFromStylesArray(@Nullable Object... styles)
-	{
-		if(styles != null && styles.length > 0)
-		{
-			MessageColor[] msgStyles = new MessageColor[styles.length];
-			int i = 0;
-			for(Object style : styles)
-			{
-				if(style != null)
-				{
-					msgStyles[i++] = messageColorFromStyle(style);
-				}
-			}
-			if(msgStyles.length > i)
-			{
-				return Arrays.copyOf(msgStyles, i);
-			}
-			return msgStyles;
-		}
-		return null;
-	}
-
-	/**
-	 * Converts a Bukkit or BungeeCord ChatColor element to the corresponding {@link MessageColor} element.
-	 *
-	 * @param style The style element to be converted.
-	 * @return The converted {@link MessageColor} element.
-	 */
-	@Deprecated
-	public static @NotNull MessageColor messageColorFromStyle(final @NotNull Object style)
-	{
-		if(!style.getClass().getSimpleName().equals("ChatColor")) throw new IllegalArgumentException("style musst be of type ChatColor!");
-		try
-		{
-			return valueOf(((String) Reflection.getMethodIncludeParents(style.getClass(), "name").invoke(style)).toUpperCase(Locale.ROOT));
-		}
-		catch(IllegalAccessException | InvocationTargetException e)
-		{
-			throw new IllegalArgumentException("The style object is not a valide ChatColor object.", e);
-		}
-	}
-
+	//region override methods
 	@Override
 	public String toString()
 	{
-		return codeString;
+		return toString;
 	}
 
-	/**
-	 * Checks if this code is a format code.
-	 *
-	 * @return True if the instance is a format code.
-	 */
-	@Deprecated
-	public boolean isFormat()
+	@Override
+	public int hashCode()
 	{
-		return isFormat;
+		return 371 + Objects.hashCode(this.toString());
 	}
 
-	/**
-	 * Checks if this code is a color code.
-	 *
-	 * @return True if the instance is a color code.
-	 */
-	@Deprecated
-	public boolean isColor()
+	@Override
+	public boolean equals(Object other)
 	{
-		return !isFormat && this != RESET;
+		if(other == this) return true;
+		if(other == null || getClass() != other.getClass()) return false;
+		return toString.equals(other.toString());
 	}
+	//endregion
 
 	public static @NotNull MessageColor getFromCode(char code) throws IllegalArgumentException
 	{
 		if(code >= '0' && code <= '9') return values()[code - '0'];
 		if(code >= 'A' && code <= 'R') code = (char)(code - 'A' + 'a'); // convert to lower case
 		if(code >= 'a' && code <= 'f') return values()[code - 'a' + 10];
-		if(code >= 'k' && code <= 'o') return values()[code - 'k' + 16];
 		if(code == 'r') return RESET;
 		throw new IllegalArgumentException("Unknown format code '" + code + "'!");
 	}
@@ -293,21 +222,7 @@ public enum  MessageColor
 		}
 		else if(color.length() == 7 && color.matches("#[\\da-fA-F]{6}"))
 		{
-			int newRGB = Integer.parseInt(color.substring(1), 16);
-			int nearest = Integer.MAX_VALUE;
-			MessageColor nearestColor = null;
-			for(int i = 0; i < 16; i++)
-			{
-				MessageColor c = values()[i];
-				int r = (c.rgb >> 16) - (newRGB >> 16), g = ((c.rgb >> 8) & 0xff) - ((newRGB >> 8) & 0xff), b = (c.rgb & 0xff) - (newRGB & 0xff);
-				int dist = r * r + g * g + b * b;
-				if(dist < nearest)
-				{
-					nearest = dist;
-					nearestColor = c;
-				}
-			}
-			return nearestColor;
+			return getNearestColor(Integer.parseInt(color.substring(1), 16));
 		}
 		color = color.toUpperCase(Locale.ENGLISH);
 		try
@@ -315,18 +230,57 @@ public enum  MessageColor
 			return valueOf(color);
 		}
 		catch(IllegalArgumentException ignored) {}
-		Matcher matcher = TRY_TO_READ_COLOR.matcher(color);
-		if(matcher.matches())
-		{
-			try
-			{
-				return valueOf(matcher.group("descriptor") + '_' + matcher.group("color"));
-			}
-			catch(IllegalArgumentException ignored) {}
-		}
 		return null;
 	}
 
+	private static MessageColor getNearestColor(int rgb)
+	{
+		int nearest = Integer.MAX_VALUE;
+		MessageColor nearestColor = null;
+		for(int i = 0; i < 16; i++)
+		{
+			MessageColor c = values()[i];
+			int r = (c.rgb >> 16) - (rgb >> 16), g = ((c.rgb >> 8) & 0xff) - ((rgb >> 8) & 0xff), b = (c.rgb & 0xff) - (rgb & 0xff);
+			int dist = r * r + g * g + b * b;
+			if(dist < nearest)
+			{
+				nearest = dist;
+				nearestColor = c;
+			}
+		}
+		return nearestColor;
+	}
+
+	//region enum methods
+	public static MessageColor valueOf(final @NotNull String name)
+	{
+		if(name.equals("RESET")) return RESET;
+		if(name.length() == 7 && name.charAt(0) == '#') return new MessageColor(name.substring(1));
+		MessageColor color = BY_NAME.get(name);
+		if(color == null) throw new IllegalArgumentException(name + " is not a MessageColor!");
+		return color;
+	}
+
+	public static MessageColor[] values()
+	{
+		return COLORS;
+	}
+
+	public int ordinal()
+	{
+		if(code == 'x') return Integer.MAX_VALUE;
+		if(code >= '0' && code <= '9') return code - '0';
+		if(code >= 'a' && code <= 'f') return code - 'a' + 10;
+		return 16;
+	}
+
+	public String name()
+	{
+		return name;
+	}
+	//endregion
+
+	//region strip code
 	public @Nullable String strip(final @Nullable String input)
 	{
 		if(input == null) return null;
@@ -346,15 +300,10 @@ public enum  MessageColor
 		if(input == null) return null;
 		return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
 	}
+	//endregion
 
-	@Deprecated
-	@Contract("!null->!null; null->null")
-	public static @Nullable String stripFormat(final @Nullable String input)
-	{
-		if(input == null) return null;
-		return STRIP_FORMAT_PATTERN.matcher(input).replaceAll("");
-	}
 
+	//region translate code
 	@Contract("!null->!null; null->null")
 	public static @Nullable String translateAlternateColorCodes(final @Nullable String textToTranslate)
 	{
@@ -393,5 +342,37 @@ public enum  MessageColor
 			}
 		}
 		return new String(chars);
+	}
+	//endregion
+
+	//region deprecated methods (will be removed at some point)
+	@Deprecated
+	public boolean isFormat()
+	{
+		return false;
+	}
+
+	@Deprecated
+	public boolean isColor()
+	{
+		return this != RESET;
+	}
+	//endregion
+
+	public static class MessageColorSerializer implements JsonSerializer<MessageColor>, JsonDeserializer<MessageColor>
+	{
+		@Override
+		public JsonElement serialize(MessageColor src, Type typeOfSrc, JsonSerializationContext context)
+		{
+			if(src.getName() != null) return new JsonPrimitive(src.getName());
+			if(src.getRgbColor() != null) return  new JsonPrimitive(src.getRgbColor());
+			return null;
+		}
+
+		@Override
+		public MessageColor deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		{
+			return valueOf(json.getAsString());
+		}
 	}
 }

@@ -274,11 +274,7 @@ public abstract class MessageComponent<T extends MessageComponent>
 	 */
 	public T setColor(MessageColor color) throws IllegalArgumentException
 	{
-		if(!color.isColor())
-		{
-			throw new IllegalArgumentException(color.name() + " is not a color");
-		}
-		this.color = color;
+		this.color = color == MessageColor.RESET ? null : color;
 		return (T)this;
 	}
 
@@ -898,7 +894,7 @@ public abstract class MessageComponent<T extends MessageComponent>
 	//region deserializer variables
 	protected transient static Constructor messageComponentConstructor;
 	protected transient static Class messageComponentClass;
-	protected transient static final Gson GSON = new GsonBuilder().create();
+	protected transient static final Gson GSON = new GsonBuilder().registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).create();
 	protected transient static final JsonParser JSON_PARSER = new JsonParser();
 	//endregion
 
