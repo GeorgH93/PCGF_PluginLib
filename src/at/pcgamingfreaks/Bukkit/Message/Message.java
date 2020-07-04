@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Sender.BossBarMetadata;
 import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Bukkit.Message.Sender.TitleMetadata;
+import at.pcgamingfreaks.Message.MessageColor;
 
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -34,10 +35,13 @@ import me.clip.placeholderapi.PlaceholderAPI;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender> implements IMessage
 {
 	//region Variables
+	private static final Pattern RGB_COLOR_DETECTION = Pattern.compile("\"color\"\\s*:\\s*\"#(?<rgb>[\\dA-Fa-f]{6})\"");
 	private static final boolean PRE_1_8_MC = MCVersion.isOlderThan(MCVersion.MC_1_8);
 
 	private SendMethod method = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
@@ -54,10 +58,28 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	public Message(@NotNull String message)
 	{
 		super(message, MessageComponent.class);
-		if(fallback == message)
+		//noinspection StringEquality
+		if(fallback == message) // == is correct here, we want to check if it is the same instance not the same content
 		{
 			legacy = true;
 			method = SendMethod.CHAT_CLASSIC;
+		}
+		else if(!MCVersion.supportsRgbColors())
+		{
+			boolean found = false;
+			Matcher matcher = RGB_COLOR_DETECTION.matcher(json);
+			StringBuffer sb = new StringBuffer();
+			while(matcher.find())
+			{
+				found = true;
+				MessageColor color = MessageColor.getDefaultColor(matcher.group("rgb"));
+				matcher.appendReplacement(sb, color.getName());
+			}
+			if(found)
+			{
+				matcher.appendTail(sb);
+				json = sb.toString();
+			}
 		}
 	}
 
@@ -70,10 +92,6 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	public Message(@NotNull String message, @NotNull SendMethod method)
 	{
 		this(message);
-		if(fallback == message)
-		{
-			legacy = true;
-		}
 		setSendMethod(method);
 	}
 

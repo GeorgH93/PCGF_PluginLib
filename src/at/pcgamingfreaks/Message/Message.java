@@ -40,7 +40,6 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 	protected Object optionalParameters = null;
 	protected String json, fallback;
 	protected List<? extends MessageComponent> messageComponents = null;
-	protected final int hashCode;
 	//endregion
 
 	//region Constructors
@@ -76,7 +75,6 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 			json = GSON.toJson(messageComponents);
 			fallback = message; // Our message is no JSON so we can send it to everyone
 		}
-		hashCode = json.hashCode(); // Store the hashCode
 	}
 
 	protected Message(@NotNull Collection<? extends MessageComponent> message)
@@ -85,7 +83,6 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 		messageComponents = new ArrayList<>(message); // Lets save our deserialized JSON into an array (maybe we will need it at a later point, you never know)
 		fallback = getClassicMessage(); // We need a fallback for the console and everything else that isn't a player
 		json = GSON.toJson(message); // We need a JSON string to send to the player, so lets generate one from the component list
-		hashCode = json.hashCode();  // Store the hashCode
 	}
 	//endregion
 
@@ -124,13 +121,7 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 	public boolean equals(Object otherObject)
 	{
 		//noinspection NonFinalFieldReferenceInEquals
-		return otherObject instanceof Message && json.equals(((Message) otherObject).json);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return hashCode;
+		return this == otherObject || (otherObject instanceof Message && json.equals(((Message) otherObject).json));
 	}
 
 	public void setOptionalParameters(@NotNull Object optionalParameters)

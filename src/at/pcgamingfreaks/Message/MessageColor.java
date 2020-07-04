@@ -220,10 +220,6 @@ public final class MessageColor
 				return null;
 			}
 		}
-		else if(color.length() == 7 && color.matches("#[\\da-fA-F]{6}"))
-		{
-			return getNearestColor(Integer.parseInt(color.substring(1), 16));
-		}
 		color = color.toUpperCase(Locale.ENGLISH);
 		try
 		{
@@ -231,6 +227,12 @@ public final class MessageColor
 		}
 		catch(IllegalArgumentException ignored) {}
 		return null;
+	}
+
+	public static MessageColor getDefaultColor(@NotNull String rgbColor)
+	{
+		if(rgbColor.length() == 7 && rgbColor.charAt(0) == '#') rgbColor = rgbColor.substring(1);
+		return getNearestColor(Integer.parseInt(rgbColor, 16));
 	}
 
 	private static MessageColor getNearestColor(int rgb)
@@ -279,6 +281,11 @@ public final class MessageColor
 		return name;
 	}
 	//endregion
+
+	public boolean isRGB()
+	{
+		return this != fallbackColor;
+	}
 
 	//region strip code
 	public @Nullable String strip(final @Nullable String input)

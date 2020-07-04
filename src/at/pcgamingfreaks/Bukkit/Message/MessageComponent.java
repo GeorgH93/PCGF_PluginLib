@@ -135,6 +135,19 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	}
 	//endregion
 
+	/**
+	 * Sets the color of the component.
+	 *
+	 * @param color The new color of the component.
+	 * @return This message component instance.
+	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
+	 */
+	public MessageComponent setColor(MessageColor color) throws IllegalArgumentException
+	{
+		if(color != null && color.isRGB() && MCVersion.supportsRgbColors()) color = color.getFallbackColor(); // Old MC versions do not support RGB colors, convert them to supported colors
+		return super.setColor(color);
+	}
+
 	//region Short message modifier (setter)
 	private static String getStatisticName(Object statistic) throws Exception
 	{

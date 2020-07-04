@@ -163,7 +163,7 @@ public enum MCVersion
 	@Getter private final int protocolVersion;
 	private final String identifier;
 	private final MCVersion mainVersion;
-	private final boolean supportsUUIDs;
+	private final boolean supportsUUIDs, supportsRgbColors;
 	@Getter private final boolean dualWielding;
 	@Getter private final String name;
 
@@ -181,6 +181,7 @@ public enum MCVersion
 		this.supportsUUIDs = supportsUUIDs;
 		this.name = versionString;
 		dualWielding = protocolVersion >= 107;
+		supportsRgbColors = protocolVersion >= 735;
 	}
 
 	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, MCVersion mainVersion)
@@ -197,6 +198,7 @@ public enum MCVersion
 		this.supportsUUIDs = supportsUUIDs;
 		this.name = versionString;
 		dualWielding = protocolVersion >= 107;
+		supportsRgbColors = protocolVersion >= 735;
 	}
 
 	public MCVersion getMajorMinecraftVersion()
@@ -208,6 +210,8 @@ public enum MCVersion
 	{
 		return supportsUUIDs;
 	}
+
+	public boolean isRgbColorSupported() { return supportsRgbColors; }
 
 	public boolean isSame(MCVersion other)
 	{
@@ -288,6 +292,8 @@ public enum MCVersion
 	public static boolean isUUIDsSupportAvailable() { return CURRENT_VERSION.areUUIDsSupported(); }
 
 	public static boolean isDualWieldingMC() { return CURRENT_VERSION.isDualWielding(); }
+
+	public static boolean supportsRgbColors() { return CURRENT_VERSION.isRgbColorSupported(); }
 
 	public static @NotNull MCVersion getFromServerVersion(final @NotNull String serverVersion)
 	{
