@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
  */
 
 package at.pcgamingfreaks.Bukkit;
+
+import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Contract;
@@ -88,4 +90,18 @@ public interface NmsReflector
 	@Nullable Enum<?> getNmsEnum(@NotNull String enumClass, @NotNull String enumName);
 
 	@Nullable Object getNmsHandle(@NotNull Object obj);
+
+	public static @Nullable Object getHandle(@NotNull Object obj)
+	{
+		try
+		{
+			//noinspection ConstantConditions
+			return Reflection.getMethod(obj.getClass(), "getHandle").invoke(obj);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

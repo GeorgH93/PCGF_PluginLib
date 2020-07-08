@@ -264,7 +264,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 		Validate.notNull(player, "The player that should receive this packet can't be null!");
 		Validate.notNull(packet, "The packet to send can't be null!");
 		if(SEND_PACKET == null || PLAYER_CONNECTION == null) return;
-		Object handle = NMSReflection.getHandle(player);
+		Object handle = NmsReflector.getHandle(player);
 		if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
 		{
 			SEND_PACKET.invoke(PLAYER_CONNECTION.get(handle), packet);
@@ -281,7 +281,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 	{
 		Validate.notNull(player, "The player for which the ping is requested must not be null!");
 		if(PLAYER_PING == null) return -1;
-		Object handle = NMSReflection.getHandle(player);
+		Object handle = NmsReflector.getHandle(player);
 		if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
 		{
 			try
@@ -367,14 +367,21 @@ public class Utils extends at.pcgamingfreaks.Utils
 			return event.getRawSlot() < event.getView().getTopInventory().getSize() ? event.getView().getTopInventory() : event.getView().getBottomInventory();
 	}
 
-	private static final Class<?> CLASS_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NMSReflection.INSTANCE.getNmsClass("Container");
-	private static final Class<?> CLASS_CONTAINERS = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NMSReflection.INSTANCE.getNmsClass("Containers");
+	private static final Class<?> CLASS_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Container");
+	private static final Class<?> CLASS_CONTAINERS = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Containers");
 	private static final Constructor<?> CONSTRUCTOR_CHAT_MESSAGE = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("ChatMessage"), String.class, Object[].class);
-	private static final Constructor<?> CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutOpenWindow"), int.class, MCVersion.isOlderThan(MCVersion.MC_1_14) ? String.class : CLASS_CONTAINERS, NMSReflection.getNMSClass("IChatBaseComponent"));
+	private static final Constructor<?> CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutOpenWindow"), int.class, CLASS_CONTAINERS, NmsReflector.INSTANCE.getNmsClass("IChatBaseComponent"));
 	private static final Field FIELD_ACTIVE_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getFieldIncludeParents(ENTITY_PLAYER, "activeContainer");
 	private static final Field FIELD_CONTAINER_WINDOW_ID = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getField(CLASS_CONTAINER, "windowId");
 	private static final Method METHOD_ENTITY_PLAYER_UPDATE_INVENTORY = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getMethod(ENTITY_PLAYER, "updateInventory", CLASS_CONTAINER);
 
+	/**
+	 * Changes the inventory title for the currently opened inventory.
+	 * Does nothing on Minecraft versions older than 1.14 (they do not support it).
+	 *
+	 * @param player The player for whom the inventory title should be updated
+	 * @param newTitle The new title that should be set
+	 */
 	public static void updateInventoryTitle(final @NotNull Player player, final @NotNull String newTitle)
 	{
 		if(MCVersion.isOlderThan(MCVersion.MC_1_14)) return;
@@ -383,16 +390,16 @@ public class Utils extends at.pcgamingfreaks.Utils
 		if(topInv.getType() == InventoryType.CRAFTING) return;
 		try
 		{
-			Object entityPlayer = NMSReflection.getHandle(player);
+			Object entityPlayer = NmsReflector.getHandle(player);
 			if(entityPlayer == null || entityPlayer.getClass() != ENTITY_PLAYER) return; // Not a real player
 			Object title = CONSTRUCTOR_CHAT_MESSAGE.newInstance(newTitle, new Object[0]);
 			Object activeContainer = FIELD_ACTIVE_CONTAINER.get(entityPlayer);
 			Object windowId = FIELD_CONTAINER_WINDOW_ID.get(activeContainer);
 			String type = topInv.getType().name();
 			if(topInv.getType() == InventoryType.CHEST) type = "GENERIC_9X" + (topInv.getSize() / 9);
-			if(topInv.getType() == InventoryType.DISPENSER || topInv.getType() == InventoryType.DROPPER) type = "GENERIC_3X3";
-			if(topInv.getType() == InventoryType.BREWING) type = "BREWING_STAND";
-			Object packet = CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW.newInstance(windowId, MCVersion.isOlderThan(MCVersion.MC_1_14) ? type : Reflection.getField(CLASS_CONTAINERS, type).get(null), title);
+			else if(topInv.getType() == InventoryType.DISPENSER || topInv.getType() == InventoryType.DROPPER) type = "GENERIC_3X3";
+			else if(topInv.getType() == InventoryType.BREWING) type = "BREWING_STAND";
+			Object packet = CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW.newInstance(windowId, Reflection.getField(CLASS_CONTAINERS, type).get(null), title);
 			SEND_PACKET.invoke(PLAYER_CONNECTION.get(entityPlayer), packet);
 			METHOD_ENTITY_PLAYER_UPDATE_INVENTORY.invoke(entityPlayer, activeContainer);
 		}
