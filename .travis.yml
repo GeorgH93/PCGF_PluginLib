@@ -10,4 +10,4 @@ cache:
     - '$HOME/.m2/repository'
 
 after_success:
-  - mvn clean package test coveralls:report
+  - mvn clean test package coveralls:report

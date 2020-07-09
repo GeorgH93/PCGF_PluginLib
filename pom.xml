@@ -1,10 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>at.pcgamingfreaks</groupId>
-	<artifactId>PluginLib</artifactId>
-	<version>1.0.28-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+	<artifactId>pcgf_pluginlib-parent</artifactId>
+	<version>${revision}</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<revision>1.0.29-SNAPSHOT</revision>
+		<website>https://github.com/GeorgH93/PCGF_PluginLib/</website>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<powermock.version>2.0.4</powermock.version><!-- property so that we have to change only one value to update all the powermock dependencies -->
+		<pluginName>PCGF_PluginLib</pluginName>
+		<author>GeorgH93</author>
+		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<bukkitVersion>1.12.2-R0.1-SNAPSHOT</bukkitVersion>
+		<bungeeVersion>1.16-R0.2-SNAPSHOT</bungeeVersion>
+	</properties>
 
 	<scm>
 		<connection>scm:git:git@github.com:GeorgH93/PCGF_PluginLib.git</connection>
@@ -20,9 +34,8 @@
 		<url>https://ci.pcgamingfreaks.at/job/PluginLib/</url>
 	</ciManagement>
 
-	<name>PCGF MC PluginLib</name>
 	<description>A library to reduce work and code on Bukkit or BungeeCord plugins.</description>
-	<url>https://github.com/GeorgH93/PCGF_PluginLib/</url>
+	<url>${website}</url>
 	<inceptionYear>2015</inceptionYear>
 	<licenses>
 		<license>
@@ -31,16 +44,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<powermock.version>2.0.4</powermock.version><!-- property so that we have to change only one value to update all the powermock dependencies -->
-		<pluginName>PCGF_PluginLib</pluginName>
-		<author>GeorgH93</author>
-		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-		<timestamp>${maven.build.timestamp}</timestamp>
-	</properties>
 
 	<repositories>
 		<repository>
@@ -51,10 +54,6 @@
 			<id>spigot-nexus</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public</url>
 		</repository>
-		<repository>
-			<id>placeholderapi</id>
-			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-		</repository>
 	</repositories>
 
 	<dependencies>
@@ -63,56 +62,6 @@
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
 			<version>17.0.0</version>
-		</dependency>
-		<!-- The YAML-Parser, it doesn't lose the comments in the yml file when they gets changed and saved -->
-		<dependency>
-			<groupId>at.pcgamingfreaks</groupId>
-			<artifactId>YAML-Parser</artifactId>
-			<version>2.0-SNAPSHOT</version>
-		</dependency>
-		<!-- The JSON-Parser we use. It is included in BungeeCord, but we also want to use it on Bukkit -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.8.0</version>
-		</dependency>
-		<!-- Bukkit API -->
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.12.2-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- BungeeCord API -->
-		<dependency>
-			<groupId>net.md-5</groupId>
-			<artifactId>bungeecord-api</artifactId>
-			<version>1.15-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- PlaceholderAPI -->
-		<dependency>
-			<groupId>me.clip</groupId>
-			<artifactId>placeholderapi</artifactId>
-			<version>2.9.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- We use some of their classes for Validation and other things -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
-		</dependency>
-		<!-- JDBC connection pool -->
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>3.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.7.25</version>
 		</dependency>
 		<!-- Lombok -->
 		<dependency>
@@ -161,40 +110,11 @@
 			<version>0.8.4</version>
 			<classifier>runtime</classifier>
 		</dependency>
-		<!--<dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>-->
-		<!-- endregion -->
 	</dependencies>
 
 	<build>
-		<finalName>PCGF_PluginLib-${version}</finalName>
-		<defaultGoal>clean install test</defaultGoal>
-		<resources>
-			<resource>
-				<directory>resources</directory>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>./</directory>
-				<includes>
-					<include>LICENSE</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>${project.build.directory}/generated-resources</directory>
-			</resource>
-		</resources>
 		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>test/src</testSourceDirectory>
-		<testResources>
-			<testResource>
-				<directory>test/resources</directory>
-			</testResource>
-		</testResources>
+		<defaultGoal>clean test install</defaultGoal>
 		<plugins>
 			<!-- Configures used Java version -->
 			<plugin>
@@ -216,81 +136,6 @@
 						<goals>
 							<goal>delombok</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- Create license files for final jar-->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<version>1.20</version>
-				<configuration>
-					<excludedScopes>test,provided,system</excludedScopes>
-					<generateBundle>true</generateBundle>
-					<licensesOutputFile>${project.build.directory}/generated-resources/licenses-THIRD-PARTY.xml</licensesOutputFile>
-				</configuration>
-				<executions>
-					<execution>
-						<id>add-third-party</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>add-third-party</goal>
-							<goal>download-licenses</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- Shades some required libs into the final jar -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.1</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<createDependencyReducedPom>true</createDependencyReducedPom>
-							<dependencyReducedPomLocation>${basedir}/.dependency-reduced-pom.xml</dependencyReducedPomLocation>
-							<minimizeJar>true</minimizeJar>
-							<artifactSet>
-								<includes>
-									<include>at.pcgamingfreaks:YAML-Parser</include>
-									<include>com.google.code.gson:gson</include> <!-- Not included in Bukkit, we need it (a lot)! -->
-									<include>org.apache.commons:commons-lang3</include> <!-- The old version is included in Bukkit, but not in BungeeCord, we just put in the new version for both -->
-									<include>com.zaxxer:HikariCP</include>
-									<include>org.slf4j:*</include>
-								</includes>
-							</artifactSet>
-							<relocations>
-								<relocation>
-									<pattern>com.google.gson</pattern>
-									<shadedPattern>at.pcgf.libs.com.google.gson</shadedPattern>
-								</relocation>
-								<relocation>
-									<pattern>com.zaxxer</pattern>
-									<shadedPattern>at.pcgf.libs.com.zaxxer</shadedPattern>
-								</relocation>
-								<relocation>
-									<pattern>org.apache</pattern>
-									<shadedPattern>at.pcgf.libs.org.apache</shadedPattern>
-								</relocation>
-								<relocation>
-									<pattern>org.slf4j</pattern>
-									<shadedPattern>at.pcgf.libs.org.slf4j</shadedPattern>
-								</relocation>
-							</relocations>
-							<filters>
-								<filter>
-									<artifact>org.apache.commons:commons-lang3</artifact>
-									<excludes>
-										<exclude>META-INF/*.txt</exclude>
-									</excludes>
-								</filter>
-							</filters>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -338,6 +183,45 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
+			<!-- flatten the pom -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<flattenedPomFilename>target/.flattened-pom.xml</flattenedPomFilename>
+					<updatePomFile>true</updatePomFile>
+					<pomElements>
+						<description/>
+						<inceptionYear/>
+						<organization/>
+						<scm/>
+						<developers/>
+						<contributors/>
+						<mailingLists/>
+						<issueManagement/>
+						<repositories/>
+						<ciManagement/>
+						<url/>
+					</pomElements>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- Creates the coverage report -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -372,10 +256,20 @@
 			<plugin>
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>
-				<version>4.2.0</version>
+				<version>4.3.0</version>
 			</plugin>
 		</plugins>
 	</build>
+	
+	<modules>
+		<module>pcgf_pluginlib-common</module>
+		<module>pcgf_pluginlib-bukkit</module>
+		<module>pcgf_pluginlib-bungee</module>
+		<module>plugin/pcgf_pluginlib-plugin-common</module>
+		<module>plugin/pcgf_pluginlib-plugin-bukkit</module>
+		<module>plugin/pcgf_pluginlib-plugin-bungee</module>
+		<module>plugin/PluginLib</module>
+	</modules>
 
 	<distributionManagement>
 		<repository>
