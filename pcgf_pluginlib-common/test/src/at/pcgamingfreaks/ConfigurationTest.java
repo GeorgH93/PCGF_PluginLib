@@ -81,7 +81,7 @@ public class ConfigurationTest
 			//noinspection ResultOfMethodCallIgnored
 			targetFile.delete();
 		}
-		URL resource = UUIDConverterTest.class.getResource("/config.yml");
+		URL resource = ConfigurationTest.class.getResource("/config.yml");
 		if(resource != null)
 		{
 			try

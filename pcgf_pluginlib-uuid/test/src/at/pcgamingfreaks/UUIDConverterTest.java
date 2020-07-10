@@ -131,14 +131,7 @@ public class UUIDConverterTest
 		whenNew(URL.class).withAnyArguments().thenReturn(mockedURL);
 		UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, null);
 		assertTrue("An error should be printed when the URL can't open the stream", errorStream.toString().contains("IOException"));
-		PowerMockito.doAnswer(new Answer<Object>()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock)
-			{
-				return null;
-			}
-		}).when(mockedURL).openStream();
+		PowerMockito.doAnswer(invocationOnMock -> null).when(mockedURL).openStream();
 		UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, TEST_USER2_LAST_SEEN);
 		assertTrue("A message should be printed when there doesn't exist a user at the given time", outputStream.size() > 0);
 		uuidCache.set(this, currentCacheMap);
@@ -250,45 +243,25 @@ public class UUIDConverterTest
 		modifiers.setInt(uuidCache, uuidCache.getModifiers() & ~Modifier.FINAL);
 		UUIDCacheMap currentCacheMap = (UUIDCacheMap) uuidCache.get(this);
 		UUIDCacheMap mockedUUIDCacheMap = mock(UUIDCacheMap.class);
-		when(mockedUUIDCacheMap.containsKey(anyString())).thenAnswer(new Answer<Boolean>()
-		{
-			@Override
-			public Boolean answer(InvocationOnMock invocationOnMock)
-			{
-				//noinspection SuspiciousMethodCalls
-				return testNamesSeparators.containsKey(invocationOnMock.getArguments()[0]);
-			}
+		when(mockedUUIDCacheMap.containsKey(anyString())).thenAnswer((Answer<Boolean>) invocationOnMock -> {
+			//noinspection SuspiciousMethodCalls
+			return testNamesSeparators.containsKey(invocationOnMock.getArguments()[0]);
 		});
-		when(mockedUUIDCacheMap.get(anyString())).thenAnswer(new Answer<String>()
-		{
-			@Override
-			public String answer(InvocationOnMock invocationOnMock)
-			{
-				//noinspection SuspiciousMethodCalls
-				return testNamesSeparators.get(invocationOnMock.getArguments()[0]);
-			}
+		when(mockedUUIDCacheMap.get(anyString())).thenAnswer((Answer<String>) invocationOnMock -> {
+			//noinspection SuspiciousMethodCalls
+			return testNamesSeparators.get(invocationOnMock.getArguments()[0]);
 		});
 		uuidCache.set(this, mockedUUIDCacheMap);
 		Map<String, String> namesUUIDs = UUIDConverter.getUUIDsFromNames(testNamesSeparators.keySet(), true, true);
 		assertEquals("The user count of online mode users should match the given amount of users", testNamesSeparators.size(), namesUUIDs.size());
 		assertEquals("All user UUIDs should match the given ones with separators", namesUUIDs, testNamesSeparators);
-		when(mockedUUIDCacheMap.containsKey(anyString())).thenAnswer(new Answer<Boolean>()
-		{
-			@Override
-			public Boolean answer(InvocationOnMock invocationOnMock)
-			{
-				//noinspection SuspiciousMethodCalls
-				return testNames.containsKey(invocationOnMock.getArguments()[0]);
-			}
+		when(mockedUUIDCacheMap.containsKey(anyString())).thenAnswer((Answer<Boolean>) invocationOnMock -> {
+			//noinspection SuspiciousMethodCalls
+			return testNames.containsKey(invocationOnMock.getArguments()[0]);
 		});
-		when(mockedUUIDCacheMap.get(anyString())).thenAnswer(new Answer<String>()
-		{
-			@Override
-			public String answer(InvocationOnMock invocationOnMock)
-			{
-				//noinspection SuspiciousMethodCalls
-				return testNames.get(invocationOnMock.getArguments()[0]);
-			}
+		when(mockedUUIDCacheMap.get(anyString())).thenAnswer((Answer<String>) invocationOnMock -> {
+			//noinspection SuspiciousMethodCalls
+			return testNames.get(invocationOnMock.getArguments()[0]);
 		});
 		namesUUIDs = UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
 		assertEquals("The user count of online mode users should match the given amount of users", testNames.size(), namesUUIDs.size());
