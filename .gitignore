@@ -54,9 +54,10 @@ Temporary Items
 *.classpath
 *.project
 *.prefs
-/target/
-/bin/
+target/
+bin/
 *.iml
 /.idea/
 
 .dependency-reduced-pom.xml
+.flattened-pom.xml
