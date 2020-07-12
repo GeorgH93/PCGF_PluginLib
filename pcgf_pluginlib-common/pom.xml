@@ -53,7 +53,6 @@
 	</dependencies>
 
 	<build>
-		<testSourceDirectory>test/src</testSourceDirectory>
 		<testResources>
 			<testResource>
 				<directory>test/resources</directory>

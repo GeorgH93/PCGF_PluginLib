@@ -56,7 +56,6 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		<testSourceDirectory>test/src</testSourceDirectory>
 		<testResources>
 			<testResource>
 				<directory>test/resources</directory>

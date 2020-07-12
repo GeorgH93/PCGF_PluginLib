@@ -114,6 +114,7 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test/src</testSourceDirectory>
 		<defaultGoal>clean test install</defaultGoal>
 		<plugins>
 			<!-- Configures used Java version -->
