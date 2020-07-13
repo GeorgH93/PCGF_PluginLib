@@ -2,7 +2,7 @@ name: "${pluginName}"
 author: "${author}"
 website: "${project.url}"
 description: "${description}"
-main: "${project.groupId}.PluginLib.Bukkit.PluginLib"
+main: "at.pcgamingfreaks.PluginLib.Bukkit.PluginLib"
 version: "${project.version}-T${timestamp}"
 api-version: "1.13"
 softdepend: [ "PlaceholderAPI" ]
