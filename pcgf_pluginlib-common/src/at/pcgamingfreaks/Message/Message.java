@@ -20,8 +20,6 @@ package at.pcgamingfreaks.Message;
 import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.StringUtils;
 
-import com.google.gson.Gson;
-
 import org.apache.commons.lang3.Validate;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -35,8 +33,6 @@ import java.util.List;
 public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> implements IMessage<PLAYER, COMMAND_SENDER>
 {
 	//region Variables
-	protected static final Gson GSON = new Gson();
-
 	protected Object optionalParameters = null;
 	protected String json, fallback;
 	protected List<? extends MessageComponent> messageComponents = null;
@@ -72,7 +68,7 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 			{
 				e.printStackTrace();
 			}
-			json = GSON.toJson(messageComponents);
+			json = MessageComponent.GSON.toJson(messageComponents);
 			fallback = message; // Our message is no JSON so we can send it to everyone
 		}
 	}
@@ -82,7 +78,7 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 		Validate.notEmpty(message, "The message should not be empty!");
 		messageComponents = new ArrayList<>(message); // Lets save our deserialized JSON into an array (maybe we will need it at a later point, you never know)
 		fallback = getClassicMessage(); // We need a fallback for the console and everything else that isn't a player
-		json = GSON.toJson(message); // We need a JSON string to send to the player, so lets generate one from the component list
+		json = MessageComponent.GSON.toJson(message); // We need a JSON string to send to the player, so lets generate one from the component list
 	}
 	//endregion
 
