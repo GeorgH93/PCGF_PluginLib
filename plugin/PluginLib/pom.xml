@@ -9,7 +9,7 @@
 		<version>${revision}</version>
 		<relativePath>../..</relativePath>
 	</parent>
-	<version>1.0.29-SNAPSHOT</version>
+	<version>${revision}</version>
 	<packaging>jar</packaging>
 
 	<url>${website}</url>
@@ -75,8 +75,8 @@
 						</goals>
 						<configuration>
 							<createSourcesJar>true</createSourcesJar>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
 							<dependencyReducedPomLocation>${basedir}/.dependency-reduced-pom.xml</dependencyReducedPomLocation>
-							<finalName>PCGF_PluginLib-${project.version}</finalName>
 							<artifactSet>
 								<includes>
 									<include>at.pcgamingfreaks.pcgf_pluginlib:*</include>
