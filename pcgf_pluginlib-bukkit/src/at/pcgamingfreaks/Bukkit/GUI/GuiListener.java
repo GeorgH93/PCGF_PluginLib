@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.GUI;
 
-import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.Bukkit.Util.InventoryUtils;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,7 +32,7 @@ public final class GuiListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onInventoryClick(final InventoryClickEvent event)
 	{
-		Inventory clickedInventory = Utils.getClickedInventory(event);
+		Inventory clickedInventory = InventoryUtils.getClickedInventory(event);
 		if(clickedInventory == null) return;
 		InventoryHolder holder = clickedInventory.getHolder();
 		if(!(holder instanceof IGui)) return;

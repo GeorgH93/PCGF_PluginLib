@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
-import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.Bukkit.Util.Utils;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;

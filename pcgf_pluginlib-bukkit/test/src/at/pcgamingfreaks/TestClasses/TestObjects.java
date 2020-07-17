@@ -36,8 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 
@@ -111,11 +110,21 @@ public class TestObjects
 
 	public static void initBukkitOnlinePlayers() throws Exception
 	{
-		List<Player> bukkitPlayers = new ArrayList<>();
-		bukkitPlayers.add(new TestBukkitPlayer());
-		bukkitPlayers.add(new TestBukkitPlayer());
-		mockStatic(Bukkit.class);
-		doReturn(bukkitPlayers).when(Bukkit.class, "getOnlinePlayers");
+		Server server = Bukkit.getServer();
+		if(server instanceof TestBukkitServer)
+		{
+			((TestBukkitServer) server).getPlayers().clear();
+			((TestBukkitServer) server).getPlayers().add(new TestBukkitPlayer());
+			((TestBukkitServer) server).getPlayers().add(new TestBukkitPlayer());
+		}
+		else
+		{
+			List<Player> bukkitPlayers = new ArrayList<>();
+			bukkitPlayers.add(new TestBukkitPlayer());
+			bukkitPlayers.add(new TestBukkitPlayer());
+			mockStatic(Bukkit.class);
+			doReturn(bukkitPlayers).when(Bukkit.class, "getOnlinePlayers");
+		}
 	}
 
 	public static JavaPlugin getJavaPlugin() { return mockedJavaPlugin; }

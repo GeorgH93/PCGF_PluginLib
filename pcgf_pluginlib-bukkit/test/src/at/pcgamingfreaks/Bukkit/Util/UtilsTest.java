@@ -15,21 +15,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit;
+package at.pcgamingfreaks.Bukkit.Util;
 
+import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Reflection;
-import at.pcgamingfreaks.TestClasses.NMS.EntityPlayer;
-import at.pcgamingfreaks.TestClasses.NMS.IChatBaseComponent;
-import at.pcgamingfreaks.TestClasses.NMS.PacketPlayOutChat;
 import at.pcgamingfreaks.TestClasses.NMS.PlayerConnection;
-import at.pcgamingfreaks.TestClasses.*;
+import at.pcgamingfreaks.TestClasses.TestBukkitServer;
+import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -39,21 +37,16 @@ import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Bukkit.class, NMSReflection.class, PlayerConnection.class, PluginDescriptionFile.class, Reflection.class })
 public class UtilsTest
 {
-	@SuppressWarnings("SpellCheckingInspection")
 	private static TestBukkitServer server = new TestBukkitServer();
 	private static final World WORLD_1 = Mockito.mock(World.class), WORLD_2 = Mockito.mock(World.class);
 	private static final Player PLAYER1 = Mockito.mock(Player.class), PLAYER2 = Mockito.mock(Player.class), PLAYER3 = Mockito.mock(Player.class), PLAYER4 = Mockito.mock(Player.class);
@@ -144,69 +137,6 @@ public class UtilsTest
 	}
 
 	@Test
-	public void testConvertItemStackToJson() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException
-	{
-		Logger mockedLogger = spy(server.getLogger());
-		ItemStack itemStack = new ItemStack(Material.STONE, 23);
-		assertEquals("The converted ItemStack should match", "{\"id\":\"STONE\",\"Count\":\"23\"}", Utils.convertItemStackToJson(itemStack, mockedLogger));
-		Field field = TestUtils.setAccessible(Utils.class, null, "NBT_TAG_COMPOUND_CLASS", Utils.class);
-		assertEquals("The converted ItemStack should match", "", Utils.convertItemStackToJson(itemStack, mockedLogger));
-		verify(mockedLogger, times(1)).log(any(Level.class), anyString(), any(Throwable.class));
-		field.set(null, null);
-		assertEquals("The converted ItemStack should match", "", Utils.convertItemStackToJson(itemStack, mockedLogger));
-		TestUtils.setUnaccessible(field, null, true);
-		field = TestUtils.setAccessible(Utils.class, null, "AS_NMS_COPY_METHOD", null);
-		assertEquals("The converted ItemStack should match", "", Utils.convertItemStackToJson(itemStack, mockedLogger));
-		TestUtils.setUnaccessible(field, null, true);
-		field = TestUtils.setAccessible(Utils.class, null, "SAVE_NMS_ITEM_STACK_METHOD", null);
-		assertEquals("The converted ItemStack should match", "", Utils.convertItemStackToJson(itemStack, mockedLogger));
-		TestUtils.setUnaccessible(field, null, true);
-		verify(mockedLogger, times(3)).log(any(Level.class), anyString());
-	}
-
-	@Test
-	public void testSendPacket() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, NoSuchFieldException
-	{
-		int sendPacketCalls = 0;
-		//noinspection SpellCheckingInspection
-		TestBukkitPlayer player = spy(new TestBukkitPlayer());
-		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
-		verify(player, times(++sendPacketCalls)).getHandle();
-		doReturn(null).when(player).getHandle();
-		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
-		verify(player, times(++sendPacketCalls)).getHandle();
-		Field field = TestUtils.setAccessible(Utils.class, null, "SEND_PACKET", null);
-		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
-		verify(player, times(sendPacketCalls)).getHandle();
-		TestUtils.setUnaccessible(field, null, true);
-		field = TestUtils.setAccessible(Utils.class, null, "PLAYER_CONNECTION", null);
-		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
-		verify(player, times(sendPacketCalls)).getHandle();
-		TestUtils.setUnaccessible(field, null, true);
-		player = new TestBukkitPlayer();
-		player.isEntityPlayerHandle = false;
-		Utils.sendPacket(player, new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(""), (byte) 0));
-		//verify(player, times(++sendPacketCalls)).getHandle();
-		player.isEntityPlayerHandle = true;
-	}
-
-	@Test
-	public void testGetPing() throws NoSuchFieldException, IllegalAccessException
-	{
-		TestBukkitPlayer player = spy(new TestBukkitPlayer());
-		assertEquals("The Ping should match", 123, Utils.getPing(player));
-		Field playerPingField = TestUtils.setAccessible(Utils.class, null, "PLAYER_PING", EntityPlayer.class.getDeclaredField("failPing"));
-		assertEquals("The Ping value should not be able to be retrieved", -1, Utils.getPing(player));
-		doReturn(null).when(player).getHandle();
-		assertEquals("The Ping field should not be found", -1, Utils.getPing(player));
-		doReturn("Test").when(player).getHandle();
-		assertEquals("The Ping field should not be found", -1, Utils.getPing(player));
-		playerPingField.set(null, null);
-		assertEquals("The Ping field should not be found", -1, Utils.getPing(player));
-		TestUtils.setUnaccessible(playerPingField, null, true);
-	}
-
-	@Test
 	public void testInRange()
 	{
 		assertTrue(Utils.inRange(PLAYER1, PLAYER2, -1.0));
@@ -248,12 +178,5 @@ public class UtilsTest
 		assertFalse(Utils.inRangeSquared(PLAYER1, PLAYER2, 1.0, "bypass.rangelimit"));
 		assertFalse(Utils.inRangeSquared(PLAYER1, PLAYER3, 0, "bypass.rangelimit"));
 		assertTrue(Utils.inRangeSquared(PLAYER4, PLAYER3, 0, "bypass.rangelimit"));
-	}
-
-	@Test
-	public void testDropInventory()
-	{
-		Utils.dropInventory(new TestInventory(), new Location(WORLD_1, 0.0, 1.0, 2.0));
-		Utils.dropInventory(new TestInventory(), new Location(WORLD_1, 0.0, 1.0, 2.0), false);
 	}
 }

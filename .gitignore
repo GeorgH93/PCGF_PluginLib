@@ -61,3 +61,7 @@ bin/
 
 .dependency-reduced-pom.xml
 .flattened-pom.xml
+
+# Auto generated source code
+/platform/pcgf_pluginlib-nms/pcgf_pluginlib-nms-*_R[1-9]/src/**/*_R[1-9].java
+/platform/pcgf_pluginlib-nms/pcgf_pluginlib-nms-*_R[1-9]/generator/**/*_R[1-9].java.json

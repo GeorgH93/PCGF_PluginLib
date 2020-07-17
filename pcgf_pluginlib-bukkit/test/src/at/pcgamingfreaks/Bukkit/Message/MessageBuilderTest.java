@@ -18,6 +18,9 @@
 package at.pcgamingfreaks.Bukkit.Message;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Bukkit.PlatformResolver;
+import at.pcgamingfreaks.Bukkit.Util.FakeInvUtils;
+import at.pcgamingfreaks.Bukkit.Util.InventoryUtils;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
@@ -28,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -35,9 +39,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class })
+@PrepareForTest({ NMSReflection.class, PlatformResolver.class, InventoryUtils.class })
 public class MessageBuilderTest
 {
 	@BeforeClass
@@ -45,6 +51,10 @@ public class MessageBuilderTest
 	{
 		Bukkit.setServer(new TestBukkitServer());
 		TestObjects.initNMSReflection();
+
+		PowerMockito.mockStatic(PlatformResolver.class);
+		when(PlatformResolver.createPlatformInstance(any())).thenReturn(new FakeInvUtils());
+		PowerMockito.mockStatic(InventoryUtils.class);
 	}
 
 	@Test

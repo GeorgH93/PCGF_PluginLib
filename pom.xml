@@ -267,6 +267,8 @@
 		<module>pcgf_pluginlib-uuid</module>
 		<module>pcgf_pluginlib-bukkit</module>
 		<module>pcgf_pluginlib-bungee</module>
+		<module>platform/pcgf_pluginlib-platform-bukkit</module>
+		<module>platform/pcgf_pluginlib-platform-nms</module>
 		<module>plugin/pcgf_pluginlib-plugin-common</module>
 		<module>plugin/pcgf_pluginlib-plugin-bukkit</module>
 		<module>plugin/pcgf_pluginlib-plugin-bungee</module>

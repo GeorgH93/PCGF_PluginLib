@@ -20,7 +20,7 @@ package at.pcgamingfreaks.Bukkit.Message;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NmsReflector;
 import at.pcgamingfreaks.Bukkit.OBCReflection;
-import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.Bukkit.Util.InventoryUtils;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageFormat;
 import at.pcgamingfreaks.Message.MessageHoverEvent;
@@ -262,7 +262,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	@SuppressWarnings("UnusedReturnValue")
 	public MessageComponent itemTooltip(ItemStack itemStack)
 	{
-		return itemTooltip(Utils.convertItemStackToJson(itemStack, Bukkit.getLogger()));
+		return itemTooltip(InventoryUtils.convertItemStackToJson(itemStack, Bukkit.getLogger()));
 	}
 	//endregion
 }

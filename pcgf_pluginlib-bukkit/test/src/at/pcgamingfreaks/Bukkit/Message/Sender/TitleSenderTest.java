@@ -19,7 +19,8 @@ package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.Message.Message;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
-import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.Bukkit.Util.Utils;
+import at.pcgamingfreaks.Message.Sender.TitleLocation;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
@@ -30,7 +31,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -41,12 +41,13 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ BaseSender.class, Bukkit.class, NMSReflection.class, Utils.class })
+@PrepareForTest({ BaseSender.class, NMSReflection.class, Utils.class })
 public class TitleSenderTest
 {
 	@BeforeClass
@@ -59,8 +60,9 @@ public class TitleSenderTest
 	@Before
 	public void prepareTestObjects() throws Exception
 	{
+		TestObjects.initBukkitOnlinePlayers();
 		mockStatic(Utils.class);
-		doNothing().when(Utils.class, "sendPacket", any(Player.class), anyObject());
+		doNothing().when(Utils.class, "sendPacket", any(Player.class), any());
 	}
 
 	@Test
@@ -75,44 +77,44 @@ public class TitleSenderTest
 		TitleSender.send(player, new Message(""));
 		sendPacketCalls += 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		TitleSender.send(player, new Message(""), new TitleMetadata(20, 20, 20));
 		sendPacketCalls += 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		TitleSender.send(players, new Message(""));
 		sendPacketCalls += playerCount*2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
-		TitleSender.send(players, new Message(""), new TitleMetadata(10, 20, 30, false));
+		Utils.sendPacket(any(Player.class), any());
+		TitleSender.send(players, new Message(""), new TitleMetadata(10, 20, 30, TitleLocation.TITLE));
 		sendPacketCalls += playerCount*2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		TitleSender titleSender = spy(new TitleSender());
 		titleSender.doSend(player, "");
 		sendPacketCalls += 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		titleSender.doSend(player, "", new TitleMetadata());
 		sendPacketCalls += 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		titleSender.doSend(player, "", 56);
 		sendPacketCalls += 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		titleSender.doSend(players, "");
 		sendPacketCalls += playerCount * 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		titleSender.doSend(players, "", false);
 		sendPacketCalls += playerCount * 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		titleSender.doSend(players, "", new TitleMetadata());
 		sendPacketCalls += playerCount * 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
 		Field chatSerializerMethodAField = BaseSender.class.getDeclaredField("CHAT_SERIALIZER_METHOD_A");
@@ -122,10 +124,10 @@ public class TitleSenderTest
 		chatSerializerMethodAField.set(null, null);
 		TitleSender.send(player, "", new TitleMetadata());
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		TitleSender.send(players, "", new TitleMetadata());
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		chatSerializerMethodAField.set(null, chatSerializerMethodA);
 		modifiers.set(chatSerializerMethodAField, chatSerializerMethodAField.getModifiers() | Modifier.FINAL);
 		chatSerializerMethodAField.setAccessible(false);
@@ -136,10 +138,10 @@ public class TitleSenderTest
 		packetPlayOutTitleConstructorField.set(null, null);
 		TitleSender.send(player, "", new TitleMetadata());
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		TitleSender.send(players, "", new TitleMetadata());
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		packetPlayOutTitleConstructorField.set(null, packetPlayOutTitleConstructor);
 		modifiers.set(packetPlayOutTitleConstructorField, packetPlayOutTitleConstructorField.getModifiers() | Modifier.FINAL);
 		packetPlayOutTitleConstructorField.setAccessible(false);
@@ -148,38 +150,37 @@ public class TitleSenderTest
 		doThrow(new IllegalAccessException()).when(BaseSender.class, "finalizeJson", anyString());
 		TitleSender.send(player, "", new TitleMetadata());
 		verifyStatic(Utils.class, times(++sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		TitleSender.send(players, "", new TitleMetadata());
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 	}
 
 	@Test
-	public void testBroadcast() throws Exception
+	public void testBroadcast()
 	{
-		TestObjects.initBukkitOnlinePlayers();
 		int sendPacketCalls = 0;
 		int playerCount = Bukkit.getOnlinePlayers().size();
 		TitleSender.broadcast(new Message(""));
 		sendPacketCalls += playerCount * 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		TitleSender.broadcast(new Message(""), new TitleMetadata());
 		sendPacketCalls += playerCount * 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		TitleSender titleSender = new TitleSender();
 		titleSender.doBroadcast("");
 		sendPacketCalls += playerCount * 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		titleSender.doBroadcast("", new TitleMetadata());
 		sendPacketCalls += playerCount * 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		titleSender.doBroadcast("", 34);
 		sendPacketCalls += playerCount * 2;
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 	}
 }

@@ -42,18 +42,22 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.*;
 import java.util.logging.Logger;
 
-@SuppressWarnings("SpellCheckingInspection")
 public class TestBukkitServer implements Server
 {
 	public String serverField;
 	public String serverVersion;
 	public boolean allowPluginManager = false;
 	public boolean perWorldPlugins = false;
+	@Getter List<Player> players = new ArrayList<>();
+	@Getter @Setter int maxPlayers = 0;
 
 	@SuppressWarnings("unused")
 	public static CommandMap commandMap;
@@ -101,7 +105,7 @@ public class TestBukkitServer implements Server
 		}
 
 		@Override
-		public Plugin loadPlugin(File file) throws InvalidPluginException, InvalidDescriptionException, UnknownDependencyException { return null; }
+		public Plugin loadPlugin(File file) throws UnknownDependencyException { return null; }
 
 		@Override
 		public Plugin[] loadPlugins(File file)
@@ -223,13 +227,7 @@ public class TestBukkitServer implements Server
 	@Override
 	public Collection<? extends Player> getOnlinePlayers()
 	{
-		return new ArrayList<>();
-	}
-
-	@Override
-	public int getMaxPlayers()
-	{
-		return 0;
+		return players;
 	}
 
 	@Override
@@ -686,10 +684,10 @@ public class TestBukkitServer implements Server
 	}
 
 	@Override
-	public CachedServerIcon loadServerIcon(File file) throws Exception { return null; }
+	public CachedServerIcon loadServerIcon(File file) { return null; }
 
 	@Override
-	public CachedServerIcon loadServerIcon(BufferedImage bufferedImage) throws Exception { return null; }
+	public CachedServerIcon loadServerIcon(BufferedImage bufferedImage) { return null; }
 
 	@Override
 	public void setIdleTimeout(int i) {}

@@ -15,9 +15,9 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit;
+package at.pcgamingfreaks.Bukkit.Util;
 
-import at.pcgamingfreaks.Bukkit.Util.InventoryUtils;
+import at.pcgamingfreaks.Bukkit.PlatformResolver;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -29,26 +29,20 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Logger;
 
-/**
- * Collection of static functions that are may be useful for plugins.
- * @deprecated Moved to {@link at.pcgamingfreaks.Bukkit.Util.Utils}!
- */
-@Deprecated
-public class Utils extends at.pcgamingfreaks.Bukkit.Util.Utils
+public class InventoryUtils
 {
+	private static final IInventoryUtils INSTANCE = PlatformResolver.createPlatformInstance(IInventoryUtils.class);
+
 	/**
 	 * Converts an item stack into a json string used for chat messages.
 	 *
 	 * @param itemStack The item stack that should be converted into a json string
 	 * @param logger The logger that should display the error message in case of an problem
 	 * @return The item stack as a json string. empty string if the conversation failed
-	 *
-	 * @deprecated Moved to {@link InventoryUtils}.
 	 */
-	@Deprecated
-	public static String convertItemStackToJson(@NotNull ItemStack itemStack, @NotNull Logger logger)
+	public static String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
 	{
-		return InventoryUtils.convertItemStackToJson(itemStack, logger);
+		return INSTANCE.convertItemStackToJson(itemStack, logger);
 	}
 
 	/**
@@ -57,11 +51,8 @@ public class Utils extends at.pcgamingfreaks.Bukkit.Util.Utils
 	 *
 	 * @param inventory The inventory to be dropped
 	 * @param location The location the inventory should be dropped to
-	 *
-	 * @deprecated Moved to {@link InventoryUtils}.
 	 */
-	@Deprecated
-	public static void dropInventory(@NotNull Inventory inventory, @NotNull Location location)
+	public static void dropInventory(final @NotNull Inventory inventory, final @NotNull Location location)
 	{
 		dropInventory(inventory, location, true);
 	}
@@ -72,19 +63,30 @@ public class Utils extends at.pcgamingfreaks.Bukkit.Util.Utils
 	 * @param inventory The inventory to be dropped
 	 * @param location The location the inventory should be dropped to
 	 * @param clearInventory Defines if the inventory should be cleared after dropping it or not
-	 *
-	 * @deprecated Moved to {@link InventoryUtils}.
 	 */
-	@Deprecated
-	public static void dropInventory(@NotNull Inventory inventory, @NotNull Location location, boolean clearInventory)
+	public static void dropInventory(final @NotNull Inventory inventory, final @NotNull Location location, boolean clearInventory)
 	{
-		InventoryUtils.dropInventory(inventory, location, clearInventory);
+		for(ItemStack i : inventory.getContents())
+		{
+			if(i != null)
+			{
+				location.getWorld().dropItemNaturally(location, i);
+			}
+		}
+		if(clearInventory) inventory.clear();
 	}
 
-	@Deprecated
+	/**
+	 * Gets the inventory that the player clicked on. This does the same as the InventoryClickEvent#getClickedInventory method found in newer versions of the Bukkit API.
+	 *
+	 * @param event The event that should be checked.
+	 * @return The inventory the player clicked on.
+	 */
 	public static @Nullable Inventory getClickedInventory(final @NotNull InventoryClickEvent event)
 	{
-		return InventoryUtils.getClickedInventory(event);
+		if (event.getRawSlot() < 0) return null;
+
+		return event.getRawSlot() < event.getView().getTopInventory().getSize() ? event.getView().getTopInventory() : event.getView().getBottomInventory();
 	}
 
 	/**
@@ -93,12 +95,9 @@ public class Utils extends at.pcgamingfreaks.Bukkit.Util.Utils
 	 *
 	 * @param player The player for whom the inventory title should be updated
 	 * @param newTitle The new title that should be set
-	 *
-	 * @deprecated Moved to {@link InventoryUtils}.
 	 */
-	@Deprecated
 	public static void updateInventoryTitle(final @NotNull Player player, final @NotNull String newTitle)
 	{
-		InventoryUtils.updateInventoryTitle(player, newTitle);
+		INSTANCE.updateInventoryTitle(player, newTitle);
 	}
 }

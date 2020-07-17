@@ -19,7 +19,7 @@ package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.Message.Message;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
-import at.pcgamingfreaks.Bukkit.Utils;
+import at.pcgamingfreaks.Bukkit.Util.Utils;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
@@ -30,39 +30,37 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Bukkit.class, NMSReflection.class, Utils.class })
+@PrepareForTest({ NMSReflection.class, Utils.class })
 public class BossBarSenderTest
 {
 	@BeforeClass
-	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
+	public static void prepareTestData() throws Exception
 	{
 		Bukkit.setServer(new TestBukkitServer());
 		TestObjects.initNMSReflection();
+		TestObjects.initBukkitOnlinePlayers();
 	}
 
 	@Before
 	public void prepareTestObjects() throws Exception
 	{
 		mockStatic(Utils.class);
-		doNothing().when(Utils.class, "sendPacket", any(Player.class), anyObject());
+		doNothing().when(Utils.class, "sendPacket", any(Player.class), any());
 	}
 
 	@Test
-	public void testSend() throws InvocationTargetException, IllegalAccessException
+	public void testSend()
 	{
 		int sendPacketCalls = 0;
 		TestBukkitPlayer player = new TestBukkitPlayer();
@@ -71,36 +69,35 @@ public class BossBarSenderTest
 		players.add(player);
 		BossBarSender.send(player, new Message(""));
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		BossBarSender bossBarSender = new BossBarSender();
 		bossBarSender.doSend(player, "");
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		bossBarSender.doSend(player, "", false);
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		bossBarSender.doSend(players, "");
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		bossBarSender.doSend(players, "", true);
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 	}
 
 	@Test
-	public void testBroadcast() throws Exception
+	public void testBroadcast()
 	{
-		TestObjects.initBukkitOnlinePlayers();
 		int sendPacketCalls = 0;
 		BossBarSender.broadcast(new Message(""));
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		BossBarSender bossBarSender = new BossBarSender();
 		bossBarSender.doBroadcast("");
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		bossBarSender.doBroadcast("", 34);
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), Matchers.anyObject());
+		Utils.sendPacket(any(Player.class), any());
 	}
 }
