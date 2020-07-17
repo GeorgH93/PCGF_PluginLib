@@ -434,30 +434,4 @@ public abstract class Updater implements IUpdater
 	{
 		return true;
 	}
-
-	//region deprecated
-	/**
-	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
-	 */
-	@Deprecated
-	public interface UpdaterResponse extends UpdateResponseCallback {}
-
-	/**
-	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
-	 */
-	@Deprecated
-	public void checkForUpdate(final @NotNull UpdaterResponse response)
-	{
-		checkForUpdate((UpdateResponseCallback) response);
-	}
-
-	/**
-	 * @deprecated Please use the new {@link UpdateResponseCallback} interface instead!
-	 */
-	@Deprecated
-	public void update(final @Nullable UpdaterResponse response)
-	{
-		update((UpdateResponseCallback) response);
-	}
-	//endregion
 }

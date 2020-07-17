@@ -36,8 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class MessageTest
@@ -101,7 +101,7 @@ public class MessageTest
 		Field method = Message.class.getDeclaredField("method");
 		method.setAccessible(true);
 		ChatSender mockedSender = mock(ChatSender.class);
-		doNothing().when(mockedSender).doSend(any(ProxiedPlayer.class), anyString(), anyObject());
+		doNothing().when(mockedSender).doSend(any(ProxiedPlayer.class), anyString(), any());
 		SendMethod sendMethod = (SendMethod) method.get(message);
 		Field defaultSender = sendMethod.getClass().getDeclaredField("sender");
 		defaultSender.setAccessible(true);
@@ -116,28 +116,28 @@ public class MessageTest
 		//noinspection deprecation
 		verify(mockedCommandSender, times(++sendMessageCalls)).sendMessage(anyString());
 		message.send(mockedProxiedPlayer, (Object[]) null);
-		verify(mockedSender, times(++doSendCalls)).doSend(any(ProxiedPlayer.class), anyString(), anyObject());
+		verify(mockedSender, times(++doSendCalls)).doSend(any(ProxiedPlayer.class), anyString(), any());
 		message.send(mockedProxiedPlayer);
-		verify(mockedSender, times(++doSendCalls)).doSend(any(ProxiedPlayer.class), anyString(), anyObject());
+		verify(mockedSender, times(++doSendCalls)).doSend(any(ProxiedPlayer.class), anyString(), any());
 		message.send(mockedProxiedPlayer, "Test");
-		verify(mockedSender, times(++doSendCalls)).doSend(any(ProxiedPlayer.class), anyString(), anyObject());
+		verify(mockedSender, times(++doSendCalls)).doSend(any(ProxiedPlayer.class), anyString(), any());
 		doSendCalls = 0;
 		List<ProxiedPlayer> proxiedPlayers = new ArrayList<>();
 		message.send(proxiedPlayers);
-		verify(mockedSender, times(doSendCalls)).doSend(anyCollectionOf(ProxiedPlayer.class), anyString(), anyObject());
+		verify(mockedSender, times(doSendCalls)).doSend(anyCollectionOf(ProxiedPlayer.class), anyString(), any());
 		proxiedPlayers.add(mockedProxiedPlayer);
 		message.send(proxiedPlayers, (Object[]) null);
-		verify(mockedSender, times(++doSendCalls)).doSend(anyCollectionOf(ProxiedPlayer.class), anyString(), anyObject());
+		verify(mockedSender, times(++doSendCalls)).doSend(anyCollectionOf(ProxiedPlayer.class), anyString(), any());
 		message.send(proxiedPlayers);
-		verify(mockedSender, times(++doSendCalls)).doSend(anyCollectionOf(ProxiedPlayer.class), anyString(), anyObject());
+		verify(mockedSender, times(++doSendCalls)).doSend(anyCollectionOf(ProxiedPlayer.class), anyString(), any());
 		message.send(proxiedPlayers, "Test");
-		verify(mockedSender, times(++doSendCalls)).doSend(anyCollectionOf(ProxiedPlayer.class), anyString(), anyObject());
+		verify(mockedSender, times(++doSendCalls)).doSend(anyCollectionOf(ProxiedPlayer.class), anyString(), any());
 		message.setSendMethod(null);
 		message.send(mockedCommandSender);
 		//noinspection deprecation
 		verify(mockedCommandSender, times(sendMessageCalls)).sendMessage(anyString());
 		message.send(proxiedPlayers);
-		verify(mockedSender, times(doSendCalls)).doSend(anyCollectionOf(ProxiedPlayer.class), anyString(), anyObject());
+		verify(mockedSender, times(doSendCalls)).doSend(anyCollectionOf(ProxiedPlayer.class), anyString(), any());
 		defaultSender.setAccessible(false);
 		method.setAccessible(false);
 	}
@@ -152,7 +152,7 @@ public class MessageTest
 		Field method = Message.class.getDeclaredField("method");
 		method.setAccessible(true);
 		ChatSender mockedSender = mock(ChatSender.class);
-		doNothing().when(mockedSender).doBroadcast(anyString(), anyObject());
+		doNothing().when(mockedSender).doBroadcast(anyString(), any());
 		SendMethod sendMethod = (SendMethod) method.get(message);
 		Field defaultSender = sendMethod.getClass().getDeclaredField("sender");
 		defaultSender.setAccessible(true);
@@ -168,20 +168,20 @@ public class MessageTest
 		message.broadcast("Test");
 		//noinspection deprecation
 		verify(mockedCommandSender, times(++sendMessageCalls)).sendMessage(anyString());
-		verify(mockedSender, times(++doBroadcastCalls)).doBroadcast(anyString(), anyObject());
+		verify(mockedSender, times(++doBroadcastCalls)).doBroadcast(anyString(), any());
 		message.broadcast((Object[]) null);
 		//noinspection deprecation
 		verify(mockedCommandSender, times(++sendMessageCalls)).sendMessage(anyString());
-		verify(mockedSender, times(++doBroadcastCalls)).doBroadcast(anyString(), anyObject());
+		verify(mockedSender, times(++doBroadcastCalls)).doBroadcast(anyString(), any());
 		message.broadcast();
 		//noinspection deprecation
 		verify(mockedCommandSender, times(++sendMessageCalls)).sendMessage(anyString());
-		verify(mockedSender, times(++doBroadcastCalls)).doBroadcast(anyString(), anyObject());
+		verify(mockedSender, times(++doBroadcastCalls)).doBroadcast(anyString(), any());
 		message.setSendMethod(null);
 		message.broadcast();
 		//noinspection deprecation
 		verify(mockedCommandSender, times(sendMessageCalls)).sendMessage(anyString());
-		verify(mockedSender, times(doBroadcastCalls)).doBroadcast(anyString(), anyObject());
+		verify(mockedSender, times(doBroadcastCalls)).doBroadcast(anyString(), any());
 		defaultSender.setAccessible(false);
 		proxyServer.setAccessible(false);
 		method.setAccessible(false);

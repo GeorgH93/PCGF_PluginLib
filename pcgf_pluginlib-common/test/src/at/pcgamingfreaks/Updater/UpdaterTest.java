@@ -197,7 +197,7 @@ public class UpdaterTest
 	}
 
 	@Test
-	public void testUpdate() throws NoSuchFieldException, IllegalAccessException, RequestTypeNotAvailableException, NotSuccessfullyQueriedException, InterruptedException, MalformedURLException
+	public void testUpdate() throws NoSuchFieldException, IllegalAccessException, RequestTypeNotAvailableException, NotSuccessfullyQueriedException, MalformedURLException
 	{
 		int shouldHaveUpdateResponses = 0;
 		final int[] updateResponses = { 0 };
@@ -211,7 +211,7 @@ public class UpdaterTest
 		doReturn(UpdateResult.SUCCESS).when(mockedUpdateProvider).query();
 		doReturn(false).when(mockedUpdateProvider).providesDownloadURL();
 		doReturn(null).when(updater).getRemoteVersion();
-		doReturn(true).when(updater).versionCheck((Version) anyObject());
+		doReturn(true).when(updater).versionCheck(any());
 		updater.update(updaterResponse);
 		assertEquals("There should be an update response", ++shouldHaveUpdateResponses, updateResponses[0]);
 		doReturn("test.zip").when(mockedUpdateProvider).getLatestFileName();
@@ -465,7 +465,8 @@ public class UpdaterTest
 		download.invoke(updater, mockedURL, "Test-JAR.jar", 0);
 		assertEquals("The update result should be correct", UpdateResult.SUCCESS, result.get(updater));
 		mockStatic(Utils.class);
-		PowerMockito.doReturn("abc").when(Utils.class, "byteArrayToHex", (Object) any(byte[].class));
+		//noinspection PrimitiveArrayArgumentToVarargsMethod
+		PowerMockito.doReturn("abc").when(Utils.class, "byteArrayToHex", any(byte[].class));
 		doReturn(ChecksumType.MD5).when(mockedUpdateProvider).providesChecksum();
 		result.set(updater, UpdateResult.NO_UPDATE);
 		download.invoke(updater, mockedURL, "Test-Download.zip", 0);

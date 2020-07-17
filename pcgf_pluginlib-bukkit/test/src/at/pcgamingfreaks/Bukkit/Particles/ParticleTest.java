@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,16 +28,13 @@ import org.bukkit.material.MaterialData;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.lang.reflect.InvocationTargetException;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
@@ -50,19 +47,13 @@ public class ParticleTest
 		Bukkit.setServer(new TestBukkitServer());
 		final int[] counter = { 0 };
 		mockStatic(MCVersion.class);
-		doAnswer(new Answer<Boolean>() {
-			@Override
-			public Boolean answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				return ++counter[0] >= 36 && counter[0] < 45;
-			}
-		}).when(MCVersion.class, "isNewerOrEqualThan", anyObject());
-		doReturn(true).when(MCVersion.class, "isOlderThan", anyObject());
+		doAnswer((Answer<Boolean>) invocationOnMock -> ++counter[0] >= 36 && counter[0] < 45).when(MCVersion.class, "isNewerOrEqualThan", any());
+		doReturn(true).when(MCVersion.class, "isOlderThan", any());
 		TestObjects.initNMSReflection();
 	}
 
 	@Test
-	public void testParticles() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
+	public void testParticles()
 	{
 		assertEquals("The name of the enum constant should match", "explode", Particle.EXPLOSION.getOldName());
 		assertEquals("The name of the enum constant should match", "EXPLODE", Particle.EXPLOSION.getOldNameUpperCase());

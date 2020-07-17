@@ -42,7 +42,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
@@ -138,11 +138,11 @@ public class MessageTest
 		doAnswer(invocationOnMock -> {
 			doSendCalls[0]++;
 			return null;
-		}).when(mockedSender).doSend(any(Player.class), anyString(), anyObject());
+		}).when(mockedSender).doSend(any(Player.class), anyString(), any());
 		doAnswer(invocationOnMock -> {
 			doSendCalls[0]++;
 			return null;
-		}).when(mockedSender).doSend(anyCollectionOf(Player.class), anyString(), anyObject());
+		}).when(mockedSender).doSend(anyCollectionOf(Player.class), anyString(), any());
 		Field defaultSender = SendMethod.class.getDeclaredField("sender");
 		defaultSender.setAccessible(true);
 		defaultSender.set(SendMethod.CHAT, mockedSender);
@@ -173,7 +173,7 @@ public class MessageTest
 		doAnswer(invocationOnMock -> {
 			broadcastCalls[0]++;
 			return null;
-		}).when(mockedSender).doBroadcast(anyString(), anyObject());
+		}).when(mockedSender).doBroadcast(anyString(), any());
 		Field defaultSender = SendMethod.class.getDeclaredField("sender");
 		defaultSender.setAccessible(true);
 		defaultSender.set(SendMethod.CHAT, mockedSender);

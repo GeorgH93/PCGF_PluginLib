@@ -36,7 +36,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,11 +63,11 @@ public class ParticleSpawnerBukkit_1_8_to_1_12Test
 	public void prepareTestObjects() throws Exception
 	{
 		mockStatic(Utils.class);
-		doNothing().when(Utils.class, "sendPacket", any(Player.class), anyObject());
+		doNothing().when(Utils.class, "sendPacket", any(Player.class), any());
 	}
 
 	@Test
-	public void testSpawnParticle() throws InvocationTargetException, IllegalAccessException, NoSuchFieldException
+	public void testSpawnParticle() throws IllegalAccessException, NoSuchFieldException
 	{
 		int sendPacketCalls = 0;
 		World mockedWorld = mock(World.class);
@@ -83,10 +82,10 @@ public class ParticleSpawnerBukkit_1_8_to_1_12Test
 		ParticleSpawnerBukkit_1_8_to_1_12 effect = new ParticleSpawnerBukkit_1_8_to_1_12();
 		effect.spawnParticle(mockedLocation, Particle.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
 		verifyStatic(Utils.class, times(++sendPacketCalls));
-		Utils.sendPacket(any(TestBukkitPlayer.class), anyObject());
+		Utils.sendPacket(any(TestBukkitPlayer.class), any());
 		effect.spawnParticle(mockedLocation, Particle.BLOCK_CRACK, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f, new int[] { 0 });
 		verifyStatic(Utils.class, times(++sendPacketCalls));
-		Utils.sendPacket(any(TestBukkitPlayer.class), anyObject());
+		Utils.sendPacket(any(TestBukkitPlayer.class), any());
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
 		Field packetConstructorField = ParticleSpawnerBukkit_1_8_to_1_12.class.getDeclaredField("PACKET_CONSTRUCTOR");
@@ -96,10 +95,10 @@ public class ParticleSpawnerBukkit_1_8_to_1_12Test
 		packetConstructorField.set(null, null);
 		effect.spawnParticle(mockedLocation, Particle.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(TestBukkitPlayer.class), anyObject());
+		Utils.sendPacket(any(TestBukkitPlayer.class), any());
 		effect.spawnParticle(mockedLocation, Particle.BLOCK_CRACK, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f, new int[] { 0 });
 		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(TestBukkitPlayer.class), anyObject());
+		Utils.sendPacket(any(TestBukkitPlayer.class), any());
 		packetConstructorField.set(null, packetConstructor);
 		modifiers.set(packetConstructorField, packetConstructorField.getModifiers() | Modifier.FINAL);
 		packetConstructorField.setAccessible(false);

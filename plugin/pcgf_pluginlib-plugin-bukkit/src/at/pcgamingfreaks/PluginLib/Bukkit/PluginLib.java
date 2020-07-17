@@ -19,7 +19,9 @@ package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.GUI.GuiListener;
 import at.pcgamingfreaks.Bukkit.ItemNameResolver;
-import at.pcgamingfreaks.Bukkit.*;
+import at.pcgamingfreaks.Bukkit.Language;
+import at.pcgamingfreaks.Bukkit.MCVersion;
+import at.pcgamingfreaks.Bukkit.ManagedUpdater;
 import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.ConsoleColor;
@@ -34,7 +36,6 @@ import at.pcgamingfreaks.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import lombok.AccessLevel;
@@ -107,13 +108,6 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.shutdown();
 		updater.waitForAsyncOperation();
 		this.getLogger().info(StringUtils.getPluginDisabledMessage(this.getDescription().getFullName()));
-	}
-
-	@Deprecated
-	public @NotNull Updater update(@Nullable at.pcgamingfreaks.Updater.Updater.UpdaterResponse responseCallback)
-	{
-		update((UpdateResponseCallback) responseCallback);
-		return updater.getUpdater();
 	}
 
 	@Deprecated

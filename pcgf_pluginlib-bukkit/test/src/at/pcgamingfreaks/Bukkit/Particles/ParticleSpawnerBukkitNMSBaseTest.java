@@ -41,8 +41,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.powermock.api.mockito.PowerMockito.*;
@@ -62,18 +61,18 @@ public class ParticleSpawnerBukkitNMSBaseTest
 	public void prepareTestObjects() throws Exception
 	{
 		mockStatic(Utils.class);
-		doNothing().when(Utils.class, "sendPacket", any(Player.class), anyObject());
+		doNothing().when(Utils.class, "sendPacket", any(Player.class), any());
 	}
 
 	@Test
-	public void testSpawnParticle() throws InvocationTargetException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException
+	public void testSpawnParticle() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException
 	{
 		ParticleSpawnerBukkitNMSBase effect = new ParticleSpawnerBukkit_1_7();
 		Method spawnParticle = ParticleSpawnerBukkitNMSBase.class.getDeclaredMethod("spawnParticle", Location.class, double.class, Object.class);
 		spawnParticle.setAccessible(true);
 		spawnParticle.invoke(effect, null, 0.0, null);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		List<Entity> players = new ArrayList<>();
 		Location mockedLocation = mock(Location.class);
 		World mockedWorld = mock(World.class);
@@ -89,11 +88,11 @@ public class ParticleSpawnerBukkitNMSBaseTest
 		players.add(mockedPlayer);
 		spawnParticle.invoke(effect, mockedLocation, 10.0, Particle.CLOUD);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		doReturn(mockedLocation).when(mockedPlayer).getLocation();
 		spawnParticle.invoke(effect, mockedLocation, -10.0, Particle.CLOUD);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle.setAccessible(false);
 	}
 }

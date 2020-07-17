@@ -26,7 +26,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -38,8 +37,8 @@ import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
@@ -121,7 +120,7 @@ public class LanguageTest
 	public void testExtract() throws NoSuchFieldException, IllegalAccessException
 	{
 		mockStatic(Utils.class);
-		given(Utils.extractFile(Matchers.any(), any(Logger.class), anyString(), any(File.class))).willReturn(false);
+		given(Utils.extractFile(any(), any(Logger.class), anyString(), any(File.class))).willReturn(false);
 		File userDir = new File(System.getProperty("user.dir"));
 		Language language = new Language(mockedLogger, userDir, 1);
 		Field languageField = TestUtils.setAccessible(Language.class, language, "language", "de");

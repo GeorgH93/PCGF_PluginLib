@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import java.sql.*;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class MySQLTableValidatorTest

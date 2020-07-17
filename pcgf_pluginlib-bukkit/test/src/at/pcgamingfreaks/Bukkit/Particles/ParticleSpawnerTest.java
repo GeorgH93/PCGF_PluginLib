@@ -42,8 +42,7 @@ import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.*;
@@ -66,7 +65,7 @@ public class ParticleSpawnerTest
 	public void prepareTestObjects() throws Exception
 	{
 		mockStatic(Utils.class);
-		doNothing().when(Utils.class, "sendPacket", any(Player.class), anyObject());
+		doNothing().when(Utils.class, "sendPacket", any(Player.class), any());
 	}
 
 	@Test
@@ -78,40 +77,40 @@ public class ParticleSpawnerTest
 		Method spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, MaterialData.class, double.class);
 		spawnParticle.invoke(effect, mockedLocation, Particle.ITEM_CRACK, new MaterialData(Material.ACACIA_DOOR), 100.0);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle.invoke(effect, mockedLocation, Particle.BLOCK_DUST, new MaterialData(Material.REDSTONE_COMPARATOR_ON), 300.0);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new MaterialData(Material.ACTIVATOR_RAIL), 200.0);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle.invoke(effect, mockedLocation, Particle.EXPLOSION, new MaterialData(Material.TNT), 10.0);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, double.class);
 		spawnParticle.invoke(effect, mockedLocation, Particle.SLIME, 10.0);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, ItemStack.class, double.class);
 		spawnParticle.invoke(effect, mockedLocation, Particle.ITEM_CRACK, new ItemStack(Material.ACTIVATOR_RAIL, 10), 10.0);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle = ParticleSpawner.class.getDeclaredMethod("spawnParticle", Location.class, Particle.class, Object.class, double.class, int.class, float.class, float.class, float.class, float.class);
 		spawnParticle.invoke(effect, mockedLocation, Particle.ITEM_CRACK, null, 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, null, 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new MaterialData(Material.TNT), 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new ItemStack(Material.TNT, 20), 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 		spawnParticle.invoke(effect, mockedLocation, Particle.FALLING_DUST, new TestBukkitPlayer(), 10.0, 100, 10.0f, 10.0f, 10.0f, 10.0f);
 		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), anyObject());
+		Utils.sendPacket(any(Player.class), any());
 	}
 
 	@Test

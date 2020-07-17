@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import java.io.FileOutputStream;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
@@ -120,8 +120,8 @@ public class UtilsTest
 		assertEquals((byte) 2, Utils.tryParse("1a", (byte) 2));
 		assertEquals((short) 1, Utils.tryParse("1", (short) 2));
 		assertEquals((short) 2, Utils.tryParse("1a", (short) 2));
-		assertEquals((long) 1, Utils.tryParse("1", (long) 2));
-		assertEquals((long) 2, Utils.tryParse("1a", (long) 2));
+		assertEquals(1, Utils.tryParse("1", (long) 2));
+		assertEquals(2, Utils.tryParse("1a", (long) 2));
 		assertEquals(1.0f, Utils.tryParse("1.0", 2.0f), 0);
 		assertEquals(2.0f, Utils.tryParse("1.0a", 2.0f), 0);
 		assertEquals(1.0, Utils.tryParse("1.0", 2.0), 0);
