@@ -50,7 +50,7 @@ public class PlatformResolver
 		if(!classMatcher.matches()) throw new IllegalArgumentException("The given class is not valid");
 		String className = classMatcher.group("package") + "." + classMatcher.group("class");
 		//endregion
-		String nmsServerVersion = Bukkit.getServer().getClass().getName().split("\\.")[3];
+		String nmsServerVersion = Bukkit.getServer().getClass().getName().split("\\.")[3].substring(1);
 		//TODO detect glowstone
 		Class<?> tmp = getClass(className + "_" + nmsServerVersion);
 		if(tmp == null)

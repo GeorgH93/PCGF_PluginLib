@@ -26,6 +26,16 @@
 			<artifactId>pcgf_pluginlib-plugin-bungee</artifactId>
 			<version>${revision}</version>
 		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
+			<artifactId>pcgf_pluginlib-platform-nms-reflection</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
+			<artifactId>pcgf_pluginlib-platform-nms-1_15_R1</artifactId>
+			<version>${revision}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -80,6 +90,7 @@
 							<artifactSet>
 								<includes>
 									<include>at.pcgamingfreaks.pcgf_pluginlib:*</include>
+									<include>at.pcgamingfreaks.pcgf_pluginlib.platform:*</include>
 									<include>at.pcgamingfreaks:YAML-Parser</include>
 									<include>com.google.code.gson:gson</include> <!-- Not included in Bukkit, we need it (a lot)! -->
 									<include>org.apache.commons:commons-lang3</include> <!-- The old version is included in Bukkit, but not in BungeeCord, we just put in the new version for both -->

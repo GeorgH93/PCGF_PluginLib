@@ -8,7 +8,39 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="PluginLib" />
+        <module name="pcgf_pluginlib-platform-nms-reflection" />
+        <module name="pcgf_pluginlib-uuid" />
+        <module name="pcgf_pluginlib-platform-bukkit" />
+        <module name="pcgf_pluginlib-bukkit" />
+        <module name="pcgf_pluginlib-plugin-bukkit" />
+        <module name="pcgf_pluginlib-bungee" />
+        <module name="pcgf_pluginlib-common" />
+        <module name="pcgf_pluginlib-nms-reflection" />
+        <module name="pcgf_pluginlib-plugin-bungee" />
+        <module name="pcgf_pluginlib-plugin-common" />
+        <module name="pcgf_pluginlib-platform-nms-1_15_R1" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="PCGF_PluginLib" target="1.8" />
+      <module name="pcgf_pluginlib-bukkit" target="1.8" />
+      <module name="pcgf_pluginlib-bungee" target="1.8" />
+      <module name="pcgf_pluginlib-common" target="1.8" />
+      <module name="pcgf_pluginlib-nms" target="1.8" />
+      <module name="pcgf_pluginlib-nms-reflection" target="1.8" />
+      <module name="pcgf_pluginlib-platform-bukkit" target="1.8" />
+      <module name="pcgf_pluginlib-platform-nms" target="1.8" />
+      <module name="pcgf_pluginlib-platform-nms-1_15_R1" target="1.8" />
+      <module name="pcgf_pluginlib-platform-nms-reflection" target="1.8" />
+      <module name="pcgf_pluginlib-plugin-bukkit" target="1.8" />
+      <module name="pcgf_pluginlib-plugin-bungee" target="1.8" />
+      <module name="pcgf_pluginlib-plugin-common" target="1.8" />
+      <module name="pcgf_pluginlib-reflection" target="1.8" />
+      <module name="pcgf_pluginlib-reflection-bukkit" target="1.8" />
+      <module name="pcgf_pluginlib-testclasses-bukkitserver" target="1.8" />
+      <module name="pcgf_pluginlib-uuid" target="1.8" />
+      <module name="PluginLib" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

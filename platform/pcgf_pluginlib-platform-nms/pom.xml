@@ -17,29 +17,23 @@
 		<mcVersion/>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>codemc-nms</id>
+			<name>CodeMC-NMS</name>
+			<url>https://repo.codemc.org/repository/nms/</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-bukkit</artifactId>
-			<version>${revision}</version>
-		</dependency>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-common</artifactId>
-			<version>${revision}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-bukkit</artifactId>
-			<version>${revision}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
 			<artifactId>pcgf_pluginlib-platform-bukkit</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
+			<artifactId>pcgf_pluginlib-platform-nms-reflection</artifactId>
 			<version>${revision}</version>
 		</dependency>
 	</dependencies>
@@ -120,4 +114,16 @@
 	<modules>
 		<module>pcgf_pluginlib-platform-nms-reflection</module>
 	</modules>
+
+	<profiles>
+		<profile>
+			<id>nms</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>pcgf_pluginlib-platform-nms-1_15_R1</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>

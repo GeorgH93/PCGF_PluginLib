@@ -1,0 +1,7 @@
+{
+  "templateName": "InventoryUtilsNms.ftl",
+  "dataModel": {
+    "nmsVersion": "${nmsVersion}",
+    "mcVersion": ${mcVersion}
+  }
+}

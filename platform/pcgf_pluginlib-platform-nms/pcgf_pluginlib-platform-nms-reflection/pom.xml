@@ -1,11 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
 	<artifactId>pcgf_pluginlib-platform-nms-reflection</artifactId>
 	<parent>
-		<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
-		<artifactId>pcgf_pluginlib-platform-nms</artifactId>
+		<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+		<artifactId>pcgf_pluginlib-parent</artifactId>
 		<version>${revision}</version>
+		<relativePath>../../..</relativePath>
 	</parent>
 	<version>${revision}</version>
 	<packaging>jar</packaging>
@@ -13,6 +15,30 @@
 	<url>${website}</url>
 
 	<dependencies>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
+			<artifactId>pcgf_pluginlib-platform-bukkit</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-bukkit</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-common</artifactId>
+			<version>${revision}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-bukkit</artifactId>
+			<type>test-jar</type>
+			<version>${revision}</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- Bukkit API -->
 		<dependency>
 			<groupId>org.bukkit</groupId>

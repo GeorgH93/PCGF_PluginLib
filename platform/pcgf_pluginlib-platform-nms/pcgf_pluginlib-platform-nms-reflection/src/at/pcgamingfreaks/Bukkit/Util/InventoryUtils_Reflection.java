@@ -34,6 +34,9 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,9 +52,62 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	private static final Field FIELD_ACTIVE_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getFieldIncludeParents(ENTITY_PLAYER, "activeContainer");
 	private static final Field FIELD_CONTAINER_WINDOW_ID = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getField(CLASS_CONTAINER, "windowId");
 	private static final Method METHOD_ENTITY_PLAYER_UPDATE_INVENTORY = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getMethod(ENTITY_PLAYER, "updateInventory", CLASS_CONTAINER);
+
 	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NmsReflector.INSTANCE.getNmsClass("NBTTagCompound");
 	private static final Method AS_NMS_COPY_METHOD = OBCReflection.getOBCMethod("inventory.CraftItemStack", "asNMSCopy", ItemStack.class);
 	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NmsReflector.INSTANCE.getNmsMethod("ItemStack", "save", NBT_TAG_COMPOUND_CLASS);
+
+	private static final EnumMap<InventoryType, Object> INVENTORY_TYPE_MAP;
+	private static final Object[] INVENTORY_TYPE_CHEST = new Object[6];
+
+	static
+	{
+		if(CLASS_CONTAINERS != null)
+		{
+			Map<InventoryType, Object> tempInvTypeMap = new HashMap<>();
+			for(InventoryType inventoryType : InventoryType.values())
+			{
+				String type = inventoryType.name();
+				if(inventoryType == InventoryType.CHEST | inventoryType == InventoryType.PLAYER | inventoryType == InventoryType.CREATIVE) continue;
+				else if(inventoryType == InventoryType.DISPENSER || inventoryType == InventoryType.DROPPER) type = "GENERIC_3X3";
+				else if(inventoryType == InventoryType.BREWING) type = "BREWING_STAND";
+				else if(inventoryType == InventoryType.WORKBENCH) type = "CRAFTING";
+				else if(inventoryType == InventoryType.ENDER_CHEST) type = "GENERIC_9X3";
+				else if(inventoryType == InventoryType.ENCHANTING) type = "ENCHANTMENT";
+				else if(type.equals("BARREL")) type = "GENERIC_9X3";
+				else if(type.equals("CARTOGRAPHY")) type = "CARTOGRAPHY_TABLE";
+				try
+				{
+					Field field = Reflection.getField(CLASS_CONTAINERS, type);
+					if(field == null) continue;
+					tempInvTypeMap.put(inventoryType, field.get(null));
+				}
+				catch(IllegalAccessException ignored) {}
+			}
+			for(int i = 0; i < 6; i++)
+			{
+				try
+				{
+					INVENTORY_TYPE_CHEST[i] = Reflection.getField(CLASS_CONTAINERS, "GENERIC_9X" + (i + 1)).get(null);
+				}
+				catch(IllegalAccessException | NullPointerException ignored) {}
+			}
+			INVENTORY_TYPE_MAP = new EnumMap<>(tempInvTypeMap);
+		}
+		else INVENTORY_TYPE_MAP = new EnumMap<>(new HashMap<InventoryType, Object>());
+	}
+
+	protected static Object getInvContainersObject(final @NotNull Inventory inv)
+	{
+		if(inv.getType() == InventoryType.CHEST)
+		{
+			return INVENTORY_TYPE_CHEST[Math.max(6, inv.getSize() / 9) - 1];
+		}
+		else
+		{
+			return INVENTORY_TYPE_MAP.get(inv.getType());
+		}
+	}
 
 	@Override
 	public void updateInventoryTitle(final @NotNull Player player, final @NotNull String newTitle)
@@ -82,7 +138,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	}
 
 	@Override
-	public String convertItemStackToJson(@NotNull ItemStack itemStack, @NotNull Logger logger)
+	public String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
 	{
 		try
 		{
