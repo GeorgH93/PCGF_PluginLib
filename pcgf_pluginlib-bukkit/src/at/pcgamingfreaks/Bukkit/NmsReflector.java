@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@ public interface NmsReflector
 
 	@Nullable Object getNmsHandle(@NotNull Object obj);
 
-	public static @Nullable Object getHandle(@NotNull Object obj)
+	static @Nullable Object getHandle(@NotNull Object obj)
 	{
 		try
 		{
