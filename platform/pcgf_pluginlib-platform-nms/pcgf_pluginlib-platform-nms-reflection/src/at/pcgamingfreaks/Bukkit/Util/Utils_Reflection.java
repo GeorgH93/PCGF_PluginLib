@@ -27,7 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 @SuppressWarnings("ConstantConditions")
-public class Utils_Reflection implements IUtils
+class Utils_Reflection implements IUtils
 {
 	//region Reflection constants for the send packet method
 	static final Class<?> ENTITY_PLAYER = NmsReflector.INSTANCE.getNmsClass("EntityPlayer");

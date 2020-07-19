@@ -18,15 +18,14 @@
 package at.pcgamingfreaks.Bukkit.Util;
 
 import at.pcgamingfreaks.Bukkit.IPlatformDependent;
-import at.pcgamingfreaks.Bukkit.PlatformResolver;
 
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-interface IUtils extends IPlatformDependent
+interface IPluginChannelUtils extends IPlatformDependent
 {
-	IUtils INSTANCE = PlatformResolver.createPlatformInstance(IUtils.class);
-
-	int getPing(@NotNull Player player);
-	void sendPacket(@NotNull Player player, @NotNull Object packet);
+	void registerOutgoingChannelUnchecked(final @NotNull Plugin plugin, final @NotNull String channel);
+	void unregisterOutgoingChannelUnchecked(final @NotNull Plugin plugin, final @NotNull String channel);
+	void sendPluginMessageUnchecked(final @NotNull Plugin plugin, final @NotNull Player player, final @NotNull String channel, final @NotNull byte[] message);
 }

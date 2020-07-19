@@ -1,0 +1,7 @@
+{
+  "templateName": "PluginChannelUtilsNms.ftl",
+  "dataModel": {
+    "nmsVersion": "${nmsVersion}",
+    "mcVersion": ${mcVersion}
+  }
+}

@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit;
 
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 import lombok.SneakyThrows;
 
@@ -35,7 +36,7 @@ public class PlatformResolver
 	 * @return The created instance of the platform dependent class
 	 */
 	@SneakyThrows
-	public static <T extends IPlatformDependent> T createPlatformInstance(Class<T> clazz)
+	public static @NotNull <T extends IPlatformDependent> T createPlatformInstance(final Class<T> clazz)
 	{
 		//region check if running as Test
 		StackTraceElement[] stackTraceElements = new Exception().getStackTrace();

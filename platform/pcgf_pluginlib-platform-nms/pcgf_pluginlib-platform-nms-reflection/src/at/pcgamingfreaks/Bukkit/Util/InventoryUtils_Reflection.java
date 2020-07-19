@@ -35,15 +35,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static at.pcgamingfreaks.Bukkit.Util.Utils_Reflection.*;
 
 @SuppressWarnings("ConstantConditions")
-public class InventoryUtils_Reflection implements IInventoryUtils
+class InventoryUtils_Reflection implements IInventoryUtils
 {
 	private static final Class<?> CLASS_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Container");
 	private static final Class<?> CLASS_CONTAINERS = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Containers");
@@ -57,14 +55,13 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	private static final Method AS_NMS_COPY_METHOD = OBCReflection.getOBCMethod("inventory.CraftItemStack", "asNMSCopy", ItemStack.class);
 	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NmsReflector.INSTANCE.getNmsMethod("ItemStack", "save", NBT_TAG_COMPOUND_CLASS);
 
-	private static final EnumMap<InventoryType, Object> INVENTORY_TYPE_MAP;
+	private static final EnumMap<InventoryType, Object> INVENTORY_TYPE_MAP = new EnumMap<>(InventoryType.class);
 	private static final Object[] INVENTORY_TYPE_CHEST = new Object[6];
 
 	static
 	{
 		if(CLASS_CONTAINERS != null)
 		{
-			Map<InventoryType, Object> tempInvTypeMap = new HashMap<>();
 			for(InventoryType inventoryType : InventoryType.values())
 			{
 				String type = inventoryType.name();
@@ -80,7 +77,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 				{
 					Field field = Reflection.getField(CLASS_CONTAINERS, type);
 					if(field == null) continue;
-					tempInvTypeMap.put(inventoryType, field.get(null));
+					INVENTORY_TYPE_MAP.put(inventoryType, field.get(null));
 				}
 				catch(IllegalAccessException ignored) {}
 			}
@@ -92,9 +89,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 				}
 				catch(IllegalAccessException | NullPointerException ignored) {}
 			}
-			INVENTORY_TYPE_MAP = new EnumMap<>(tempInvTypeMap);
 		}
-		else INVENTORY_TYPE_MAP = new EnumMap<>(new HashMap<InventoryType, Object>());
 	}
 
 	protected static Object getInvContainersObject(final @NotNull Inventory inv)
