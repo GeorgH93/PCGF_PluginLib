@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2016 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,8 +17,6 @@
 
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
 
-import at.pcgamingfreaks.Bukkit.MCVersion;
-
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -26,6 +24,10 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+/**
+ * @deprecated Unreliable on many MC versions when being used with items that have NBT-tags. Use {@link NBTItemStackSerializer} instead.
+ */
+@Deprecated
 public class BukkitItemStackSerializer implements ItemStackSerializer
 {
 	/**
@@ -85,6 +87,6 @@ public class BukkitItemStackSerializer implements ItemStackSerializer
 
 	public static boolean isMCVersionCompatible()
 	{
-		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7);
+		return true;
 	}
 }

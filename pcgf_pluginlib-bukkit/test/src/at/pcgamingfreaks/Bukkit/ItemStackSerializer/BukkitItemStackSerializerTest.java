@@ -85,7 +85,7 @@ public class BukkitItemStackSerializerTest
 	public void testIsMCVersionCompatible() throws NoSuchFieldException, IllegalAccessException
 	{
 		Field field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.MC_1_8);
-		assertTrue("It should be MCVersion compatible", BukkitItemStackSerializer.isMCVersionCompatible());
+		assertTrue("The serializer should be compatible with all MC versions", BukkitItemStackSerializer.isMCVersionCompatible());
 		TestUtils.setUnaccessible(field, null, true);
 	}
 
@@ -93,10 +93,10 @@ public class BukkitItemStackSerializerTest
 	public void testCheckIsMCVersionCompatible() throws NoSuchFieldException, IllegalAccessException
 	{
 		Field field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.UNKNOWN);
-		assertFalse("It should not be MCVersion compatible", new BukkitItemStackSerializer().checkIsMCVersionCompatible());
+		assertTrue("The serializer should be compatible with all MC versions", new BukkitItemStackSerializer().checkIsMCVersionCompatible());
 		TestUtils.setUnaccessible(field, null, true);
 		field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.MC_1_9);
-		assertTrue("It should be MCVersion compatible", new BukkitItemStackSerializer().checkIsMCVersionCompatible());
+		assertTrue("The serializer should be compatible with all MC versions", new BukkitItemStackSerializer().checkIsMCVersionCompatible());
 		TestUtils.setUnaccessible(field, null, true);
 	}
 }

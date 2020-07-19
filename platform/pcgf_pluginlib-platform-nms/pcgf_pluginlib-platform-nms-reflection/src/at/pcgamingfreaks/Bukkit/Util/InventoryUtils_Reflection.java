@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 import static at.pcgamingfreaks.Bukkit.Util.Utils_Reflection.*;
 
 @SuppressWarnings("ConstantConditions")
-class InventoryUtils_Reflection implements IInventoryUtils
+public class InventoryUtils_Reflection implements IInventoryUtils
 {
 	private static final Class<?> CLASS_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Container");
 	private static final Class<?> CLASS_CONTAINERS = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Containers");

@@ -30,7 +30,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 @SuppressWarnings("ConstantConditions")
-class PluginChannelUtils_Reflection implements IPluginChannelUtils
+public class PluginChannelUtils_Reflection implements IPluginChannelUtils
 {
 	private static final Class<?> CLASS_MINECRAFT_KEY = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsClass("MinecraftKey") : null;
 	private static final Class<?> CLASS_PACKET_DATA_SERIALIZER = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsClass("PacketDataSerializer") : null;
