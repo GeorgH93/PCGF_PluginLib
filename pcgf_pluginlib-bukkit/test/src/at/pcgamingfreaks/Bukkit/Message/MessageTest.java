@@ -143,7 +143,7 @@ public class MessageTest
 			doSendCalls[0]++;
 			return null;
 		}).when(mockedSender).doSend(anyCollectionOf(Player.class), anyString(), any());
-		Field defaultSender = SendMethod.class.getDeclaredField("sender");
+		Field defaultSender = SendMethod.class.getDeclaredField("activeSender");
 		defaultSender.setAccessible(true);
 		defaultSender.set(SendMethod.CHAT, mockedSender);
 		message.send(player, (Object[]) null);
@@ -174,7 +174,7 @@ public class MessageTest
 			broadcastCalls[0]++;
 			return null;
 		}).when(mockedSender).doBroadcast(anyString(), any());
-		Field defaultSender = SendMethod.class.getDeclaredField("sender");
+		Field defaultSender = SendMethod.class.getDeclaredField("activeSender");
 		defaultSender.setAccessible(true);
 		defaultSender.set(SendMethod.CHAT, mockedSender);
 		mockStatic(Bukkit.class);

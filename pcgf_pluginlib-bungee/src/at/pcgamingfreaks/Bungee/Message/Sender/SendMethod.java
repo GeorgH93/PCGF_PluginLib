@@ -38,9 +38,9 @@ public enum SendMethod implements ISendMethod, Sender
 	//BOSS_BAR(new BossBarSender(), null), //TODO
 	DISABLED(new DisabledSender(), null);
 
-	@Getter private final Sender sender;
-	@Getter private final Class<?> metadataClass;
-	@Getter private final Method metadataFromJsonMethod;
+	@Getter @NotNull private final Sender sender;
+	@Getter @Nullable private final Class<?> metadataClass;
+	@Getter @Nullable private final Method metadataFromJsonMethod;
 
 	SendMethod(@NotNull Sender sender, @Nullable Class<?> metadataClass)
 	{

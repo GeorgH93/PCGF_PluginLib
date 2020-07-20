@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 
 import java.util.Arrays;
@@ -40,18 +41,21 @@ import java.util.regex.Pattern;
 
 public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender, MessageComponent> implements IMessage
 {
-	//region Variables
-	private static final Pattern RGB_COLOR_DETECTION = Pattern.compile("\"color\"\\s*:\\s*\"#(?<rgb>[\\dA-Fa-f]{6})\"");
-	private static final boolean PRE_1_8_MC = MCVersion.isOlderThan(MCVersion.MC_1_8);
-
-	private SendMethod method = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
-	private boolean placeholderApiEnabled = false, legacy = PRE_1_8_MC;
-	//endregion
-
 	static
 	{
 		setMessageComponentClass(MessageComponent.class);
 	}
+
+	//region Variables
+	private static final Pattern RGB_COLOR_DETECTION = Pattern.compile("\"color\"\\s*:\\s*\"#(?<rgb>[\\dA-Fa-f]{6})\"");
+	private static final boolean PRE_1_8_MC = MCVersion.isOlderThan(MCVersion.MC_1_8);
+
+	/**
+	 * Gets the method used to display this message on the client.
+	 */
+	@Getter private @NotNull SendMethod sendMethod = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
+	private boolean placeholderApiEnabled = false, legacy = PRE_1_8_MC;
+	//endregion
 
 	//region Constructors
 	/**
@@ -67,7 +71,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		if(fallback == message) // == is correct here, we want to check if it is the same instance not the same content
 		{
 			legacy = true;
-			method = SendMethod.CHAT_CLASSIC;
+			sendMethod = SendMethod.CHAT_CLASSIC;
 		}
 		else if(!MCVersion.supportsRgbColors())
 		{
@@ -176,17 +180,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		if(method == null) method = SendMethod.DISABLED;
 		else if(!method.isAvailable()) method = method.getFallbackSendMethod();
 		if(method == SendMethod.CHAT && legacy) method = SendMethod.CHAT_CLASSIC;
-		this.method = method;
-	}
-
-	/**
-	 * Gets the method used to display this message on the client.
-	 *
-	 * @return The send/display method for this message.
-	 */
-	public @NotNull SendMethod getSendMethod()
-	{
-		return method;
+		this.sendMethod = method;
 	}
 
 	/**
@@ -222,17 +216,17 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	@Override
 	public void send(@NotNull CommandSender target, @Nullable Object... args)
 	{
-		Validate.notNull(target, "The target that should receive the message should not be null!");
 		if(getSendMethod() == SendMethod.DISABLED) return;
+		Validate.notNull(target, "The target that should receive the message should not be null!");
 		if(target instanceof Player && getSendMethod() != SendMethod.CHAT_CLASSIC)
 		{
-			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
+			String jsonMsg = prepareMessage(true, args);
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders((Player) target, jsonMsg);
-			method.getSender().doSend((Player) target, jsonMsg, optionalParameters);
+			sendMethod.getActiveSender().doSend((Player) target, jsonMsg, optionalParameters);
 		}
 		else
 		{
-			String msg = (args != null && args.length > 0) ? String.format(fallback, args) : fallback;
+			String msg = prepareMessage(false, args);
 			if(isPlaceholderApiEnabled() && target instanceof Player) msg = PlaceholderAPI.setPlaceholders((Player) target, msg);
 			target.sendMessage(msg);
 		}
@@ -249,11 +243,11 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	@Override
 	public void send(@NotNull Collection<? extends Player> targets, @Nullable Object... args)
 	{
-		Validate.notNull(targets, "The targets that should receive the message should not be null!");
 		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
+		Validate.notNull(targets, "The targets that should receive the message should not be null!");
 		if(getSendMethod() == SendMethod.CHAT_CLASSIC)
 		{
-			String msg = (args != null && args.length > 0) ? String.format(fallback, args) : fallback;
+			String msg = prepareMessage(false, args);
 			for(Player player : targets)
 			{
 				player.sendMessage((isPlaceholderApiEnabled()) ? PlaceholderAPI.setPlaceholders(player, msg) : msg);
@@ -261,17 +255,17 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		}
 		else
 		{
-			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
+			String jsonMsg = prepareMessage(true, args);
 			if(isPlaceholderApiEnabled())
 			{
 				for(Player player : targets)
 				{
-					method.getSender().doSend(player, PlaceholderAPI.setPlaceholders(player, jsonMsg));
+					sendMethod.getActiveSender().doSend(player, PlaceholderAPI.setPlaceholders(player, jsonMsg));
 				}
 			}
 			else
 			{
-				method.getSender().doSend(targets, jsonMsg, optionalParameters);
+				sendMethod.getActiveSender().doSend(targets, jsonMsg, optionalParameters);
 			}
 		}
 	}
@@ -290,12 +284,12 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		if(getSendMethod() == SendMethod.DISABLED) return;
 		if(getSendMethod() == SendMethod.CHAT_CLASSIC)
 		{
-			Bukkit.broadcastMessage((args != null && args.length > 0) ? String.format(fallback, args) : fallback);
+			Bukkit.broadcastMessage(prepareMessage(false, args));
 		}
 		else
 		{
-			Bukkit.getConsoleSender().sendMessage((args != null && args.length > 0) ? String.format(fallback, args) : fallback); // Send the message to the console
-			method.getSender().doBroadcast((args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
+			Bukkit.getConsoleSender().sendMessage(prepareMessage(false, args)); // Send the message to the console
+			sendMethod.getActiveSender().doBroadcast(prepareMessage(true, args), optionalParameters);
 		}
 	}
 
@@ -316,7 +310,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		{
 			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
-			method.getSender().doSend((Player) target, jsonMsg, optionalParameters);
+			sendMethod.getActiveSender().doSend((Player) target, jsonMsg, optionalParameters);
 		}
 		else
 		{
@@ -341,7 +335,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
 		if(getSendMethod() == SendMethod.CHAT_CLASSIC)
 		{
-			String msg = (args != null && args.length > 0) ? String.format(fallback, args) : fallback;
+			String msg = prepareMessage(false, args);
 			if(isPlaceholderApiEnabled()) msg = PlaceholderAPI.setPlaceholders(playerForPAPI, msg);
 			for(Player player : targets)
 			{
@@ -350,9 +344,9 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		}
 		else
 		{
-			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
+			String jsonMsg = prepareMessage(true, args);
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
-			method.getSender().doSend(targets, jsonMsg, optionalParameters);
+			sendMethod.getActiveSender().doSend(targets, jsonMsg, optionalParameters);
 		}
 	}
 
@@ -367,7 +361,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	public void broadcast(@NotNull OfflinePlayer playerForPAPI, @Nullable Object... args)
 	{
 		if(getSendMethod() == SendMethod.DISABLED) return;
-		String msg = (args != null && args.length > 0) ? String.format(fallback, args) : fallback;
+		String msg = prepareMessage(false, args);
 		if(isPlaceholderApiEnabled()) msg = PlaceholderAPI.setPlaceholders(playerForPAPI, msg);
 		if(getSendMethod() == SendMethod.CHAT_CLASSIC)
 		{
@@ -376,9 +370,9 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		else
 		{
 			Bukkit.getConsoleSender().sendMessage(msg); // Send the message to the console
-			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
+			String jsonMsg = prepareMessage(true, args);
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
-			method.getSender().doBroadcast(jsonMsg, optionalParameters);
+			sendMethod.doBroadcast(jsonMsg, optionalParameters);
 		}
 	}
 }

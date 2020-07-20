@@ -98,7 +98,7 @@ public class MessageTest
 		Message message = new Message("");
 		CommandSender mockedCommandSender = mock(CommandSender.class);
 		ProxiedPlayer mockedProxiedPlayer = mock(ProxiedPlayer.class);
-		Field method = Message.class.getDeclaredField("method");
+		Field method = Message.class.getDeclaredField("sendMethod");
 		method.setAccessible(true);
 		ChatSender mockedSender = mock(ChatSender.class);
 		doNothing().when(mockedSender).doSend(any(ProxiedPlayer.class), anyString(), any());
@@ -149,7 +149,7 @@ public class MessageTest
 		int sendMessageCalls = 0;
 		int doBroadcastCalls = 0;
 		Message message = new Message("");
-		Field method = Message.class.getDeclaredField("method");
+		Field method = Message.class.getDeclaredField("sendMethod");
 		method.setAccessible(true);
 		ChatSender mockedSender = mock(ChatSender.class);
 		doNothing().when(mockedSender).doBroadcast(anyString(), any());

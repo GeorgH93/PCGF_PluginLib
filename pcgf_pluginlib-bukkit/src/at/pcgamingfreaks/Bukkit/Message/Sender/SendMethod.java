@@ -34,7 +34,7 @@ import static at.pcgamingfreaks.Bukkit.MCVersion.MC_1_8;
 
 public enum SendMethod implements ISendMethod, Sender
 {
-	CHAT_CLASSIC(null, null, null),
+	CHAT_CLASSIC(new DisabledSender(), null, null),
 	CHAT(MCVersion.isOlderThan(MC_1_8) ? null : new ChatSender(), null, CHAT_CLASSIC),
 	TITLE(MCVersion.isOlderThan(MC_1_8) ? null : new TitleSender(), TitleMetadata.class, CHAT),
 	ACTION_BAR(MCVersion.isOlderThan(MC_1_8) ? null : new ActionBarSender(), null, CHAT),

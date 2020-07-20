@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class Message<MESSAGE extends Message<?, ?, ?, ?>, PLAYER, COMMAND_SENDER, MESSAGE_COMPONENT extends MessageComponent<?>> implements IMessage<PLAYER, COMMAND_SENDER>
+public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_SENDER, MESSAGE_COMPONENT extends MessageComponent<?>> implements IMessage<PLAYER, COMMAND_SENDER>
 {
 	private static Class<? extends MessageComponent<?>> MESSAGE_COMPONENT_CLASS;
 	private static Method METHOD_MESSAGE_COMPONENT_FROM_JSON = null;
@@ -153,38 +153,7 @@ public abstract class Message<MESSAGE extends Message<?, ?, ?, ?>, PLAYER, COMMA
 		return (MESSAGE) this;
 	}
 
-	//region Send methods
-	/**
-	 * Sends the message to a target.
-	 *
-	 * @param target The target that should receive the message.
-	 * @param args   An optional array of arguments.
-	 *                  If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
-	 *                  This can be used to add variable data into the message.
-	 */
-	public abstract void send(@NotNull COMMAND_SENDER target, @Nullable Object... args);
-
-	/**
-	 * Sends the message to a {@link Collection} of targets.
-	 *
-	 * @param targets The targets that should receive the message.
-	 * @param args    An optional array of arguments.
-	 *                   If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
-	 *                   This can be used to add variable data into the message.
-	 */
-	public abstract void send(@NotNull Collection<? extends PLAYER> targets, @Nullable Object... args);
-
-	/**
-	 * Sends the message to all online players on the server, as well as the console.
-	 *
-	 * @param args    An optional array of arguments.
-	 *                   If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
-	 *                   This can be used to add variable data into the message.
-	 */
-	public abstract void broadcast(@Nullable Object... args);
-	//endregion
-
-	protected Object[] quoteArgs(Object[] args)
+	protected Object[] quoteArgs(final Object[] args)
 	{
 		for(int i = 0; i < args.length; i++)
 		{
@@ -194,5 +163,16 @@ public abstract class Message<MESSAGE extends Message<?, ?, ?, ?>, PLAYER, COMMA
 			}
 		}
 		return args;
+	}
+
+	protected @NotNull String prepareMessage(final boolean useJson, final @Nullable Object... args)
+	{
+		final String msg = useJson ? json : fallback;
+		if(args != null && args.length > 0)
+		{
+			if(useJson) quoteArgs(args);
+			return String.format(msg, args);
+		}
+		return msg;
 	}
 }

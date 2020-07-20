@@ -29,19 +29,24 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 public final class Message extends at.pcgamingfreaks.Message.Message<Message, ProxiedPlayer, CommandSender, MessageComponent> implements IMessage
 {
-	//region Variables
-	private SendMethod method = SendMethod.CHAT;
-	//endregion
-
 	static
 	{
 		setMessageComponentClass(MessageComponent.class);
 	}
+
+	//region Variables
+	/**
+	 * Gets the method used to display this message on the client.
+	 */
+	@Getter @NotNull private SendMethod sendMethod = SendMethod.CHAT;
+	//endregion
 
 	//region Constructors
 	/**
@@ -140,17 +145,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	 */
 	public void setSendMethod(@Nullable SendMethod method)
 	{
-		this.method = (method == null) ? SendMethod.DISABLED : method;
-	}
-
-	/**
-	 * Gets the method used to display this message on the client.
-	 *
-	 * @return The send/display method for this message.
-	 */
-	public @NotNull SendMethod getSendMethod()
-	{
-		return method;
+		this.sendMethod = (method == null) ? SendMethod.DISABLED : method;
 	}
 
 	/**
@@ -176,16 +171,16 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	@Override
 	public void send(@NotNull CommandSender target, @Nullable Object... args)
 	{
-		Validate.notNull(target, "The target that should receive the message should not be null!");
 		if(getSendMethod() == SendMethod.DISABLED) return;
+		Validate.notNull(target, "The target that should receive the message should not be null!");
 		if(target instanceof ProxiedPlayer)
 		{
-			method.getSender().doSend((ProxiedPlayer) target, (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
+			sendMethod.getSender().doSend((ProxiedPlayer) target, prepareMessage(true, args), optionalParameters);
 		}
 		else
 		{
 			//noinspection deprecation
-			target.sendMessage((args != null && args.length > 0) ? String.format(fallback, args) : fallback);
+			target.sendMessage(prepareMessage(false, args));
 		}
 	}
 
@@ -200,9 +195,9 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	@Override
 	public void send(@NotNull Collection<? extends ProxiedPlayer> targets, @Nullable Object... args)
 	{
-		Validate.notNull(targets, "The targets that should receive the message should not be null!");
 		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
-		method.getSender().doSend(targets, (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
+		Validate.notNull(targets, "The targets that should receive the message should not be null!");
+		sendMethod.getSender().doSend(targets, prepareMessage(true, args), optionalParameters);
 	}
 
 	/**
@@ -212,12 +207,12 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	 *                   If this is used they will be passed together with the message itself to the String.format() function, before the message gets send to the client.
 	 *                   This can be used to add variable data into the message.
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public void broadcast(@Nullable Object... args)
 	{
 		if(getSendMethod() == SendMethod.DISABLED) return;
-		ProxyServer.getInstance().getConsole().sendMessage((args != null && args.length > 0) ? String.format(fallback, args) : fallback); // Send the message to the console
-		method.getSender().doBroadcast((args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json, optionalParameters);
+		//noinspection deprecation
+		ProxyServer.getInstance().getConsole().sendMessage(prepareMessage(false, args)); // Send the message to the console
+		sendMethod.getSender().doBroadcast(prepareMessage(true, args), optionalParameters);
 	}
 }
