@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,11 +32,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 
-public final class Message extends at.pcgamingfreaks.Message.Message<Message, ProxiedPlayer, CommandSender> implements IMessage
+public final class Message extends at.pcgamingfreaks.Message.Message<Message, ProxiedPlayer, CommandSender, MessageComponent> implements IMessage
 {
 	//region Variables
 	private SendMethod method = SendMethod.CHAT;
 	//endregion
+
+	static
+	{
+		setMessageComponentClass(MessageComponent.class);
+	}
 
 	//region Constructors
 	/**
@@ -45,9 +50,9 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	 *
 	 * @param message The text represented by the message object. Can be a normal string or a JSON.
 	 */
-	public Message(@NotNull String message)
+	public Message(final @NotNull String message)
 	{
-		super(message, MessageComponent.class);
+		super(message);
 	}
 
 	/**

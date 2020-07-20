@@ -130,7 +130,7 @@ public class MessageComponentTest
 		assertEquals("The given command should be found", "cmd run", messageComponent.getClickEvent().getValue());
 		messageComponent.onHover(MessageHoverEvent.HoverEventAction.SHOW_TEXT, "Text 1");
 		assertEquals("The hover message text should match", "Text 1", messageComponent.getHoverEvent().getValue());
-		List<MessageComponent<?>> messageComponents = new ArrayList<>();
+		List<TestMessageComponent> messageComponents = new ArrayList<>();
 		messageComponents.add(messageComponent);
 		messageComponent.onHover(MessageHoverEvent.HoverEventAction.SHOW_TEXT, messageComponents);
 		assertEquals("The hover message should be the current message object", messageComponents, messageComponent.getHoverEvent().getValue());

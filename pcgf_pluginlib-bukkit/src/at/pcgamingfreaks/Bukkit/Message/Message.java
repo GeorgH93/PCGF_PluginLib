@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender> implements IMessage
+public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender, MessageComponent> implements IMessage
 {
 	//region Variables
 	private static final Pattern RGB_COLOR_DETECTION = Pattern.compile("\"color\"\\s*:\\s*\"#(?<rgb>[\\dA-Fa-f]{6})\"");
@@ -47,6 +47,11 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	private SendMethod method = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
 	private boolean placeholderApiEnabled = false, legacy = PRE_1_8_MC;
 	//endregion
+
+	static
+	{
+		setMessageComponentClass(MessageComponent.class);
+	}
 
 	//region Constructors
 	/**
@@ -57,7 +62,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 */
 	public Message(@NotNull String message)
 	{
-		super(message, MessageComponent.class);
+		super(message);
 		//noinspection StringEquality
 		if(fallback == message) // == is correct here, we want to check if it is the same instance not the same content
 		{

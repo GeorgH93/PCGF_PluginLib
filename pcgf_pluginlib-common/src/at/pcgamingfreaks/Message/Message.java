@@ -25,27 +25,37 @@ import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> implements IMessage<PLAYER, COMMAND_SENDER>
+public abstract class Message<MESSAGE extends Message<?, ?, ?, ?>, PLAYER, COMMAND_SENDER, MESSAGE_COMPONENT extends MessageComponent<?>> implements IMessage<PLAYER, COMMAND_SENDER>
 {
+	private static Class<? extends MessageComponent<?>> MESSAGE_COMPONENT_CLASS;
+	private static Method METHOD_MESSAGE_COMPONENT_FROM_JSON = null;
+
+	protected static void setMessageComponentClass(Class<? extends MessageComponent<?>> messageComponentClass)
+	{
+		MESSAGE_COMPONENT_CLASS = messageComponentClass;
+		METHOD_MESSAGE_COMPONENT_FROM_JSON = Reflection.getMethod(messageComponentClass, "fromJson", String.class);
+	}
+
 	//region Variables
 	protected Object optionalParameters = null;
 	protected String json, fallback;
-	protected List<? extends MessageComponent> messageComponents = null;
+	protected List<MESSAGE_COMPONENT> messageComponents = null;
 	//endregion
 
 	//region Constructors
-	protected Message(@NotNull String message, Class messageComponentClass)
+	protected Message(@NotNull String message)
 	{
 		Validate.notEmpty("The message should not be empty!");
 		try
 		{
 			//noinspection unchecked
-			messageComponents = (List<? extends MessageComponent>) Reflection.getMethod(messageComponentClass, "fromJson", String.class).invoke(null, message);
+			messageComponents = (List<MESSAGE_COMPONENT>) METHOD_MESSAGE_COMPONENT_FROM_JSON.invoke(null, message);
 		}
 		catch(Exception ignored) {} // If there was an exception it's very likely that the given message isn't a JSON, that's all we need to know.
 		if(messageComponents != null) // The json was successfully deserialized
@@ -55,16 +65,16 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 		}
 		else
 		{
-			List<MessageComponent> messageComponentsList = new ArrayList<>(1);
+			List<MESSAGE_COMPONENT> messageComponentsList = new ArrayList<>(1);
 			try
 			{
-				//noinspection ConstantConditions
-				MessageComponent mc = (MessageComponent) Reflection.getConstructor(messageComponentClass).newInstance();
+				//noinspection unchecked
+				MESSAGE_COMPONENT mc = (MESSAGE_COMPONENT) MESSAGE_COMPONENT_CLASS.newInstance();
 				mc.setText(message);
 				messageComponentsList.add(mc);
 				messageComponents = messageComponentsList;
 			}
-			catch(InstantiationException | IllegalAccessException | InvocationTargetException | NullPointerException e)
+			catch(InstantiationException | IllegalAccessException | NullPointerException e)
 			{
 				e.printStackTrace();
 			}
@@ -73,7 +83,7 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 		}
 	}
 
-	protected Message(@NotNull Collection<? extends MessageComponent> message)
+	protected Message(@NotNull Collection<? extends MESSAGE_COMPONENT> message)
 	{
 		Validate.notEmpty(message, "The message should not be empty!");
 		messageComponents = new ArrayList<>(message); // Lets save our deserialized JSON into an array (maybe we will need it at a later point, you never know)
@@ -97,9 +107,10 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 	 *
 	 * @return The array of {@link MessageComponent}'s representing the message.
 	 */
-	public @NotNull MessageComponent[] getMessageComponents()
+	public @NotNull MESSAGE_COMPONENT[] getMessageComponents()
 	{
-		return messageComponents.toArray(new MessageComponent[0]);
+		//noinspection unchecked
+		return messageComponents.toArray((MESSAGE_COMPONENT[]) Array.newInstance(MESSAGE_COMPONENT_CLASS, 0));
 	}
 
 	/**
@@ -117,7 +128,7 @@ public abstract class Message<MESSAGE extends Message, PLAYER, COMMAND_SENDER> i
 	public boolean equals(Object otherObject)
 	{
 		//noinspection NonFinalFieldReferenceInEquals
-		return this == otherObject || (otherObject instanceof Message && json.equals(((Message) otherObject).json));
+		return this == otherObject || (otherObject instanceof Message<?,?,?,?> && json.equals(((Message<?,?,?,?>) otherObject).json));
 	}
 
 	public void setOptionalParameters(@NotNull Object optionalParameters)

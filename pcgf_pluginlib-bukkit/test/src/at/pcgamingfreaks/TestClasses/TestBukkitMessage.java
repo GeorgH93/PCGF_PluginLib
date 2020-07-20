@@ -19,7 +19,6 @@ package at.pcgamingfreaks.TestClasses;
 
 import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Message.Message;
-import at.pcgamingfreaks.Message.MessageComponent;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,14 +27,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class TestBukkitMessage extends Message<TestBukkitMessage, Player, CommandSender>
+public class TestBukkitMessage extends Message<TestBukkitMessage, Player, CommandSender, TestMessageComponent>
 {
-	public TestBukkitMessage(String message)
+	static
 	{
-		super(message, TestMessageComponent.class);
+		setMessageComponentClass(TestMessageComponent.class);
 	}
 
-	public TestBukkitMessage(Collection<? extends MessageComponent> message)
+	public TestBukkitMessage(String message)
+	{
+		super(message);
+	}
+
+	public TestBukkitMessage(Collection<? extends TestMessageComponent> message)
 	{
 		super(message);
 	}

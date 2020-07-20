@@ -18,21 +18,25 @@
 package at.pcgamingfreaks.TestClasses;
 
 import at.pcgamingfreaks.Message.Message;
-import at.pcgamingfreaks.Message.MessageComponent;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class TestMessage extends Message<TestMessage, Object, Object>
+public class TestMessage extends Message<TestMessage, Object, Object, TestMessageComponent>
 {
-	public TestMessage(String message)
+	static
 	{
-		super(message, TestMessageComponent.class);
+		setMessageComponentClass(TestMessageComponent.class);
 	}
 
-	public TestMessage(Collection<? extends MessageComponent> message)
+	public TestMessage(String message)
+	{
+		super(message);
+	}
+
+	public TestMessage(Collection<? extends TestMessageComponent> message)
 	{
 		super(message);
 	}
