@@ -113,17 +113,7 @@
 
 	<modules>
 		<module>pcgf_pluginlib-platform-nms-reflection</module>
+		<module>pcgf_pluginlib-platform-nms-1_15_R1</module>
+		<module>pcgf_pluginlib-platform-nms-1_16_R1</module>
 	</modules>
-
-	<profiles>
-		<profile>
-			<id>nms</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<modules>
-				<module>pcgf_pluginlib-platform-nms-1_15_R1</module>
-			</modules>
-		</profile>
-	</profiles>
 </project>

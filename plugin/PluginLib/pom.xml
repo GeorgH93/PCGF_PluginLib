@@ -36,6 +36,11 @@
 			<artifactId>pcgf_pluginlib-platform-nms-1_15_R1</artifactId>
 			<version>${revision}</version>
 		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
+			<artifactId>pcgf_pluginlib-platform-nms-1_16_R1</artifactId>
+			<version>${revision}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
