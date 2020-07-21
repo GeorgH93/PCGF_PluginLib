@@ -31,14 +31,8 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>21.0</version>
-            <scope>compile</scope>
+            <scope>test</scope>
         </dependency>
-		<!-- We use some of their classes for Validation and other things -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
-		</dependency>
 		<!-- JDBC connection pool -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>

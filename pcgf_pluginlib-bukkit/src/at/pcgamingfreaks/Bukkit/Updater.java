@@ -20,7 +20,7 @@ package at.pcgamingfreaks.Bukkit;
 import at.pcgamingfreaks.Bukkit.Util.Utils;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;

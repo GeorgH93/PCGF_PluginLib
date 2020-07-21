@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,16 +19,25 @@ package at.pcgamingfreaks.Message;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The click event is used for the JSON messages when the part of the message using it is clicked.
  */
 public class MessageClickEvent
 {
-	private ClickEventAction action;
-	private String value;
+	/**
+	 * The action that should be executed when the click event is triggered.
+	 */
+	@Getter @Setter	private @NotNull ClickEventAction action;
+
+	/**
+	 * The value to be used when the click action is triggered.
+	 */
+	@Getter @Setter	private @NotNull String value;
 
 	/**
 	 * Creates a new click event for a JSON message component.
@@ -36,54 +45,10 @@ public class MessageClickEvent
 	 * @param action The action that should be executed on click.
 	 * @param value  The value used for the action of the event.
 	 */
-	public MessageClickEvent(@NotNull ClickEventAction action, @NotNull String value)
+	public MessageClickEvent(final @NotNull ClickEventAction action, final @NotNull String value)
 	{
-		Validate.notNull(action, "The action for the click event can't be null!");
-		Validate.notEmpty(value, "The value for the click event should not be empty!");
 		this.action = action;
 		this.value = value;
-	}
-
-	/**
-	 * Changes the action of the click event.
-	 *
-	 * @param action The new action that should be executed when the part of the message using this event is clicked.
-	 */
-	public void setAction(@NotNull ClickEventAction action)
-	{
-		Validate.notNull(action, "The action for the click event can't be null!");
-		this.action = action;
-	}
-
-	/**
-	 * Gets the action of the click event.
-	 *
-	 * @return The action that should be executed when the part of the message using this event is clicked.
-	 */
-	public @NotNull ClickEventAction getAction()
-	{
-		return action;
-	}
-
-	/**
-	 * Changes the value of the click event.
-	 *
-	 * @param value The new value for the click event.
-	 */
-	public void setValue(@NotNull String value)
-	{
-		Validate.notEmpty(value, "The value for the click event should not be empty!");
-		this.value = value;
-	}
-
-	/**
-	 * Gets the value of the click event.
-	 *
-	 * @return The value of the click event.
-	 */
-	public @NotNull String getValue()
-	{
-		return value;
 	}
 
 	/**

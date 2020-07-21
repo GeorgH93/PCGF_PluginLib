@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks;
 
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,9 +51,8 @@ public class StringUtils
 	//endregion
 	private static final String[] BYTE_SIZE_NAMES = { "byte", "bytes", "kiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
 
-	public static boolean arrayContains(@NotNull String[] strings, @Nullable String searchFor)
+	public static boolean arrayContains(final @NotNull String[] strings, final @Nullable String searchFor)
 	{
-		Validate.notNull(strings);
 		for(String s : strings)
 		{
 			//noinspection ConstantConditions
@@ -66,9 +64,8 @@ public class StringUtils
 		return false;
 	}
 
-	public static boolean arrayContainsIgnoreCase(@NotNull String[] strings, @Nullable String searchFor)
+	public static boolean arrayContainsIgnoreCase(final @NotNull String[] strings, final @Nullable String searchFor)
 	{
-		Validate.notNull(strings);
 		for(String s : strings)
 		{
 			//noinspection ConstantConditions
@@ -81,7 +78,7 @@ public class StringUtils
 	}
 
 	@Contract("_, null -> false")
-	public static boolean arrayContainsAnyIgnoreCase(@NotNull String[] strings, @Nullable String... searchFor)
+	public static boolean arrayContainsAnyIgnoreCase(final @NotNull String[] strings, final @Nullable String... searchFor)
 	{
 		if(searchFor != null && searchFor.length > 0)
 		{
@@ -97,7 +94,7 @@ public class StringUtils
 	}
 
 	@Contract("_, null -> false")
-	public static boolean arrayContainsAny(@NotNull String[] strings, @Nullable String... searchFor)
+	public static boolean arrayContainsAny(final @NotNull String[] strings, final @Nullable String... searchFor)
 	{
 		if(searchFor != null && searchFor.length > 0)
 		{
@@ -112,10 +109,8 @@ public class StringUtils
 		return false;
 	}
 
-	public static @NotNull List<String> getAllContaining(@NotNull String[] source, @NotNull String searchFor)
+	public static @NotNull List<String> getAllContaining(final @NotNull String[] source, final @NotNull String searchFor)
 	{
-		Validate.notNull(source);
-		Validate.notNull(searchFor);
 		List<String> result = new ArrayList<>(source.length);
 		for(String str : source)
 		{
@@ -128,10 +123,8 @@ public class StringUtils
 		return result;
 	}
 
-	public static @NotNull List<String> getAllContainingIgnoreCase(@NotNull String[] source, @NotNull String searchFor)
+	public static @NotNull List<String> getAllContainingIgnoreCase(final @NotNull String[] source, final @NotNull String searchFor)
 	{
-		Validate.notNull(source);
-		Validate.notNull(searchFor);
 		List<String> result = new ArrayList<>(source.length);
 		for(String str : source)
 		{
@@ -144,17 +137,13 @@ public class StringUtils
 		return result;
 	}
 
-	public static boolean containsIgnoreCase(@NotNull String string, @NotNull String searchFor)
+	public static boolean containsIgnoreCase(final @NotNull String string, final @NotNull String searchFor)
 	{
-		Validate.notNull(string);
-		Validate.notNull(searchFor);
 		return string.toLowerCase(Locale.ROOT).contains(searchFor.toLowerCase(Locale.ROOT));
 	}
 
-	public static boolean containsIgnoreCase(@NotNull String string, @NotNull String... searchFor)
+	public static boolean containsIgnoreCase(@NotNull String string, final @NotNull String... searchFor)
 	{
-		Validate.notNull(string);
-		Validate.notNull(searchFor);
 		string = string.toLowerCase(Locale.ROOT);
 		for(String s : searchFor)
 		{
@@ -170,9 +159,8 @@ public class StringUtils
 	 * @param maxLength The max amount of characters the text should be limited to.
 	 * @return The text in it's limited length.
 	 */
-	public static @NotNull String limitLength(@NotNull String text, int maxLength)
+	public static @NotNull String limitLength(final @NotNull String text, final int maxLength)
 	{
-		Validate.notNull(text, "The text must not be null.");
 		if(text.length() == 0 || maxLength <= 0) return "";
 		if(text.length() <= maxLength) return text; // No need to create a new object if the string has not changed
 		return text.substring(0, maxLength -1);
@@ -184,7 +172,7 @@ public class StringUtils
 	 * @param string The string to be escaped.
 	 * @return The escaped string.
 	 */
-	public static @NotNull String escapeJsonString(@NotNull String string)
+	public static @NotNull String escapeJsonString(final @NotNull String string)
 	{
 		return string.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
 	}
@@ -198,7 +186,7 @@ public class StringUtils
 	 * @return The parsed page number
 	 * @throws NumberFormatException Thrown if the string is not in the valid format.
 	 */
-	public static int parsePageNumber(@NotNull String input) throws NumberFormatException
+	public static int parsePageNumber(final @NotNull String input) throws NumberFormatException
 	{
 		Matcher matcher = PAGE_REGEX.matcher(input);
 		if(matcher.matches())

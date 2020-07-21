@@ -26,8 +26,6 @@ import at.pcgamingfreaks.Utils;
 import at.pcgamingfreaks.Version;
 import at.pcgamingfreaks.yaml.YAML;
 
-import com.google.common.io.ByteStreams;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -300,8 +298,7 @@ public abstract class Updater implements IUpdater
 				destinationFilePath = new File(updateFolder, entry.getName());
 				try(BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry)); BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destinationFilePath), BUFFER_SIZE))
 				{
-					//noinspection UnstableApiUsage
-					ByteStreams.copy(bis, bos);
+					Utils.streamCopy(bis, bos);
 					bos.flush();
 				}
 			}

@@ -17,9 +17,6 @@
 
 package at.pcgamingfreaks;
 
-import com.google.common.io.ByteStreams;
-
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,12 +73,26 @@ public class Utils
 	 */
 	public static <T> boolean arrayContains(@NotNull T[] array, @Nullable T data)
 	{
-		Validate.notNull(array);
 		for(T element : array)
 		{
 			if(element.equals(data)) return true;
 		}
 		return false;
+	}
+
+	@SuppressWarnings("UnusedReturnValue")
+	public static long streamCopy(final @NotNull InputStream from, final @NotNull OutputStream to) throws IOException
+	{
+		byte[] buf = new byte[8192];
+		long total = 0;
+		while (true)
+		{
+			int r = from.read(buf);
+			if (r == -1) break;
+			to.write(buf, 0, r);
+			total += r;
+		}
+		return total;
 	}
 
 	/**
@@ -113,8 +124,7 @@ public class Utils
 			if(!inJarPath.startsWith("/")) inJarPath = "/" + inJarPath;
 			try(InputStream is = pluginClass.getResourceAsStream(inJarPath); OutputStream os = new FileOutputStream(targetFile))
 			{
-				//noinspection UnstableApiUsage
-				ByteStreams.copy(is, os);
+				streamCopy(is, os);
 				os.flush();
 			}
 			logger.info("File \"" + inJarPath + "\" extracted successfully!");
@@ -270,8 +280,7 @@ public class Utils
 					}
 					try(FileOutputStream fileOutputStream = new FileOutputStream(target))
 					{
-						//noinspection UnstableApiUsage
-						ByteStreams.copy(zip, fileOutputStream);
+						streamCopy(zip, fileOutputStream);
 						fileOutputStream.flush();
 					}
 				}

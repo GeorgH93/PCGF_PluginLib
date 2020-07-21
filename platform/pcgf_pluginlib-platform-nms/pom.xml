@@ -72,11 +72,11 @@
 								<goal>copy-resources</goal>
 							</goals>
 							<configuration>
-								<outputDirectory>generator/at/pcgamingfreaks/Bukkit</outputDirectory>
+								<outputDirectory>${basedir}/generator/at/pcgamingfreaks/Bukkit</outputDirectory>
 								<fileNameFiltering>true</fileNameFiltering>
 								<resources>
 									<resource>
-										<directory>../freemarker/generator</directory>
+										<directory>${basedir}/../freemarker/generator</directory>
 										<filtering>true</filtering>
 									</resource>
 								</resources>
@@ -99,10 +99,10 @@
 								<goal>generate</goal>
 							</goals>
 							<configuration>
-								<sourceDirectory>../freemarker</sourceDirectory>
-								<templateDirectory>../freemarker/template</templateDirectory>
-								<generatorDirectory>generator</generatorDirectory>
-								<outputDirectory>src</outputDirectory>
+								<sourceDirectory>${basedir}/../freemarker</sourceDirectory>
+								<templateDirectory>${basedir}/../freemarker/template</templateDirectory>
+								<generatorDirectory>${basedir}/generator</generatorDirectory>
+								<outputDirectory>${basedir}/src</outputDirectory>
 							</configuration>
 						</execution>
 					</executions>

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,22 +17,20 @@
 
 package at.pcgamingfreaks.Calendar;
 
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 public class BasicTimeSpanFormat implements TimeSpanFormat
 {
-	private String[] unitNames;
+	final private String[] unitNames;
 
 	public BasicTimeSpanFormat()
 	{
 		this(new String[] { "year", "years", "month", "months", "day", "days", "hour", "hours", "minute", "minutes", "second", "seconds" });
 	}
 
-	public BasicTimeSpanFormat(@NotNull String[] timeUnitNames)
+	public BasicTimeSpanFormat(final @NotNull String[] timeUnitNames)
 	{
-		Validate.notNull(timeUnitNames);
-		Validate.isTrue(timeUnitNames.length == 12, "Wrong amount of unit names given. Please make sure that the array is in the right format.\n" +
+		if(timeUnitNames.length != 12) throw new IllegalArgumentException("Wrong amount of unit names given. Please make sure that the array is in the right format.\n" +
 				"Like: new String[] { \"year\", \"years\", \"month\", \"months\", \"day\", \"days\", \"hour\", \"hours\", \"minute\", \"minutes\", \"second\", \"seconds\" }");
 		unitNames = timeUnitNames.clone();
 	}

@@ -25,7 +25,6 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -154,9 +153,9 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	 * @param optionalParameters The object containing the optional metadata. Has to be an instance of {@link TitleMetadata} or {@link BossBarMetadata}.
 	 */
 	@Override
-	public void setOptionalParameters(@NotNull Object optionalParameters)
+	public void setOptionalParameters(final @NotNull Object optionalParameters)
 	{
-		Validate.isTrue(optionalParameters instanceof TitleMetadata || optionalParameters instanceof BossBarMetadata, "The metadata object needs to be an instance of TitleMetadata or BossBarMetadata");
+		if(!(optionalParameters instanceof TitleMetadata || optionalParameters instanceof BossBarMetadata)) throw new IllegalArgumentException("The metadata object needs to be an instance of TitleMetadata or BossBarMetadata");
 		super.setOptionalParameters(optionalParameters);
 	}
 
@@ -169,10 +168,9 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	 *                  This can be used to add variable data into the message.
 	 */
 	@Override
-	public void send(@NotNull CommandSender target, @Nullable Object... args)
+	public void send(final @NotNull CommandSender target, final @Nullable Object... args)
 	{
 		if(getSendMethod() == SendMethod.DISABLED) return;
-		Validate.notNull(target, "The target that should receive the message should not be null!");
 		if(target instanceof ProxiedPlayer)
 		{
 			sendMethod.getSender().doSend((ProxiedPlayer) target, prepareMessage(true, args), optionalParameters);
@@ -193,10 +191,9 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	 *                   This can be used to add variable data into the message.
 	 */
 	@Override
-	public void send(@NotNull Collection<? extends ProxiedPlayer> targets, @Nullable Object... args)
+	public void send(final @NotNull Collection<? extends ProxiedPlayer> targets, final @Nullable Object... args)
 	{
 		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
-		Validate.notNull(targets, "The targets that should receive the message should not be null!");
 		sendMethod.getSender().doSend(targets, prepareMessage(true, args), optionalParameters);
 	}
 

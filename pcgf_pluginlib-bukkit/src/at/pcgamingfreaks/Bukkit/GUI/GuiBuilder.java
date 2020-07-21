@@ -22,7 +22,7 @@ import at.pcgamingfreaks.Bukkit.GUI.Navigation.DefaultNavigationStyleProducer;
 import at.pcgamingfreaks.Bukkit.GUI.Navigation.INavigationStyleProducer;
 import at.pcgamingfreaks.Bukkit.GUI.Navigation.PagesOnlyNavigationStyleProducer;
 
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,14 +55,14 @@ public class GuiBuilder
 
 	public void setMinRowsPerPage(int rows)
 	{
-		Validate.inclusiveBetween(1, 6, rows);
+		if (rows < 1 || rows > 6) throw new IllegalArgumentException("The amount of rows must be between 1 and 6!");
 		Validate.isTrue(rows <= maxRowsPerPage, "Min rows must be <= max rows (%d)!", maxRowsPerPage);
 		minRowsPerPage = rows;
 	}
 
 	public void setMaxRowsPerPage(int rows)
 	{
-		Validate.inclusiveBetween(2, 6, rows);
+		if (rows < 2 || rows > 6) throw new IllegalArgumentException("The amount of rows must be between 2 and 6!");
 		maxRowsPerPage = rows;
 		if(maxRowsPerPage < minRowsPerPage) minRowsPerPage = rows;
 	}

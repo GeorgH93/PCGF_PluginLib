@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@ package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.Reflection;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.command.*;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ import java.util.List;
 
 /**
  * Represents a {@link Command} belonging to a plugin.
- * It can be created at any point.
+ * It can be created, registered and unregistered at any point, and must not be defined upfront in the plugin.yml file.
  *
  * It doesn't extends {@link PluginCommand} cause it's a final class. However it implements all the functions from it.
  */
@@ -43,7 +45,13 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 
 	private final Plugin owningPlugin;
 	private CommandExecutor executor;
-	private TabCompleter completer;
+
+	/**
+	 * The {@link TabCompleter} to run when tab-completing this command.
+	 *
+	 * If no TabCompleter is specified, and the command's executor implements TabCompleter, then the executor will be used for tab completion.
+	 */
+	@Getter @Setter	private TabCompleter tabCompleter = null;
 
 	/**
 	 * Creates a new command that can be registered. Don't forget to register it!
@@ -52,7 +60,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 	 * @param name The name of the command will be used for bukkit's help
 	 * @param aliases The aliases of the command
 	 */
-	public RegisterablePluginCommand(@NotNull Plugin owner, @NotNull String name, @Nullable String... aliases)
+	public RegisterablePluginCommand(final @NotNull Plugin owner, final @NotNull String name, final @Nullable String... aliases)
 	{
 		super(name);
 		this.executor = owner;
@@ -124,7 +132,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 	 * @return true if the command was successful, otherwise false
 	 */
 	@Override
-	public boolean execute(CommandSender sender, String commandLabel, String[] args)
+	public boolean execute(final @NotNull CommandSender sender, final @NotNull String commandLabel, final @NotNull String[] args)
 	{
 		boolean success = false;
 		if(owningPlugin.isEnabled())
@@ -154,7 +162,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 	 *
 	 * @param executor New executor to run
 	 */
-	public void setExecutor(CommandExecutor executor)
+	public void setExecutor(final @Nullable CommandExecutor executor)
 	{
 		this.executor = (executor == null) ? owningPlugin : executor;
 	}
@@ -167,29 +175,6 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 	public CommandExecutor getExecutor()
 	{
 		return executor;
-	}
-
-	/**
-	 * Sets the {@link TabCompleter} to run when tab-completing this command.
-	 *
-	 * If no TabCompleter is specified, and the command's executor implements
-	 * TabCompleter, then the executor will be used for tab completion.
-	 *
-	 * @param completer New tab completer
-	 */
-	public void setTabCompleter(TabCompleter completer)
-	{
-		this.completer = completer;
-	}
-
-	/**
-	 * Gets the {@link TabCompleter} associated with this command.
-	 *
-	 * @return TabCompleter object linked to this command
-	 */
-	public TabCompleter getTabCompleter()
-	{
-		return completer;
 	}
 
 	/**
@@ -219,20 +204,16 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 	 * @throws IllegalArgumentException if sender, alias, or args is null
 	 */
 	@Override
-	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws CommandException, IllegalArgumentException
+	public List<String> tabComplete(final @NotNull CommandSender sender, final @NotNull String alias, final @NotNull String[] args) throws CommandException, IllegalArgumentException
 	{
-		Validate.notNull(sender, "Sender cannot be null");
-		Validate.notNull(args, "Arguments cannot be null");
-		Validate.notNull(alias, "Alias cannot be null");
-
 		List<String> completions = null;
 		try
 		{
-			if(completer != null)
+			if(tabCompleter != null)
 			{
-				completions = completer.onTabComplete(sender, this, alias, args);
+				completions = tabCompleter.onTabComplete(sender, this, alias, args);
 			}
-			if(completions == null &&executor instanceof TabCompleter)
+			if(completions == null && executor instanceof TabCompleter)
 			{
 				completions = ((TabCompleter) executor).onTabComplete(sender, this, alias, args);
 			}

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -54,16 +54,6 @@ public class StringUtilsTest
 		catch(IllegalArgumentException e)
 		{
 			assertEquals("A negative limit length should throw an error", e.getMessage(), "The max length must not be negative!");
-		}
-		try
-		{
-			//noinspection ConstantConditions
-			StringUtils.limitLength(null, 10);
-		}
-		catch(IllegalArgumentException | NullPointerException e)
-		{
-			//noinspection SpellCheckingInspection
-			assertTrue("A null string should throw an error", e.getMessage().equals("Argument for @NotNull parameter 'text' of at/pcgamingfreaks/Utils.limitLength must not be null") || e.getMessage().equals("The text must not be null."));
 		}
 		assertEquals("A limit of 0 characters should lead to an empty string", "", StringUtils.limitLength(longText, 0));
 		assertEquals("An empty string should lead to an empty output string", "", StringUtils.limitLength("", 10));

@@ -21,7 +21,6 @@ import at.pcgamingfreaks.Bukkit.PlatformResolver;
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Reflection;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -69,7 +68,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 *
 	 * @param logger The logger to output the warning
 	 */
-	public static void warnIfPerWorldPluginsIsInstalled(@NotNull Logger logger)
+	public static void warnIfPerWorldPluginsIsInstalled(final @NotNull Logger logger)
 	{
 		warnIfPerWorldPluginsIsInstalled(logger, 5);
 	}
@@ -80,9 +79,8 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @param logger The logger to output the warning
 	 * @param pauseTime The time in seconds the function should be blocking if PerWorldPlugins is installed.
 	 */
-	public static void warnIfPerWorldPluginsIsInstalled(@NotNull Logger logger, int pauseTime)
+	public static void warnIfPerWorldPluginsIsInstalled(final @NotNull Logger logger, final int pauseTime)
 	{
-		Validate.notNull(logger, "The logger can't be null.");
 		if(isPerWorldPluginsInstalled())
 		{
 			logger.warning(ConsoleColor.RED    + "   !!!!!!!!!!!!!!!!!!!!!!!!!" + ConsoleColor.RESET);
@@ -138,7 +136,6 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 */
 	public static int getPing(final @NotNull Player player)
 	{
-		Validate.notNull(player, "The player for which the ping is requested must not be null!");
 		return INSTANCE.getPing(player);
 	}
 
@@ -148,10 +145,8 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @param player The player that should receive the packet
 	 * @param packet The packet that should be sent to the client
 	 */
-	public static void sendPacket(@NotNull Player player, @NotNull Object packet)
+	public static void sendPacket(final @NotNull Player player, final @NotNull Object packet)
 	{
-		Validate.notNull(player, "The player that should receive this packet can't be null!");
-		Validate.notNull(packet, "The packet to send can't be null!");
 		INSTANCE.sendPacket(player, packet);
 	}
 
@@ -164,10 +159,8 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @param player2 The second player
 	 * @return The distance between the players. {@link Double#POSITIVE_INFINITY} if the players aren't in the same world
 	 */
-	public static double getDistance(@NotNull Player player1, @NotNull Player player2)
+	public static double getDistance(final @NotNull Player player1, final @NotNull Player player2)
 	{
-		Validate.notNull(player1, "None of the players can be null!");
-		Validate.notNull(player2, "None of the players can be null!");
 		if(player1.equals(player2))
 		{
 			return 0;
@@ -187,10 +180,8 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @param player2 The second player
 	 * @return The distance between the players. {@link Double#POSITIVE_INFINITY} if the players aren't in the same world
 	 */
-	public static double getDistanceSquared(@NotNull Player player1, @NotNull Player player2)
+	public static double getDistanceSquared(final @NotNull Player player1, final @NotNull Player player2)
 	{
-		Validate.notNull(player1, "None of the players can be null!");
-		Validate.notNull(player2, "None of the players can be null!");
 		if(player1.equals(player2))
 		{
 			return 0;
@@ -210,7 +201,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @param maxDistance The max distance between the two players. Negative values will always return true.
 	 * @return True if the players are within the given range, false if not.
 	 */
-	public static boolean inRange(@NotNull Player player1, @NotNull Player player2, double maxDistance)
+	public static boolean inRange(final @NotNull Player player1, final @NotNull Player player2, final double maxDistance)
 	{
 		if(maxDistance < 0) return true;
 		double distance = getDistanceSquared(player1, player2);
@@ -225,7 +216,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @param maxDistanceSquared The max squared distance between the two players. Negative values will always return true.
 	 * @return True if the players are within the given range, false if not.
 	 */
-	public static boolean inRangeSquared(@NotNull Player player1, @NotNull Player player2, double maxDistanceSquared)
+	public static boolean inRangeSquared(final @NotNull Player player1, final @NotNull Player player2, final double maxDistanceSquared)
 	{
 		if(maxDistanceSquared < 0) return true;
 		double distance = getDistanceSquared(player1, player2);
@@ -241,7 +232,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @param bypassPermission If one of the players has the permission this function will return true.
 	 * @return True if the players are within the given range, false if not.
 	 */
-	public static boolean inRange(@NotNull Player player1, @NotNull Player player2, double maxDistance, @NotNull String bypassPermission)
+	public static boolean inRange(final @NotNull Player player1, final @NotNull Player player2, final double maxDistance, final @NotNull String bypassPermission)
 	{
 		return player1.hasPermission(bypassPermission) || player2.hasPermission(bypassPermission) || inRange(player1, player2, maxDistance);
 	}
@@ -255,7 +246,7 @@ public class Utils extends at.pcgamingfreaks.Utils
 	 * @param bypassPermission If one of the players has the permission this function will return true.
 	 * @return True if the players are within the given range, false if not.
 	 */
-	public static boolean inRangeSquared(@NotNull Player player1, @NotNull Player player2, double maxDistanceSquared, @NotNull String bypassPermission)
+	public static boolean inRangeSquared(final @NotNull Player player1, final @NotNull Player player2, final double maxDistanceSquared, final @NotNull String bypassPermission)
 	{
 		return player1.hasPermission(bypassPermission) || player2.hasPermission(bypassPermission) || inRangeSquared(player1, player2, maxDistanceSquared);
 	}

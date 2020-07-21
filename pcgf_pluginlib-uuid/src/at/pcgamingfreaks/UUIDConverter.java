@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks;
 
-import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -236,7 +235,7 @@ public final class UUIDConverter
 				if(offlineUUIDonFail)
 				{
 					System.out.println("Using offline uuid for '" + name + "'.");
-					uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)).toString();
+					uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)).toString();
 				}
 				else
 				{
@@ -246,7 +245,7 @@ public final class UUIDConverter
 		}
 		else
 		{
-			uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)).toString();
+			uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8)).toString();
 		}
 		// Fixing the separators depending on setting.
 		if(withSeparators)
@@ -319,12 +318,12 @@ public final class UUIDConverter
 			}
 			else if(offlineUUIDonFail)
 			{
-				uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
+				uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
 			}
 		}
 		else
 		{
-			uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
+			uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
 		}
 		return uuid;
 	}
@@ -442,7 +441,7 @@ public final class UUIDConverter
 					connection.setDoOutput(true);
 					try(OutputStream out = connection.getOutputStream())
 					{
-						out.write(GSON.toJson(batch).getBytes(Charsets.UTF_8));
+						out.write(GSON.toJson(batch).getBytes(StandardCharsets.UTF_8));
 					}
 					Profile[] profiles;
 					try(Reader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))

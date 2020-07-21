@@ -23,7 +23,7 @@ import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Bukkit.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.Message.MessageColor;
 
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;

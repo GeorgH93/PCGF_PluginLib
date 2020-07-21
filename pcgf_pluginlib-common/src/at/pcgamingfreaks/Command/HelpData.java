@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,17 +19,37 @@ package at.pcgamingfreaks.Command;
 
 import at.pcgamingfreaks.Message.MessageClickEvent;
 
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Stores all the data that should be displayed when the help for a command is shown.
  */
 public class HelpData
 {
-	private String translatedSubCommand, parameter, description;
-	private MessageClickEvent.ClickEventAction clickAction;
+	/**
+	 * The translated name of the sub-command.
+	 */
+	@Getter @Setter @NotNull private String translatedSubCommand;
+
+	/**
+	 * The parameters to be displayed. null or "" for no parameters.
+	 */
+	@SuppressWarnings("NotNullFieldNotInitialized")
+	@Getter @NotNull private String parameter;
+
+	/**
+	 * The description of the sub-command.
+	 */
+	@Getter @Setter @NotNull private String description;
+
+	/**
+	 * The action that should be used when the sub-command gets clicked.
+	 */
+	@Getter @Setter @NotNull private MessageClickEvent.ClickEventAction clickAction;
 
 	/**
 	 * Creates a new instance of the {@link HelpData} object to store the data for the sub-command.
@@ -38,7 +58,7 @@ public class HelpData
 	 * @param parameter The parameters to be displayed. null or "" for no parameters.
 	 * @param description The description of the sub-command.
 	 */
-	public HelpData(@NotNull String translatedSubCommand, @Nullable String parameter, @NotNull String description)
+	public HelpData(final @NotNull String translatedSubCommand, final @Nullable String parameter, final @NotNull String description)
 	{
 		this(translatedSubCommand, parameter, description, MessageClickEvent.ClickEventAction.SUGGEST_COMMAND);
 	}
@@ -51,7 +71,7 @@ public class HelpData
 	 * @param description The description of the sub-command.
 	 * @param clickAction The action that should be executed when the help line of the command is pressed.
 	 */
-	public HelpData(@NotNull String translatedSubCommand, @Nullable String parameter, @NotNull String description, MessageClickEvent.ClickEventAction clickAction)
+	public HelpData(final @NotNull String translatedSubCommand, final @Nullable String parameter, final @NotNull String description, final @NotNull MessageClickEvent.ClickEventAction clickAction)
 	{
 		setTranslatedSubCommand(translatedSubCommand);
 		setParameter(parameter);
@@ -60,74 +80,12 @@ public class HelpData
 	}
 
 	/**
-	 * Gets the parameter of the sub-command.
-	 *
-	 * @return The parameter to be displayed.
-	 */
-	public @NotNull String getParameter()
-	{
-		return parameter;
-	}
-
-	/**
 	 * Sets the parameter string of the help data.
 	 *
 	 * @param parameter The parameters to be displayed. null or "" for no parameters.
 	 */
-	public void setParameter(@Nullable String parameter)
+	public void setParameter(final @Nullable String parameter)
 	{
 		this.parameter = (parameter == null) ? "" : parameter;
-	}
-
-	/**
-	 * Gets the description of the sub-command.
-	 *
-	 * @return The description to be displayed.
-	 */
-	public @NotNull String getDescription()
-	{
-		return description;
-	}
-
-	/**
-	 * Sets the description of the sub-command.
-	 *
-	 * @param description The description to be displayed.
-	 */
-	public void setDescription(@NotNull String description)
-	{
-		Validate.notEmpty(description, "The description of a command must not be null or empty.");
-		this.description = description;
-	}
-
-	public void setClickAction(MessageClickEvent.ClickEventAction clickAction)
-	{
-		this.clickAction = clickAction;
-	}
-
-	/**
-	 * Gets the translated name of the sub-command.
-	 *
-	 * @return The translated name of the sub-command to be displayed.
-	 */
-	public @NotNull String getTranslatedSubCommand()
-	{
-		return translatedSubCommand;
-	}
-
-	/**
-	 * Sets the translated name of the sub command.
-	 *
-	 * @param translatedSubCommand The translated name of the sub command to be displayed.
-	 */
-	public void setTranslatedSubCommand(@NotNull String translatedSubCommand)
-	{
-		Validate.notEmpty(translatedSubCommand, "The sub command must not be null or empty.");
-		this.translatedSubCommand = translatedSubCommand;
-	}
-
-	public MessageClickEvent.ClickEventAction getClickAction()
-	{
-		return clickAction;
 	}
 }

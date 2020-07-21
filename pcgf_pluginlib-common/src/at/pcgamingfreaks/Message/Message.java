@@ -20,7 +20,6 @@ package at.pcgamingfreaks.Message;
 import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.StringUtils;
 
-import org.apache.commons.lang3.Validate;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,9 +48,8 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 	//endregion
 
 	//region Constructors
-	protected Message(@NotNull String message)
+	protected Message(final @NotNull String message)
 	{
-		Validate.notEmpty("The message should not be empty!");
 		try
 		{
 			//noinspection unchecked
@@ -83,9 +81,8 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 		}
 	}
 
-	protected Message(@NotNull Collection<? extends MESSAGE_COMPONENT> message)
+	protected Message(final @NotNull Collection<? extends MESSAGE_COMPONENT> message)
 	{
-		Validate.notEmpty(message, "The message should not be empty!");
 		messageComponents = new ArrayList<>(message); // Lets save our deserialized JSON into an array (maybe we will need it at a later point, you never know)
 		fallback = getClassicMessage(); // We need a fallback for the console and everything else that isn't a player
 		json = MessageComponent.GSON.toJson(message); // We need a JSON string to send to the player, so lets generate one from the component list

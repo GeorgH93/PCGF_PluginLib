@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,19 +17,24 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+
 public final class MinecraftMaterial
 {
-	private final Material material;
-	private final short dataValue;
+	@Getter private final Material material;
 
-	public static @Nullable MinecraftMaterial fromInput(@NotNull final String input)
+	/**
+	 * The data-value for the material. Negative values match all data-values.
+	 */
+	@Getter private final short dataValue;
+
+	public static @Nullable MinecraftMaterial fromInput(final @NotNull String input)
 	{
 		String[] inputs = input.split(":");
 		short dataValue = -1;
@@ -37,7 +42,7 @@ public final class MinecraftMaterial
 		{
 			try
 			{
-				dataValue = Short.valueOf(inputs[1]);
+				dataValue = Short.parseShort(inputs[1]);
 			}
 			catch(NumberFormatException ignored) {}
 		}
@@ -45,52 +50,36 @@ public final class MinecraftMaterial
 		return (material == null) ? null : new MinecraftMaterial(material, dataValue);
 	}
 
-	public MinecraftMaterial(@NotNull Material material)
+	public MinecraftMaterial(final @NotNull Material material)
 	{
 		this(material, (short) -1);
 	}
 
-	public MinecraftMaterial(@NotNull Material material, short dataValue)
+	public MinecraftMaterial(final @NotNull Material material, short dataValue)
 	{
-		Validate.notNull(material);
 		this.material = material;
 		this.dataValue = dataValue;
 	}
 
-	public MinecraftMaterial(@NotNull ItemStack itemStack)
+	public MinecraftMaterial(final @NotNull ItemStack itemStack)
 	{
 		this(itemStack.getType(), itemStack.getDurability());
 	}
 
-	public MinecraftMaterial(@NotNull Block block)
+	public MinecraftMaterial(final @NotNull Block block)
 	{
 		//noinspection deprecation
 		this(block.getType(), block.getData());
 	}
 
-	public Material getMaterial()
-	{
-		return material;
-	}
-
-	/**
-	 * The data-value for the material. Negative values match all data-values.
-	 *
-	 * @return The data-value for the material.
-	 */
-	public short getDataValue()
-	{
-		return dataValue;
-	}
-
-	public boolean equals(Material material, short dataValue)
+	public boolean equals(final @Nullable Material material, final short dataValue)
 	{
 		return material == getMaterial() && dataValue == getDataValue();
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean equals(Object object)
+	public boolean equals(final @Nullable Object object)
 	{
 		if(object instanceof ItemStack)
 		{
