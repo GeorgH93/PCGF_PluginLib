@@ -74,7 +74,7 @@ The library can be added in two ways to your plugin.
 <dependency>
  	<groupId>at.pcgamingfreaks</groupId>
  	<artifactId>PluginLib</artifactId>
- 	<version>1.0.28-SNAPSHOT</version><!-- Check version shield for newest version -->
+ 	<version>1.0.30-SNAPSHOT</version><!-- Check version shield for newest version -->
 </dependency>
 ```
 
@@ -111,15 +111,6 @@ The recommended shading settings:
                         <shadedPattern>your_package.libs.at.pcgamingfreaks</shadedPattern>
                     </relocation>
                 </relocations>
-                <filters>
-                    <!-- Don't copy bungee.yml, bungee_config.yml, config.yml and plugin.yml to prevent conflicts with your plugin -->
-                    <filter>
-                        <artifact>at.pcgamingfreaks:PluginLib</artifact>
-                        <excludes>
-                            <exclude>*.yml</exclude>
-                        </excludes>
-                    </filter>
-                </filters>
             </configuration>
         </execution>
     </executions>

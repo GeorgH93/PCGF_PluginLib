@@ -27,8 +27,6 @@ import com.google.common.base.Supplier;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -64,32 +62,17 @@ public class SpigotUpdateProviderTest
 	{
 		final int[] loggerCalls = new int[] { 0, 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				loggerCalls[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			loggerCalls[0]++;
+			return null;
 		}).when(mockedLogger).warning(anyString());
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				loggerCalls[1]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			loggerCalls[1]++;
+			return null;
 		}).when(mockedLogger).severe(anyString());
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				loggerCalls[1]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			loggerCalls[1]++;
+			return null;
 		}).when(mockedLogger).log(any(Level.class), String.valueOf(any(Supplier.class)), any(Throwable.class));
 		SpigotUpdateProvider sup = new SpigotUpdateProvider(PLUGIN_ID_EXT, mockedLogger);
 		assertEquals(UpdateResult.SUCCESS, sup.query());
@@ -118,7 +101,7 @@ public class SpigotUpdateProviderTest
 		final HttpURLConnection mockedHttpURLConnection = spy(new HttpURLConnection(mockedURL)
 		{
 			@Override
-			public void connect() throws IOException { }
+			public void connect() { }
 
 			@Override
 			public void disconnect() { }
@@ -135,16 +118,12 @@ public class SpigotUpdateProviderTest
 		PowerMockito.doThrow(new IOException()).when(mockedURL).openConnection();
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
 		final int[] connectionCount = { 0 };
-		doAnswer(new Answer() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
+		doAnswer(invocationOnMock -> {
+			if (connectionCount[0]++ == 0)
 			{
-				if (connectionCount[0]++ == 0)
-				{
-					return mockedHttpURLConnection;
-				}
-				return null;
+				return mockedHttpURLConnection;
 			}
+			return null;
 		}).when(updateProvider).connect(any(URL.class));
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
 	}

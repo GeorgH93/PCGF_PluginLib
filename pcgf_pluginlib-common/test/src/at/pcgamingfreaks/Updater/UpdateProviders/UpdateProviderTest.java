@@ -21,7 +21,6 @@ import at.pcgamingfreaks.Version;
 
 import org.junit.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -30,8 +29,7 @@ import static org.junit.Assert.assertEquals;
 public class UpdateProviderTest
 {
 	@Test
-	@SuppressWarnings("unchecked")
-	public void testUpdateFileClass() throws IllegalAccessException, InvocationTargetException, InstantiationException, MalformedURLException, NoSuchMethodException
+	public void testUpdateFileClass() throws MalformedURLException
 	{
 		URL downloadURL = new URL("http://www.download.url/File.dl");
 		String name = "Update File";

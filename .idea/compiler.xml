@@ -12,6 +12,7 @@
         <module name="pcgf_pluginlib-platform-nms-reflection" />
         <module name="pcgf_pluginlib-uuid" />
         <module name="pcgf_pluginlib-platform-bukkit" />
+        <module name="pcgf_pluginlib-plugin" />
         <module name="pcgf_pluginlib-bukkit" />
         <module name="pcgf_pluginlib-plugin-bukkit" />
         <module name="pcgf_pluginlib-bungee" />
@@ -19,6 +20,7 @@
         <module name="pcgf_pluginlib-nms-reflection" />
         <module name="pcgf_pluginlib-plugin-bungee" />
         <module name="pcgf_pluginlib-plugin-common" />
+        <module name="pcgf_pluginlib-platform-nms-1_16_R1" />
         <module name="pcgf_pluginlib-platform-nms-1_15_R1" />
       </profile>
     </annotationProcessing>
@@ -32,7 +34,9 @@
       <module name="pcgf_pluginlib-platform-bukkit" target="1.8" />
       <module name="pcgf_pluginlib-platform-nms" target="1.8" />
       <module name="pcgf_pluginlib-platform-nms-1_15_R1" target="1.8" />
+      <module name="pcgf_pluginlib-platform-nms-1_16_R1" target="1.8" />
       <module name="pcgf_pluginlib-platform-nms-reflection" target="1.8" />
+      <module name="pcgf_pluginlib-plugin" target="1.8" />
       <module name="pcgf_pluginlib-plugin-bukkit" target="1.8" />
       <module name="pcgf_pluginlib-plugin-bungee" target="1.8" />
       <module name="pcgf_pluginlib-plugin-common" target="1.8" />

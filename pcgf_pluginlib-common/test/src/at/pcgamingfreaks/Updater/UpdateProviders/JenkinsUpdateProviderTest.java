@@ -26,8 +26,6 @@ import com.google.gson.JsonParser;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.IndicateReloadClass;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -71,25 +69,15 @@ public class JenkinsUpdateProviderTest
 		int currentSevere = 0;
 		final int[] counts = { 0, 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				System.out.println(invocationOnMock.getArguments()[0]);
-				counts[0]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			System.out.println(invocationOnMock.getArguments()[0]);
+			counts[0]++;
+			return null;
 		}).when(mockedLogger).warning(anyString());
-		doAnswer(new Answer()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				System.out.println(invocationOnMock.getArguments()[0]);
-				counts[1]++;
-				return null;
-			}
+		doAnswer(invocationOnMock -> {
+			System.out.println(invocationOnMock.getArguments()[0]);
+			counts[1]++;
+			return null;
 		}).when(mockedLogger).severe(anyString());
 		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
 		assertEquals("The invalid query should return a failure", UpdateResult.FAIL_FILE_NOT_FOUND, updater.query());

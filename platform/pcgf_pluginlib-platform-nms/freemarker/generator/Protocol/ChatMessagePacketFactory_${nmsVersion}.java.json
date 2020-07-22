@@ -1,0 +1,7 @@
+{
+  "templateName": "ChatMessagePacketFactoryNms.ftl",
+  "dataModel": {
+    "nmsVersion": "${nmsVersion}",
+    "mcVersion": ${mcVersion}
+  }
+}
