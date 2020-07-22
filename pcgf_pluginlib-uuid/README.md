@@ -7,21 +7,11 @@
 [licenseImg]: https://img.shields.io/github/license/GeorgH93/PCGF_PluginLib.svg
 [javadoc]: https://ci.pcgamingfreaks.at/job/PluginLib/javadoc/
 
-# PCGF - PluginLib
-A library for Bukkit, Spigot, Paper and BungeeCord, that provides commonly used functions
-and provides cross version support for a lot of Minecraft features
-(some of which are no longer supported or support for them has been added later by Bukkit/Spigot/Paper).
+# PCGF - PluginLib - UUID converter
 
 [![Build Status][ciImg]][ci] [![Coverage Status][coverageImg]][coverage] ![Version][versionImg] [![licenseImg]][license]
 
-## Download:
-[Build Server][ci]
-
 ## Features:
-### Bukkit + BungeeCord:
-* Config/Language file handler
-    * File upgrade support (copy old values in new file)
-    * Comment support
 * UUID converter
   * Supports Name -> UUID, UUID -> Name or UUID -> Name changes
   * Supports online and offline mode UUIDs
@@ -29,38 +19,16 @@ and provides cross version support for a lot of Minecraft features
   * Caching
     * If the lib is running as a Plugin the cache can be shared by all plugins using it
     * Preloads UUIDs from the Minecraft servers UUID cache
-* Auto-updater
-    * Supports multiple sites for checking and downloading of updates
-        * spigotmc.org (checking + downloading (free and hosted on spigotmc.org))
-        * dev.bukkit.org (checking + downloading)
-        * GitHub (checking + downloading)
-        * Jenkins build servers (checking + downloading)
-        * Static URL (downloading)
-* JSON message handling
-* Collections of useful functions
-* Option to share database connection pool between multiple plugins
-
-### Bukkit only:
-* Particles handler
-* Item-Stack serializer
-* Material name resolver
-* Late registerable commands
-
-## Plugins using it:
-* [Marriage Master](https://www.spigotmc.org/resources/19273/) (V2.0 and newer)
-* [Minepacks](https://www.spigotmc.org/resources/19286/) (V2.0 and newer)
 
 ## Requirements:
 * Java 8 (or newer)
-* Bukkit, Spigot, Paper, Uranium for MC 1.7 or newer or BungeeCord for MC 1.8 or newer
-* (Optional) PlaceholderAPI (to use it with the provided message API)
 
 ## Adding it to your plugin:
 The library can be added in two ways to your plugin.
 1. Requiring it to be installed as a plugin (will be published on dev.bukkit.org and spigotmc.org soon)
-2. Shading it into your plugin (requires more RAM and some features will not work)
+2. Shading it into your plugin (requires more RAM)
 
-### Adding the library as an dependency with maven:
+### Adding the UUID converter library as an dependency with maven:
 #### Repository:
 ```xml
 <repository>
@@ -72,9 +40,9 @@ The library can be added in two ways to your plugin.
 #### Dependency:
 ```xml
 <dependency>
- 	<groupId>at.pcgamingfreaks</groupId>
- 	<artifactId>PluginLib</artifactId>
- 	<version>1.0.28-SNAPSHOT</version><!-- Check version shield for newest version -->
+ 	<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+ 	<artifactId>pcgf_pluginlib-uuid</artifactId>
+ 	<version>1.0.29-SNAPSHOT</version><!-- Check version shield for newest version -->
 </dependency>
 ```
 
@@ -83,7 +51,7 @@ Add `PCGF_PluginLib` as a dependency for your Bukkit/Spigot or BungeeCord plugin
 The users will have to install the library as a plugin. Download: [https://ci.pcgamingfreaks.at/job/PluginLib/][ci]
 
 ### Shading the library into your plugin with maven:
-By adding the library to your plugin through shading it will require more memory (if multiple plugins using the library are installed) and some features (DB connection sharing, translation sharing) will not be available.
+By adding the library to your plugin through shading it will require more memory (if multiple plugins using the library are installed).
 The recommended shading settings:
 ```xml
 <plugin>
@@ -98,10 +66,12 @@ The recommended shading settings:
             </goals>
             <configuration>
                 <createDependencyReducedPom>false</createDependencyReducedPom>
-                <minimizeJar>false</minimizeJar><!-- Do not minimize or some of the utils will not work on Bukkit -->
+                <minimizeJar>true</minimizeJar><!-- No need to include everything if you are only using some of the features -->
                 <artifactSet>
                     <includes>
-                        <include>at.pcgamingfreaks:PluginLib</include>
+                        <include>at.pcgamingfreaks.pcgf_pluginlib:pcgf_pluginlib-uuid</include>
+                        <include>at.pcgamingfreaks:YAML-Parser</include>
+                        <include>com.google.code.gson:gson</include>
                     </includes>
                 </artifactSet>
                 <relocations>
@@ -109,6 +79,10 @@ The recommended shading settings:
                     <relocation>
                         <pattern>at.pcgamingfreaks</pattern>
                         <shadedPattern>your_package.libs.at.pcgamingfreaks</shadedPattern>
+                    </relocation>
+                    <relocation>
+                        <pattern>com.google.gson</pattern>
+                        <shadedPattern>your_package.libs.com.google.gson</shadedPattern>
                     </relocation>
                 </relocations>
                 <filters>
@@ -132,5 +106,3 @@ Replace `your_package` with the package of your plugin.
 * [Build Server ![Build Status][ciImg]][ci]
 * [Code Coverage ![Coverage Status][coverageImg]][coverage]
 * [Javadoc][javadoc]
-* Spigot (TBA)
-* Dev Bukkit (TBA)
