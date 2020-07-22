@@ -40,4 +40,41 @@
 			<version>2.8.0</version>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<minimizeJar>true</minimizeJar><!-- No need to include everything if you are only using some of the features -->
+							<shadedClassifierName>shade-friendly</shadedClassifierName>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<artifactSet>
+								<includes>
+									<include>at.pcgamingfreaks:YAML-Parser</include>
+									<include>com.google.code.gson:gson</include>
+								</includes>
+							</artifactSet>
+							<relocations>
+								<!-- Relocate the lib to prevent conflicts with other plugins using it -->
+								<relocation>
+									<pattern>com.google.gson</pattern>
+									<shadedPattern>at.pcgamingfreaks.libs.com.google.gson</shadedPattern>
+								</relocation>
+							</relocations>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

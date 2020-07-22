@@ -43,6 +43,7 @@ The library can be added in two ways to your plugin.
  	<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
  	<artifactId>pcgf_pluginlib-uuid</artifactId>
  	<version>1.0.29-SNAPSHOT</version><!-- Check version shield for newest version -->
+ 	<classifier>shade-friendly</classifier><!-- Only needed if you plan on shading it into a plugin that should run on CraftBukkit or Spigot <= 1.7.10 -->
 </dependency>
 ```
 
@@ -70,19 +71,13 @@ The recommended shading settings:
                 <artifactSet>
                     <includes>
                         <include>at.pcgamingfreaks.pcgf_pluginlib:pcgf_pluginlib-uuid</include>
-                        <include>at.pcgamingfreaks:YAML-Parser</include>
-                        <include>com.google.code.gson:gson</include>
                     </includes>
                 </artifactSet>
                 <relocations>
                     <!-- Relocate the lib to prevent conflicts with other plugins using it -->
                     <relocation>
                         <pattern>at.pcgamingfreaks</pattern>
-                        <shadedPattern>your_package.libs.at.pcgamingfreaks</shadedPattern>
-                    </relocation>
-                    <relocation>
-                        <pattern>com.google.gson</pattern>
-                        <shadedPattern>your_package.libs.com.google.gson</shadedPattern>
+                        <shadedPattern>${project.groupId}.libs.at.pcgamingfreaks</shadedPattern>
                     </relocation>
                 </relocations>
                 <filters>
