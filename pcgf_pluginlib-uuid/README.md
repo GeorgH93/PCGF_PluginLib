@@ -43,7 +43,7 @@ The library can be added in two ways to your plugin.
  	<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
  	<artifactId>pcgf_pluginlib-uuid</artifactId>
  	<version>1.0.29-SNAPSHOT</version><!-- Check version shield for newest version -->
- 	<classifier>shade-friendly</classifier><!-- Only needed if you plan on shading it into a plugin that should run on CraftBukkit or Spigot <= 1.7.10 -->
+ 	<classifier>shade-friendly</classifier>
 </dependency>
 ```
 
