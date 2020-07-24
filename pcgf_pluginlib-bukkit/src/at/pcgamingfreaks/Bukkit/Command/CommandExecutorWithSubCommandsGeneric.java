@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Command;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,6 +45,7 @@ public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubComman
 			defaultSubCommand.doExecute(sender, alias, defaultSubCommand.getName(), args);
 			return true;
 		}
+		sender.sendMessage("Could not find a suitable sub-command for: /" + alias + " " + ArrayUtils.toString(args, "null"));
 		return false;
 	}
 

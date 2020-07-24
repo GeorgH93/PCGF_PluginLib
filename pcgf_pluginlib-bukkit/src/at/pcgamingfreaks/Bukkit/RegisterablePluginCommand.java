@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.Reflection;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.command.*;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -143,6 +144,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 			}
 			catch(Throwable e)
 			{
+				sender.sendMessage("Unhandled exception executing command '" + commandLabel + ArrayUtils.toString(args, "null") + "', Message: " + e.getMessage());
 				owningPlugin.getLogger().warning("Unhandled exception executing command '" + commandLabel + "' in plugin " + owningPlugin.getDescription().getFullName());
 				e.printStackTrace();
 			}
