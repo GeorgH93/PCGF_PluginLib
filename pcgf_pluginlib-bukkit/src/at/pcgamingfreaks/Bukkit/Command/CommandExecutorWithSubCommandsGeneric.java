@@ -45,7 +45,7 @@ public class CommandExecutorWithSubCommandsGeneric<SUB_COMMAND extends SubComman
 			defaultSubCommand.doExecute(sender, alias, defaultSubCommand.getName(), args);
 			return true;
 		}
-		sender.sendMessage("Could not find a suitable sub-command for: /" + alias + " " + ArrayUtils.toString(args, "null"));
+		sender.sendMessage("Could not find a suitable sub-command for: /" + alias + " with " + ArrayUtils.toString(args, "null"));
 		return false;
 	}
 

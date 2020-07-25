@@ -238,6 +238,17 @@ public class StringUtils
 		return String.format(locale, (doubleBytes >= 100) ? "%.1f %s" : "%.2f %s", doubleBytes, BYTE_SIZE_NAMES[i]);
 	}
 
+	public static String arrayToString(Object[] array)
+	{
+		StringBuilder builder = new StringBuilder();
+		for(Object element : array)
+		{
+			builder.append(element).append(' ');
+		}
+		if(builder.length() > 0) builder.deleteCharAt(builder.length() - 1);
+		return builder.toString();
+	}
+
 	//region Enabled / Disabled messages
 	private static final String ENABLED_MESSAGE = ConsoleColor.GREEN + " %s has been enabled! " + ConsoleColor.YELLOW + " :) " + ConsoleColor.RESET;
 	private static final String DISABLED_MESSAGE = ConsoleColor.RED + " %s has been disabled. " + ConsoleColor.YELLOW + " :( " + ConsoleColor.RESET;
