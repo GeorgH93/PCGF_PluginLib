@@ -100,4 +100,55 @@ public class InventoryUtils
 	{
 		INSTANCE.updateInventoryTitle(player, newTitle);
 	}
+
+	/**
+	 * Opens an inventory for a player with a different title than was sued when creating the inventory.
+	 *
+	 * @param player The player for whom the inventory should be opened.
+	 * @param inventory The inventory that should be opened.
+	 * @param title The title of the inventory that should be used on the client.
+	 */
+	public static void openInventoryWithCustomTitle(final @NotNull Player player, final @NotNull Inventory inventory, final  @NotNull String title)
+	{
+		INSTANCE.openInventoryWithCustomTitle(player, inventory, title);
+	}
+
+	/**
+	 * Opens an inventory for a player with a different title than was sued when creating the inventory.
+	 *
+	 * @param player The player for whom the inventory should be opened.
+	 * @param inventory The inventory that should be opened.
+	 * @param title The title of the inventory that should be used on the client. <b>Must have been generated with the {@link InventoryUtils#prepareTitleForOpenInventoryWithCustomTitle(String)} method!</b>
+	 */
+	public static void openInventoryWithCustomTitlePrepared(final @NotNull Player player, final @NotNull Inventory inventory, final  @NotNull Object title)
+	{
+		INSTANCE.openInventoryWithCustomTitlePrepared(player, inventory, title);
+	}
+
+	/**
+	 * Prepares a title to be used with the {@link InventoryUtils#openInventoryWithCustomTitlePrepared(Player, Inventory, Object)} method.
+	 *
+	 * @param title The title that should be prepared.
+	 * @return The prepared title.
+	 */
+	public static Object prepareTitleForOpenInventoryWithCustomTitle(final @NotNull String title)
+	{
+		return INSTANCE.prepareTitleForOpenInventoryWithCustomTitle(title);
+	}
+
+	/**
+	 * Changes the title of an existing inventory.<br/>
+	 * <b>WARNING:</b>
+	 * <ul>
+	 *     <li>MC version <= 1.13: If the inventory is currently opened by a player the title will only get updated for them once they reopen the inventory.</li>
+	 *     <li>MC version >= 1.14: If the inventory is currently opened by a player it will become invallid! All interactions with it will fail on the server with an {@link IndexOutOfBoundsException}. The content of the inventory might disappear on the client.</li>
+	 * </ul>
+	 *
+	 * @param inventory The inventory for which the title should be changed.
+	 * @param newTitle The new title that should be used.
+	 */
+	public static void setInventoryTitle(final @NotNull Inventory inventory, final @NotNull String newTitle)
+	{
+		INSTANCE.setInventoryTitle(inventory, newTitle);
+	}
 }

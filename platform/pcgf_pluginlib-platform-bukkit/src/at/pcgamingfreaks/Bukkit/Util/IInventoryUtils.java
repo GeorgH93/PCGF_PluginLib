@@ -18,8 +18,10 @@
 package at.pcgamingfreaks.Bukkit.Util;
 
 import at.pcgamingfreaks.Bukkit.IPlatformDependent;
+import at.pcgamingfreaks.Bukkit.PlatformResolver;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +29,27 @@ import java.util.logging.Logger;
 
 interface IInventoryUtils extends IPlatformDependent
 {
+	IInventoryUtils INSTANCE = PlatformResolver.createPlatformInstance(IInventoryUtils.class);
+
+	String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger);
+
+	Object prepareTitleForUpdateInventoryTitle(final @NotNull String title);
+
 	void updateInventoryTitle(final @NotNull Player player, final @NotNull String newTitle);
 
-	String convertItemStackToJson(@NotNull ItemStack itemStack, @NotNull Logger logger);
+	void updateInventoryTitlePrepared(final @NotNull Player player, final @NotNull Object newTitle);
+
+	Object prepareTitleForOpenInventoryWithCustomTitle(final @NotNull String title);
+
+	void openInventoryWithCustomTitle(final @NotNull Player player, final @NotNull Inventory inventory, final  @NotNull String title);
+
+	void openInventoryWithCustomTitlePrepared(final @NotNull Player player, final @NotNull Inventory inventory, final  @NotNull Object title);
+
+	Object prepareTitleForSetInventoryTitle(final @NotNull String title);
+
+	Object getInventoryTitle(final @NotNull Inventory inventory);
+
+	void setInventoryTitle(final @NotNull Inventory inventory, final @NotNull String newTitle);
+
+	void setInventoryTitlePrepared(final @NotNull Inventory inventory, final @NotNull Object newTitle);
 }

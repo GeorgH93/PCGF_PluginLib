@@ -22,6 +22,7 @@ import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.NmsReflector;
 import at.pcgamingfreaks.Bukkit.OBCReflection;
 import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.StringUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -33,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.EnumMap;
 import java.util.logging.Level;
@@ -54,6 +56,10 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NmsReflector.INSTANCE.getNmsClass("NBTTagCompound");
 	private static final Method AS_NMS_COPY_METHOD = OBCReflection.getOBCMethod("inventory.CraftItemStack", "asNMSCopy", ItemStack.class);
 	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NmsReflector.INSTANCE.getNmsMethod("ItemStack", "save", NBT_TAG_COMPOUND_CLASS);
+
+	private final static Method METHOD_GET_INVENTORY = NMSReflection.getOBCMethod("inventory.CraftInventory", "getInventory");
+	private final static Method METHOD_CRAFT_CHAT_MESSAGE_FROM_STRING = MCVersion.isAny(MCVersion.MC_1_13) ? NMSReflection.getOBCMethod("util.CraftChatMessage", "wrapOrNull", String.class) : null;
+	private final static Field FIELD_TITLE = NMSReflection.getOBCField("inventory.CraftInventoryCustom$MinecraftInventory", "title");
 
 	private static final EnumMap<InventoryType, Object> INVENTORY_TYPE_MAP = new EnumMap<>(InventoryType.class);
 	private static final Object[] INVENTORY_TYPE_CHEST = new Object[6];
@@ -92,6 +98,20 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 		}
 	}
 
+	@Override
+	public String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
+	{
+		try
+		{
+			return SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
+		}
+		catch (Throwable t)
+		{
+			logger.log(Level.SEVERE, "Failed to serialize item stack to NMS item! Bukkit Version: " + Bukkit.getServer().getVersion() + "\n", t);
+		}
+		return "";
+	}
+
 	protected static Object getInvContainersObject(final @NotNull Inventory inv)
 	{
 		if(inv.getType() == InventoryType.CHEST)
@@ -105,7 +125,28 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	}
 
 	@Override
+	public Object prepareTitleForUpdateInventoryTitle(final @NotNull String title)
+	{
+		try
+		{
+			return CONSTRUCTOR_CHAT_MESSAGE.newInstance(title, new Object[0]);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
 	public void updateInventoryTitle(final @NotNull Player player, final @NotNull String newTitle)
+	{
+		if(MCVersion.isOlderThan(MCVersion.MC_1_14)) return;
+		updateInventoryTitlePrepared(player, prepareTitleForUpdateInventoryTitle(newTitle));
+	}
+
+	@Override
+	public void updateInventoryTitlePrepared(final @NotNull Player player, final @NotNull Object title)
 	{
 		if(MCVersion.isOlderThan(MCVersion.MC_1_14)) return;
 		InventoryView view = player.getOpenInventory();
@@ -115,7 +156,6 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 		{
 			Object entityPlayer = NmsReflector.getHandle(player);
 			if(entityPlayer == null || entityPlayer.getClass() != ENTITY_PLAYER) return; // Not a real player
-			Object title = CONSTRUCTOR_CHAT_MESSAGE.newInstance(newTitle, new Object[0]);
 			Object activeContainer = FIELD_ACTIVE_CONTAINER.get(entityPlayer);
 			Object windowId = FIELD_CONTAINER_WINDOW_ID.get(activeContainer);
 			String type = topInv.getType().name();
@@ -133,16 +173,95 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	}
 
 	@Override
-	public String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
+	public Object prepareTitleForOpenInventoryWithCustomTitle(final @NotNull String title)
+	{
+		if(MCVersion.isOlderThan(MCVersion.MC_1_14)) return prepareTitleForSetInventoryTitle(title);
+		else return prepareTitleForUpdateInventoryTitle(title);
+	}
+
+	@Override
+	public void openInventoryWithCustomTitle(final @NotNull Player player, final @NotNull Inventory inventory, final @NotNull String title)
+	{
+		Object currentTitle = null;
+		if(MCVersion.isOlderThan(MCVersion.MC_1_14))
+		{
+			currentTitle = getInventoryTitle(inventory);
+			setInventoryTitle(inventory, title);
+		}
+		player.openInventory(inventory);
+		if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_14)) updateInventoryTitle(player, title);
+		else setInventoryTitlePrepared(inventory, currentTitle);
+	}
+
+	@Override
+	public void openInventoryWithCustomTitlePrepared(final @NotNull Player player, final @NotNull Inventory inventory, final @NotNull Object title)
+	{
+		Object currentTitle = null;
+		if(MCVersion.isOlderThan(MCVersion.MC_1_14))
+		{
+			currentTitle = getInventoryTitle(inventory);
+			setInventoryTitlePrepared(inventory, title);
+		}
+		player.openInventory(inventory);
+		if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_14)) updateInventoryTitlePrepared(player, title);
+		else setInventoryTitlePrepared(inventory, currentTitle);
+	}
+
+	@Override
+	public Object getInventoryTitle(final @NotNull Inventory inventory)
 	{
 		try
 		{
-			return SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
+			return FIELD_TITLE.get(METHOD_GET_INVENTORY.invoke(inventory));
 		}
-		catch (Throwable t)
+		catch(IllegalAccessException | InvocationTargetException e)
 		{
-			logger.log(Level.SEVERE, "Failed to serialize item stack to NMS item! Bukkit Version: " + Bukkit.getServer().getVersion() + "\n", t);
+			e.printStackTrace();
 		}
-		return "";
+		return null;
 	}
+
+	//region set inventory title
+
+	@Override
+	public void setInventoryTitle(final @NotNull Inventory inventory, final @NotNull String newTitle)
+	{
+		setInventoryTitlePrepared(inventory, prepareTitleForSetInventoryTitle(newTitle));
+	}
+
+	@Override
+	public Object prepareTitleForSetInventoryTitle(@NotNull String title)
+	{
+		if(MCVersion.isAny(MCVersion.MC_1_13))
+		{
+			try
+			{
+				//noinspection ConstantConditions
+				return METHOD_CRAFT_CHAT_MESSAGE_FROM_STRING.invoke(null, title);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			return StringUtils.limitLength(title, 32);
+		}
+		return null;
+	}
+
+	@Override
+	public void setInventoryTitlePrepared(final @NotNull Inventory inventory, final @NotNull Object newTitle)
+	{
+		try
+		{
+			FIELD_TITLE.set(METHOD_GET_INVENTORY.invoke(inventory), newTitle);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	//endregion
 }
