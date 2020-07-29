@@ -116,7 +116,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	{
 		if(inv.getType() == InventoryType.CHEST)
 		{
-			return INVENTORY_TYPE_CHEST[Math.max(6, inv.getSize() / 9) - 1];
+			return INVENTORY_TYPE_CHEST[Math.min(6, inv.getSize() / 9) - 1];
 		}
 		else
 		{
