@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Message;
 
+import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.StringUtils;
 
@@ -50,19 +51,27 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 	//region Constructors
 	protected Message(final @NotNull String message)
 	{
+		String errorMessage = null;
 		try
 		{
 			//noinspection unchecked
 			messageComponents = (List<MESSAGE_COMPONENT>) METHOD_MESSAGE_COMPONENT_FROM_JSON.invoke(null, message);
 		}
-		catch(Exception ignored) {} // If there was an exception it's very likely that the given message isn't a JSON, that's all we need to know.
-		if(messageComponents != null) // The json was successfully deserialized
+		catch(Exception e) { errorMessage = e.getMessage(); } // If there was an exception it's very likely that the given message isn't a JSON
+		if(messageComponents != null) // The json has been deserialized successful
 		{
 			json = message; // The given message string was a valid JSON so we are free to send it to the clients
 			fallback = getClassicMessage(); // We need a fallback for the console an everything else that isn't a player
 		}
 		else
-		{
+		{ // The json has not been deserialized successful
+			if(message.length() > 8 && message.charAt(0) != '&' && message.charAt(0) != MessageColor.COLOR_CHAR && StringUtils.containsAny(message, "\"text\":", "\"clickEvent\":"))
+			{ // The message contains elements typically found in json messages and does not start with a color format code. It probably should have been parsed as a json. Show a info for the admin.
+				System.out.println(ConsoleColor.YELLOW + "It appears that message '" + message + "' is a JSON message, but failed to parse (" + errorMessage + ").\n" +
+						                   "If this is a false positive add a legacy format code at the start of your message to suppress this info." + ConsoleColor.RESET);
+			}
+			//region create a new message component encapsulating the message
+			//TODO convert message based on legacy color/format codes to a proper json. The current implementation drops the color after the first line
 			List<MESSAGE_COMPONENT> messageComponentsList = new ArrayList<>(1);
 			try
 			{
@@ -76,8 +85,9 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 			{
 				e.printStackTrace();
 			}
-			json = MessageComponent.GSON.toJson(messageComponents);
-			fallback = message; // Our message is no JSON so we can send it to everyone
+			//endregion
+			json = MessageComponent.GSON.toJson(messageComponents); // Convert message component to json
+			fallback = message; // The message is not a json, so we can use it as a fallback
 		}
 	}
 

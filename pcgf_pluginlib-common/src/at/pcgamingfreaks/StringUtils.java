@@ -152,6 +152,15 @@ public class StringUtils
 		return false;
 	}
 
+	public static boolean containsAny(final @NotNull String string, final @NotNull String... searchFor)
+	{
+		for(String s : searchFor)
+		{
+			if(string.contains(s)) return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Limits the length of a given string to a given amount of characters.
 	 *
