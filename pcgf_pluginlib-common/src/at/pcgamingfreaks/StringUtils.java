@@ -172,7 +172,7 @@ public class StringUtils
 	{
 		if(text.length() == 0 || maxLength <= 0) return "";
 		if(text.length() <= maxLength) return text; // No need to create a new object if the string has not changed
-		return text.substring(0, maxLength -1);
+		return text.substring(0, maxLength);
 	}
 
 	/**

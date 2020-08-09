@@ -29,11 +29,12 @@ public class StringUtilsTest
 {
 	private static final String longText = "This is a long text, without any meaningful content.", shortText = "Just a text.", exactText = "This text should not change.";
 	private static final int maxLength = exactText.length();
-	private static final String longTextFinal = longText.substring(0, maxLength - 1), shortTextFinal = shortText, exactTextFinal = exactText;
+	private static final String longTextFinal = longText.substring(0, maxLength), shortTextFinal = shortText, exactTextFinal = exactText;
 	private static final String t1 = "Test String 1", t2 = "test 2", t3 = "The tree is old.";
 	private static final String[] testArray = new String[] { t1, t2, t3 };
 	private static final String ENABLED_MESSAGE = ConsoleColor.GREEN + " TestPlugin v1.2 has been enabled! " + ConsoleColor.YELLOW + " :) " + ConsoleColor.RESET;
 	private static final String DISABLED_MESSAGE = ConsoleColor.RED + " TestPlugin v1.2 has been disabled. " + ConsoleColor.YELLOW + " :( " + ConsoleColor.RESET;
+	private static final String TEST_STRING = "This is a test string!";
 
 	@BeforeClass
 	public static void prepareTestData()
@@ -42,25 +43,21 @@ public class StringUtilsTest
 	}
 
 	@Test
-	public void testLimitStringLength()
+	public void testLimitLength()
 	{
 		assertEquals("The limited string should be correct", longTextFinal, StringUtils.limitLength(longText, maxLength));
 		assertEquals("The limited string should be correct", shortTextFinal, StringUtils.limitLength(shortText, maxLength));
 		assertEquals("The limited string should be correct", exactTextFinal, StringUtils.limitLength(exactText, maxLength));
-		try
-		{
-			StringUtils.limitLength(longText, -1);
-		}
-		catch(IllegalArgumentException e)
-		{
-			assertEquals("A negative limit length should throw an error", e.getMessage(), "The max length must not be negative!");
-		}
 		assertEquals("A limit of 0 characters should lead to an empty string", "", StringUtils.limitLength(longText, 0));
 		assertEquals("An empty string should lead to an empty output string", "", StringUtils.limitLength("", 10));
+		assertEquals("This is a test", StringUtils.limitLength(TEST_STRING, 14));
+		assertEquals("", StringUtils.limitLength("", 100));
+		assertEquals("", StringUtils.limitLength(TEST_STRING, 0));
+		assertEquals(TEST_STRING, StringUtils.limitLength(TEST_STRING, TEST_STRING.length()));
 	}
 
 	@Test
-	public void testStringArrayContains()
+	public void testArrayContains()
 	{
 		String[] array = new String[] { "Junk", "tree", "Hello" };
 		assertTrue("The array should contain the string", StringUtils.arrayContains(array, "tree"));
@@ -75,7 +72,7 @@ public class StringUtilsTest
 	}
 
 	@Test
-	public void testStringArrayContainsIgnoreCase()
+	public void testArrayContainsIgnoreCase()
 	{
 		String[] array = new String[] { "Junk", "tree", "Hello" };
 		assertTrue("The array should contain the string", StringUtils.arrayContainsIgnoreCase(array, "tree"));
@@ -91,7 +88,7 @@ public class StringUtilsTest
 	}
 
 	@Test
-	public void testStringArrayContainsAny()
+	public void testArrayContainsAny()
 	{
 		String[] array = new String[] { "Junk", "tree", "Hello" };
 		assertTrue("The array should contain one of the strings", StringUtils.arrayContainsAny(array, "junk", "tree"));
@@ -101,7 +98,7 @@ public class StringUtilsTest
 	}
 
 	@Test
-	public void testStringArrayContainsAnyIgnoreCase()
+	public void testArrayContainsAnyIgnoreCase()
 	{
 		String[] array = new String[] { "Junk", "tree", "Hello" };
 		assertTrue("The array should contain one of the strings", StringUtils.arrayContainsAnyIgnoreCase(array, "junk", "tree"));
@@ -131,7 +128,7 @@ public class StringUtilsTest
 	}
 
 	@Test
-	public void testGetAllContainingStrings()
+	public void testGetAllContaining()
 	{
 		List<String> result = StringUtils.getAllContaining(testArray, "String");
 		assertEquals("The lists element count should math", 1, result.size());
@@ -151,7 +148,7 @@ public class StringUtilsTest
 	}
 
 	@Test
-	public void testGetAllContainingStringsIgnoreCase()
+	public void testGetAllContainingIgnoreCase()
 	{
 		List<String> result = StringUtils.getAllContainingIgnoreCase(testArray, "String");
 		assertEquals("The lists element count should math", 1, result.size());
@@ -217,7 +214,7 @@ public class StringUtilsTest
 	}
 
 	@Test
-	public void testFormatByteCountHumanReadable() throws Exception
+	public void testFormatByteCountHumanReadable()
 	{
 		assertEquals("1 byte", StringUtils.formatByteCountHumanReadable(1));
 		assertEquals("10 bytes", StringUtils.formatByteCountHumanReadable(10));
@@ -231,5 +228,20 @@ public class StringUtilsTest
 		assertEquals("100.0 MiB", StringUtils.formatByteCountHumanReadable(1024*1024*100));
 		assertEquals("8.00 EiB", StringUtils.formatByteCountHumanReadable(Long.MAX_VALUE));
 		assertEquals("8,00 EiB", StringUtils.formatByteCountHumanReadable(Locale.GERMAN, Long.MAX_VALUE));
+	}
+
+	@Test
+	public void testContainsAny()
+	{
+		assertTrue(StringUtils.containsAny(TEST_STRING, "test", "house"));
+		assertTrue(StringUtils.containsAny(TEST_STRING, "house", "test"));
+		assertFalse(StringUtils.containsAny(TEST_STRING, "house", "TEST"));
+	}
+
+	@Test
+	public void testArrayToString()
+	{
+		assertEquals("test 1", StringUtils.arrayToString(new Object[] { "test", 1 }));
+		assertEquals("", StringUtils.arrayToString(new Object[0]));
 	}
 }
