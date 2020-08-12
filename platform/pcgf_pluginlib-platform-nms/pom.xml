@@ -115,5 +115,6 @@
 		<module>pcgf_pluginlib-platform-nms-reflection</module>
 		<module>pcgf_pluginlib-platform-nms-1_15_R1</module>
 		<module>pcgf_pluginlib-platform-nms-1_16_R1</module>
+		<module>pcgf_pluginlib-platform-nms-1_16_R2</module>
 	</modules>
 </project>

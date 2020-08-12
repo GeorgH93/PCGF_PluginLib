@@ -172,15 +172,16 @@ public class MCVersionTest
 	@Test
 	public void testVersionName()
 	{
-		assertEquals("1.7.9", MCVersion.MC_1_7_9.getName());
-		assertEquals("1.8.9", MCVersion.MC_1_8_9.getName());
-		assertEquals("1.9.4", MCVersion.MC_1_9_4.getName());
-		assertEquals("1.12.2", MCVersion.MC_1_12_2.getName());
-		assertEquals("1.13.2", MCVersion.MC_1_13_2.getName());
-		assertEquals("1.15.2", MCVersion.MC_1_15_2.getName());
-		assertEquals("1.15_NMS_R1", MCVersion.MC_NMS_1_15_R1.getName());
-		assertEquals("UNKNOWN", MCVersion.UNKNOWN.getName());
-		assertEquals("1.15.2", MCVersion.MC_1_15_2.toString());
+		for(MCVersion version : MCVersion.values())
+		{
+			if(version == MCVersion.UNKNOWN) assertEquals("UNKNOWN", version.getName());
+			else if(version.name().contains("NMS"))
+			{
+				String[] components = version.name().substring("MC_NMS_".length()).split("_R");
+				assertEquals(components[0].replace('_', '.') + "_NMS_R" + components[1], version.getName());
+			}
+			else assertEquals(version.name().substring("MC_".length()).replace('_', '.'), version.getName());
+		}
 	}
 
 	@Test
