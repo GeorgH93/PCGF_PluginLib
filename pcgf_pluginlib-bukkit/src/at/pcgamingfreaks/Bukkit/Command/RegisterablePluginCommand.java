@@ -144,7 +144,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 			catch(Throwable e)
 			{
 				String cmd = commandLabel + ' ' + StringUtils.arrayToString(args);
-				sender.sendMessage("Unhandled exception executing command '" + cmd + "', Message: " + e.getMessage());
+				sender.sendMessage("Unhandled exception executing command '" + cmd + "': " + StringUtils.getErrorMessage(e));
 				owningPlugin.getLogger().warning("Unhandled exception executing command '" + cmd + "' in plugin " + owningPlugin.getDescription().getFullName());
 				e.printStackTrace();
 			}

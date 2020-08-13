@@ -258,6 +258,11 @@ public class StringUtils
 		return builder.toString();
 	}
 
+	public static @NotNull String getErrorMessage(final @NotNull Throwable e)
+	{
+		return e.getClass().getName() + ": " + e.getMessage();
+	}
+
 	//region Enabled / Disabled messages
 	private static final String ENABLED_MESSAGE = ConsoleColor.GREEN + " %s has been enabled! " + ConsoleColor.YELLOW + " :) " + ConsoleColor.RESET;
 	private static final String DISABLED_MESSAGE = ConsoleColor.RED + " %s has been disabled. " + ConsoleColor.YELLOW + " :( " + ConsoleColor.RESET;
