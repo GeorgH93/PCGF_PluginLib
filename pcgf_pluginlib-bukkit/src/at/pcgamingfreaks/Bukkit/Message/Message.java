@@ -64,7 +64,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 * Gets the method used to display this message on the client.
 	 */
 	@Getter private @NotNull SendMethod sendMethod = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
-	@Getter private boolean placeholderApiEnabled = false, legacy = PRE_1_8_MC;
+	@Getter private boolean placeholderApiEnabled = false;
 	//endregion
 
 	//region Constructors
@@ -77,12 +77,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	public Message(@NotNull String message)
 	{
 		super(message);
-		//noinspection StringEquality
-		if(fallback == message) // == is correct here, we want to check if it is the same instance not the same content
-		{
-			legacy = true;
-		}
-		else if(!MCVersion.supportsRgbColors())
+		if(!MCVersion.supportsRgbColors())
 		{
 			boolean found = false;
 			Matcher matcher = RGB_COLOR_DETECTION.matcher(json);

@@ -25,6 +25,8 @@ import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -50,6 +52,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 	protected Object optionalParameters = null;
 	protected String json, fallback;
 	protected List<MESSAGE_COMPONENT> messageComponents = null;
+	@Getter private boolean legacy = false;
 	//endregion
 
 	//region Constructors
@@ -75,6 +78,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 						                   "If this is a false positive add a legacy format code at the start of your message to suppress this info." + ConsoleColor.RESET);
 			}
 			//region convert legacy message to json
+			legacy = true;
 			try
 			{
 				MessageBuilder<?,MESSAGE_COMPONENT,?> builder = MESSAGE_BUILDER_CONSTRUCTOR.newInstance();
