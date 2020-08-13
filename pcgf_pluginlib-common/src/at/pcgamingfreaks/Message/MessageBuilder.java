@@ -17,8 +17,7 @@
 
 package at.pcgamingfreaks.Message;
 
-import com.google.gson.Gson;
-
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
@@ -26,7 +25,7 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 @SuppressWarnings({ "unchecked", "UnusedReturnValue" })
-public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message>
+public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message>
 {
 	private final List<COMPONENT> messageList = new ArrayList<>();
 	private COMPONENT current;
@@ -34,7 +33,6 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	@SuppressWarnings("unused")
 	private static Class<? extends MessageComponent> COMPONENT_CLASS;
 	private static MessageComponent NEW_LINE_HELPER = null;
-	protected static final Gson GSON = new Gson();
 
 	/**
 	 * Creates a new MessageBuilder with a given {@link MessageComponent}.
@@ -63,7 +61,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 *
 	 * @return The message builder instance (for chaining)
 	 */
-	public T appendNewLine()
+	public MESSAGE_BUILDER appendNewLine()
 	{
 		return append((COMPONENT) NEW_LINE_HELPER);
 	}
@@ -73,7 +71,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 *
 	 * @return The message builder instance (for chaining).
 	 */
-	public T append()
+	public MESSAGE_BUILDER append()
 	{
 		try
 		{
@@ -83,7 +81,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 		{
 			e.printStackTrace();
 		}
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -92,7 +90,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param text    The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T append(String text, MessageFormat... formats)
+	public MESSAGE_BUILDER append(String text, MessageFormat... formats)
 	{
 		try
 		{
@@ -102,7 +100,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 		{
 			e.printStackTrace();
 		}
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -113,7 +111,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param formats The style information for the new {@link MessageComponent} that will be added to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T append(String text, MessageColor color, MessageFormat... formats)
+	public MESSAGE_BUILDER append(String text, MessageColor color, MessageFormat... formats)
 	{
 		try
 		{
@@ -123,7 +121,7 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 		{
 			e.printStackTrace();
 		}
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -132,14 +130,14 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param components The array of {@link MessageComponent}'s that should be added to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T append(COMPONENT... components)
+	public MESSAGE_BUILDER append(COMPONENT... components)
 	{
 		if(components != null && components.length > 0)
 		{
 			current = components[components.length - 1];
 			Collections.addAll(messageList, components);
 		}
-		return (T)this;
+		return (MESSAGE_BUILDER)this;
 	}
 
 	/**
@@ -148,11 +146,11 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param components The collection of {@link MessageComponent}'s that should be added to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T append(Collection<COMPONENT> components)
+	public MESSAGE_BUILDER append(Collection<COMPONENT> components)
 	{
 		messageList.addAll(components);
 		current = messageList.get(messageList.size() - 1);
-		return (T)this;
+		return (MESSAGE_BUILDER)this;
 	}
 
 	/**
@@ -161,7 +159,18 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param json The JSON string that should be deserialized in oder to add it to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
-	public abstract T appendJson(String json);
+	public abstract MESSAGE_BUILDER appendJson(String json);
+
+	/**
+	 * Adds a one or more {@link MessageComponent} to the builder, the text and formatting is extracted from the given legacy message.
+	 * @param legacyMessage The legacy message that should be added to the message builder.
+	 * @return The message builder instance (for chaining).
+	 */
+	public MESSAGE_BUILDER appendLegacy(final String legacyMessage)
+	{
+		new LegacyMessageParser(this).parse(legacyMessage);
+		return (MESSAGE_BUILDER)this;
+	}
 	//endregion
 
 	protected COMPONENT getCurrentComponent()
@@ -196,10 +205,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param text The new text of the current component.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T text(String text)
+	public MESSAGE_BUILDER text(String text)
 	{
 		getCurrentComponent().setText(text);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -208,10 +217,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param color The new color of the current component.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T color(String color)
+	public MESSAGE_BUILDER color(String color)
 	{
 		getCurrentComponent().setColor(color);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -220,10 +229,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param color The new color of the current component.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T color(MessageColor color)
+	public MESSAGE_BUILDER color(MessageColor color)
 	{
 		getCurrentComponent().setColor(color);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -233,10 +242,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @return The message builder instance (for chaining).
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
-	public T format(MessageFormat... formats) throws IllegalArgumentException
+	public MESSAGE_BUILDER format(MessageFormat... formats) throws IllegalArgumentException
 	{
 		getCurrentComponent().setFormats(formats);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -245,10 +254,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param font The font to be used. null = default font
 	 * @return The message builder instance (for chaining).
 	 */
-	public T font(final @Nullable String font)
+	public MESSAGE_BUILDER font(final @Nullable String font)
 	{
 		getCurrentComponent().setFont(font);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -256,10 +265,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 *
 	 * @return The message builder instance (for chaining).
 	 */
-	public T bold()
+	public MESSAGE_BUILDER bold()
 	{
 		getCurrentComponent().setBold();
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -267,10 +276,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 *
 	 * @return The message builder instance (for chaining).
 	 */
-	public T italic()
+	public MESSAGE_BUILDER italic()
 	{
 		getCurrentComponent().setItalic();
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -278,10 +287,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 *
 	 * @return The message builder instance (for chaining).
 	 */
-	public T underlined()
+	public MESSAGE_BUILDER underlined()
 	{
 		getCurrentComponent().setUnderlined();
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -289,10 +298,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 *
 	 * @return The message builder instance (for chaining).
 	 */
-	public T obfuscated()
+	public MESSAGE_BUILDER obfuscated()
 	{
 		getCurrentComponent().setObfuscated();
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -300,10 +309,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 *
 	 * @return The message builder instance (for chaining).
 	 */
-	public T strikethrough()
+	public MESSAGE_BUILDER strikethrough()
 	{
 		getCurrentComponent().setStrikethrough();
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -313,10 +322,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param value the value the client should use for the action.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T onClick(MessageClickEvent.ClickEventAction action, String value)
+	public MESSAGE_BUILDER onClick(MessageClickEvent.ClickEventAction action, String value)
 	{
 		getCurrentComponent().onClick(action, value);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -325,10 +334,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param path The path of the file on the clients filesystem.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T file(String path)
+	public MESSAGE_BUILDER file(String path)
 	{
 		getCurrentComponent().file(path);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -337,10 +346,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param url The URL of the page to open when the link is clicked.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T link(String url)
+	public MESSAGE_BUILDER link(String url)
 	{
 		getCurrentComponent().link(url);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -350,10 +359,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param command The text to display in the chat bar of the client.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T suggest(String command)
+	public MESSAGE_BUILDER suggest(String command)
 	{
 		getCurrentComponent().suggest(command);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -363,10 +372,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param command The text to display in the chat bar of the client.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T command(final String command)
+	public MESSAGE_BUILDER command(final String command)
 	{
 		getCurrentComponent().command(command);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -376,10 +385,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param insert The text to append to the chat bar of the client.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T insert(String insert)
+	public MESSAGE_BUILDER insert(String insert)
 	{
 		getCurrentComponent().setInsertion(insert);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -389,10 +398,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param value  The value the client should use for the action.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T onHover(MessageHoverEvent.HoverEventAction action, String value)
+	public MESSAGE_BUILDER onHover(MessageHoverEvent.HoverEventAction action, String value)
 	{
 		getCurrentComponent().onHover(action, value);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -402,10 +411,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param value  The value the client should use for the action.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T onHover(MessageHoverEvent.HoverEventAction action, Collection<? extends COMPONENT> value)
+	public MESSAGE_BUILDER onHover(MessageHoverEvent.HoverEventAction action, Collection<? extends COMPONENT> value)
 	{
 		getCurrentComponent().onHover(action, value);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -414,10 +423,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param name The name of the achievement to display, excluding the "achievement." prefix.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T achievementTooltip(String name)
+	public MESSAGE_BUILDER achievementTooltip(String name)
 	{
 		getCurrentComponent().achievementTooltip(name);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -426,10 +435,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param name The name of the statistic to displayed, excluding the "stat." prefix.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T statisticTooltip(String name)
+	public MESSAGE_BUILDER statisticTooltip(String name)
 	{
 		getCurrentComponent().statisticTooltip(name);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -438,10 +447,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param itemJSON A string representing the JSON-serialized NBT data tag of an ItemStack.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T itemTooltip(String itemJSON)
+	public MESSAGE_BUILDER itemTooltip(String itemJSON)
 	{
 		getCurrentComponent().itemTooltip(itemJSON);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -450,10 +459,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param lines The lines of text which will be displayed to the client upon hovering.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T tooltip(String... lines)
+	public MESSAGE_BUILDER tooltip(String... lines)
 	{
 		getCurrentComponent().tooltip(lines);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -462,10 +471,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param text The formatted text which will be displayed to the client upon hovering.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T formattedTooltip(COMPONENT... text) throws IllegalArgumentException
+	public MESSAGE_BUILDER formattedTooltip(COMPONENT... text) throws IllegalArgumentException
 	{
 		getCurrentComponent().formattedTooltip(text);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -474,10 +483,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param lines The lines of formatted text which will be displayed to the client upon hovering.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T formattedTooltip(MESSAGE... lines) throws IllegalArgumentException
+	public MESSAGE_BUILDER formattedTooltip(MESSAGE... lines) throws IllegalArgumentException
 	{
 		getCurrentComponent().formattedTooltip(lines);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 
 	/**
@@ -486,10 +495,10 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 * @param extras The extras to be added to the current component.
 	 * @return The message builder instance (for chaining).
 	 */
-	public T extra(COMPONENT... extras)
+	public MESSAGE_BUILDER extra(COMPONENT... extras)
 	{
 		getCurrentComponent().extra(extras);
-		return (T) this;
+		return (MESSAGE_BUILDER) this;
 	}
 	//endregion
 
@@ -548,9 +557,17 @@ public abstract class MessageBuilder<T extends MessageBuilder, COMPONENT extends
 	 *
 	 * @return The JSON string of the build message.
 	 */
-	public String getJson()
+	public @NotNull String getJson()
 	{
-		return GSON.toJson(getJsonMessage());
+		String json = MessageComponent.GSON.toJson(getJsonMessage());
+		if(json.startsWith("[{},")) json = "[\"\"," + json.substring(4);
+		return json;
 	}
 	//endregion
+
+	public void clear()
+	{
+		messageList.clear();
+		append();
+	}
 }

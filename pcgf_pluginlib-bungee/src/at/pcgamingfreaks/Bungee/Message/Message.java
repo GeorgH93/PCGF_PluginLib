@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import lombok.Getter;
 
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -37,7 +38,16 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 {
 	static
 	{
-		setMessageComponentClass(MessageComponent.class);
+		Constructor<MessageBuilder> builderConstructor = null;
+		try
+		{
+			builderConstructor = MessageBuilder.class.getConstructor();
+		}
+		catch(NoSuchMethodException e)
+		{
+			e.printStackTrace();
+		}
+		setMessageComponentClass(MessageComponent.class, builderConstructor);
 	}
 
 	//region Variables

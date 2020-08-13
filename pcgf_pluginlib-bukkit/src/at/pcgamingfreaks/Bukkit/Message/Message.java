@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Matcher;
@@ -43,7 +44,16 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 {
 	static
 	{
-		setMessageComponentClass(MessageComponent.class);
+		Constructor<MessageBuilder> builderConstructor = null;
+		try
+		{
+			builderConstructor = MessageBuilder.class.getConstructor();
+		}
+		catch(NoSuchMethodException e)
+		{
+			e.printStackTrace();
+		}
+		setMessageComponentClass(MessageComponent.class, builderConstructor);
 	}
 
 	//region Variables
@@ -54,7 +64,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 * Gets the method used to display this message on the client.
 	 */
 	@Getter private @NotNull SendMethod sendMethod = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
-	private boolean placeholderApiEnabled = false, legacy = PRE_1_8_MC;
+	@Getter private boolean placeholderApiEnabled = false, legacy = PRE_1_8_MC;
 	//endregion
 
 	//region Constructors
@@ -71,7 +81,6 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		if(fallback == message) // == is correct here, we want to check if it is the same instance not the same content
 		{
 			legacy = true;
-			sendMethod = SendMethod.CHAT_CLASSIC;
 		}
 		else if(!MCVersion.supportsRgbColors())
 		{
@@ -179,7 +188,6 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	{
 		if(method == null) method = SendMethod.DISABLED;
 		else if(!method.isAvailable()) method = method.getFallbackSendMethod();
-		if(method == SendMethod.CHAT && legacy) method = SendMethod.CHAT_CLASSIC;
 		this.sendMethod = method;
 	}
 
@@ -198,11 +206,6 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	public void setPlaceholderApiEnabled(boolean enabled)
 	{
 		placeholderApiEnabled = enabled && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
-	}
-
-	public boolean isPlaceholderApiEnabled()
-	{
-		return placeholderApiEnabled;
 	}
 
 	/**

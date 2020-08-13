@@ -22,13 +22,23 @@ import at.pcgamingfreaks.Message.Message;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Constructor;
 import java.util.Collection;
 
 public class TestMessage extends Message<TestMessage, Object, Object, TestMessageComponent>
 {
 	static
 	{
-		setMessageComponentClass(TestMessageComponent.class);
+		Constructor<TestMessageBuilder> builderConstructor = null;
+		try
+		{
+			builderConstructor = TestMessageBuilder.class.getConstructor();
+		}
+		catch(NoSuchMethodException e)
+		{
+			e.printStackTrace();
+		}
+		setMessageComponentClass(TestMessageComponent.class, builderConstructor);
 	}
 
 	public TestMessage(String message)

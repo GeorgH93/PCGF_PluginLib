@@ -73,9 +73,14 @@ public enum MessageFormat
 		return codeString;
 	}
 
+	public static boolean isFormatChar(char code)
+	{
+		return (code >= 'K' && code <= 'O') || (code >= 'k' && code <= 'o');
+	}
+
 	public static @NotNull MessageFormat getFromCode(char code) throws IllegalArgumentException
 	{
-
+		if(code >= 'K' && code <= 'R') code = (char)(code - 'A' + 'a'); // convert to lower case
 		if(code >= 'k' && code <= 'o') return values()[code - 'k'];
 		if(code == 'r') return RESET;
 		throw new IllegalArgumentException("Unknown format code '" + code + "'!");

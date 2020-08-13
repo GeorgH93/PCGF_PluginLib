@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,11 +37,13 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 {
 	private static Class<? extends MessageComponent<?>> MESSAGE_COMPONENT_CLASS;
 	private static Method METHOD_MESSAGE_COMPONENT_FROM_JSON = null;
+	private static Constructor<? extends MessageBuilder> MESSAGE_BUILDER_CONSTRUCTOR;
 
-	protected static void setMessageComponentClass(Class<? extends MessageComponent<?>> messageComponentClass)
+	protected static void setMessageComponentClass(Class<? extends MessageComponent<?>> messageComponentClass, Constructor<? extends MessageBuilder> messageBuilderConstructor)
 	{
 		MESSAGE_COMPONENT_CLASS = messageComponentClass;
 		METHOD_MESSAGE_COMPONENT_FROM_JSON = Reflection.getMethod(messageComponentClass, "fromJson", String.class);
+		MESSAGE_BUILDER_CONSTRUCTOR = messageBuilderConstructor;
 	}
 
 	//region Variables
@@ -57,7 +61,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 			//noinspection unchecked
 			messageComponents = (List<MESSAGE_COMPONENT>) METHOD_MESSAGE_COMPONENT_FROM_JSON.invoke(null, message);
 		}
-		catch(Exception e) { errorMessage = e.getMessage(); } // If there was an exception it's very likely that the given message isn't a JSON
+		catch(Exception e) { errorMessage = StringUtils.getErrorMessage(e); } // If there was an exception it's very likely that the given message isn't a JSON
 		if(messageComponents != null) // The json has been deserialized successful
 		{
 			json = message; // The given message string was a valid JSON so we are free to send it to the clients
@@ -70,20 +74,19 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 				System.out.println(ConsoleColor.YELLOW + "It appears that message '" + message + "' is a JSON message, but failed to parse (" + errorMessage + ").\n" +
 						                   "If this is a false positive add a legacy format code at the start of your message to suppress this info." + ConsoleColor.RESET);
 			}
-			//region create a new message component encapsulating the message
-			//TODO convert message based on legacy color/format codes to a proper json. The current implementation drops the color after the first line
-			List<MESSAGE_COMPONENT> messageComponentsList = new ArrayList<>(1);
+			//region convert legacy message to json
 			try
 			{
-				//noinspection unchecked
-				MESSAGE_COMPONENT mc = (MESSAGE_COMPONENT) MESSAGE_COMPONENT_CLASS.newInstance();
-				mc.setText(message);
-				messageComponentsList.add(mc);
-				messageComponents = messageComponentsList;
+				MessageBuilder<?,MESSAGE_COMPONENT,?> builder = MESSAGE_BUILDER_CONSTRUCTOR.newInstance();
+				builder.appendLegacy(message);
+				json = builder.getJson();
+				messageComponents = builder.getJsonMessageAsList();
 			}
-			catch(InstantiationException | IllegalAccessException | NullPointerException e)
+			catch(InstantiationException | IllegalAccessException | NullPointerException | InvocationTargetException e)
 			{
 				e.printStackTrace();
+				json = "[\"\"]";
+				messageComponents = new ArrayList<>(0);
 			}
 			//endregion
 			json = MessageComponent.GSON.toJson(messageComponents); // Convert message component to json

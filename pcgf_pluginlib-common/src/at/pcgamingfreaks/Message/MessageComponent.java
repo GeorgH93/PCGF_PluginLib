@@ -835,7 +835,7 @@ public abstract class MessageComponent<T extends MessageComponent>
 	 */
 	public T formattedTooltip(MessageComponent... text) throws IllegalArgumentException
 	{
-		StringBuilder builder = new StringBuilder("");
+		StringBuilder builder = new StringBuilder();
 		for(MessageComponent t : text)
 		{
 			if(t.getClickEvent() != null) throw new IllegalArgumentException("The tooltip text cannot have click data.");

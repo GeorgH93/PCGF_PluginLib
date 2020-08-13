@@ -184,6 +184,11 @@ public final class MessageColor
 	}
 	//endregion
 
+	public static boolean isColorChar(char code)
+	{
+		return ((code >= '0' && code <= '9') || (code >= 'A' && code <= 'F') || (code >= 'a' && code <= 'f'));
+	}
+
 	public static @NotNull MessageColor getFromCode(char code) throws IllegalArgumentException
 	{
 		if(code >= '0' && code <= '9') return values()[code - '0'];

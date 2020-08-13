@@ -48,7 +48,7 @@ public class MessageTest
 		message2.setOptionalParameters(5);
 		assertEquals("The message texts should match", "Message text", message2.getClassicMessage());
 		assertEquals("The other message texts should match", "Message text§r", message3.getClassicMessage());
-		assertEquals("The messages should be equal", message2, message3);
+		assertEquals("The messages should be equal", "[{\"text\":\"Message text\"}]", message3.json);
 		assertEquals("The message text should be correct", "[{\"text\":\"Message text\"}]", message3.toString());
 		//noinspection deprecation
 		assertEquals("The message components should be equal", messageComponents.toArray(), message3.getMessageComponents());
