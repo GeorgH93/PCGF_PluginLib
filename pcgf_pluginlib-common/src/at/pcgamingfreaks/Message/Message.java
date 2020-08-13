@@ -93,7 +93,6 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 				messageComponents = new ArrayList<>(0);
 			}
 			//endregion
-			json = MessageComponent.GSON.toJson(messageComponents); // Convert message component to json
 			fallback = message; // The message is not a json, so we can use it as a fallback
 		}
 	}
