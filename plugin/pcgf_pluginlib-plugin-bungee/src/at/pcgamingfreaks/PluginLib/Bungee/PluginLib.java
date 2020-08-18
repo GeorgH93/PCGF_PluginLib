@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks.PluginLib.Bungee;
 
-import at.pcgamingfreaks.Bungee.Configuration;
 import at.pcgamingfreaks.Bungee.ManagedUpdater;
 import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
@@ -41,7 +40,7 @@ public final class PluginLib extends Plugin implements PluginLibrary
 	@Getter @Setter(AccessLevel.PRIVATE) private static PluginLibrary instance = null;
 
 	@Getter private ManagedUpdater updater;
-	private Configuration config;
+	private Config config;
 	@Getter private Version version;
 	@Getter private DatabaseConnectionPoolBase databaseConnectionPool;
 
@@ -50,16 +49,18 @@ public final class PluginLib extends Plugin implements PluginLibrary
 	{
 		this.updater = new ManagedUpdater(this);
 		this.version = new Version(this.getDescription().getVersion());
-		this.config = new Configuration(this, 1);
+		this.config = new Config(this, 1);
 		if(!this.config.isLoaded())
 		{
 			this.getLogger().warning(ConsoleColor.RED + "Failed to load config! Can't start up!" + ConsoleColor.RESET);
+			this.config = null;
 			return;
 		}
+		updater.setConfig(config);
+		updater.autoUpdate();
 
 		this.databaseConnectionPool = DatabaseConnectionPoolBase.startPool(this.config, this.getLogger(), this.getDataFolder());
 
-		if(this.config.getBool("Misc.AutoUpdate", true)) updater.update();
 
 		Language commonLanguage = new at.pcgamingfreaks.Bungee.Language(this, 2, File.separator + "lang", "common_");
 		commonLanguage.load(config.getLanguage(), config.getLanguageUpdateMode());
@@ -85,7 +86,8 @@ public final class PluginLib extends Plugin implements PluginLibrary
 	public void onDisable()
 	{
 		setInstance(null);
-		if(this.config.getBool("Misc.AutoUpdate", true)) updater.update();
+		if(config == null) return;
+		updater.autoUpdate();
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.shutdown();
 		if(updater != null) updater.waitForAsyncOperation();
 		this.getLogger().info(StringUtils.getPluginDisabledMessage(this.getDescription().getName(), version));

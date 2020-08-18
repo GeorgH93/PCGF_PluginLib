@@ -17,17 +17,15 @@
 
 package at.pcgamingfreaks.Database;
 
-import at.pcgamingfreaks.yaml.YAML;
+import at.pcgamingfreaks.Config.IConfig;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public interface DatabaseConnectionConfiguration
+public interface DatabaseConnectionConfiguration extends IConfig
 {
-	@NotNull YAML getConfigE();
-
 	default @NotNull String getSQLHost()
 	{
 		return getConfigE().getString("Database.SQL.Host", "localhost:3306");

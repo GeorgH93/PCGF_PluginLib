@@ -64,9 +64,11 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 		{
 			this.getLogger().warning(ConsoleColor.RED + "Failed to load config! Can't start up!" + ConsoleColor.RESET);
 			this.setEnabled(false);
+			this.config = null;
 			return;
 		}
-		if(this.config.getBool("Misc.AutoUpdate", true)) updater.update();
+		updater.setConfig(config);
+		updater.autoUpdate();
 
 		if(MCVersion.is(MCVersion.UNKNOWN))
 		{
@@ -103,7 +105,8 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 	public void onDisable()
 	{
 		setInstance(null);
-		if(this.config.getBool("Misc.AutoUpdate", true)) updater.update();
+		if(config == null) return;
+		updater.autoUpdate();
 		HandlerList.unregisterAll(this); // Stop the listeners
 		if(this.databaseConnectionPool != null) this.databaseConnectionPool.shutdown();
 		updater.waitForAsyncOperation();

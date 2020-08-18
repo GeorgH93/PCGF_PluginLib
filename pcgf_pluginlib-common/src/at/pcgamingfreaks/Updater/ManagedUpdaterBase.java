@@ -28,10 +28,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implements IUpdater
@@ -43,6 +40,7 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 	protected final Map<String, List<UpdateProvider>> updateChannelMap;
 	protected UpdateProvider[] providers;
 	protected final String defaultChannel, releaseType;
+	protected UpdateMode autoUpdateMode = UpdateMode.UPDATE;
 
 	protected ManagedUpdaterBase(final @NotNull PLUGIN plugin, final @NotNull Logger logger)
 	{
@@ -71,17 +69,23 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 			updateChannelMap = new HashMap<>();
 		}
 		this.defaultChannel = defaultChannel;
-		this.releaseType = releaseType;
+		this.releaseType = releaseType.toLowerCase(Locale.ENGLISH);
 		this.updateChannelMap = updateChannelMap;
 		setChannel(channel);
+	}
+
+	public void setConfig(final @NotNull IUpdateConfiguration config)
+	{
+		setChannel(config.getUpdateChannel());
+		autoUpdateMode = config.getUpdateMode();
 	}
 
 	public void setChannel(@Nullable String channel)
 	{
 		if(channel == null) channel = defaultChannel;
+		channel = channel.toLowerCase(Locale.ENGLISH);
 		if(releaseType.length() >= 1) channel += '.' + releaseType;
-		List<UpdateProvider> providers = updateChannelMap.get(channel);
-		if(providers == null) providers = new ArrayList<>(1);
+		List<UpdateProvider> providers = updateChannelMap.getOrDefault(channel, new ArrayList<>(0));
 		if(providers.size() == 0)
 		{
 			logger.warning("No update providers for channel: " + channel);
@@ -151,7 +155,7 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 					if(updateProvider == null) logger.warning("Unknown update provider '" + provider + "' in channel '" + channelName + "'! Make sure it is defined!");
 					else providerList.add(updateProvider);
 				}
-				updateChannelMap.put(channelName, providerList);
+				updateChannelMap.put(channelName.toLowerCase(Locale.ENGLISH), providerList);
 			}
 			catch(Exception e)
 			{
@@ -192,7 +196,7 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 	}
 
 	@Override
-	public void update(@NotNull UpdateMode updateMode, @Nullable UpdateResponseCallback response)
+	public void update(final @NotNull UpdateMode updateMode, final @Nullable UpdateResponseCallback response)
 	{
 		if(updateMode == UpdateMode.CHECK) checkForUpdate(response);
 		else if(updateMode == UpdateMode.UPDATE) update(response);
@@ -206,4 +210,9 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 	}
 
 	protected abstract UPDATER makeUpdater(final @NotNull UpdateProvider[] updateProvider);
+
+	public void autoUpdate()
+	{
+		update(autoUpdateMode, null);
+	}
 }

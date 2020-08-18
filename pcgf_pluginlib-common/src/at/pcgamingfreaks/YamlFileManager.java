@@ -37,7 +37,7 @@ public class YamlFileManager
 {
 	protected static final String KEY_YAML_VERSION = "Version", YAML_FILE_EXT = ".yml";
 
-	protected final Logger logger; // The logger instance of the using plugin
+	@Getter protected final Logger logger; // The logger instance of the using plugin
 	protected final String inJarPrefix, path;
 	protected final int expectedVersion, upgradeThreshold;
 	protected final File baseDir;
