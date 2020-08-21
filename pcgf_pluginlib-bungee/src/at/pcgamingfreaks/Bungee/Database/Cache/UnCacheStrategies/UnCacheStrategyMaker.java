@@ -15,13 +15,14 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Database.Cache.UnCacheStrategies;
+package at.pcgamingfreaks.Bungee.Database.Cache.UnCacheStrategies;
 
+import at.pcgamingfreaks.Database.Cache.BaseUnCacheStrategy;
 import at.pcgamingfreaks.Database.Cache.IPlayerCache;
 import at.pcgamingfreaks.Database.Cache.IUnCacheStrategyConfig;
-import at.pcgamingfreaks.Database.Cache.BaseUnCacheStrategy;
 
-import org.bukkit.plugin.Plugin;
+import net.md_5.bungee.api.plugin.Plugin;
+
 import org.jetbrains.annotations.NotNull;
 
 public class UnCacheStrategyMaker
@@ -36,7 +37,7 @@ public class UnCacheStrategyMaker
 	 */
 	public @NotNull BaseUnCacheStrategy make(final @NotNull Plugin plugin, final @NotNull IPlayerCache cache, final @NotNull IUnCacheStrategyConfig config)
 	{
-		long delay = config.getUnCacheDelay() * 20L, interval = config.getUnCacheInterval() * 20L;
+		long delay = config.getUnCacheDelay(), interval = config.getUnCacheInterval();
 		switch(config.getUnCacheStrategy())
 		{
 			case ON_DISCONNECT: return new OnDisconnect(plugin, cache);
