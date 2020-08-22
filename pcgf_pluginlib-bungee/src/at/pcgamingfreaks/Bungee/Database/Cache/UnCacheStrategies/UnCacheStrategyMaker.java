@@ -35,7 +35,7 @@ public class UnCacheStrategyMaker
 	 * @param config The config for the uncache strategy
 	 * @return The created uncache strategy
 	 */
-	public @NotNull BaseUnCacheStrategy make(final @NotNull Plugin plugin, final @NotNull IPlayerCache cache, final @NotNull IUnCacheStrategyConfig config)
+	public static @NotNull BaseUnCacheStrategy make(final @NotNull Plugin plugin, final @NotNull IPlayerCache cache, final @NotNull IUnCacheStrategyConfig config)
 	{
 		long delay = config.getUnCacheDelay(), interval = config.getUnCacheInterval();
 		switch(config.getUnCacheStrategy())
