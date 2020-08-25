@@ -68,7 +68,14 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class UpdaterTest
 {
 	private static final Logger LOGGER = Logger.getLogger(UpdaterTest.class.getName());
-	private static final File PLUGINS_FOLDER = new File("plugins"), TARGET_FILE = new File(PLUGINS_FOLDER, "updates" + File.separator + "MM.jar");
+	private static final File PLUGINS_FOLDER, TARGET_FILE;
+
+	static
+	{
+		PLUGINS_FOLDER = Files.createTempDir();
+		PLUGINS_FOLDER.deleteOnExit();
+		TARGET_FILE = new File(PLUGINS_FOLDER, "updates" + File.separator + "MM.jar");
+	}
 
 	private static UpdateProvider bukkitProvider;
 
@@ -131,9 +138,9 @@ public class UpdaterTest
 	{
 		bukkitProvider = new BukkitUpdateProvider(74734, LOGGER); // 74734 is the Bukkit id of Marriage Master
 		//noinspection ResultOfMethodCallIgnored
-		new File("plugins/updates").mkdirs();
+		new File(PLUGINS_FOLDER, "updates").mkdirs();
 		//noinspection ResultOfMethodCallIgnored
-		new File("plugins/Updater").mkdirs();
+		new File(PLUGINS_FOLDER, "Updater").mkdirs();
 		TestUtils.initReflection();
 	}
 
@@ -179,7 +186,7 @@ public class UpdaterTest
 	{
 		IUpdater updater = getUpdater("1.0");
 		//noinspection ResultOfMethodCallIgnored
-		new File("plugins/updates").delete();
+		new File(PLUGINS_FOLDER, "updates").delete();
 		updater.update(result2 -> {
 			assertEquals("The update result should be correct", UpdateResult.SUCCESS, result2);
 			assertTrue("The target file should exist", TARGET_FILE.exists());
@@ -283,11 +290,11 @@ public class UpdaterTest
 		URL zipArchive = Updater.class.getResource("/ZIP-Archive.zip");
 		setFile(zipArchive, file);
 		updater.unzip(file);
-		File jarFile = new File("plugins/updates/Test-JAR.jar");
+		File jarFile = new File(PLUGINS_FOLDER, "updates/Test-JAR.jar");
 		assertTrue("The jar file should be unzipped", jarFile.exists());
-		assertFalse("The txt file shouldn't be unzipped", new File("plugins/updates/Test-TXT.txt").exists());
+		assertFalse("The txt file shouldn't be unzipped", new File(PLUGINS_FOLDER, "updates/Test-TXT.txt").exists());
 		assertFalse("The given jar file should not be found as plugin", updater.isPluginFile("NotFound.jar"));
-		File pluginFile = new File("plugins/Test-JAR.jar");
+		File pluginFile = new File(PLUGINS_FOLDER, "Test-JAR.jar");
 		Files.copy(jarFile, pluginFile);
 		//noinspection ResultOfMethodCallIgnored
 		jarFile.delete();
@@ -376,7 +383,7 @@ public class UpdaterTest
 		assertEquals("The exception should be the correct one", NullPointerException.class, exception.getClass());
 		//noinspection ResultOfMethodCallIgnored
 		file.delete();
-		File testJAR = new File("plugins/updates/Test-JAR.jar");
+		File testJAR = new File(PLUGINS_FOLDER, "updates/Test-JAR.jar");
 		//noinspection ResultOfMethodCallIgnored
 		testJAR.delete();
 	}
@@ -388,7 +395,7 @@ public class UpdaterTest
 		if(config != null)
 		{
 			//noinspection deprecation
-			Files.copy(new File(URLDecoder.decode(config.getPath())), new File("plugins/Updater/config.yml"));
+			Files.copy(new File(URLDecoder.decode(config.getPath())), new File(PLUGINS_FOLDER, "Updater/config.yml"));
 		}
 		Field result = Updater.class.getDeclaredField("result");
 		result.setAccessible(true);
@@ -400,13 +407,13 @@ public class UpdaterTest
 		if(config != null)
 		{
 			//noinspection deprecation
-			Files.copy(new File(URLDecoder.decode(config.getPath())), new File("plugins/Updater/config.yml"));
+			Files.copy(new File(URLDecoder.decode(config.getPath())), new File(PLUGINS_FOLDER, "Updater/config.yml"));
 		}
 		updater = getUpdater("1.0");
 		assertNotEquals("The update function should be enabled", UpdateResult.DISABLED, result.get(updater));
 		result.setAccessible(false);
 		//noinspection ResultOfMethodCallIgnored
-		new File("plugins/updater/config.yml").delete();
+		new File(PLUGINS_FOLDER, "updater/config.yml").delete();
 	}
 
 	@Test
@@ -457,7 +464,7 @@ public class UpdaterTest
 		result.set(updater, UpdateResult.NO_UPDATE);
 		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
-		File mockedUpdateFolder = spy(new File("plugins/updater"));
+		File mockedUpdateFolder = spy(new File(PLUGINS_FOLDER, "updater"));
 		//noinspection ResultOfMethodCallIgnored
 		doReturn(false).when(mockedUpdateFolder).exists();
 		Field updateFolder = TestUtils.setAccessible(Updater.class, updater, "updateFolder", mockedUpdateFolder);
@@ -471,7 +478,9 @@ public class UpdaterTest
 		result.set(updater, UpdateResult.NO_UPDATE);
 		download.invoke(updater, mockedURL, "Test-Download.zip", 0);
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
-		File mockedFile = spy(new File(System.getProperty("user.dir"), "Test-ZIP.zip"));
+		File tmpDir = Files.createTempDir();
+		tmpDir.deleteOnExit();
+		File mockedFile = spy(new File(tmpDir, "Test-ZIP.zip"));
 		doReturn(false).when(mockedFile).delete();
 		whenNew(File.class).withAnyArguments().thenReturn(mockedFile);
 		download.invoke(updater, mockedURL, "Test-ZIP.zip", 0);
@@ -507,11 +516,10 @@ public class UpdaterTest
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static void cleanupTestData()
 	{
-		new File("plugins/updates/Test-Download.zip").delete();
-		new File("plugins/updates/Test-JAR.jar").delete();
-		new File("plugins/Updater/Test-JAR.jar").delete();
-		new File("plugins/updater").delete();
-		new File("plugins/updates").delete();
-		new File("plugins").delete();
+		new File(PLUGINS_FOLDER, "updates/Test-Download.zip").delete();
+		new File(PLUGINS_FOLDER, "updates/Test-JAR.jar").delete();
+		new File(PLUGINS_FOLDER, "Updater/Test-JAR.jar").delete();
+		new File(PLUGINS_FOLDER, "updater").delete();
+		new File(PLUGINS_FOLDER, "updates").delete();
 	}
 }

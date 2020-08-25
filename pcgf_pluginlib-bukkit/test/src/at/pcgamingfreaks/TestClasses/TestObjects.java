@@ -21,6 +21,8 @@ import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.OBCReflection;
 
+import com.google.common.io.Files;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -56,7 +58,9 @@ public class TestObjects
 		when(mockedServer.getScheduler()).thenReturn(mockedScheduler);
 		mockedJavaPlugin = PowerMockito.mock(JavaPlugin.class);
 		when(mockedJavaPlugin.getLogger()).thenReturn(Logger.getLogger("TestLogger"));
-		when(mockedJavaPlugin.getDataFolder()).thenReturn(new File(""));
+		File pluginDir = Files.createTempDir();
+		pluginDir.deleteOnExit();
+		when(mockedJavaPlugin.getDataFolder()).thenReturn(pluginDir);
 		when(mockedJavaPlugin.getServer()).thenReturn(mockedServer);
 	}
 

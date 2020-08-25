@@ -47,14 +47,7 @@ public class ConfigurationTest
 	public void prepareTestData() throws Exception
 	{
 		TestObjects.initMockedJavaPlugin();
-		whenNew(at.pcgamingfreaks.Configuration.class).withAnyArguments().thenAnswer(new Answer<Object>()
-		{
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable
-			{
-				return null;
-			}
-		});
+		whenNew(at.pcgamingfreaks.Configuration.class).withAnyArguments().thenAnswer(invocationOnMock -> null);
 		suppress(at.pcgamingfreaks.Configuration.class.getDeclaredMethods());
 	}
 
@@ -72,12 +65,5 @@ public class ConfigurationTest
 		TestUtils.initReflection();
 		TestBukkitConfiguration configuration = new TestBukkitConfiguration(TestObjects.getJavaPlugin(), 1);
 		assertTrue("The version UUID compatibility should match", configuration.getIsBukkitVersionUUIDCompatible());
-	}
-
-	@AfterClass
-	public static void cleanupTestData()
-	{
-		//noinspection ResultOfMethodCallIgnored
-		new File("\\config.yml").delete();
 	}
 }

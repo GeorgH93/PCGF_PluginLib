@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.TestClasses;
 
+import com.google.common.io.Files;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -45,7 +47,9 @@ public class TestObjects
 	public static void initMockedPlugin()
 	{
 		File mockedFile = mock(File.class);
-		when(mockedFile.getParentFile()).thenReturn(new File(""));
+		File tmpDir = Files.createTempDir();
+		tmpDir.deleteOnExit();
+		when(mockedFile.getParentFile()).thenReturn(tmpDir);
 		when(mockedFile.getName()).thenReturn("FileName");
 		TaskScheduler mockedTaskScheduler = mock(TaskScheduler.class);
 		when(mockedTaskScheduler.runAsync(any(Plugin.class), any(Runnable.class))).thenAnswer(invocationOnMock -> {
@@ -53,7 +57,9 @@ public class TestObjects
 			return null;
 		});
 		ProxyServer mockedProxyServer = mock(ProxyServer.class);
-		when(mockedProxyServer.getPluginsFolder()).thenReturn(new File(""));
+		tmpDir = Files.createTempDir();
+		tmpDir.deleteOnExit();
+		when(mockedProxyServer.getPluginsFolder()).thenReturn(tmpDir);
 		when(mockedProxyServer.getScheduler()).thenReturn(mockedTaskScheduler);
 		PluginDescription mockedPluginDescription = mock(PluginDescription.class);
 		when(mockedPluginDescription.getName()).thenReturn("TestPlugin");

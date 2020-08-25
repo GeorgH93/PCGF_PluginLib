@@ -22,7 +22,8 @@ import at.pcgamingfreaks.TestClasses.TestSendMethod;
 import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.yaml.YAML;
 
-import org.junit.AfterClass;
+import com.google.common.io.Files;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,12 +48,15 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @PrepareForTest({ Language.class, Utils.class, YAML.class })
 public class LanguageTest
 {
+	private static File tmpDir;
 	private static Logger mockedLogger;
 	public static int loggedInfoCount;
 
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException
 	{
+		tmpDir = Files.createTempDir();
+		tmpDir.deleteOnExit();
 		loggedInfoCount = 0;
 		mockedLogger = mock(Logger.class);
 		doAnswer(invocationOnMock -> {
@@ -65,10 +69,9 @@ public class LanguageTest
 	@Test
 	public void testLanguage()
 	{
-		File userDir = new File(System.getProperty("user.dir"));
-		Language language = new Language(mockedLogger, userDir, 1);
+		Language language = new Language(mockedLogger, tmpDir, 1);
 		assertNotNull("The loaded language file should not be null", language);
-		language = new Language(mockedLogger, userDir, 4, 3);
+		language = new Language(mockedLogger, tmpDir, 4, 3);
 		assertNotNull("The loaded language file should not be null", language);
 		assertFalse("Language data should not be loaded", language.isLoaded());
 	}
@@ -76,8 +79,7 @@ public class LanguageTest
 	@Test
 	public void testLoad() throws Exception
 	{
-		File userDir = new File(System.getProperty("user.dir"));
-		Language language = new Language(mockedLogger, userDir, 1);
+		Language language = new Language(mockedLogger, tmpDir, 1);
 		language.load("de", "overwrite");
 		assertTrue("Language data should be loaded", language.isLoaded());
 		language.load("en", "update");
@@ -98,8 +100,7 @@ public class LanguageTest
 	@Test
 	public void testReload()
 	{
-		File userDir = new File(System.getProperty("user.dir"));
-		Language language = new Language(mockedLogger, userDir, 1);
+		Language language = new Language(mockedLogger, tmpDir, 1);
 		language.reload();
 		assertNotNull("The language object should not be null", language);
 	}
@@ -107,8 +108,8 @@ public class LanguageTest
 	@Test
 	public void testLoadWithConfig()
 	{
-		File userDir = new File(System.getProperty("user.dir"));
-		Language language = spy(new Language(mockedLogger, userDir, 1));
+		
+		Language language = spy(new Language(mockedLogger, tmpDir, 1));
 		doReturn(false).when(language).load(anyString(), any(YamlFileUpdateMethod.class));
 		Configuration mockedConfig = mock(Configuration.class);
 		doReturn("").when(mockedConfig).getLanguage();
@@ -121,8 +122,8 @@ public class LanguageTest
 	{
 		mockStatic(Utils.class);
 		given(Utils.extractFile(any(), any(Logger.class), anyString(), any(File.class))).willReturn(false);
-		File userDir = new File(System.getProperty("user.dir"));
-		Language language = new Language(mockedLogger, userDir, 1);
+		
+		Language language = new Language(mockedLogger, tmpDir, 1);
 		Field languageField = TestUtils.setAccessible(Language.class, language, "language", "de");
 		language.extractFile();
 		languageField.set(language, "en");
@@ -134,8 +135,7 @@ public class LanguageTest
 	@Test
 	public void testPropertyGetters()
 	{
-		File userDir = new File(System.getProperty("user.dir"));
-		Language language = new Language(mockedLogger, userDir, 1);
+		Language language = new Language(mockedLogger, tmpDir, 1);
 		language.load("de", "overwrite");
 		assertEquals("Unknown", language.getAuthor());
 		assertEquals("de", language.getLanguage());
@@ -144,8 +144,7 @@ public class LanguageTest
 	@Test
 	public void testGetMessage() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
-		File userDir = new File(System.getProperty("user.dir"));
-		at.pcgamingfreaks.Language language = new at.pcgamingfreaks.Language(mockedLogger, userDir, 1);
+		at.pcgamingfreaks.Language language = new at.pcgamingfreaks.Language(mockedLogger, tmpDir, 1);
 		language.load("en", YamlFileUpdateMethod.UPDATE);
 		Method getMessage = at.pcgamingfreaks.Language.class.getDeclaredMethod("getMessage", boolean.class, String.class);
 		getMessage.setAccessible(true);
@@ -162,14 +161,5 @@ public class LanguageTest
 		assertNotNull("The returned value should not be null", getMessage.invoke(language, false, "Lang1"));
 		TestUtils.setUnaccessible(messageClasses, language, false);
 		getMessage.setAccessible(false);
-	}
-
-	@AfterClass
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public static void cleanupTestData()
-	{
-		new File("lang\\de.yml").delete();
-		new File("lang\\en.yml").delete();
-		new File("lang").delete();
 	}
 }

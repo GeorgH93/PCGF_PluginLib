@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
 public class ConfigurationTest
 {
 	@Before
-	public void prepareTestObjects() throws Exception
+	public void prepareTestObjects()
 	{
 		TestObjects.initMockedPlugin();
 	}
@@ -41,12 +41,5 @@ public class ConfigurationTest
 		assertNotNull("The configuration should not be null", new Configuration(TestObjects.getPlugin(), 1));
 		assertNotNull("The configuration should not be null", new Configuration(TestObjects.getPlugin(), 1, "config.yml"));
 		assertNotNull("The configuration should not be null", new Configuration(TestObjects.getPlugin(), 1, 2));
-	}
-
-	@AfterClass
-	public static void cleanupTestData()
-	{
-		//noinspection ResultOfMethodCallIgnored
-		new File("\\config.yml").delete();
 	}
 }

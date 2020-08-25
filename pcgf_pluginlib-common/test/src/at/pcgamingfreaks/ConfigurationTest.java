@@ -24,7 +24,6 @@ import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,6 +51,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class ConfigurationTest
 {
 	private static Logger mockedLogger;
+	private static File tmpDir;
 
 	@SuppressWarnings("SpellCheckingInspection")
 	private static int loggedInfos = 0;
@@ -59,6 +59,8 @@ public class ConfigurationTest
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException
 	{
+		tmpDir = Files.createTempDir();
+		tmpDir.deleteOnExit();
 		setConfigFile();
 		TestUtils.initReflection();
 	}
@@ -75,7 +77,7 @@ public class ConfigurationTest
 
 	private static void setConfigFile()
 	{
-		File targetFile = new File("config.yml");
+		File targetFile = new File(tmpDir, "config.yml");
 		if(targetFile.exists())
 		{
 			//noinspection ResultOfMethodCallIgnored
@@ -99,25 +101,25 @@ public class ConfigurationTest
 	@Test
 	public void testExtendedConfiguration() throws YamlKeyNotFoundException
 	{
-		Configuration oldConfiguration = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1, "config.yml");
-		Configuration upgradeThresholdConfig = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1, 1);
+		Configuration oldConfiguration = new Configuration(this, mockedLogger, tmpDir, 1, "config.yml");
+		Configuration upgradeThresholdConfig = new Configuration(this, mockedLogger, tmpDir, 1, 1);
 		assertEquals("The configuration with the current version as upgrade threshold should return the same configuration", oldConfiguration.getConfig().getString("Version"), upgradeThresholdConfig.getConfig().getString("Version"));
 	}
 
 	@Test
 	public void testSaveConfig() throws FileNotFoundException, YamlKeyNotFoundException
 	{
-		Configuration configuration = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1);
+		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, 1);
 		configuration.set("NewlySavedValue", true);
 		configuration.save();
 		configuration.reload();
-		assertEquals("The saved value should be in the reloaded config", true, configuration.getBool("NewlySavedValue"));
+		assertTrue("The saved value should be in the reloaded config", configuration.getBool("NewlySavedValue"));
 	}
 
 	@Test
 	public void testUpdate()
 	{
-		Configuration configuration = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1);
+		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, 1);
 		int currentLoggedInfo = loggedInfos;
 		configuration.doUpdate();
 		assertEquals("The log count should be one more than before because the update function has been called", currentLoggedInfo + 1, loggedInfos);
@@ -138,11 +140,11 @@ public class ConfigurationTest
 			count[1]++;
 			return null;
 		}).when(mockedLogger).info(anyString());
-		Configuration configuration = spy(new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1));
+		Configuration configuration = spy(new Configuration(this, mockedLogger, tmpDir, 1));
 		doNothing().when(configuration).extractFile();
 		doNothing().when(configuration).save();
 		doReturn(false).when(configuration).newConfigCreated();
-		File testFile = new File("NoYAML.yml");
+		File testFile = new File(tmpDir, "NoYAML.yml");
 		try(FileOutputStream fileStream = new FileOutputStream(testFile))
 		{
 			fileStream.write("Dies ist kein YAML\nOder?\n:".getBytes());
@@ -181,7 +183,7 @@ public class ConfigurationTest
 	@Test
 	public void testGetter() throws IllegalAccessException, NoSuchFieldException, YamlKeyNotFoundException
 	{
-		Configuration configuration = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1);
+		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, 1);
 		YAML mockedYAML = mock(YAML.class);
 		Field yamlField = TestUtils.setAccessible(YamlFileManager.class, configuration, "yaml", mockedYAML);
 		doReturn(123).when(mockedYAML).getInt(anyString());
@@ -197,9 +199,9 @@ public class ConfigurationTest
 		doReturn("Hello World!").when(mockedYAML).getString(anyString(), anyString());
 		assertEquals("The string should match", "Hello World!", configuration.getString("Test", "Hallo Welt!"));
 		doReturn(false).when(mockedYAML).getBoolean(anyString());
-		assertEquals("The boolean should match", false, configuration.getBool("Test"));
+		assertFalse("The boolean should match", configuration.getBool("Test"));
 		doReturn(true).when(mockedYAML).getBoolean(anyString(), anyBoolean());
-		assertEquals("The boolean should match", true, configuration.getBool("Test", false));
+		assertTrue("The boolean should match", configuration.getBool("Test", false));
 		assertEquals("The string should match", "Hello World!", configuration.getLanguage());
 		assertEquals("The file update mode should be upgrade", YamlFileUpdateMethod.UPGRADE, configuration.getLanguageUpdateMode());
 		doReturn("overwrite").when(mockedYAML).getString(anyString(), anyString());
@@ -210,7 +212,7 @@ public class ConfigurationTest
 	@Test
 	public void testSetter() throws NoSuchFieldException, IllegalAccessException
 	{
-		Configuration configuration = new Configuration(this, mockedLogger, new File(System.getProperty("user.dir")), 1);
+		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, 1);
 		YAML mockedYAML = mock(YAML.class);
 		final int[] count = { 0 };
 		doAnswer(invocationOnMock -> {
@@ -224,18 +226,5 @@ public class ConfigurationTest
 		configuration.set("Test", false);
 		assertEquals("The setter should have been called 4 times", 4, count[0]);
 		TestUtils.setUnaccessible(yamlField, configuration, false);
-	}
-
-	@AfterClass
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public static void cleanupTestData()
-	{
-		new File("config.yml").delete();
-		new File("NotFound.yml").delete();
-		new File("NOT_HERE.cfg").delete();
-		new File("config.yml.old_v1").delete();
-		new File("config.yml.old_v3").delete();
-		new File("config.yml.old_v5").delete();
-		new File("config.yml.old_v7").delete();
 	}
 }
