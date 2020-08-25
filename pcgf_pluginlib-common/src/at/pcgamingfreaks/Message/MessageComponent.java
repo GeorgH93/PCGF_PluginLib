@@ -894,7 +894,7 @@ public abstract class MessageComponent<T extends MessageComponent>
 	//region deserializer variables
 	protected transient static Constructor messageComponentConstructor;
 	protected transient static Class messageComponentClass;
-	protected transient static final Gson GSON = new GsonBuilder().registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).create();
+	protected transient static final Gson GSON = new GsonBuilder().registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).disableHtmlEscaping().create();
 	protected transient static final JsonParser JSON_PARSER = new JsonParser();
 	//endregion
 

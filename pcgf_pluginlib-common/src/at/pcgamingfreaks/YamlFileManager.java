@@ -56,7 +56,7 @@ public class YamlFileManager
 		this.inJarPrefix = inJarPrefix;
 		this.expectedVersion = version;
 		this.upgradeThreshold = upgradeThreshold;
-		this.baseDir = (path != null) ? new File(baseDir, path) : baseDir;
+		this.baseDir = (path != null && !path.isEmpty()) ? new File(baseDir, path) : baseDir;
 		if(file != null) this.yamlFile = new File(this.baseDir, file);
 		if(oldConfig != null) yaml = oldConfig;
 	}

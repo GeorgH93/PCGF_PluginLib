@@ -50,7 +50,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 
 	//region Variables
 	protected Object optionalParameters = null;
-	protected String json, fallback;
+	@Getter protected String json, fallback;
 	protected List<MESSAGE_COMPONENT> messageComponents = null;
 	@Getter private boolean legacy = false;
 	//endregion
