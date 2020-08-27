@@ -26,13 +26,22 @@ public interface ISenderGeneric<PLAYER>
 {
 	void doSend(@NotNull PLAYER player, @NotNull String json);
 
-	void doSend(@NotNull PLAYER player, @NotNull String json, @Nullable Object optionalMetadata);
+	default void doSend(@NotNull PLAYER player, @NotNull String json, @Nullable Object optionalMetadata)
+	{
+		doSend(player, json);
+	}
 
 	void doSend(@NotNull Collection<? extends PLAYER> players, @NotNull String json);
 
-	void doSend(@NotNull Collection<? extends PLAYER> players, @NotNull String json, @Nullable Object optionalMetadata);
+	default void doSend(@NotNull Collection<? extends PLAYER> players, @NotNull String json, @Nullable Object optionalMetadata)
+	{
+		doSend(players, json);
+	}
 
 	void doBroadcast(@NotNull String json);
 
-	void doBroadcast(@NotNull String json, @Nullable Object optionalMetadata);
+	default void doBroadcast(@NotNull String json, @Nullable Object optionalMetadata)
+	{
+		doBroadcast(json);
+	}
 }

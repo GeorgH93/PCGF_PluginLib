@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Message;
 import at.pcgamingfreaks.Bukkit.NmsReflector;
 
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,5 +43,17 @@ public abstract class BaseSender implements Sender
 	public static @Nullable Object finalizeJson(@NotNull String json) throws InvocationTargetException, IllegalAccessException
 	{
 		return CHAT_SERIALIZER_METHOD_A != null ? CHAT_SERIALIZER_METHOD_A.invoke(null, json) : null;
+	}
+
+	@Override
+	public void doBroadcast(@NotNull String json)
+	{
+		doSend(Bukkit.getOnlinePlayers(), json);
+	}
+
+	@Override
+	public void doBroadcast(@NotNull String json, @Nullable Object optionalMetadata)
+	{
+		doSend(Bukkit.getOnlinePlayers(), json, optionalMetadata);
 	}
 }

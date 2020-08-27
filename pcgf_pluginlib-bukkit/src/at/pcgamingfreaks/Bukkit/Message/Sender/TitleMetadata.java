@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
 	 */
-	public TitleMetadata(){}
+	public TitleMetadata() {}
 
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
@@ -59,6 +59,7 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	public TitleMetadata(boolean isSubtitle)
 	{
 		super((isSubtitle) ? TitleLocation.SUBTITLE : TitleLocation.TITLE);
+		updateTitleType();
 	}
 
 	/**
@@ -73,6 +74,7 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	public TitleMetadata(int fadeIn, int fadeOut, int stay, boolean isSubtitle)
 	{
 		super(fadeIn, fadeOut, stay, (isSubtitle) ? TitleLocation.SUBTITLE : TitleLocation.TITLE);
+		updateTitleType();
 	}
 
 	/**
@@ -86,6 +88,7 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	public TitleMetadata(int fadeIn, int fadeOut, int stay, @NotNull TitleLocation location)
 	{
 		super(fadeIn, fadeOut, stay, location);
+		updateTitleType();
 	}
 
 	/**
