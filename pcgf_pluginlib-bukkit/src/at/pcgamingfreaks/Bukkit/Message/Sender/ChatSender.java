@@ -34,6 +34,10 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.UUID;
 
+/**
+ * @deprecated Use {@link SendMethod} instead!!!
+ */
+@Deprecated
 public class ChatSender extends BaseSender
 {
 	private static final UUID EMPTY_UUID = new UUID(0, 0);

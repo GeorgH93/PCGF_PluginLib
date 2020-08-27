@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,7 +27,10 @@ import java.util.Collection;
 
 /**
  * Only for MC 1.9 an newer
+ *
+ * @deprecated Use {@link SendMethod} instead!!!
  */
+@Deprecated
 public class BossBarSender extends BaseSender
 {
 	//TODO: with Bukkit 1.9 BossBarAPI

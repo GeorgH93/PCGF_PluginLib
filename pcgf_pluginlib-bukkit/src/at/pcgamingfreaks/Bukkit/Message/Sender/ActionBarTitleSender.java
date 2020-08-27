@@ -26,6 +26,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
+/**
+ * @deprecated Use {@link SendMethod} instead!!!
+ */
+@Deprecated
 public class ActionBarTitleSender extends BaseSender
 {
 	/**

@@ -33,6 +33,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Objects;
 
+/**
+ * @deprecated Use {@link SendMethod} instead!!!
+ */
+@Deprecated
 public class TitleSender extends BaseSender
 {
 	//region Reflection stuff
