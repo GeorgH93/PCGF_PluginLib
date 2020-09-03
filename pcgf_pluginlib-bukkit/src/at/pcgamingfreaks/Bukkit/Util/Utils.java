@@ -27,6 +27,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -37,7 +38,7 @@ import java.util.logging.Logger;
 
 public class Utils extends at.pcgamingfreaks.Utils
 {
-	private static final IUtils INSTANCE = PlatformResolver.createPlatformInstance(IUtils.class);
+	private static final IUtils INSTANCE = IUtils.INSTANCE;
 
 	private static final Method METHOD_JAVA_PLUGIN_GET_FILE = Reflection.getMethod(JavaPlugin.class, "getFile");
 
@@ -251,4 +252,9 @@ public class Utils extends at.pcgamingfreaks.Utils
 		return player1.hasPermission(bypassPermission) || player2.hasPermission(bypassPermission) || inRangeSquared(player1, player2, maxDistanceSquared);
 	}
 	//endregion
+
+	public static @Nullable Object jsonToIChatComponent(final @NotNull String json)
+	{
+		return INSTANCE.jsonToIChatComponent(json);
+	}
 }

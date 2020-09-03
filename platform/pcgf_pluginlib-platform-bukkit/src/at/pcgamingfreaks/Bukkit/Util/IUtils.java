@@ -23,10 +23,11 @@ import at.pcgamingfreaks.Bukkit.PlatformResolver;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-interface IUtils extends IPlatformDependent
+public interface IUtils extends IPlatformDependent
 {
 	IUtils INSTANCE = PlatformResolver.createPlatformInstance(IUtils.class);
 
 	int getPing(@NotNull Player player);
 	void sendPacket(@NotNull Player player, @NotNull Object packet);
+	Object jsonToIChatComponent(@NotNull String json);
 }

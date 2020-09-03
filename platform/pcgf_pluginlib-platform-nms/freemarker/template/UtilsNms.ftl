@@ -2,6 +2,7 @@ package at.pcgamingfreaks.Bukkit.Util;
 
 import net.minecraft.server.v${nmsVersion}.EntityPlayer;
 import net.minecraft.server.v${nmsVersion}.Packet;
+import net.minecraft.server.v${nmsVersion}.IChatBaseComponent;
 
 import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -29,5 +30,11 @@ public final class Utils_${nmsVersion} extends Utils_Reflection
 	public void sendPacket(final @NotNull Player player, final @NotNull Object packet)
 	{
 		getHandle(player).playerConnection.sendPacket((Packet<?>) packet);
+	}
+
+	@Override
+	public Object jsonToIChatComponent(@NotNull String json)
+	{
+		return IChatBaseComponent.ChatSerializer.a(json);
 	}
 }

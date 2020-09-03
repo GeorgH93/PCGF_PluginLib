@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Util;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NmsReflector;
 
 import org.bukkit.entity.Player;
@@ -36,6 +37,10 @@ public class Utils_Reflection implements IUtils
 	static final Field PLAYER_CONNECTION = NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "playerConnection");
 	//endregion
 	private static final Field PLAYER_PING = NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "ping");
+	//region Reflection constants for the json to IChatComponent converter
+	private static final Class<?> CHAT_SERIALIZER = NmsReflector.INSTANCE.getNmsClass((MCVersion.is(MCVersion.MC_NMS_1_8_R1)) ? "ChatSerializer" : "IChatBaseComponent$ChatSerializer");
+	private static final Method CHAT_SERIALIZER_METHOD_A = NmsReflector.INSTANCE.getNmsMethod(CHAT_SERIALIZER, "a", String.class);
+	//endregion
 
 	@Override
 	public int getPing(final @NotNull Player player)
@@ -70,5 +75,19 @@ public class Utils_Reflection implements IUtils
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public Object jsonToIChatComponent(final @NotNull String json)
+	{
+		try
+		{
+			return CHAT_SERIALIZER_METHOD_A.invoke(null, json);
+		}
+		catch(IllegalAccessException | InvocationTargetException | NullPointerException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
