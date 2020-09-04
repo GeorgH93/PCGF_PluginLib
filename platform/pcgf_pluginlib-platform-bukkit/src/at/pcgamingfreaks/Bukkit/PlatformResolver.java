@@ -33,7 +33,7 @@ public class PlatformResolver
 	/**
 	 * @param clazz The class/interface that defines the platform depending class. Must implement {@link IPlatformDependent} and if it is an interface, it's name must start with an I.
 	 * @param <T> The type of the
-	 * @return The created instance of the platform dependent class
+	 * @return The created instance of the platform dependent class. <b>WARNING: Will always return null during unit tests!!!!</b>
 	 */
 	@SneakyThrows
 	public static @NotNull <T extends IPlatformDependent> T createPlatformInstance(final Class<T> clazz)
