@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Protocol;
 
 import at.pcgamingfreaks.Bukkit.IPlatformDependent;
+import at.pcgamingfreaks.Bukkit.PlatformResolver;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,11 +26,20 @@ import java.util.UUID;
 
 public interface IChatMessagePacketFactory extends IPlatformDependent
 {
-	Object makeChatPackage(final @NotNull String json);
+	IChatMessagePacketFactory INSTANCE = PlatformResolver.createPlatformInstance(IChatMessagePacketFactory.class);
+	UUID EMPTY_UUID = new UUID(0, 0);
 
-	Object makeChatPackage(final @NotNull String json, final @NotNull UUID sender);
+	default Object makeChatPacket(final @NotNull String json)
+	{
+		return makeChatPacket(json, EMPTY_UUID);
+	}
 
-	Object makeChatPackageSystem(final @NotNull String json);
+	Object makeChatPacket(final @NotNull String json, final @NotNull UUID sender);
 
-	Object makeChatPackageActionBar(final @NotNull String json);
+	default Object makeChatPacketSystem(final @NotNull String json)
+	{
+		return makeChatPacket(json);
+	}
+
+	Object makeChatPacketActionBar(final @NotNull String json);
 }

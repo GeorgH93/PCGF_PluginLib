@@ -29,10 +29,8 @@ import lombok.Getter;
  * With it it's possible to configure the type of the tile (title/subtitle).
  * And the times used for the title animations (fade-in/out and stay time).
  */
-public final class TitleMetadata extends TitleMetadataBase implements ITitleMetadataBukkit
+public final class TitleMetadata extends TitleMetadataBase
 {
-	@Getter private Enum<?> titleType = TitleSender.ENUM_TITLE;
-
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
 	 */
@@ -59,7 +57,6 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	public TitleMetadata(boolean isSubtitle)
 	{
 		super((isSubtitle) ? TitleLocation.SUBTITLE : TitleLocation.TITLE);
-		updateTitleType();
 	}
 
 	/**
@@ -74,7 +71,6 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	public TitleMetadata(int fadeIn, int fadeOut, int stay, boolean isSubtitle)
 	{
 		super(fadeIn, fadeOut, stay, (isSubtitle) ? TitleLocation.SUBTITLE : TitleLocation.TITLE);
-		updateTitleType();
 	}
 
 	/**
@@ -88,7 +84,6 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	public TitleMetadata(int fadeIn, int fadeOut, int stay, @NotNull TitleLocation location)
 	{
 		super(fadeIn, fadeOut, stay, location);
-		updateTitleType();
 	}
 
 	/**
@@ -99,23 +94,6 @@ public final class TitleMetadata extends TitleMetadataBase implements ITitleMeta
 	public TitleMetadata(@NotNull TitleLocation location)
 	{
 		super(location);
-	}
-
-	@Override
-	public void setLocation(@NotNull TitleLocation location)
-	{
-		super.setLocation(location);
-		updateTitleType();
-	}
-
-	public void updateTitleType()
-	{
-		switch(getLocation())
-		{
-			case TITLE: titleType = TitleSender.ENUM_TITLE; break;
-			case SUBTITLE: titleType = TitleSender.ENUM_SUBTITLE; break;
-			case ACTION_BAR: titleType = TitleSender.ENUM_ACTION_BAR; break;
-		}
 	}
 
 	/**

@@ -32,17 +32,17 @@ import java.util.Collection;
 
 import static at.pcgamingfreaks.Bukkit.MCVersion.MC_1_8;
 
-public enum SendMethod implements ISendMethod, Sender
+public enum SendMethod implements ISendMethod, ISender
 {
-	CHAT_CLASSIC(new DisabledSender(), null, null),
+	@Deprecated CHAT_CLASSIC(new DisabledSender(), null, null),
 	CHAT(MCVersion.isOlderThan(MC_1_8) ? null : new ChatSender(), null, CHAT_CLASSIC),
 	TITLE(MCVersion.isOlderThan(MC_1_8) ? null : new TitleSender(), TitleMetadata.class, CHAT),
 	ACTION_BAR(MCVersion.isOlderThan(MC_1_8) ? null : (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11)) ? new ActionBarTitleSender() : new ActionBarTitleSender(), null, CHAT),
 	//BOSS_BAR(new BossBarSender(), BossBarMetadata.class), //TODO
 	DISABLED(new DisabledSender(), null, null);
 
-	@Getter @Nullable private final Sender sender;
-	@Getter @NotNull private final Sender activeSender;
+	@Getter @Nullable private final ISender sender;
+	@Getter @NotNull private final ISender activeSender;
 	@Getter @Nullable private final Class<?> metadataClass;
 	@Getter @Nullable private final Method metadataFromJsonMethod;
 	@Getter @NotNull private final SendMethod fallbackSendMethod;
@@ -53,7 +53,7 @@ public enum SendMethod implements ISendMethod, Sender
 	 * @param fallback A fallback send method that should be used if the used send method is not available on the used MC version.
 	 *                    There should always be one available if the send method is not available on all MC versions.
 	 */
-	SendMethod(@Nullable Sender sender, @Nullable Class<?> metadataClass, @Nullable SendMethod fallback)
+	SendMethod(@Nullable ISender sender, @Nullable Class<?> metadataClass, @Nullable SendMethod fallback)
 	{
 		this.sender = sender;
 		this.metadataClass = metadataClass;

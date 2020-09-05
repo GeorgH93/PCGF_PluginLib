@@ -19,31 +19,14 @@ package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-/**
- * @deprecated Use {@link SendMethod} instead!!!
- */
-@Deprecated
-public final class DisabledSender implements Sender
+final class DisabledSender implements ISender
 {
 	@Override
 	public void doSend(@NotNull Player player, @NotNull String json) {}
 
 	@Override
-	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optional) {}
-
-	@Override
 	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json) {}
-
-	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optional) {}
-
-	@Override
-	public void doBroadcast(@NotNull String json) {}
-
-	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optional) {}
 }

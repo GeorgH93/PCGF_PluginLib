@@ -55,7 +55,6 @@ public class MessageTest
 	{
 		Bukkit.setServer(new TestBukkitServer());
 		TestObjects.initNMSReflection();
-		//noinspection unused
 		SendMethod tmp = SendMethod.CHAT_CLASSIC; // Init class, do not remove!
 	}
 
@@ -82,7 +81,6 @@ public class MessageTest
 		assertEquals("The send method of the message should be correct", SendMethod.DISABLED, new Message(new MessageBuilder(), SendMethod.DISABLED).getSendMethod());
 		message = new Message(new MessageBuilder());
 		message.setOptionalParameters(new TitleMetadata(true));
-		message.setOptionalParameters(new BossBarMetadata());
 		assertNotNull("The message should not be null", message);
 	}
 
@@ -134,7 +132,7 @@ public class MessageTest
 		commandSenderCalls += playerCount;
 		assertEquals("The send method should be called as often as given", commandSenderCalls, player.sendCalls);
 		message.setSendMethod(SendMethod.CHAT);
-		BaseSender mockedSender = spy(ChatSender.class);
+		ISender mockedSender = spy(ISender.class);
 		doAnswer(invocationOnMock -> {
 			doSendCalls[0]++;
 			return null;
@@ -145,6 +143,7 @@ public class MessageTest
 		}).when(mockedSender).doSend(anyCollectionOf(Player.class), anyString(), any());
 		Field defaultSender = SendMethod.class.getDeclaredField("activeSender");
 		defaultSender.setAccessible(true);
+		Object senderBackup = defaultSender.get(SendMethod.CHAT);
 		defaultSender.set(SendMethod.CHAT, mockedSender);
 		message.send(player, (Object[]) null);
 		assertEquals("The send method should be called as often as given", ++playerCalls, doSendCalls[0]);
@@ -158,7 +157,7 @@ public class MessageTest
 		assertEquals("The send method should be called as often as given", ++playerCalls, doSendCalls[0]);
 		message.send(players, false);
 		assertEquals("The send method should be called as often as given", ++playerCalls, doSendCalls[0]);
-		defaultSender.set(SendMethod.CHAT, new ChatSender());
+		defaultSender.set(SendMethod.CHAT, senderBackup);
 		defaultSender.setAccessible(false);
 	}
 
@@ -169,13 +168,14 @@ public class MessageTest
 		final int[] broadcastCalls = { 0 };
 		setVersion("1_9");
 		Message message = new Message("[\"\",{\"text\":\"You don't have the permission to do that.\",\"color\":\"red\"}]");
-		BaseSender mockedSender = mock(ChatSender.class);
+		ISender mockedSender = mock(ISender.class);
 		doAnswer(invocationOnMock -> {
 			broadcastCalls[0]++;
 			return null;
 		}).when(mockedSender).doBroadcast(anyString(), any());
 		Field defaultSender = SendMethod.class.getDeclaredField("activeSender");
 		defaultSender.setAccessible(true);
+		Object senderBackup = defaultSender.get(SendMethod.CHAT);
 		defaultSender.set(SendMethod.CHAT, mockedSender);
 		mockStatic(Bukkit.class);
 		ConsoleCommandSender mockedConsoleCommandSender = mock(ConsoleCommandSender.class);
@@ -207,7 +207,7 @@ public class MessageTest
 		message.setSendMethod(null);
 		message.broadcast();
 		assertEquals("The broadcast method should be called as often as given", currentCalls, broadcastCalls[0]);
-		defaultSender.set(SendMethod.CHAT, new ChatSender());
+		defaultSender.set(SendMethod.CHAT, senderBackup);
 		defaultSender.setAccessible(false);
 	}
 

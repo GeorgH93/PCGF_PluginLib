@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Message.Sender.TitleLocation;
 import at.pcgamingfreaks.TestClasses.NMS.PacketPlayOutTitle;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
@@ -50,7 +51,7 @@ public class TitleMetadataTest
 		assertEquals("The title metadata should match", 20, titleMetadata.getFadeOut());
 		assertEquals("The title metadata should match", 30, titleMetadata.getStay());
 		assertTrue("The title metadata should match", titleMetadata.isSubtitle());
-		assertEquals("The title metadata should match", PacketPlayOutTitle.EnumTitleAction.SUBTITLE, titleMetadata.getTitleType());
+		assertEquals("The title metadata should match", TitleLocation.SUBTITLE, titleMetadata.getLocation());
 		titleMetadata.setFadeIn(30);
 		titleMetadata.setFadeOut(50);
 		titleMetadata.setStay(80);
@@ -59,6 +60,6 @@ public class TitleMetadataTest
 		assertEquals("The title metadata should match", 50, titleMetadata.getFadeOut());
 		assertEquals("The title metadata should match", 80, titleMetadata.getStay());
 		assertFalse("The title metadata should match", titleMetadata.isSubtitle());
-		assertEquals("The title metadata should match", PacketPlayOutTitle.EnumTitleAction.TITLE, titleMetadata.getTitleType());
+		assertEquals("The title metadata should match", TitleLocation.TITLE, titleMetadata.getLocation());
 	}
 }

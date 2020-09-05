@@ -17,264 +17,80 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
-import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.Message.Message;
-import at.pcgamingfreaks.Bukkit.NmsReflector;
+import at.pcgamingfreaks.Bukkit.Protocol.ITitleMessagePacketFactory;
 import at.pcgamingfreaks.Bukkit.Util.Utils;
-import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.Message.Sender.ITitleMetadata;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.Objects;
 
-/**
- * @deprecated Use {@link SendMethod} instead!!!
- */
-@Deprecated
-public class TitleSender extends BaseSender
+final class TitleSender implements ISender
 {
-	//region Reflection stuff
-	static final Enum<?> ENUM_TITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.TITLE");
-	static final Enum<?> ENUM_SUBTITLE = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.SUBTITLE");
-	static final Enum<?> ENUM_ACTION_BAR = (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11)) ? NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.ACTIONBAR") : ENUM_SUBTITLE;
-	private static final Class<?> PACKET_PLAY_OUT_TITLE = NmsReflector.INSTANCE.getNmsClass("PacketPlayOutTitle");
-	static final Constructor<?> PACKET_PLAY_OUT_TITLE_CONSTRUCTOR = Reflection.getConstructor(Objects.requireNonNull(PACKET_PLAY_OUT_TITLE), NmsReflector.INSTANCE.getNmsClass("PacketPlayOutTitle$EnumTitleAction"), I_CHAT_BASE_COMPONENT, int.class, int.class, int.class);
-	private static final Enum<?> ENUM_TIME = NmsReflector.INSTANCE.getNmsEnum("PacketPlayOutTitle$EnumTitleAction.TIMES");
-	private static final Object EMPTY_STRING, EMPTY_TITLE;
-	//endregion
+	private static final ITitleMessagePacketFactory TITLE_MESSAGE_PACKET_FACTORY = ITitleMessagePacketFactory.INSTANCE;
+	private static final ITitleMetadata METADATA = new TitleMetadata(); // Default metadata object
+	private static final Object PACKET_EMPTY_TITLE = TITLE_MESSAGE_PACKET_FACTORY == null ? null : TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacket(""); // TITLE_MESSAGE_PACKET_FACTORY will be null during unit tests!
 
-	private static final ITitleMetadataBukkit METADATA = new TitleMetadata(); // Default metadata object
-
-	static
+	@Override
+	public void doSend(final @NotNull Player player, final @NotNull String json)
 	{
-		Object emptyString = null, emptyTitle = null;
-		try
+		doSend(player, json, METADATA);
+	}
+
+	@Override
+	public void doSend(final @NotNull Player player, final @NotNull String json, @Nullable Object optionalMetadata)
+	{
+		if(!(optionalMetadata instanceof ITitleMetadata)) optionalMetadata = METADATA;
+		ITitleMetadata metadata = (ITitleMetadata) optionalMetadata;
+		if(metadata.isActionBar()) Utils.sendPacket(player, TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketActionBar(json));
+		else
 		{
-			emptyString = finalizeJson("");
-			assert PACKET_PLAY_OUT_TITLE_CONSTRUCTOR != null;
-			emptyTitle = PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TITLE, emptyString, -1, -1, -1);
-		}
-		catch(InvocationTargetException | IllegalAccessException | InstantiationException e)
-		{
-			e.printStackTrace();
-		}
-		EMPTY_STRING = emptyString;
-		EMPTY_TITLE = emptyTitle;
-	}
-
-	/**
-	 * Sends a JSON message to a player shown as title.
-	 *
-	 * @param player The player that should receive the message.
-	 * @param json   The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull Player player, @NotNull String json)
-	{
-		send(player, json, METADATA);
-	}
-
-	/**
-	 * Sends a JSON message to a player shown as title.
-	 *
-	 * @param player  The player that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull Player player, @NotNull Message message)
-	{
-		send(player, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to a player shown as title.
-	 *
-	 * @param player   The player that should receive the message.
-	 * @param message  The message to be sent.
-	 * @param metadata The metadata object giving more details on how the message should be displayed.
-	 */
-	public static void send(@NotNull Player player, @NotNull Message message, @NotNull ITitleMetadataBukkit metadata)
-	{
-		send(player, message.toString(), metadata);
-	}
-
-	/**
-	 * Sends a JSON message to players shown as title.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param json    The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull String json)
-	{
-		send(players, json, METADATA);
-	}
-
-	/**
-	 * Sends a JSON message to players shown as title.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull Message message)
-	{
-		send(players, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to players shown as title.
-	 *
-	 * @param players  The players that should receive the message.
-	 * @param message  The message to be sent.
-	 * @param metadata The metadata object giving more details on how the message should be displayed.
-	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull Message message, @NotNull ITitleMetadataBukkit metadata)
-	{
-		send(players, message.toString(), metadata);
-	}
-
-	/**
-	 * Sends a JSON message shown as title to all online players.
-	 *
-	 * @param json The message in JSON format to be sent.
-	 */
-	public static void broadcast(@NotNull String json)
-	{
-		broadcast(json, METADATA);
-	}
-
-	/**
-	 * Sends a JSON message shown as title to all online players.
-	 *
-	 * @param message  The message to be sent.
-	 */
-	public static void broadcast(@NotNull Message message)
-	{
-		broadcast(message.toString());
-	}
-
-	/**
-	 * Sends a JSON message shown as title to all online players.
-	 *
-	 * @param message  The message to be sent.
-	 * @param metadata The metadata object giving more details on how the message should be displayed.
-	 */
-	public static void broadcast(@NotNull Message message, @NotNull ITitleMetadataBukkit metadata)
-	{
-		broadcast(message.toString(), metadata);
-	}
-
-	@Override
-	public void doSend(@NotNull Player player, @NotNull String json)
-	{
-		send(player, json);
-	}
-
-	@Override
-	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optional)
-	{
-		send(player, json, (optional instanceof ITitleMetadataBukkit) ? (ITitleMetadataBukkit) optional : METADATA);
-	}
-
-	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
-	{
-		send(players, json);
-	}
-
-	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optional)
-	{
-		send(players, json, (optional instanceof ITitleMetadataBukkit) ? (ITitleMetadataBukkit) optional : METADATA);
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json)
-	{
-		broadcast(json, METADATA);
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optional)
-	{
-		broadcast(json, (optional instanceof ITitleMetadataBukkit) ? (ITitleMetadataBukkit) optional : METADATA);
-	}
-
-	/**
-	 * Sends a JSON message to a player shown as title.
-	 *
-	 * @param player   The player that should receive the message.
-	 * @param json     The message in JSON format to be sent.
-	 * @param metadata The metadata object giving more details on how the message should be displayed.
-	 */
-	public static void send(@NotNull Player player, @NotNull String json, @NotNull ITitleMetadataBukkit metadata)
-	{
-		if (CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_TITLE_CONSTRUCTOR == null) return;
-		try
-		{
-			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TIME, null, metadata.getFadeIn(), metadata.getStay(), metadata.getFadeOut()));
-			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(metadata.getTitleType(), finalizeJson(json), -1, -1, -1));
-			if(metadata.isSubtitle()) Utils.sendPacket(player, EMPTY_TITLE);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Sends a JSON message to players shown as title.
-	 *
-	 * @param players  The player that should receive the message.
-	 * @param json     The message in JSON format to be sent.
-	 * @param metadata The metadata object giving more details on how the message should be displayed.
-	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull String json, @NotNull ITitleMetadataBukkit metadata)
-	{
-		if (CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_TITLE_CONSTRUCTOR == null) return;
-		try
-		{
-			Object timePacket = PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TIME, null, metadata.getFadeIn(), metadata.getStay(), metadata.getFadeOut());
-			Object titlePacket = PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(metadata.getTitleType(), finalizeJson(json), -1, -1, -1);
-			for(Player player : players)
+			Utils.sendPacket(player, TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketTime(metadata.getFadeIn(), metadata.getStay(), metadata.getFadeOut()));
+			if(metadata.isTitle())
 			{
-				Utils.sendPacket(player, timePacket);
-				Utils.sendPacket(player, titlePacket);
-				if(metadata.isSubtitle()) Utils.sendPacket(player, EMPTY_TITLE);
+				Utils.sendPacket(player, TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacket(json));
+			}
+			else
+			{
+				Utils.sendPacket(player, TITLE_MESSAGE_PACKET_FACTORY.makeSubTitlePacket(json));
+				Utils.sendPacket(player, PACKET_EMPTY_TITLE);
 			}
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 
-	public static void clear(@NotNull Player player)
+	@Override
+	public void doSend(final @NotNull Collection<? extends Player> players, final @NotNull String json)
 	{
-		if (PACKET_PLAY_OUT_TITLE_CONSTRUCTOR == null) return;
-		try
-		{
-			Utils.sendPacket(player, EMPTY_TITLE);
-			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_SUBTITLE, EMPTY_STRING, -1, -1, -1));
-			Utils.sendPacket(player, PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TIME, null, 0,0,0));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		doSend(players, json, METADATA);
 	}
 
-	/**
-	 * Sends a JSON message shown as title to all online players.
-	 *
-	 * @param json     The message in JSON format to be sent.
-	 * @param metadata The metadata object giving more details on how the message should be displayed.
-	 */
-	public static void broadcast(@NotNull String json, @NotNull ITitleMetadataBukkit metadata)
+	@Override
+	public void doSend(final @NotNull Collection<? extends Player> players, final @NotNull String json, @Nullable Object optionalMetadata)
 	{
-		send(Bukkit.getOnlinePlayers(), json, metadata);
+		if(optionalMetadata == null) optionalMetadata = METADATA;
+		ITitleMetadata metadata = (ITitleMetadata) optionalMetadata;
+		if(metadata.isActionBar())
+		{
+			Object packet = TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketActionBar(json);
+			for(Player player : players)
+			{
+				Utils.sendPacket(player, packet);
+			}
+		}
+		else
+		{
+			Object packetTime = TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketTime(metadata.getFadeIn(), metadata.getStay(), metadata.getFadeOut());
+			Object packetTitle = PACKET_EMPTY_TITLE, packetSubTitle = null;
+			if(metadata.isTitle()) packetTitle = TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacket(json);
+			else packetSubTitle = TITLE_MESSAGE_PACKET_FACTORY.makeSubTitlePacket(json);
+			for(Player player : players)
+			{
+				Utils.sendPacket(player, packetTime);
+				Utils.sendPacket(player, packetTitle);
+				if(packetSubTitle != null) Utils.sendPacket(player, packetSubTitle);
+			}
+		}
 	}
 }

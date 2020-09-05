@@ -17,119 +17,31 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
-import at.pcgamingfreaks.Bukkit.Message.Message;
+import at.pcgamingfreaks.Bukkit.Protocol.IChatMessagePacketFactory;
+import at.pcgamingfreaks.Bukkit.Util.Utils;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-/**
- * @deprecated Use {@link SendMethod} instead!!!
- */
-@Deprecated
-public class ActionBarSender extends ChatSender
+final class ActionBarSender implements ISender
 {
-	private static final byte ACTION_BAR_ACTION = 2;
-
-	/**
-	 * Sends a JSON message to a players action bar.
-	 *
-	 * @param player The player that should receive the message.
-	 * @param json   The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull Player player, @NotNull String json)
-	{
-		send(player, json, ACTION_BAR_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to a players action bar.
-	 *
-	 * @param player  The player that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull Player player, @NotNull Message message)
-	{
-		send(player, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to a players action bar.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param json    The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull String json)
-	{
-		send(players, json, ACTION_BAR_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to a players action bar.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull Message message)
-	{
-		send(players, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to the action bar of all online players.
-	 *
-	 * @param json The message in JSON format to be sent.
-	 */
-	public static void broadcast(@NotNull String json)
-	{
-		broadcast(json, ACTION_BAR_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to the action bar of all online players.
-	 *
-	 * @param message The message to be sent.
-	 */
-	public static void broadcast(@NotNull Message message)
-	{
-		broadcast(message.toString());
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json)
-	{
-		broadcast(json);
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optional)
-	{
-		broadcast(json);
-	}
+	private static final IChatMessagePacketFactory CHAT_MESSAGE_PACKET_FACTORY = IChatMessagePacketFactory.INSTANCE;
 
 	@Override
 	public void doSend(@NotNull Player player, @NotNull String json)
 	{
-		send(player, json);
-	}
-
-	@Override
-	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optional)
-	{
-		send(player, json);
+		Utils.sendPacket(player, CHAT_MESSAGE_PACKET_FACTORY.makeChatPacketActionBar(json));
 	}
 
 	@Override
 	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
 	{
-		send(players, json);
-	}
-
-	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optional)
-	{
-		send(players, json);
+		Object packet = CHAT_MESSAGE_PACKET_FACTORY.makeChatPacketActionBar(json);
+		for(Player player : players)
+		{
+			Utils.sendPacket(player, packet);
+		}
 	}
 }

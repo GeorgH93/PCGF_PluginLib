@@ -15,12 +15,19 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Message.Sender;
+package at.pcgamingfreaks.Bukkit.Protocol;
 
-import at.pcgamingfreaks.Message.Sender.ISenderGeneric;
+import at.pcgamingfreaks.Bukkit.IPlatformDependent;
+import at.pcgamingfreaks.Bukkit.PlatformResolver;
 
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public interface Sender extends ISenderGeneric<Player>
+public interface ITitleMessagePacketFactory extends IPlatformDependent
 {
+	ITitleMessagePacketFactory INSTANCE = PlatformResolver.createPlatformInstance(ITitleMessagePacketFactory.class);
+
+	Object makeTitlePacket(@NotNull String json);
+	Object makeSubTitlePacket(@NotNull String json);
+	Object makeTitlePacketTime(int fadeIn, int stay, int fadeOut);
+	Object makeTitlePacketActionBar(@NotNull String json);
 }

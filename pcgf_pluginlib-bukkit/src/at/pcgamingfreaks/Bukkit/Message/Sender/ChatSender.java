@@ -17,196 +17,44 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
-import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.Message.Message;
-import at.pcgamingfreaks.Bukkit.NmsReflector;
+import at.pcgamingfreaks.Bukkit.Protocol.IChatMessagePacketFactory;
 import at.pcgamingfreaks.Bukkit.Util.Utils;
-import at.pcgamingfreaks.Reflection;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.UUID;
 
-/**
- * @deprecated Use {@link SendMethod} instead!!!
- */
-@Deprecated
-public class ChatSender extends BaseSender
+final class ChatSender implements ISender
 {
-	private static final UUID EMPTY_UUID = new UUID(0, 0);
-	//region Reflection stuff
-	private static final Class<?> PACKET_PLAY_OUT_CHAT = NmsReflector.INSTANCE.getNmsClass("PacketPlayOutChat");
-	private static final Constructor<?> PACKET_PLAY_OUT_CHAT_CONSTRUCTOR;
-	private static final Method BYTE_TO_MESSAGE_TYPE_ENUM;
-
-	static
-	{
-		if(MCVersion.isOlderThan(MCVersion.MC_1_12))
-		{
-			PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, Byte.TYPE);
-			BYTE_TO_MESSAGE_TYPE_ENUM = null;
-		}
-		else
-		{
-			Class<?> chatMessageType = NmsReflector.INSTANCE.getNmsClass("ChatMessageType");
-			BYTE_TO_MESSAGE_TYPE_ENUM = NmsReflector.INSTANCE.getNmsMethod(chatMessageType, "a", Byte.TYPE);
-			if(MCVersion.isOlderThan(MCVersion.MC_1_16))
-				PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, chatMessageType);
-			else
-				PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, chatMessageType, UUID.class);
-		}
-	}
-	//endregion
-
-	private static final byte CHAT_ACTION = 0;
-
-	/**
-	 * Sends a JSON message to a players chat.
-	 *
-	 * @param player The player that should receive the message.
-	 * @param json   The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull Player player, @NotNull String json)
-	{
-		send(player, json, CHAT_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to a players chat.
-	 *
-	 * @param player  The player that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull Player player, @NotNull Message message)
-	{
-		send(player, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to a players chat.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param json    The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull String json)
-	{
-		send(players, json, CHAT_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to a players chat.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull Message message)
-	{
-		send(players, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to the chat of all online players.
-	 *
-	 * @param json The message in JSON format to be sent.
-	 */
-	public static void broadcast(@NotNull String json)
-	{
-		broadcast(json, CHAT_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to the chat of all online players.
-	 *
-	 * @param message The message to be sent.
-	 */
-	public static void broadcast(@NotNull Message message)
-	{
-		broadcast(message.toString());
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json)
-	{
-		broadcast(json);
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json, Object optional)
-	{
-		broadcast(json);
-	}
+	private static final IChatMessagePacketFactory CHAT_MESSAGE_PACKET_FACTORY = IChatMessagePacketFactory.INSTANCE;
 
 	@Override
 	public void doSend(@NotNull Player player, @NotNull String json)
 	{
-		send(player, json);
+		Utils.sendPacket(player, CHAT_MESSAGE_PACKET_FACTORY.makeChatPacket(json));
 	}
 
 	@Override
-	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optional)
+	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optionalMetadata)
 	{
-		send(player, json);
+		doSend(player, json); //TODO implement sender uuid as metadata
 	}
 
 	@Override
 	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
 	{
-		send(players, json);
+		Object packet = CHAT_MESSAGE_PACKET_FACTORY.makeChatPacket(json);
+		for(Player player : players)
+		{
+			Utils.sendPacket(player, packet);
+		}
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optional)
+	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optionalMetadata)
 	{
-		send(players, json);
-	}
-
-	private static Object createPacket(@NotNull String json, byte action) throws InvocationTargetException, IllegalAccessException, InstantiationException
-	{
-		if(MCVersion.isOlderThan(MCVersion.MC_1_16))
-			return PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(finalizeJson(json), (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? action : BYTE_TO_MESSAGE_TYPE_ENUM.invoke(null, action));
-		else
-			return PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(finalizeJson(json), BYTE_TO_MESSAGE_TYPE_ENUM.invoke(null, action), EMPTY_UUID);
-	}
-
-	protected static void send(@NotNull Player player, @NotNull String json, byte action)
-	{
-		if(CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_CHAT_CONSTRUCTOR == null) return; // The class isn't initialized correctly! May it's not running on a bukkit/spigot server.
-		try
-		{
-			Utils.sendPacket(player, createPacket(json, action));
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
-	}
-
-	protected static void send(@NotNull Collection<? extends Player> players, @NotNull String json, byte action)
-	{
-		if(CHAT_SERIALIZER_METHOD_A == null || PACKET_PLAY_OUT_CHAT_CONSTRUCTOR == null) return; // The class isn't initialized correctly! May it's not running on a bukkit/spigot server.
-		try
-		{
-			Object packet = createPacket(json, action);
-			for(Player player : players)
-			{
-				Utils.sendPacket(player, packet);
-			}
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
-	}
-
-	protected static void broadcast(@NotNull String json, byte action)
-	{
-		send(Bukkit.getOnlinePlayers(), json, action);
+		doSend(players, json); //TODO implement sender uuid as metadata
 	}
 }

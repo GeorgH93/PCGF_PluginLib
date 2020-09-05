@@ -17,109 +17,31 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
-import at.pcgamingfreaks.Bukkit.Message.Message;
+import at.pcgamingfreaks.Bukkit.Protocol.ITitleMessagePacketFactory;
 import at.pcgamingfreaks.Bukkit.Util.Utils;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
-/**
- * @deprecated Use {@link SendMethod} instead!!!
- */
-@Deprecated
-public class ActionBarTitleSender extends BaseSender
+final class ActionBarTitleSender implements ISender
 {
-	/**
-	 * Sends a JSON message to a player shown as title.
-	 *
-	 * @param player The player that should receive the message.
-	 * @param json   The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull Player player, @NotNull String json)
-	{
-		try
-		{
-			Utils.sendPacket(player, TitleSender.PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(TitleSender.ENUM_ACTION_BAR, finalizeJson(json), -1, -1, -1));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Sends a JSON message to a player shown as title.
-	 *
-	 * @param player  The player that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull Player player, @NotNull Message message)
-	{
-		send(player, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to players shown as title.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param json    The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull String json)
-	{
-		try
-		{
-			Object titlePacket = TitleSender.PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(TitleSender.ENUM_ACTION_BAR, finalizeJson(json), -1, -1, -1);
-			for(Player player : players)
-			{
-				Utils.sendPacket(player, titlePacket);
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Sends a JSON message to players shown as title.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends Player> players, @NotNull Message message)
-	{
-		send(players, message.toString());
-	}
+	private static final ITitleMessagePacketFactory TITLE_MESSAGE_PACKET_FACTORY = ITitleMessagePacketFactory.INSTANCE;
 
 	@Override
 	public void doSend(@NotNull Player player, @NotNull String json)
 	{
-		send(player, json);
+		Utils.sendPacket(player, TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketActionBar(json));
 	}
 
 	@Override
 	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
 	{
-		send(players, json);
-	}
-
-
-	@Override
-	public void doBroadcast(@NotNull String json)
-	{
-		broadcast(json);
-	}
-
-	/**
-	 * Sends a JSON message shown as title to all online players.
-	 *
-	 * @param json     The message in JSON format to be sent.
-	 */
-	public static void broadcast(@NotNull String json)
-	{
-		send(Bukkit.getOnlinePlayers(), json);
+		Object titlePacket = TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketActionBar(json);
+		for(Player player : players)
+		{
+			Utils.sendPacket(player, titlePacket);
+		}
 	}
 }

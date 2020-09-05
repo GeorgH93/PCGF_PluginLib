@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,16 +17,24 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
-import at.pcgamingfreaks.Message.Sender.ITitleMetadata;
+import at.pcgamingfreaks.Message.Sender.ISenderGeneric;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-interface ITitleMetadataBukkit extends ITitleMetadata
+public interface ISender extends ISenderGeneric<Player>
 {
-	/**
-	 * Gets the NMS type of the title. This will be used from the {@link TitleSender} class.
-	 *
-	 * @return The matching enum for the display type of the title. NMS!!!
-	 */
-	@NotNull Enum<?> getTitleType();
+	@Override
+	default void doBroadcast(@NotNull String json)
+	{
+		doSend(Bukkit.getOnlinePlayers(), json);
+	}
+
+	@Override
+	default void doBroadcast(@NotNull String json, @Nullable Object optionalMetadata)
+	{
+		doSend(Bukkit.getOnlinePlayers(), json, optionalMetadata);
+	}
 }
