@@ -15,18 +15,14 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Bukkit.Message.Sender;
-
-import at.pcgamingfreaks.Message.Sender.IMetadata;
+package at.pcgamingfreaks.Message.Sender;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class BossBarMetadata implements IMetadata
+public interface IMetadata
 {
-	@Override
-	public IMetadata parseJson(@NotNull String json)
-	{
-		return this;
-	}
-	//TODO
+	/**
+	 * @param json The json that should be used to set the values for the metadata object.
+	 */
+	IMetadata parseJson(final @NotNull String json);
 }

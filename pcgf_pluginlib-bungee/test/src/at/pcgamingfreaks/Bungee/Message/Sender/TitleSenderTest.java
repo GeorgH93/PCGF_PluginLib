@@ -102,7 +102,7 @@ public class TitleSenderTest
 		TitleSender.broadcast(new Message(""));
 		sendCalls += playerCount * 2;
 		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
-		TitleSender.broadcast(new Message(""), TitleMetadata.fromJson("[{\"fadeIn\": 10, \"fadeOut\": 20, \"stay\": 30, \"subtitle\": false}]"));
+		TitleSender.broadcast(new Message(""), (TitleMetadata) (new TitleMetadata()).parseJson("[{\"fadeIn\": 10, \"fadeOut\": 20, \"stay\": 30, \"subtitle\": false}]"));
 		sendCalls += playerCount * 2;
 		verify(TestObjects.getPlayer().unsafe(), times(sendCalls)).sendPacket(any(Title.class));
 	}

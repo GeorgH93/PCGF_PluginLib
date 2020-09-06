@@ -20,8 +20,9 @@ package at.pcgamingfreaks.Bukkit.Message;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Sender.BossBarMetadata;
 import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
-import at.pcgamingfreaks.Bukkit.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Message.Sender.IMetadata;
+import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -192,7 +193,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 * @param optionalParameters The object containing the optional metadata. Has to be an instance of {@link TitleMetadata} or {@link BossBarMetadata}.
 	 */
 	@Override
-	public void setOptionalParameters(@NotNull Object optionalParameters)
+	public void setOptionalParameters(@NotNull IMetadata optionalParameters)
 	{
 		Validate.isTrue(optionalParameters instanceof TitleMetadata || optionalParameters instanceof BossBarMetadata, "The metadata object needs to be an instance of TitleMetadata or BossBarMetadata");
 		super.setOptionalParameters(optionalParameters);

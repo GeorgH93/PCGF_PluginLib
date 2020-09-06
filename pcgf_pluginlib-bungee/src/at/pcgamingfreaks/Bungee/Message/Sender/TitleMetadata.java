@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
 import at.pcgamingfreaks.Message.Sender.TitleLocation;
-import at.pcgamingfreaks.Message.Sender.TitleMetadataBase;
 
 import net.md_5.bungee.protocol.packet.Title;
 
@@ -31,7 +30,7 @@ import lombok.Getter;
  * With it it's possible to configure the type of the tile (title/subtitle).
  * And the times used for the title animations (fade-in/out and stay time).
  */
-public final class TitleMetadata extends TitleMetadataBase
+public final class TitleMetadata extends at.pcgamingfreaks.Message.Sender.TitleMetadata
 {
 	@Getter private Title.Action titleType = Title.Action.TITLE;
 
@@ -115,16 +114,5 @@ public final class TitleMetadata extends TitleMetadataBase
 			case SUBTITLE: titleType = Title.Action.SUBTITLE; break;
 			case ACTION_BAR: titleType = Title.Action.ACTIONBAR; break;
 		}
-	}
-
-	/**
-	 * Generates a Metadata object from a json. This will be used from the {@link at.pcgamingfreaks.Bungee.Language} class to load the metadata from the language file.
-	 *
-	 * @param json The json to get deserialized and used to create a new TitleMetadata object.
-	 * @return The new TitleMetadata object. Or a default object if the json couldn't get deserialized.
-	 */
-	public static @NotNull TitleMetadata fromJson(@NotNull String json)
-	{
-		return parseJson(new TitleMetadata(), json);
 	}
 }

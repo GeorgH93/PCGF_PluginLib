@@ -45,14 +45,12 @@ public class MessageTest
 		TestMessage message1 = new TestMessage("A message text");
 		TestMessage message2 = new TestMessage("Message text");
 		TestMessage message3 = new TestMessage(messageComponents);
-		message2.setOptionalParameters(5);
 		assertEquals("The message texts should match", "Message text", message2.getClassicMessage());
 		assertEquals("The other message texts should match", "Message text§r", message3.getClassicMessage());
 		assertEquals("The messages should be equal", "[{\"text\":\"Message text\"}]", message3.json);
 		assertEquals("The message text should be correct", "[{\"text\":\"Message text\"}]", message3.toString());
 		//noinspection deprecation
 		assertEquals("The message components should be equal", messageComponents.toArray(), message3.getMessageComponents());
-		assertEquals("The optional parameter of the message should match", 5, message2.optionalParameters);
 		message1.replaceAll("A m", "M");
 		message1.replaceAll("ext", "est");
 		message2.replaceAll("ext", "est");

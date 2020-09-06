@@ -19,6 +19,7 @@ package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
@@ -367,7 +368,7 @@ public class Language extends YamlFileManager
 					messageClasses.setSendMethod.invoke(msg, sendMethod);
 					if(yaml.isSet(pathParameter))
 					{
-						Object meta = ((ISendMethod) sendMethod).parseMetadata(yaml.getString(pathParameter));
+						IMetadata meta = ((ISendMethod) sendMethod).parseMetadata(yaml.getString(pathParameter));
 						if(meta != null) msg.setOptionalParameters(meta);
 					}
 				}

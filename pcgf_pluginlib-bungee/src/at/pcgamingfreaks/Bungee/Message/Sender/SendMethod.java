@@ -17,8 +17,8 @@
 
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
+import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.ISendMethod;
-import at.pcgamingfreaks.Reflection;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -27,26 +27,40 @@ import org.jetbrains.annotations.Nullable;
 
 import lombok.Getter;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.function.Supplier;
 
 public enum SendMethod implements ISendMethod, Sender
 {
-	CHAT(new ChatSender(), null),
-	TITLE(new TitleSender(), TitleMetadata.class),
-	ACTION_BAR(new ActionBarSender(), null),
-	//BOSS_BAR(new BossBarSender(), null), //TODO
-	DISABLED(new DisabledSender(), null);
+	CHAT(new ChatSender()),
+	TITLE(new TitleSender(), TitleMetadata.class, TitleMetadata::new),
+	ACTION_BAR(new ActionBarSender()),
+	//BOSS_BAR(new BossBarSender()), //TODO
+	DISABLED(new DisabledSender());
 
 	@Getter @NotNull private final Sender sender;
-	@Getter @Nullable private final Class<?> metadataClass;
-	@Getter @Nullable private final Method metadataFromJsonMethod;
+	@Getter @Nullable private final Class<? extends IMetadata> metadataClass;
+	@Getter @Nullable private final Supplier<? extends IMetadata> metadataSupplier;
 
-	SendMethod(@NotNull Sender sender, @Nullable Class<?> metadataClass)
+	SendMethod(@NotNull Sender sender)
+	{
+		this(sender, null, null);
+	}
+
+	SendMethod(@NotNull Sender sender, @Nullable Class<? extends IMetadata> metadataClass, @Nullable Supplier<? extends IMetadata> metadataSupplier)
 	{
 		this.sender = sender;
 		this.metadataClass = metadataClass;
-		this.metadataFromJsonMethod = (metadataClass != null) ? Reflection.getMethod(metadataClass, "fromJson", String.class) : null;
+		this.metadataSupplier = metadataSupplier;
+	}
+
+	@Override
+	public @Nullable IMetadata parseMetadata(final @NotNull String json)
+	{
+		if(metadataSupplier == null) return null;
+		IMetadata metadata = metadataSupplier.get();
+		metadata.parseJson(json);
+		return metadata;
 	}
 
 	@Override

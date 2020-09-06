@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
@@ -46,7 +47,7 @@ public class SendMethodTest
 	{
 		SendMethod sendMethod = SendMethod.TITLE;
 		assertEquals("The metadata class should match", TitleMetadata.class, sendMethod.getMetadataClass());
-		assertNotNull("The fromJson Method should be returned", sendMethod.getMetadataFromJsonMethod());
+		assertNotNull("The metadata supplier Method should be returned", sendMethod.getMetadataSupplier());
 	}
 
 	@Test

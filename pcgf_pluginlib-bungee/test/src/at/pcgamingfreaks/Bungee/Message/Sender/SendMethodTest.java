@@ -19,19 +19,18 @@ package at.pcgamingfreaks.Bungee.Message.Sender;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class SendMethodTest
 {
 	@Test
-	public void testSendMethod() throws NoSuchMethodException
+	public void testSendMethod()
 	{
 		SendMethod sendMethod = SendMethod.CHAT;
 		assertNull("The metadata class should be correct", sendMethod.getMetadataClass());
-		assertNull("The from JSON method should be correct", sendMethod.getMetadataFromJsonMethod());
+		assertNull("The metadata supplier should be null", sendMethod.getMetadataSupplier());
 		sendMethod = SendMethod.TITLE;
 		assertEquals("The metadata class should be correct", TitleMetadata.class, sendMethod.getMetadataClass());
-		assertEquals("The from JSON method should be correct", TitleMetadata.class.getDeclaredMethod("fromJson", String.class), sendMethod.getMetadataFromJsonMethod());
+		assertNotNull("The metadata supplier should not be null", sendMethod.getMetadataSupplier());
 	}
 }

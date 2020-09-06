@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bungee.Message;
 import at.pcgamingfreaks.Bungee.Message.Sender.BossBarMetadata;
 import at.pcgamingfreaks.Bungee.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Bungee.Message.Sender.TitleMetadata;
+import at.pcgamingfreaks.Message.Sender.IMetadata;
 
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -163,7 +164,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	 * @param optionalParameters The object containing the optional metadata. Has to be an instance of {@link TitleMetadata} or {@link BossBarMetadata}.
 	 */
 	@Override
-	public void setOptionalParameters(final @NotNull Object optionalParameters)
+	public void setOptionalParameters(final @NotNull IMetadata optionalParameters)
 	{
 		if(!(optionalParameters instanceof TitleMetadata || optionalParameters instanceof BossBarMetadata)) throw new IllegalArgumentException("The metadata object needs to be an instance of TitleMetadata or BossBarMetadata");
 		super.setOptionalParameters(optionalParameters);

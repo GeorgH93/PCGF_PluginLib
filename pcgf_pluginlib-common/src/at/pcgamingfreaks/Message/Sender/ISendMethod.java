@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -29,18 +29,7 @@ public interface ISendMethod
 	 *
 	 * @return The metadata class.
 	 */
-	@Nullable Class<?> getMetadataClass();
+	@Nullable Class<? extends IMetadata> getMetadataClass();
 
-	/**
-	 * Gets the method to convert a JSON in a metadata object.
-	 *
-	 * @return The static method to convert a JSON in a metadata object.
-	 */
-	@Nullable Method getMetadataFromJsonMethod();
-
-	default @Nullable Object parseMetadata(String metadataJson) throws InvocationTargetException, IllegalAccessException
-	{
-		if(getMetadataFromJsonMethod() == null) return null;
-		return getMetadataFromJsonMethod().invoke(null, metadataJson);
-	}
+	@Nullable IMetadata parseMetadata(String metadataJson);
 }

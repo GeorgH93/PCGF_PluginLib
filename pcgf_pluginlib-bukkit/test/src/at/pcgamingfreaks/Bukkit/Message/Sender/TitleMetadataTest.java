@@ -19,7 +19,7 @@ package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Message.Sender.TitleLocation;
-import at.pcgamingfreaks.TestClasses.NMS.PacketPlayOutTitle;
+import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
@@ -46,7 +46,7 @@ public class TitleMetadataTest
 	@Test
 	public void testTitleMetadata()
 	{
-		TitleMetadata titleMetadata = TitleMetadata.fromJson("{\"fadeIn\":10,\"fadeOut\":20,\"stay\":30,\"subtitle\":true}");
+		TitleMetadata titleMetadata = (new TitleMetadata()).parseJson("{\"fadeIn\":10,\"fadeOut\":20,\"stay\":30,\"subtitle\":true}");
 		assertEquals("The title metadata should match", 10, titleMetadata.getFadeIn());
 		assertEquals("The title metadata should match", 20, titleMetadata.getFadeOut());
 		assertEquals("The title metadata should match", 30, titleMetadata.getStay());

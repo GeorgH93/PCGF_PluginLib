@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.TestClasses;
 
+import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.ISendMethod;
 
 import org.jetbrains.annotations.Nullable;
@@ -30,19 +31,13 @@ public enum TestSendMethod implements ISendMethod
 	ACTION_BAR;
 
 	@Override
-	public @Nullable Class<?> getMetadataClass()
+	public @Nullable Class<? extends IMetadata> getMetadataClass()
 	{
 		return null;
 	}
 
 	@Override
-	public @Nullable Method getMetadataFromJsonMethod()
-	{
-		return null;
-	}
-
-	@Override
-	public @Nullable Object parseMetadata(String metadataJson)
+	public @Nullable IMetadata parseMetadata(String metadataJson)
 	{
 		return null;
 	}

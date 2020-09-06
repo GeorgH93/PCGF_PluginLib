@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Message;
 
 import at.pcgamingfreaks.ConsoleColor;
+import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.StringUtils;
 
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -49,7 +51,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 	}
 
 	//region Variables
-	protected Object optionalParameters = null;
+	@Setter @Getter protected IMetadata optionalParameters = null;
 	@Getter protected String json, fallback;
 	protected List<MESSAGE_COMPONENT> messageComponents = null;
 	@Getter private boolean legacy = false;
@@ -142,11 +144,6 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 	{
 		//noinspection NonFinalFieldReferenceInEquals
 		return this == otherObject || (otherObject instanceof Message<?,?,?,?> && json.equals(((Message<?,?,?,?>) otherObject).json));
-	}
-
-	public void setOptionalParameters(@NotNull Object optionalParameters)
-	{
-		this.optionalParameters = optionalParameters;
 	}
 
 	/**

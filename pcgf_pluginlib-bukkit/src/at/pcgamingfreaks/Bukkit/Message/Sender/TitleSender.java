@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bukkit.Message.Sender;
 import at.pcgamingfreaks.Bukkit.Protocol.ITitleMessagePacketFactory;
 import at.pcgamingfreaks.Bukkit.Util.Utils;
 import at.pcgamingfreaks.Message.Sender.ITitleMetadata;
+import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

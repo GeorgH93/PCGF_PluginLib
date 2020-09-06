@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import lombok.Setter;
 
 import java.util.Locale;
 
-public abstract class TitleMetadataBase implements ITitleMetadata
+public class TitleMetadata implements ITitleMetadata
 {
 	@Getter @Setter private int fadeIn = 5, fadeOut = 50, stay = 5;
 	@Getter @Setter @NotNull private TitleLocation location = TitleLocation.TITLE;
@@ -35,7 +35,7 @@ public abstract class TitleMetadataBase implements ITitleMetadata
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
 	 */
-	public TitleMetadataBase() {}
+	public TitleMetadata() {}
 
 	/**
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
@@ -44,7 +44,7 @@ public abstract class TitleMetadataBase implements ITitleMetadata
 	 * @param fadeOut Defines how long the title will fade-out. Value in ticks (1/20 sec).
 	 * @param stay    Defines how long the title will stay on the screen of the player. Value in ticks (1/20 sec).
 	 */
-	public TitleMetadataBase(int fadeIn, int fadeOut, int stay)
+	public TitleMetadata(final int fadeIn, final int fadeOut, final int stay)
 	{
 		this.fadeIn = fadeIn;
 		this.fadeOut = fadeOut;
@@ -59,10 +59,15 @@ public abstract class TitleMetadataBase implements ITitleMetadata
 	 * @param stay       Defines how long the title will stay on the screen of the player. Value in ticks (1/20 sec).
 	 * @param location   Defines the display location of the title.
 	 */
-	public TitleMetadataBase(int fadeIn, int fadeOut, int stay, @NotNull TitleLocation location)
+	public TitleMetadata(final int fadeIn, final int fadeOut, final int stay, final @NotNull TitleLocation location)
 	{
 		this(fadeIn, fadeOut, stay);
-		this.location = location;
+		setLocation(location);
+	}
+
+	public TitleMetadata(boolean subtitle)
+	{
+		setLocation(subtitle ? TitleLocation.SUBTITLE : TitleLocation.TITLE);
 	}
 
 	/**
@@ -70,12 +75,13 @@ public abstract class TitleMetadataBase implements ITitleMetadata
 	 *
 	 * @param location   Defines the display location of the title.
 	 */
-	public TitleMetadataBase(@NotNull TitleLocation location)
+	public TitleMetadata(final @NotNull TitleLocation location)
 	{
-		this.location = location;
+		setLocation(location);
 	}
 
-	protected static <T extends TitleMetadataBase> @NotNull T parseJson(@NotNull T metadata, @NotNull String json)
+	@Override
+	public TitleMetadata parseJson(final @NotNull String json)
 	{
 		try
 		{
@@ -83,17 +89,18 @@ public abstract class TitleMetadataBase implements ITitleMetadata
 			object.entrySet().forEach(e -> {
 				switch(e.getKey().toLowerCase(Locale.ROOT))
 				{
-					case "fadein": metadata.setFadeIn(e.getValue().getAsInt()); break;
-					case "stay": metadata.setStay(e.getValue().getAsInt()); break;
-					case "fadeout": metadata.setFadeOut(e.getValue().getAsInt()); break;
-					case "subtitle": if(e.getValue().getAsBoolean()) metadata.setSubtitle(); break;
-					case "location": metadata.setLocation(TitleLocation.valueOf(e.getValue().getAsString().toUpperCase(Locale.ROOT).replace("ACTIONBAR", "ACTION_BAR").replace("SUB_TITLE", "SUBTITLE")));
+					case "fadein": this.setFadeIn(e.getValue().getAsInt()); break;
+					case "stay": this.setStay(e.getValue().getAsInt()); break;
+					case "fadeout": this.setFadeOut(e.getValue().getAsInt()); break;
+					case "subtitle": if(e.getValue().getAsBoolean()) this.setSubtitle(); break;
+					case "location": this.setLocation(TitleLocation.valueOf(e.getValue().getAsString().toUpperCase(Locale.ROOT).replace("ACTIONBAR", "ACTION_BAR").replace("SUB_TITLE", "SUBTITLE")));
 				}
 			});
-
-			return metadata;
 		}
-		catch(Exception ignored) {}
-		return metadata;
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return this;
 	}
 }

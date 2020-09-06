@@ -79,17 +79,6 @@ public class MessageTest
 		optionalParameters.setAccessible(false);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetOptionalParametersWithError() throws NoSuchFieldException, IllegalAccessException
-	{
-		Message message = new Message("");
-		message.setOptionalParameters(new Object());
-		Field optionalParameters = at.pcgamingfreaks.Message.Message.class.getDeclaredField("optionalParameters");
-		optionalParameters.setAccessible(true);
-		assertEquals("The object metadata should match", new Object(), optionalParameters.get(message));
-		optionalParameters.setAccessible(false);
-	}
-
 	@Test
 	public void testSend() throws Exception
 	{
