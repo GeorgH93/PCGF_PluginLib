@@ -17,77 +17,27 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
-import at.pcgamingfreaks.Bukkit.Message.Message;
-
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
 /**
  * Only for MC 1.9 an newer
- *
- * @deprecated Use {@link SendMethod} instead!!!
  */
-@Deprecated
-public class BossBarSender extends BaseSender
+final class BossBarSender implements ISender
 {
 	//TODO: with Bukkit 1.9 BossBarAPI
 	//BossBar bossBar = Bukkit.createBossBar()
 
-	public static void send(@NotNull Player player, @NotNull Message message)
-	{
-		send(player, message.getClassicMessage());
-	}
-
-	public static void broadcast(@NotNull Message message)
-	{
-		broadcast(message.getClassicMessage());
-	}
-
 	@Override
 	public void doSend(@NotNull Player player, @NotNull String json)
-	{
-		send(player, json);
-	}
-
-	@Override
-	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optional)
-	{
-
-	}
-
-	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
-	{
-
-	}
-
-	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optional)
-	{
-
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json)
-	{
-
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optional)
-	{
-
-	}
-
-	public static void send(@NotNull Player player, @NotNull String json)
 	{
 		//TODO
 	}
 
-	public static void broadcast(@NotNull String json)
+	@Override
+	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
 	{
 		//TODO
 	}
