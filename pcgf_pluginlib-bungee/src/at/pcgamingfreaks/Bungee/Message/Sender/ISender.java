@@ -17,15 +17,24 @@
 
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
-import at.pcgamingfreaks.Bungee.Message.Message;
+import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.ISenderGeneric;
 
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-/**
- * This abstract class is used as base class for all senders.
- * This way we can tell the {@link Message} class which sender should get used without using reflection.
- */
-public interface Sender extends ISenderGeneric<ProxiedPlayer>
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public interface ISender extends ISenderGeneric<ProxiedPlayer>
 {
+	default void doBroadcast(@NotNull String json)
+	{
+		doSend(ProxyServer.getInstance().getPlayers(), json);
+	}
+
+	default void doBroadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
+	{
+		doSend(ProxyServer.getInstance().getPlayers(), json, optionalMetadata);
+	}
 }

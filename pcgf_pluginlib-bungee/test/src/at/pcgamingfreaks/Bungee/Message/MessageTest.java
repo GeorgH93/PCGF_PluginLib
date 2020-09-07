@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.Bungee.Message;
 
 import at.pcgamingfreaks.Bungee.Message.Sender.BossBarMetadata;
-import at.pcgamingfreaks.Bungee.Message.Sender.ChatSender;
+import at.pcgamingfreaks.Bungee.Message.Sender.ISender;
 import at.pcgamingfreaks.Bungee.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Bungee.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.Message.MessageColor;
@@ -89,7 +89,7 @@ public class MessageTest
 		ProxiedPlayer mockedProxiedPlayer = mock(ProxiedPlayer.class);
 		Field method = Message.class.getDeclaredField("sendMethod");
 		method.setAccessible(true);
-		ChatSender mockedSender = mock(ChatSender.class);
+		ISender mockedSender = mock(ISender.class);
 		doNothing().when(mockedSender).doSend(any(ProxiedPlayer.class), anyString(), any());
 		SendMethod sendMethod = (SendMethod) method.get(message);
 		Field defaultSender = sendMethod.getClass().getDeclaredField("sender");
@@ -140,7 +140,7 @@ public class MessageTest
 		Message message = new Message("");
 		Field method = Message.class.getDeclaredField("sendMethod");
 		method.setAccessible(true);
-		ChatSender mockedSender = mock(ChatSender.class);
+		ISender mockedSender = mock(ISender.class);
 		doNothing().when(mockedSender).doBroadcast(anyString(), any());
 		SendMethod sendMethod = (SendMethod) method.get(message);
 		Field defaultSender = sendMethod.getClass().getDeclaredField("sender");

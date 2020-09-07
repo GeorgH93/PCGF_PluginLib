@@ -17,116 +17,45 @@
 
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
-import at.pcgamingfreaks.Bungee.Message.Message;
-
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.protocol.ProtocolConstants;
+import net.md_5.bungee.protocol.packet.Chat;
+import net.md_5.bungee.protocol.packet.Title;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class ActionBarSender extends ChatSender
+final class ActionBarSender implements ISender
 {
 	private static final byte ACTION_BAR_ACTION = 2;
-
-	/**
-	 * Sends a JSON message to a players action bar.
-	 *
-	 * @param player The player that should receive the message.
-	 * @param json   The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull ProxiedPlayer player, @NotNull String json)
-	{
-		send(player, json, ACTION_BAR_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to a players action bar.
-	 *
-	 * @param player  The player that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull ProxiedPlayer player, @NotNull Message message)
-	{
-		send(player, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to a players action bar.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param json    The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
-	{
-		send(players, json, ACTION_BAR_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to a players action bar.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull Message message)
-	{
-		send(players, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to the action bar of all online players.
-	 *
-	 * @param json The message in JSON format to be sent.
-	 */
-	public static void broadcast(@NotNull String json)
-	{
-		broadcast(json, ACTION_BAR_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to the action bar of all online players.
-	 *
-	 * @param message The message to be sent.
-	 */
-	public static void broadcast(@NotNull Message message)
-	{
-		broadcast(message.toString());
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json)
-	{
-		broadcast(json);
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optional)
-	{
-		broadcast(json);
-	}
 
 	@Override
 	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json)
 	{
-		send(player, json);
-	}
-
-	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable Object optional)
-	{
-		send(player, json);
+		if(player.getPendingConnection().getVersion() < ProtocolConstants.MINECRAFT_1_11)
+			player.unsafe().sendPacket(new Chat(json, ACTION_BAR_ACTION));
+		else
+		{
+			Title actionBarPacket = new Title();
+			actionBarPacket.setText(json);
+			actionBarPacket.setAction(Title.Action.ACTIONBAR);
+		}
 	}
 
 	@Override
 	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
-		send(players, json);
-	}
-
-	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional)
-	{
-		send(players, json);
+		Title actionBarTitlePacket = new Title();
+		actionBarTitlePacket.setText(json);
+		actionBarTitlePacket.setAction(Title.Action.ACTIONBAR);
+		Chat actionBarChatPacket = new Chat(json, ACTION_BAR_ACTION);
+		for(ProxiedPlayer player : players)
+		{
+			if(player.getPendingConnection().getVersion() < ProtocolConstants.MINECRAFT_1_11)
+				player.unsafe().sendPacket(actionBarChatPacket);
+			else
+				player.unsafe().sendPacket(actionBarTitlePacket);
+		}
 	}
 }

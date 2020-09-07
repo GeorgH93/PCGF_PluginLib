@@ -17,75 +17,26 @@
 
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
-import at.pcgamingfreaks.Bungee.Message.Message;
-
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
 /**
  * Only for MC 1.9 an newer
  */
-public class BossBarSender implements Sender
+final class BossBarSender implements ISender
 {
 	//TODO
-
-	public static void send(@NotNull ProxiedPlayer player, @NotNull Message message)
-	{
-		send(player, message.toString());
-	}
-
-	public static void broadcast(@NotNull Message message)
-	{
-		broadcast(message.getClassicMessage());
-	}
 
 	@Override
 	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json)
 	{
-		send(player, json);
-	}
-
-	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable Object optional)
-	{
-
 	}
 
 	@Override
 	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
-
-	}
-
-	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional)
-	{
-
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json)
-	{
-
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optional)
-	{
-
-	}
-
-	public static void send(@NotNull ProxiedPlayer player, @NotNull String json)
-	{
-		//TODO
-	}
-
-	public static void broadcast(@NotNull String json)
-	{
-		//TODO
 	}
 }

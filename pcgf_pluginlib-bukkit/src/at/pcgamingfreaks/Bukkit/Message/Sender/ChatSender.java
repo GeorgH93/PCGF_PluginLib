@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.Protocol.IChatMessagePacketFactory;
 import at.pcgamingfreaks.Bukkit.Util.Utils;
+import at.pcgamingfreaks.Message.Sender.IMetadata;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ final class ChatSender implements ISender
 	}
 
 	@Override
-	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optionalMetadata)
+	public void doSend(@NotNull Player player, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		doSend(player, json); //TODO implement sender uuid as metadata
 	}
@@ -53,7 +54,7 @@ final class ChatSender implements ISender
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optionalMetadata)
+	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		doSend(players, json); //TODO implement sender uuid as metadata
 	}

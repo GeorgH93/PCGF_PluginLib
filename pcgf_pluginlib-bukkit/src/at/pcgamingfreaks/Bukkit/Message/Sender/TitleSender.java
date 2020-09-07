@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit.Message.Sender;
 
 import at.pcgamingfreaks.Bukkit.Protocol.ITitleMessagePacketFactory;
 import at.pcgamingfreaks.Bukkit.Util.Utils;
+import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.ITitleMetadata;
 import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 
@@ -41,7 +42,7 @@ final class TitleSender implements ISender
 	}
 
 	@Override
-	public void doSend(final @NotNull Player player, final @NotNull String json, @Nullable Object optionalMetadata)
+	public void doSend(final @NotNull Player player, final @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		if(!(optionalMetadata instanceof ITitleMetadata)) optionalMetadata = METADATA;
 		ITitleMetadata metadata = (ITitleMetadata) optionalMetadata;
@@ -68,7 +69,7 @@ final class TitleSender implements ISender
 	}
 
 	@Override
-	public void doSend(final @NotNull Collection<? extends Player> players, final @NotNull String json, @Nullable Object optionalMetadata)
+	public void doSend(final @NotNull Collection<? extends Player> players, final @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		if(optionalMetadata == null) optionalMetadata = METADATA;
 		ITitleMetadata metadata = (ITitleMetadata) optionalMetadata;

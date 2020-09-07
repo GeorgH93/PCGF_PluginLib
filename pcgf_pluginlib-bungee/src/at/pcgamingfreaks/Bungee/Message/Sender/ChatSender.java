@@ -17,137 +17,30 @@
 
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
-import at.pcgamingfreaks.Bungee.Message.Message;
-
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.Chat;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class ChatSender implements Sender
+final class ChatSender implements ISender
 {
 	private static final byte CHAT_ACTION = 0;
 
-	/**
-	 * Sends a JSON message to a players chat.
-	 *
-	 * @param player The player that should receive the message.
-	 * @param json   The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull ProxiedPlayer player, @NotNull String json)
+	@Override
+	public void doSend(final @NotNull ProxiedPlayer player, final @NotNull String json)
 	{
-		send(player, json, CHAT_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to a players chat.
-	 *
-	 * @param player  The player that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull ProxiedPlayer player, @NotNull Message message)
-	{
-		send(player, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to a players chat.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param json    The message in JSON format to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
-	{
-		send(players, json, CHAT_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to a players chat.
-	 *
-	 * @param players The players that should receive the message.
-	 * @param message The message to be sent.
-	 */
-	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull Message message)
-	{
-		send(players, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to the chat of all online players.
-	 *
-	 * @param json The message in JSON format to be sent.
-	 */
-	public static void broadcast(@NotNull String json)
-	{
-		broadcast(json, CHAT_ACTION);
-	}
-
-	/**
-	 * Sends a JSON message to the chat of all online players.
-	 *
-	 * @param message The message to be sent.
-	 */
-	public static void broadcast(@NotNull Message message)
-	{
-		broadcast(message.toString());
+		player.unsafe().sendPacket(new Chat(json, CHAT_ACTION));
 	}
 
 	@Override
-	public void doBroadcast(@NotNull String json)
+	public void doSend(final @NotNull Collection<? extends ProxiedPlayer> players, final @NotNull String json)
 	{
-		broadcast(json);
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json, Object optional)
-	{
-		broadcast(json);
-	}
-
-	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json)
-	{
-		send(player, json);
-	}
-
-	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable Object optional)
-	{
-		send(player, json);
-	}
-
-	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
-	{
-		send(players, json);
-	}
-
-	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional)
-	{
-		send(players, json);
-	}
-
-	protected static void send(@NotNull ProxiedPlayer player, @NotNull String json, byte action)
-	{
-		player.unsafe().sendPacket(new Chat(json, action));
-	}
-
-	protected static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, byte action)
-	{
-		Chat chatPacket = new Chat(json, action);
+		Chat chatPacket = new Chat(json, CHAT_ACTION);
 		for(ProxiedPlayer player : players)
 		{
 			player.unsafe().sendPacket(chatPacket);
 		}
-	}
-
-	protected static void broadcast(@NotNull String json, byte action)
-	{
-		send(ProxyServer.getInstance().getPlayers(), json, action);
 	}
 }

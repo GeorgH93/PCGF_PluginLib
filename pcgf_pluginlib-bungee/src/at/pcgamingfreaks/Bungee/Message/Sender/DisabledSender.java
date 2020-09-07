@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
+import at.pcgamingfreaks.Message.Sender.IMetadata;
+
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,23 +26,23 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public final class DisabledSender implements Sender
+public final class DisabledSender implements ISender
 {
 	@Override
 	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json)	{}
 
 	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable Object optional) {}
+	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable IMetadata optional) {}
 
 	@Override
 	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json) {}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional) {}
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable IMetadata optional) {}
 
 	@Override
 	public void doBroadcast(@NotNull String json) {}
 
 	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optional) {}
+	public void doBroadcast(@NotNull String json, @Nullable IMetadata optional) {}
 }

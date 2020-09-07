@@ -16,6 +16,7 @@
         <module name="pcgf_pluginlib-plugin" />
         <module name="pcgf_pluginlib-plugin-bukkit" />
         <module name="pcgf_pluginlib-platform-nms-1_15_R1" />
+        <module name="pcgf_pluginlib-platform-nms-1_16_R2" />
         <module name="pcgf_pluginlib-platform-nms-1_16_R1" />
         <module name="pcgf_pluginlib-platform-bukkit" />
         <module name="pcgf_pluginlib-platform-nms-reflection" />

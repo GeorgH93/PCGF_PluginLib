@@ -109,7 +109,7 @@ public enum SendMethod implements ISendMethod, ISender
 	}
 
 	@Override
-	public void doSend(@NotNull Player player, @NotNull String json, @Nullable Object optionalMetadata)
+	public void doSend(@NotNull Player player, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		activeSender.doSend(player, json, optionalMetadata);
 	}
@@ -121,7 +121,7 @@ public enum SendMethod implements ISendMethod, ISender
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable Object optionalMetadata)
+	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		activeSender.doSend(players, json, optionalMetadata);
 	}
@@ -133,7 +133,7 @@ public enum SendMethod implements ISendMethod, ISender
 	}
 
 	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optionalMetadata)
+	public void doBroadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		activeSender.doBroadcast(json, optionalMetadata);
 	}

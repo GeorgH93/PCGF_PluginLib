@@ -70,13 +70,13 @@ public class DisabledSenderTest
 		disabledSender.doSend(player, "");
 		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), any());
-		disabledSender.doSend(player, "", false);
+		disabledSender.doSend(player, "", null);
 		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), any());
 		disabledSender.doSend(players, "");
 		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), any());
-		disabledSender.doSend(players, "", true);
+		disabledSender.doSend(players, "", null);
 		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), any());
 	}
@@ -89,7 +89,7 @@ public class DisabledSenderTest
 		disabledSender.doBroadcast("");
 		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), any());
-		disabledSender.doBroadcast("", 34);
+		disabledSender.doBroadcast("", null);
 		verifyStatic(Utils.class, times(sendPacketCalls));
 		Utils.sendPacket(any(Player.class), any());
 	}

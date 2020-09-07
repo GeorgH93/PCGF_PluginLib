@@ -17,9 +17,8 @@
 
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
-import at.pcgamingfreaks.Bungee.Message.Message;
+import at.pcgamingfreaks.Message.Sender.IMetadata;
 
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.Title;
 
@@ -28,194 +27,62 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class TitleSender implements Sender
+final class TitleSender implements ISender
 {
 	private static final TitleMetadata METADATA = new TitleMetadata(); // Default metadata object
+	private static final Title EMPTY_TITLE = mkTitlePacket("", METADATA);
 
-	/**
-	 * Sends a JSON message to a player shown as title.
-	 *
-	 * @param player The player that should receive the message
-	 * @param json   The message in JSON format to be sent
-	 */
-	public static void send(@NotNull ProxiedPlayer player, @NotNull String json)
+	private static Title mkTimesPacket(final @NotNull TitleMetadata metadata)
 	{
-		send(player, json, METADATA);
+		Title titleTimes = new Title();
+		titleTimes.setAction(Title.Action.TIMES);
+		titleTimes.setFadeIn(metadata.getFadeIn());
+		titleTimes.setStay(metadata.getStay());
+		titleTimes.setFadeOut(metadata.getFadeOut());
+		return titleTimes;
 	}
 
-	/**
-	 * Sends a JSON message to a player shown as title.
-	 *
-	 * @param player  The player that should receive the message
-	 * @param message The message to be sent
-	 */
-	public static void send(@NotNull ProxiedPlayer player, @NotNull Message message)
+	private static Title mkTitlePacket(final @NotNull String json, final @NotNull TitleMetadata metadata)
 	{
-		send(player, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to a player shown as title.
-	 *
-	 * @param player   The player that should receive the message
-	 * @param message  The message to be sent
-	 * @param metadata The metadata object giving more details on how the message should be displayed
-	 */
-	public static void send(@NotNull ProxiedPlayer player, @NotNull Message message, @NotNull TitleMetadata metadata)
-	{
-		send(player, message.toString(), metadata);
-	}
-
-	/**
-	 * Sends a JSON message to players shown as title.
-	 *
-	 * @param players The players that should receive the message
-	 * @param json    The message in JSON format to be sent
-	 */
-	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
-	{
-		send(players, json, METADATA);
-	}
-
-	/**
-	 * Sends a JSON message to players shown as title.
-	 *
-	 * @param players The players that should receive the message
-	 * @param message The message to be sent
-	 */
-	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull Message message)
-	{
-		send(players, message.toString());
-	}
-
-	/**
-	 * Sends a JSON message to players shown as title.
-	 *
-	 * @param players  The players that should receive the message
-	 * @param message  The message to be sent
-	 * @param metadata The metadata object giving more details on how the message should be displayed
-	 */
-	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull Message message, @NotNull TitleMetadata metadata)
-	{
-		send(players, message.toString(), metadata);
-	}
-
-	/**
-	 * Sends a JSON message shown as title to all online players.
-	 *
-	 * @param json The message in JSON format to be sent
-	 */
-	public static void broadcast(@NotNull String json)
-	{
-		broadcast(json, METADATA);
-	}
-
-	/**
-	 * Sends a JSON message shown as title to all online players.
-	 *
-	 * @param message  The message to be sent
-	 */
-	public static void broadcast(@NotNull Message message)
-	{
-		broadcast(message.toString());
-	}
-
-	/**
-	 * Sends a JSON message shown as title to all online players.
-	 *
-	 * @param message  The message to be sent
-	 * @param metadata The metadata object giving more details on how the message should be displayed
-	 */
-	public static void broadcast(@NotNull Message message, @NotNull TitleMetadata metadata)
-	{
-		broadcast(message.toString(), metadata);
+		Title titleSend = new Title();
+		titleSend.setAction(metadata.getTitleType());
+		titleSend.setText(json);
+		return titleSend;
 	}
 
 	@Override
 	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json)
 	{
-		send(player, json);
+		doSend(player, json, METADATA);
 	}
 
 	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable Object optional)
+	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable IMetadata optional)
 	{
-		send(player, json, (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA);
+		TitleMetadata metadata = (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA;
+		if(metadata.isActionBar()) player.unsafe().sendPacket(mkTitlePacket(json, metadata));
+		else
+		{
+			player.unsafe().sendPacket(mkTitlePacket(json, metadata));
+			if(metadata.isSubtitle())
+			{
+				player.unsafe().sendPacket(EMPTY_TITLE);
+			}
+		}
 	}
 
 	@Override
 	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
-		send(players, json);
+		doSend(players, json, METADATA);
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable Object optional)
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable IMetadata optional)
 	{
-		send(players, json, (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA);
-	}
+		TitleMetadata metadata = (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA;
+		Title titleTimes = mkTimesPacket(metadata), titleSend = mkTitlePacket(json, metadata), title = metadata.isSubtitle() ? EMPTY_TITLE : null;
 
-	@Override
-	public void doBroadcast(@NotNull String json)
-	{
-		broadcast(json, METADATA);
-	}
-
-	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optional)
-	{
-		broadcast(json, (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA);
-	}
-
-	/**
-	 * Sends a JSON message to a player shown as title.
-	 *
-	 * @param player   The player that should receive the message
-	 * @param json     The message in JSON format to be sent
-	 * @param metadata The metadata object giving more details on how the message should be displayed
-	 */
-	public static void send(@NotNull ProxiedPlayer player, @NotNull String json, @NotNull TitleMetadata metadata)
-	{
-		Title titleTimes = new Title(), titleSend = new Title();
-		titleTimes.setAction(Title.Action.TIMES);
-		titleTimes.setFadeIn(metadata.getFadeIn());
-		titleTimes.setStay(metadata.getStay());
-		titleTimes.setFadeOut(metadata.getFadeOut());
-		titleSend.setAction(metadata.getTitleType());
-		titleSend.setText(json);
-		player.unsafe().sendPacket(titleTimes);
-		player.unsafe().sendPacket(titleSend);
-		if(metadata.isSubtitle())
-		{
-			Title title = new Title();
-			title.setAction(Title.Action.TITLE);
-			title.setText("");
-			player.unsafe().sendPacket(title);
-		}
-	}
-
-	/**
-	 * Sends a JSON message to players shown as title.
-	 *
-	 * @param players  The player that should receive the message
-	 * @param json     The message in JSON format to be sent
-	 * @param metadata The metadata object giving more details on how the message should be displayed
-	 */
-	public static void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @NotNull TitleMetadata metadata)
-	{
-		Title titleTimes = new Title(), titleSend = new Title(), title = null;
-		titleTimes.setAction(Title.Action.TIMES);
-		titleTimes.setFadeIn(metadata.getFadeIn());
-		titleTimes.setStay(metadata.getStay());
-		titleTimes.setFadeOut(metadata.getFadeOut());
-		titleSend.setAction(metadata.getTitleType());
-		titleSend.setText(json);
-		if(metadata.isSubtitle())
-		{
-			title = new Title();
-			title.setAction(Title.Action.TITLE);
-			title.setText("");
-		}
 		for(ProxiedPlayer player : players)
 		{
 			player.unsafe().sendPacket(titleTimes);
@@ -224,14 +91,9 @@ public class TitleSender implements Sender
 		}
 	}
 
-	/**
-	 * Sends a JSON message shown as title to all online players.
-	 *
-	 * @param json     The message in JSON format to be sent
-	 * @param metadata The metadata object giving more details on how the message should be displayed
-	 */
-	public static void broadcast(@NotNull String json, @NotNull TitleMetadata metadata)
+	@Override
+	public void doBroadcast(@NotNull String json)
 	{
-		send(ProxyServer.getInstance().getPlayers(), json, metadata);
+		doBroadcast(json, METADATA);
 	}
 }

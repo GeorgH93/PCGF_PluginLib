@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
+import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.ISenderGeneric;
 
 import org.bukkit.Bukkit;
@@ -33,7 +34,7 @@ public interface ISender extends ISenderGeneric<Player>
 	}
 
 	@Override
-	default void doBroadcast(@NotNull String json, @Nullable Object optionalMetadata)
+	default void doBroadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		doSend(Bukkit.getOnlinePlayers(), json, optionalMetadata);
 	}

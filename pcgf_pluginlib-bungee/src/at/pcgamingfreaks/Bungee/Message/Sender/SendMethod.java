@@ -30,7 +30,7 @@ import lombok.Getter;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-public enum SendMethod implements ISendMethod, Sender
+public enum SendMethod implements ISendMethod, ISender
 {
 	CHAT(new ChatSender()),
 	TITLE(new TitleSender(), TitleMetadata.class, TitleMetadata::new),
@@ -38,16 +38,16 @@ public enum SendMethod implements ISendMethod, Sender
 	//BOSS_BAR(new BossBarSender()), //TODO
 	DISABLED(new DisabledSender());
 
-	@Getter @NotNull private final Sender sender;
+	@Getter @NotNull private final ISender sender;
 	@Getter @Nullable private final Class<? extends IMetadata> metadataClass;
 	@Getter @Nullable private final Supplier<? extends IMetadata> metadataSupplier;
 
-	SendMethod(@NotNull Sender sender)
+	SendMethod(@NotNull ISender sender)
 	{
 		this(sender, null, null);
 	}
 
-	SendMethod(@NotNull Sender sender, @Nullable Class<? extends IMetadata> metadataClass, @Nullable Supplier<? extends IMetadata> metadataSupplier)
+	SendMethod(@NotNull ISender sender, @Nullable Class<? extends IMetadata> metadataClass, @Nullable Supplier<? extends IMetadata> metadataSupplier)
 	{
 		this.sender = sender;
 		this.metadataClass = metadataClass;
@@ -70,7 +70,7 @@ public enum SendMethod implements ISendMethod, Sender
 	}
 
 	@Override
-	public void doSend(@NotNull ProxiedPlayer proxiedPlayer, @NotNull String json, @Nullable Object optionalMetadata)
+	public void doSend(@NotNull ProxiedPlayer proxiedPlayer, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		sender.doSend(proxiedPlayer, json, optionalMetadata);
 	}
@@ -82,7 +82,7 @@ public enum SendMethod implements ISendMethod, Sender
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> proxiedPlayers, @NotNull String json, @Nullable Object optionalMetadata)
+	public void doSend(@NotNull Collection<? extends ProxiedPlayer> proxiedPlayers, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		sender.doSend(proxiedPlayers, json, optionalMetadata);
 	}
@@ -94,7 +94,7 @@ public enum SendMethod implements ISendMethod, Sender
 	}
 
 	@Override
-	public void doBroadcast(@NotNull String json, @Nullable Object optionalMetadata)
+	public void doBroadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		sender.doBroadcast(json, optionalMetadata);
 	}
