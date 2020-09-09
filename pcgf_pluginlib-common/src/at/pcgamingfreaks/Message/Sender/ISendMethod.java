@@ -19,9 +19,6 @@ package at.pcgamingfreaks.Message.Sender;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 public interface ISendMethod
 {
 	/**
@@ -29,7 +26,14 @@ public interface ISendMethod
 	 *
 	 * @return The metadata class.
 	 */
+	@Deprecated
 	@Nullable Class<? extends IMetadata> getMetadataClass();
 
+	/**
+	 * Creates a metadata object from a json representation of the object.
+	 *
+	 * @param metadataJson The json representing the metadata that should be parsed.
+	 * @return The parsed metadata as a metadata object to be used with the senders.
+	 */
 	@Nullable IMetadata parseMetadata(String metadataJson);
 }
