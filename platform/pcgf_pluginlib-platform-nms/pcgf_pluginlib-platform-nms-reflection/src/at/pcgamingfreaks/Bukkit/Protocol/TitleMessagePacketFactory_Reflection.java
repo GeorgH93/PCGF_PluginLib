@@ -85,6 +85,7 @@ public class TitleMessagePacketFactory_Reflection implements ITitleMessagePacket
 	@Override
 	public Object makeTitlePacketActionBar(@NotNull String json)
 	{
+		if(ENUM_ACTION_BAR == null) return IChatMessagePacketFactory.INSTANCE.makeChatPacketActionBar(json);
 		try
 		{
 			return PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_ACTION_BAR, IUtils.INSTANCE.jsonToIChatComponent(json), -1, -1, -1);

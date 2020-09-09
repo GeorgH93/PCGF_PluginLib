@@ -38,7 +38,7 @@ public enum SendMethod implements ISendMethod, ISender
 	CHAT_CLASSIC(new DisabledSender(), null),
 	CHAT(MCVersion.isOlderThan(MC_1_8) ? null : new ChatSender(), CHAT_CLASSIC),
 	TITLE(MCVersion.isOlderThan(MC_1_8) ? null : new TitleSender(), TitleMetadata.class, TitleMetadata::new, CHAT),
-	ACTION_BAR(MCVersion.isOlderThan(MC_1_8) ? null : (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11)) ? new ActionBarTitleSender() : new ActionBarTitleSender(), CHAT),
+	ACTION_BAR(MCVersion.isOlderThan(MC_1_8) ? null : new ActionBarSender(), CHAT),
 	//BOSS_BAR(new BossBarSender(), BossBarMetadata.class, BossBarMetadata::new, ACTION_BAR), //TODO
 	DISABLED(new DisabledSender(), null);
 

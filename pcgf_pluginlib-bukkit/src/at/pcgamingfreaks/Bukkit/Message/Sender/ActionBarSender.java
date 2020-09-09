@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
-import at.pcgamingfreaks.Bukkit.Protocol.IChatMessagePacketFactory;
+import at.pcgamingfreaks.Bukkit.Protocol.ITitleMessagePacketFactory;
 import at.pcgamingfreaks.Bukkit.Util.Utils;
 
 import org.bukkit.entity.Player;
@@ -27,21 +27,21 @@ import java.util.Collection;
 
 final class ActionBarSender implements ISender
 {
-	private static final IChatMessagePacketFactory CHAT_MESSAGE_PACKET_FACTORY = IChatMessagePacketFactory.INSTANCE;
+	private static final ITitleMessagePacketFactory TITLE_MESSAGE_PACKET_FACTORY = ITitleMessagePacketFactory.INSTANCE;
 
 	@Override
 	public void doSend(@NotNull Player player, @NotNull String json)
 	{
-		Utils.sendPacket(player, CHAT_MESSAGE_PACKET_FACTORY.makeChatPacketActionBar(json));
+		Utils.sendPacket(player, TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketActionBar(json));
 	}
 
 	@Override
 	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
 	{
-		Object packet = CHAT_MESSAGE_PACKET_FACTORY.makeChatPacketActionBar(json);
+		Object titlePacket = TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketActionBar(json);
 		for(Player player : players)
 		{
-			Utils.sendPacket(player, packet);
+			Utils.sendPacket(player, titlePacket);
 		}
 	}
 }
