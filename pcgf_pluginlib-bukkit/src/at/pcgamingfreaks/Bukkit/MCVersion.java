@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 /**
  * This enum allows to compare minecraft version. Useful for reflection and version depending stuff.
  */
-@SuppressWarnings("unused")
 public enum MCVersion
 {
 	UNKNOWN(0, -1, "", "UNKNOWN"),
@@ -140,7 +139,7 @@ public enum MCVersion
 			{
 				currentVersion = getFromVersionName(matcher.group("version"));
 			}
-			else
+			if(currentVersion == UNKNOWN)
 			{ // Could not identify version from API, trying to use NMS
 				currentVersion = getFromServerVersion(NMSReflection.getVersion());
 			}
