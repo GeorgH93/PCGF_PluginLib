@@ -347,8 +347,14 @@ public class Language extends YamlFileManager
 		T msg = null;
 		try
 		{
+			final String msgString = (escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path);
 			//noinspection unchecked
-			msg = (T) messageClasses.messageConstructor.newInstance((escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path));
+			msg = (T) messageClasses.messageConstructor.newInstance(msgString);
+			if(msgString.isEmpty())
+			{
+				messageClasses.setSendMethod.invoke(msg, Enum.valueOf(messageClasses.enumType, "DISABLED"));
+				return msg;
+			}
 			final String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
 			if(yaml.isSet(pathSendMethod))
 			{
