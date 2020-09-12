@@ -31,7 +31,7 @@ final class ActionBarSender implements ISender
 	private static final byte ACTION_BAR_ACTION = 2;
 
 	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json)
+	public void send(@NotNull ProxiedPlayer player, @NotNull String json)
 	{
 		if(player.getPendingConnection().getVersion() < ProtocolConstants.MINECRAFT_1_11)
 			player.unsafe().sendPacket(new Chat(json, ACTION_BAR_ACTION));
@@ -44,7 +44,7 @@ final class ActionBarSender implements ISender
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
+	public void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
 		Title actionBarTitlePacket = new Title();
 		actionBarTitlePacket.setText(json);

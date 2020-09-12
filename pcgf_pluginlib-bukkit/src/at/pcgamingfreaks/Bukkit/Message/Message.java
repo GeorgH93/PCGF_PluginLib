@@ -221,7 +221,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		{
 			String jsonMsg = prepareMessage(true, args);
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders((Player) target, jsonMsg);
-			sendMethod.getActiveSender().doSend((Player) target, jsonMsg, optionalParameters);
+			sendMethod.getActiveSender().send((Player) target, jsonMsg, optionalParameters);
 		}
 		else
 		{
@@ -259,12 +259,12 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 			{
 				for(Player player : targets)
 				{
-					sendMethod.getActiveSender().doSend(player, PlaceholderAPI.setPlaceholders(player, jsonMsg));
+					sendMethod.getActiveSender().send(player, PlaceholderAPI.setPlaceholders(player, jsonMsg));
 				}
 			}
 			else
 			{
-				sendMethod.getActiveSender().doSend(targets, jsonMsg, optionalParameters);
+				sendMethod.getActiveSender().send(targets, jsonMsg, optionalParameters);
 			}
 		}
 	}
@@ -288,7 +288,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		else
 		{
 			Bukkit.getConsoleSender().sendMessage(prepareMessage(false, args)); // Send the message to the console
-			sendMethod.getActiveSender().doBroadcast(prepareMessage(true, args), optionalParameters);
+			sendMethod.getActiveSender().broadcast(prepareMessage(true, args), optionalParameters);
 		}
 	}
 
@@ -309,7 +309,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		{
 			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
-			sendMethod.getActiveSender().doSend((Player) target, jsonMsg, optionalParameters);
+			sendMethod.getActiveSender().send((Player) target, jsonMsg, optionalParameters);
 		}
 		else
 		{
@@ -345,7 +345,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		{
 			String jsonMsg = prepareMessage(true, args);
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
-			sendMethod.getActiveSender().doSend(targets, jsonMsg, optionalParameters);
+			sendMethod.getActiveSender().send(targets, jsonMsg, optionalParameters);
 		}
 	}
 
@@ -371,7 +371,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 			Bukkit.getConsoleSender().sendMessage(msg); // Send the message to the console
 			String jsonMsg = prepareMessage(true, args);
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
-			sendMethod.doBroadcast(jsonMsg, optionalParameters);
+			sendMethod.broadcast(jsonMsg, optionalParameters);
 		}
 	}
 }

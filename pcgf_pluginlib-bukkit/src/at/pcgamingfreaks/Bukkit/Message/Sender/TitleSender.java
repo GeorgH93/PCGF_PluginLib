@@ -36,13 +36,13 @@ final class TitleSender implements ISender
 	private static final Object PACKET_EMPTY_TITLE = TITLE_MESSAGE_PACKET_FACTORY == null ? null : TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacket(""); // TITLE_MESSAGE_PACKET_FACTORY will be null during unit tests!
 
 	@Override
-	public void doSend(final @NotNull Player player, final @NotNull String json)
+	public void send(final @NotNull Player player, final @NotNull String json)
 	{
-		doSend(player, json, METADATA);
+		send(player, json, METADATA);
 	}
 
 	@Override
-	public void doSend(final @NotNull Player player, final @NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void send(final @NotNull Player player, final @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		if(!(optionalMetadata instanceof ITitleMetadata)) optionalMetadata = METADATA;
 		ITitleMetadata metadata = (ITitleMetadata) optionalMetadata;
@@ -63,13 +63,13 @@ final class TitleSender implements ISender
 	}
 
 	@Override
-	public void doSend(final @NotNull Collection<? extends Player> players, final @NotNull String json)
+	public void send(final @NotNull Collection<? extends Player> players, final @NotNull String json)
 	{
-		doSend(players, json, METADATA);
+		send(players, json, METADATA);
 	}
 
 	@Override
-	public void doSend(final @NotNull Collection<? extends Player> players, final @NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void send(final @NotNull Collection<? extends Player> players, final @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
 		if(optionalMetadata == null) optionalMetadata = METADATA;
 		ITitleMetadata metadata = (ITitleMetadata) optionalMetadata;

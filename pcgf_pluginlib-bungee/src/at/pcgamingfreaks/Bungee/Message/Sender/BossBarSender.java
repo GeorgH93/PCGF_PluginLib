@@ -31,12 +31,12 @@ final class BossBarSender implements ISender
 	//TODO
 
 	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json)
+	public void send(@NotNull ProxiedPlayer player, @NotNull String json)
 	{
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
+	public void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
 	}
 }

@@ -184,7 +184,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 		if(getSendMethod() == SendMethod.DISABLED) return;
 		if(target instanceof ProxiedPlayer)
 		{
-			sendMethod.getSender().doSend((ProxiedPlayer) target, prepareMessage(true, args), optionalParameters);
+			sendMethod.getSender().send((ProxiedPlayer) target, prepareMessage(true, args), optionalParameters);
 		}
 		else
 		{
@@ -205,7 +205,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	public void send(final @NotNull Collection<? extends ProxiedPlayer> targets, final @Nullable Object... args)
 	{
 		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
-		sendMethod.getSender().doSend(targets, prepareMessage(true, args), optionalParameters);
+		sendMethod.getSender().send(targets, prepareMessage(true, args), optionalParameters);
 	}
 
 	/**
@@ -221,6 +221,6 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 		if(getSendMethod() == SendMethod.DISABLED) return;
 		//noinspection deprecation
 		ProxyServer.getInstance().getConsole().sendMessage(prepareMessage(false, args)); // Send the message to the console
-		sendMethod.getSender().doBroadcast(prepareMessage(true, args), optionalParameters);
+		sendMethod.getSender().broadcast(prepareMessage(true, args), optionalParameters);
 	}
 }

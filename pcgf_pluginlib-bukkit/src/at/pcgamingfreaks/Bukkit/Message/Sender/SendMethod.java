@@ -103,38 +103,38 @@ public enum SendMethod implements ISendMethod, ISender
 	}
 
 	@Override
-	public void doSend(@NotNull Player player, @NotNull String json)
+	public void send(@NotNull Player player, @NotNull String json)
 	{
-		activeSender.doSend(player, json);
+		activeSender.send(player, json);
 	}
 
 	@Override
-	public void doSend(@NotNull Player player, @NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void send(@NotNull Player player, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		activeSender.doSend(player, json, optionalMetadata);
+		activeSender.send(player, json, optionalMetadata);
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
+	public void send(@NotNull Collection<? extends Player> players, @NotNull String json)
 	{
-		activeSender.doSend(players, json);
+		activeSender.send(players, json);
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void send(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		activeSender.doSend(players, json, optionalMetadata);
+		activeSender.send(players, json, optionalMetadata);
 	}
 
 	@Override
-	public void doBroadcast(@NotNull String json)
+	public void broadcast(@NotNull String json)
 	{
-		activeSender.doBroadcast(json);
+		activeSender.broadcast(json);
 	}
 
 	@Override
-	public void doBroadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void broadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		activeSender.doBroadcast(json, optionalMetadata);
+		activeSender.broadcast(json, optionalMetadata);
 	}
 }

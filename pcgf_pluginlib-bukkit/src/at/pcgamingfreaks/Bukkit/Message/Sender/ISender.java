@@ -28,14 +28,14 @@ import org.jetbrains.annotations.Nullable;
 public interface ISender extends ISenderGeneric<Player>
 {
 	@Override
-	default void doBroadcast(@NotNull String json)
+	default void broadcast(@NotNull String json)
 	{
-		doSend(Bukkit.getOnlinePlayers(), json);
+		send(Bukkit.getOnlinePlayers(), json);
 	}
 
 	@Override
-	default void doBroadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
+	default void broadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		doSend(Bukkit.getOnlinePlayers(), json, optionalMetadata);
+		send(Bukkit.getOnlinePlayers(), json, optionalMetadata);
 	}
 }

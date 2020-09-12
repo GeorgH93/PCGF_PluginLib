@@ -51,13 +51,13 @@ final class TitleSender implements ISender
 	}
 
 	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json)
+	public void send(@NotNull ProxiedPlayer player, @NotNull String json)
 	{
-		doSend(player, json, METADATA);
+		send(player, json, METADATA);
 	}
 
 	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable IMetadata optional)
+	public void send(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable IMetadata optional)
 	{
 		TitleMetadata metadata = (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA;
 		if(metadata.isActionBar()) player.unsafe().sendPacket(mkTitlePacket(json, metadata));
@@ -72,13 +72,13 @@ final class TitleSender implements ISender
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
+	public void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json)
 	{
-		doSend(players, json, METADATA);
+		send(players, json, METADATA);
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable IMetadata optional)
+	public void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable IMetadata optional)
 	{
 		TitleMetadata metadata = (optional instanceof TitleMetadata) ? (TitleMetadata) optional : METADATA;
 		Title titleTimes = mkTimesPacket(metadata), titleSend = mkTitlePacket(json, metadata), title = metadata.isSubtitle() ? EMPTY_TITLE : null;
@@ -92,8 +92,8 @@ final class TitleSender implements ISender
 	}
 
 	@Override
-	public void doBroadcast(@NotNull String json)
+	public void broadcast(@NotNull String json)
 	{
-		doBroadcast(json, METADATA);
+		broadcast(json, METADATA);
 	}
 }

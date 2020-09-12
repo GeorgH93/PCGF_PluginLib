@@ -29,20 +29,20 @@ import java.util.Collection;
 public final class DisabledSender implements ISender
 {
 	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json)	{}
+	public void send(@NotNull ProxiedPlayer player, @NotNull String json)	{}
 
 	@Override
-	public void doSend(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable IMetadata optional) {}
+	public void send(@NotNull ProxiedPlayer player, @NotNull String json, @Nullable IMetadata optional) {}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json) {}
+	public void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json) {}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable IMetadata optional) {}
+	public void send(@NotNull Collection<? extends ProxiedPlayer> players, @NotNull String json, @Nullable IMetadata optional) {}
 
 	@Override
-	public void doBroadcast(@NotNull String json) {}
+	public void broadcast(@NotNull String json) {}
 
 	@Override
-	public void doBroadcast(@NotNull String json, @Nullable IMetadata optional) {}
+	public void broadcast(@NotNull String json, @Nullable IMetadata optional) {}
 }

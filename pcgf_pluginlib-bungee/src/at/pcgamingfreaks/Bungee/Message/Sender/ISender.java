@@ -28,13 +28,13 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ISender extends ISenderGeneric<ProxiedPlayer>
 {
-	default void doBroadcast(@NotNull String json)
+	default void broadcast(@NotNull String json)
 	{
-		doSend(ProxyServer.getInstance().getPlayers(), json);
+		send(ProxyServer.getInstance().getPlayers(), json);
 	}
 
-	default void doBroadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
+	default void broadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		doSend(ProxyServer.getInstance().getPlayers(), json, optionalMetadata);
+		send(ProxyServer.getInstance().getPlayers(), json, optionalMetadata);
 	}
 }

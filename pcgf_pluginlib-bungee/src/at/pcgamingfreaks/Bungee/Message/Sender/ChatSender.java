@@ -29,13 +29,13 @@ final class ChatSender implements ISender
 	private static final byte CHAT_ACTION = 0;
 
 	@Override
-	public void doSend(final @NotNull ProxiedPlayer player, final @NotNull String json)
+	public void send(final @NotNull ProxiedPlayer player, final @NotNull String json)
 	{
 		player.unsafe().sendPacket(new Chat(json, CHAT_ACTION));
 	}
 
 	@Override
-	public void doSend(final @NotNull Collection<? extends ProxiedPlayer> players, final @NotNull String json)
+	public void send(final @NotNull Collection<? extends ProxiedPlayer> players, final @NotNull String json)
 	{
 		Chat chatPacket = new Chat(json, CHAT_ACTION);
 		for(ProxiedPlayer player : players)

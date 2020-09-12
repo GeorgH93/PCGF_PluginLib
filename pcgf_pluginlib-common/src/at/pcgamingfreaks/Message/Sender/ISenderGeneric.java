@@ -24,24 +24,24 @@ import java.util.Collection;
 
 public interface ISenderGeneric<PLAYER>
 {
-	void doSend(@NotNull PLAYER player, @NotNull String json);
+	void send(@NotNull PLAYER player, @NotNull String json);
 
-	default void doSend(@NotNull PLAYER player, @NotNull String json, @Nullable IMetadata optionalMetadata)
+	default void send(@NotNull PLAYER player, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		doSend(player, json);
+		send(player, json);
 	}
 
-	void doSend(@NotNull Collection<? extends PLAYER> players, @NotNull String json);
+	void send(@NotNull Collection<? extends PLAYER> players, @NotNull String json);
 
-	default void doSend(@NotNull Collection<? extends PLAYER> players, @NotNull String json, @Nullable IMetadata optionalMetadata)
+	default void send(@NotNull Collection<? extends PLAYER> players, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		doSend(players, json);
+		send(players, json);
 	}
 
-	void doBroadcast(@NotNull String json);
+	void broadcast(@NotNull String json);
 
-	default void doBroadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
+	default void broadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		doBroadcast(json);
+		broadcast(json);
 	}
 }

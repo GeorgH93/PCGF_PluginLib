@@ -25,8 +25,8 @@ import java.util.Collection;
 final class DisabledSender implements ISender
 {
 	@Override
-	public void doSend(@NotNull Player player, @NotNull String json) {}
+	public void send(@NotNull Player player, @NotNull String json) {}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json) {}
+	public void send(@NotNull Collection<? extends Player> players, @NotNull String json) {}
 }

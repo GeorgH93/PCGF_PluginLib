@@ -20,7 +20,6 @@ package at.pcgamingfreaks.Bukkit.Message;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Sender.*;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
-import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
@@ -30,7 +29,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -139,11 +137,11 @@ public class MessageTest
 		doAnswer(invocationOnMock -> {
 			doSendCalls[0]++;
 			return null;
-		}).when(mockedSender).doSend(any(Player.class), anyString(), any());
+		}).when(mockedSender).send(any(Player.class), anyString(), any());
 		doAnswer(invocationOnMock -> {
 			doSendCalls[0]++;
 			return null;
-		}).when(mockedSender).doSend(anyCollectionOf(Player.class), anyString(), any());
+		}).when(mockedSender).send(anyCollectionOf(Player.class), anyString(), any());
 		Field defaultSender = SendMethod.class.getDeclaredField("activeSender");
 		defaultSender.setAccessible(true);
 		Object senderBackup = defaultSender.get(SendMethod.CHAT);
@@ -175,7 +173,7 @@ public class MessageTest
 		doAnswer(invocationOnMock -> {
 			broadcastCalls[0]++;
 			return null;
-		}).when(mockedSender).doBroadcast(anyString(), any());
+		}).when(mockedSender).broadcast(anyString(), any());
 		Field defaultSender = SendMethod.class.getDeclaredField("activeSender");
 		defaultSender.setAccessible(true);
 		Object senderBackup = defaultSender.get(SendMethod.CHAT);

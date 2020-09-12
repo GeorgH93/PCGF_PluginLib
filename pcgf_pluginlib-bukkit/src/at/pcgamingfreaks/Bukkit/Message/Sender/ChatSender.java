@@ -32,19 +32,19 @@ final class ChatSender implements ISender
 	private static final IChatMessagePacketFactory CHAT_MESSAGE_PACKET_FACTORY = IChatMessagePacketFactory.INSTANCE;
 
 	@Override
-	public void doSend(@NotNull Player player, @NotNull String json)
+	public void send(@NotNull Player player, @NotNull String json)
 	{
 		Utils.sendPacket(player, CHAT_MESSAGE_PACKET_FACTORY.makeChatPacket(json));
 	}
 
 	@Override
-	public void doSend(@NotNull Player player, @NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void send(@NotNull Player player, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		doSend(player, json); //TODO implement sender uuid as metadata
+		send(player, json); //TODO implement sender uuid as metadata
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
+	public void send(@NotNull Collection<? extends Player> players, @NotNull String json)
 	{
 		Object packet = CHAT_MESSAGE_PACKET_FACTORY.makeChatPacket(json);
 		for(Player player : players)
@@ -54,8 +54,8 @@ final class ChatSender implements ISender
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void send(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		doSend(players, json); //TODO implement sender uuid as metadata
+		send(players, json); //TODO implement sender uuid as metadata
 	}
 }

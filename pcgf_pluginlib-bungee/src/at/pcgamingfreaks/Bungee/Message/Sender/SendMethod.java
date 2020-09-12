@@ -64,38 +64,38 @@ public enum SendMethod implements ISendMethod, ISender
 	}
 
 	@Override
-	public void doSend(@NotNull ProxiedPlayer proxiedPlayer, @NotNull String json)
+	public void send(@NotNull ProxiedPlayer proxiedPlayer, @NotNull String json)
 	{
-		sender.doSend(proxiedPlayer, json);
+		sender.send(proxiedPlayer, json);
 	}
 
 	@Override
-	public void doSend(@NotNull ProxiedPlayer proxiedPlayer, @NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void send(@NotNull ProxiedPlayer proxiedPlayer, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		sender.doSend(proxiedPlayer, json, optionalMetadata);
+		sender.send(proxiedPlayer, json, optionalMetadata);
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> proxiedPlayers, @NotNull String json)
+	public void send(@NotNull Collection<? extends ProxiedPlayer> proxiedPlayers, @NotNull String json)
 	{
-		sender.doSend(proxiedPlayers, json);
+		sender.send(proxiedPlayers, json);
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends ProxiedPlayer> proxiedPlayers, @NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void send(@NotNull Collection<? extends ProxiedPlayer> proxiedPlayers, @NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		sender.doSend(proxiedPlayers, json, optionalMetadata);
+		sender.send(proxiedPlayers, json, optionalMetadata);
 	}
 
 	@Override
-	public void doBroadcast(@NotNull String json)
+	public void broadcast(@NotNull String json)
 	{
-		sender.doBroadcast(json);
+		sender.broadcast(json);
 	}
 
 	@Override
-	public void doBroadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void broadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
 	{
-		sender.doBroadcast(json, optionalMetadata);
+		sender.broadcast(json, optionalMetadata);
 	}
 }

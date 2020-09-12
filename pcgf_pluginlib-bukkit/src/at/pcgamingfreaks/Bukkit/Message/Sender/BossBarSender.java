@@ -31,13 +31,13 @@ final class BossBarSender implements ISender
 	//BossBar bossBar = Bukkit.createBossBar()
 
 	@Override
-	public void doSend(@NotNull Player player, @NotNull String json)
+	public void send(@NotNull Player player, @NotNull String json)
 	{
 		//TODO
 	}
 
 	@Override
-	public void doSend(@NotNull Collection<? extends Player> players, @NotNull String json)
+	public void send(@NotNull Collection<? extends Player> players, @NotNull String json)
 	{
 		//TODO
 	}
