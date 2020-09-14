@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2014-2015 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,6 +18,9 @@
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
 
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.logging.Logger;
 
 public interface ItemStackSerializer
 {
@@ -37,5 +40,41 @@ public interface ItemStackSerializer
 	 */
 	byte[] serialize(ItemStack[] itemStacks);
 
+	/**
+	 * Checks if the minecraft version of the server is compatible with the logger!
+	 *
+	 * @return True if the servers minecraft version is compatible with the logger.
+	 */
 	boolean checkIsMCVersionCompatible();
+
+	/**
+	 * Sets the logger that should be used by the serializer.
+	 *
+	 * @param logger The logger that should be used. null for no logger.
+	 */
+	default void setLogger(final @Nullable Logger logger) {}
+
+	/**
+	 * @deprecated Unreliable on many MC versions when being used with items that have NBT-tags. Use {@link ItemStackSerializer#makeNBTItemStackSerializer()} instead.
+	 */
+	@Deprecated
+	static ItemStackSerializer makeBukkitItemStackSerializer()
+	{
+		return new BukkitItemStackSerializer();
+	}
+
+	static ItemStackSerializer makeNBTItemStackSerializer()
+	{
+		return new NBTItemStackSerializerGen2();
+	}
+
+	static ItemStackSerializer makeNBTItemStackSerializer(final @Nullable Logger logger)
+	{
+		return new NBTItemStackSerializerGen2(logger);
+	}
+
+	static boolean isNBTItemStackSerializerAvailable()
+	{
+		return NBTItemStackSerializerGen2.isMCVersionCompatible();
+	}
 }

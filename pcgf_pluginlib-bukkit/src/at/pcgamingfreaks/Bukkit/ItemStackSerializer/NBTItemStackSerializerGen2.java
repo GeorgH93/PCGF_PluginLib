@@ -31,7 +31,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
+/**
+ * @deprecated Use {@link ItemStackSerializer#makeNBTItemStackSerializer()} instead!
+ */
 @SuppressWarnings("ConstantConditions")
+@Deprecated
 public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 {
 	//region Reflection Variables
@@ -129,16 +133,20 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 		//endregion
 	}
 
-	private final Logger logger;
+	private Logger logger = null;
 
-	public NBTItemStackSerializerGen2()
+	public NBTItemStackSerializerGen2() {}
+
+	public NBTItemStackSerializerGen2(final @Nullable Logger logger)
 	{
-		logger = null;
+		setLogger(logger);
 	}
 
-	public NBTItemStackSerializerGen2(Logger logger)
+	@Override
+	public void setLogger(@Nullable Logger logger)
 	{
 		this.logger = logger;
+		if(logger == null) return;
 		if(CLASS_NBT_TAG_COMPOUND == null || METHOD_NBT_TAG_C_SET2 == null || METHOD_NBT_TAG_C_SET_INT == null || METHOD_SAVE == null || METHOD_AS_NMS_COPY == null || METHOD_NBT_COMP_STEAM_A == null ||
 				METHOD_NBT_COMP_STREAM_A2 == null || METHOD_GET_INT == null || METHOD_HAS_KEY_OF_TYPE == null || METHOD_AS_BUKKIT_COPY == null || METHOD_GET_COMPOUND == null ||
 				(METHOD_CREATE_STACK == null && CONSTRUCTOR_NMS_ITEM_STACK == null))

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,8 +32,10 @@ import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 /**
- * Doesn't handle item format chances on MC 1.13 or newer! Use NBTItemStackSerializerGen2 instead!
- * Doesn't support MC 1.14 and newer! Use NBTItemStackSerializerGen2 instead!
+ * Doesn't handle item format changes on MC 1.13 or newer! Use {@link ItemStackSerializer#makeNBTItemStackSerializer()} instead!
+ * Doesn't support MC 1.14 and newer! Use {@link ItemStackSerializer#makeNBTItemStackSerializer()} instead!
+ *
+ * @deprecated Use {@link ItemStackSerializer#makeNBTItemStackSerializer()} instead!
  */
 @Deprecated
 @SuppressWarnings("ConstantConditions")
