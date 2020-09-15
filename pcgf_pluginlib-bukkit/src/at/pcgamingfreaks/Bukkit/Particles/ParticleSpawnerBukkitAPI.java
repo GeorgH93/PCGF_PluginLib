@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,18 +19,39 @@ package at.pcgamingfreaks.Bukkit.Particles;
 
 import org.bukkit.Location;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 @Deprecated
-class ParticleSpawnerBukkitAPI extends ParticleSpawner
+final class ParticleSpawnerBukkitAPI extends ParticleSpawner
 {
+	private static final Map<Particle, org.bukkit.Particle> PARTICLE_MAP = new EnumMap<>(Particle.class);
+
+	static
+	{
+		for(Particle particle : Particle.values())
+		{
+			try
+			{
+				PARTICLE_MAP.put(particle, org.bukkit.Particle.valueOf(particle.getName()));
+			}
+			catch(IllegalArgumentException ignored) {}
+		}
+	}
+
 	@Override
 	public void spawnParticle(Location location, Particle type, Object particleData, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
-		location.getWorld().spawnParticle(org.bukkit.Particle.valueOf(type.getName()), location, count, offsetX, offsetY, offsetZ, speed, particleData);
+		org.bukkit.Particle particle = PARTICLE_MAP.get(type);
+		if(particle == null) return;
+		location.getWorld().spawnParticle(particle, location, count, offsetX, offsetY, offsetZ, speed, particleData);
 	}
 
 	@Override
 	public void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
 	{
-		location.getWorld().spawnParticle(org.bukkit.Particle.valueOf(type.getName()), location, count, offsetX, offsetY, offsetZ, speed);
+		org.bukkit.Particle particle = PARTICLE_MAP.get(type);
+		if(particle == null) return;
+		location.getWorld().spawnParticle(particle, location, count, offsetX, offsetY, offsetZ, speed);
 	}
 }

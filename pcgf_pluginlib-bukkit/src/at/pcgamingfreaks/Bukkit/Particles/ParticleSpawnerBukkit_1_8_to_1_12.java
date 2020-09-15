@@ -25,11 +25,24 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 
 import java.lang.reflect.Constructor;
+import java.util.EnumMap;
+import java.util.Map;
 
 @Deprecated
 class ParticleSpawnerBukkit_1_8_to_1_12 extends ParticleSpawnerBukkitNMSBase
 {
-	private static final Constructor PACKET_CONSTRUCTOR = Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutWorldParticles"), NmsReflector.INSTANCE.getNmsClass("EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
+	private static final Map<Particle, Enum<?>> PARTICLE_MAP = new EnumMap<>(Particle.class);
+
+	static
+	{
+		for(Particle particle : Particle.values())
+		{
+			if(MCVersion.isNewerOrEqualThan(particle.getMinVersion()))
+				PARTICLE_MAP.put(particle, NmsReflector.INSTANCE.getNmsEnum("EnumParticle", particle.getName()));
+		}
+	}
+
+	private static final Constructor<?> PACKET_CONSTRUCTOR = Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutWorldParticles"), NmsReflector.INSTANCE.getNmsClass("EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
 
 	@Override
 	public void spawnParticle(Location location, Particle particle, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
@@ -40,12 +53,11 @@ class ParticleSpawnerBukkit_1_8_to_1_12 extends ParticleSpawnerBukkitNMSBase
 	@Override
 	protected void spawnParticle(Location location, Particle particle, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data)
 	{
-		Validate.notNull(particle.getEnum());
 		Validate.isTrue(MCVersion.isNewerOrEqualThan(particle.getMinVersion()), "The %s particle is not available in your minecraft version!", particle.getName());
 		try
 		{
 			//noinspection ConstantConditions
-			spawnParticle(location, visibleRange, PACKET_CONSTRUCTOR.newInstance(particle.getEnum(), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, data));
+			spawnParticle(location, visibleRange, PACKET_CONSTRUCTOR.newInstance(PARTICLE_MAP.get(particle), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, data));
 		}
 		catch(Exception e)
 		{

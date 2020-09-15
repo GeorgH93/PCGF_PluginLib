@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,18 +18,19 @@
 package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.NmsReflector;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-@SuppressWarnings({ "unused", "SpellCheckingInspection" })
+@SuppressWarnings({ "SpellCheckingInspection" })
 @Deprecated
 public enum Particle
 {
@@ -136,10 +137,9 @@ public enum Particle
 	}
 
 	//private final int parameterCount;
-	private final String oldName, name;
-	private final Enum<?> nmsEnumParticle;
+	@Getter private final String oldName, name;
 	private final Class<?> dataType;
-	private final MCVersion minVersion;
+	@Getter private final MCVersion minVersion;
 
 	Particle(String oldName)
 	{
@@ -166,38 +166,12 @@ public enum Particle
 		this.name = name;
 		this.oldName = oldName;
 		this.minVersion = minVersion;
-		Enum<?> nmsEnum = null;
-		if(MCVersion.isNewerOrEqualThan(minVersion) && MCVersion.isNewerOrEqualThan(MCVersion.MC_1_8) && MCVersion.isOlderThan(MCVersion.MC_1_13))
-		{
-			nmsEnum = NmsReflector.INSTANCE.getNmsEnum("EnumParticle", name);
-		}
-		this.nmsEnumParticle = nmsEnum;
 		this.dataType = dataType;
-	}
-
-	public @NotNull String getOldName()
-	{
-		return oldName;
-	}
-
-	public @NotNull String getName()
-	{
-		return name;
-	}
-
-	public @Nullable Enum<?> getEnum()
-	{
-		return nmsEnumParticle;
 	}
 
 	public @NotNull String getOldNameUpperCase()
 	{
 		return getOldName().toUpperCase(Locale.ROOT);
-	}
-
-	public @NotNull MCVersion getMinVersion()
-	{
-		return minVersion;
 	}
 
 	/**
