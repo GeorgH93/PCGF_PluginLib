@@ -35,96 +35,96 @@ import java.util.Map;
 public enum Particle
 {
 	EXPLOSION       ("explode",         "EXPLOSION_NORMAL"),
-	EXPLOSION_LARGE ("largeexplosion",  "EXPLOSION_LARGE"),
-	EXPLOSION_HUGE  ("hugeexplosion",   "EXPLOSION_HUGE"),
-	FIREWORKS_SPARK ("fireworksSpark",  "FIREWORKS_SPARK"),
+	EXPLOSION_LARGE ("largeexplosion"),
+	EXPLOSION_HUGE  ("hugeexplosion"),
+	FIREWORKS_SPARK ("fireworksSpark"),
 	BUBBLE          ("bubble",          "WATER_BUBBLE"),
 	WAKE            ("wake",            "WATER_WAKE"),
 	SPLASH          ("splash",          "WATER_SPLASH"),
-	SUSPENDED       ("suspended",       "SUSPENDED"),
+	SUSPENDED,
 	TOWNAURA        ("townaura",        "TOWN_AURA"),
-	CRIT            ("crit"),
+	CRIT,
 	MAGIC_CRIT      ("magicCrit",       "CRIT_MAGIC"),
 	SMOKE           ("smoke",           "SMOKE_NORMAL"),
-	SMOKE_LARGE     ("largesmoke",      "SMOKE_LARGE"),
-	SPELL           ("spell"),
-	SPELL_MOB       ("mobSpell",        "SPELL_MOB"),
-	SPELL_INSTANT   ("instantSpell",    "SPELL_INSTANT"),
-	SPELL_MOB_AMBIENT("mobSpellAmbient", "SPELL_MOB_AMBIENT"),
-	WITCH_MAGIC     ("witchMagic",      "SPELL_WITCH"),
-	DRIP_WATER      ("dripWater",       "DRIP_WATER"),
-	DRIP_LAVA       ("dripLava",        "DRIP_LAVA"),
-	VILLAGER_ANGRY  ("angryVillager",   "VILLAGER_ANGRY"),
-	VILLAGER_HAPPY  ("happyVillager",   "VILLAGER_HAPPY"),
+	SMOKE_LARGE     ("largesmoke"),
+	SPELL,
+	SPELL_MOB       ("mobSpell"),
+	SPELL_INSTANT   ("instantSpell"),
+	SPELL_MOB_AMBIENT("mobSpellAmbient"),
+	SPELL_WITCH     ("witchMagic"),
+	DRIP_WATER      ("dripWater"),
+	DRIP_LAVA       ("dripLava"),
+	VILLAGER_ANGRY  ("angryVillager"),
+	VILLAGER_HAPPY  ("happyVillager"),
 	DEPTHSUSPEND    ("depthsuspend",    "SUSPENDED_DEPTH"),
-	NOTE            ("note"),
-	PORTAL          ("portal"),
+	NOTE,
+	PORTAL,
 	ENCHANTMENTTABLE("enchantmenttable", "ENCHANTMENT_TABLE"),
-	FLAME           ("flame"),
-	LAVA            ("lava"),
-	FOOTSTEP        ("footstep"),
-	CLOUD           ("cloud"),
+	FLAME,
+	LAVA,
+	FOOTSTEP,
+	CLOUD,
 	REDSTONEDUST    ("reddust",         "REDSTONE"),
-	SNOWBALLPOOF    ("snowballpoof",    "SNOWBALL"),
+	SNOWBALL        ("snowballpoof"),
 	SNOWSHOVEL      ("snowshovel",      "SNOW_SHOVEL"),
-	SLIME           ("slime"),
-	HEART           ("heart"),
+	SLIME,
+	HEART,
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	BARRIER         ("barrier",         MCVersion.MC_1_8),
+	BARRIER         (MCVersion.MC_1_8),
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	WATER_DROP      ("droplet",         "WATER_DROP",   MCVersion.MC_1_8),
+	WATER_DROP      (MCVersion.MC_1_8),
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	ITEM_TAKE       ("take",            "ITEM_TAKE",    MCVersion.MC_1_8),
+	ITEM_TAKE       (MCVersion.MC_1_8),
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	MOB_APPEARANCE  ("mobappearance",   "MOB_APPEARANCE", MCVersion.MC_1_8),
+	MOB_APPEARANCE  (MCVersion.MC_1_8),
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	ITEM_CRACK      ("iconcrack",       "ITEM_CRACK",   MCVersion.MC_1_8, ItemStack.class),
+	ITEM_CRACK      (MCVersion.MC_1_8, ItemStack.class),
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	BLOCK_CRACK     ("blockcrack",      "BLOCK_CRACK",  MCVersion.MC_1_8, MaterialData.class),
+	BLOCK_CRACK     (MCVersion.MC_1_8, MaterialData.class),
 	/**
 	 * Only for Minecraft 1.8 and newer!
 	 */
-	BLOCK_DUST      ("blockdust",       "BLOCK_DUST",   MCVersion.MC_1_8, MaterialData.class),
+	BLOCK_DUST      (MCVersion.MC_1_8, MaterialData.class),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	SWEEP_ATTACK    ("sweepAttack",     "SWEEP_ATTACK", MCVersion.MC_1_9),
+	SWEEP_ATTACK    (MCVersion.MC_1_9),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	DRAGON_BREATH   ("dragonBreath",    "DRAGON_BREATH", MCVersion.MC_1_9),
+	DRAGON_BREATH   (MCVersion.MC_1_9),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	END_ROD         ("endRod",          "END_ROD",      MCVersion.MC_1_9),
+	END_ROD         (MCVersion.MC_1_9),
 	/**
 	 * Only for Minecraft 1.9 and newer!
 	 */
-	DAMAGE_INDICATOR("damageIndicator", "DAMAGE_INDICATOR", MCVersion.MC_1_9),
+	DAMAGE_INDICATOR(MCVersion.MC_1_9),
 	/**
 	 * Only for Minecraft 1.10 and newer!
 	 */
-	FALLING_DUST    ("fallingdust",     "FALLING_DUST",     MCVersion.MC_1_10, MaterialData.class),
+	FALLING_DUST    (MCVersion.MC_1_10, MaterialData.class),
 	/**
 	 * Only for Minecraft 1.11 and newer!
 	 */
-	TOTEM           ("totem",           MCVersion.MC_1_11),
+	TOTEM           (MCVersion.MC_1_11),
 	/**
 	 * Only for Minecraft 1.11 and newer!
 	 */
-	SPIT            ("spit",            MCVersion.MC_1_11);
+	SPIT            (MCVersion.MC_1_11);
 
 	private static final Map<String, Particle> BY_NAME = new HashMap<>();
 
@@ -141,33 +141,57 @@ public enum Particle
 	private final Class<?> dataType;
 	@Getter private final MCVersion minVersion;
 
-	Particle(String oldName)
+	//region constructors
+	Particle(final @NotNull MCVersion minVersion)
 	{
-		this(oldName, oldName.toUpperCase(Locale.ROOT));
+		this.name = name();
+		this.oldName = name.toLowerCase(Locale.ENGLISH); // Unimportant for MC 1.8 and up
+		this.minVersion = minVersion;
+		this.dataType = Void.class;
 	}
 
-	Particle(String oldName, String name)
+	Particle(final @NotNull MCVersion minVersion, final @NotNull String bukkitName)
 	{
-		this(oldName, name, MCVersion.MC_1_7);
+		this.name = bukkitName;
+		this.oldName = name.toLowerCase(Locale.ENGLISH); // Unimportant for MC 1.8 and up
+		this.minVersion = minVersion;
+		this.dataType = Void.class;
 	}
 
-	Particle(String oldName, MCVersion minVersion)
+	Particle(final @NotNull MCVersion minVersion, final @NotNull Class<?> dataType)
 	{
-		this(oldName, oldName.toUpperCase(Locale.ROOT), minVersion);
-	}
-
-	Particle(String oldName, String name, MCVersion minVersion)
-	{
-		this(oldName, name, minVersion, Void.class);
-	}
-
-	Particle(String oldName, String name, MCVersion minVersion, Class<?> dataType)
-	{
-		this.name = name;
-		this.oldName = oldName;
+		this.name = name();
+		this.oldName = name.toLowerCase(Locale.ENGLISH); // Unimportant for MC 1.8 and up
 		this.minVersion = minVersion;
 		this.dataType = dataType;
 	}
+
+	//region MC 1.7 constructors
+	Particle()
+	{
+		this.oldName = name().toLowerCase(Locale.ENGLISH);
+		this.name = name();
+		this.minVersion = MCVersion.MC_1_7;
+		this.dataType = Void.class;
+	}
+
+	Particle(final @NotNull String oldName)
+	{
+		this.oldName = oldName;
+		this.name = name();
+		this.minVersion = MCVersion.MC_1_7;
+		this.dataType = Void.class;
+	}
+
+	Particle(final @NotNull String oldName, final @NotNull String bukkitName)
+	{
+		this.oldName = oldName;
+		this.name = bukkitName;
+		this.minVersion = MCVersion.MC_1_7;
+		this.dataType = Void.class;
+	}
+	//endregion
+	//endregion
 
 	public @NotNull String getOldNameUpperCase()
 	{

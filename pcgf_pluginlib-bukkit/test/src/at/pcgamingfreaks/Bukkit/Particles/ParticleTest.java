@@ -18,12 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
-import at.pcgamingfreaks.TestClasses.NMS.EnumParticle;
-import at.pcgamingfreaks.TestClasses.TestBukkitServer;
-import at.pcgamingfreaks.TestClasses.TestObjects;
 
-import org.bukkit.Bukkit;
 import org.bukkit.material.MaterialData;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,23 +28,21 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MCVersion.class, NMSReflection.class })
+@PrepareForTest({ MCVersion.class })
 public class ParticleTest
 {
 	@BeforeClass
 	public static void prepareTestData() throws Exception
 	{
-		Bukkit.setServer(new TestBukkitServer());
 		final int[] counter = { 0 };
 		mockStatic(MCVersion.class);
 		doAnswer((Answer<Boolean>) invocationOnMock -> ++counter[0] >= 36 && counter[0] < 45).when(MCVersion.class, "isNewerOrEqualThan", any());
 		doReturn(true).when(MCVersion.class, "isOlderThan", any());
-		TestObjects.initNMSReflection();
 	}
 
 	@Test
@@ -62,5 +55,14 @@ public class ParticleTest
 		assertEquals("The Particle object should match", Particle.FALLING_DUST, Particle.getFrom(org.bukkit.Particle.FALLING_DUST));
 		assertEquals("The data type should match", MaterialData.class, Particle.FALLING_DUST.getDataType());
 		assertEquals("The data type should match", Void.class, Particle.SPIT.getDataType());
+	}
+
+	@Test
+	public void testParticleNames()
+	{
+		for(Particle particle : Particle.values())
+		{
+			assertNotNull(org.bukkit.Particle.valueOf(particle.getName()));
+		}
 	}
 }
