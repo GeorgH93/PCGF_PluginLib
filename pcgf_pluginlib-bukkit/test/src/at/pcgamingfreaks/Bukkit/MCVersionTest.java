@@ -17,28 +17,28 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import at.pcgamingfreaks.TestClasses.TestBukkitServer;
-import at.pcgamingfreaks.TestClasses.TestObjects;
-
-import org.bukkit.Bukkit;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import static org.junit.Assert.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class })
 public class MCVersionTest
 {
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
-		TestObjects.setBukkitVersion("1_8_R1");
+		final Field currentVersion = MCVersion.class.getDeclaredField("CURRENT_VERSION");
+		final Field modifiers = Field.class.getDeclaredField("modifiers");
+		modifiers.setAccessible(true);
+		currentVersion.setAccessible(true);
+		modifiers.set(currentVersion, currentVersion.getModifiers() & ~Modifier.FINAL);
+		currentVersion.set(null, MCVersion.MC_NMS_1_8_R1);
+		modifiers.set(currentVersion, currentVersion.getModifiers() | Modifier.FINAL);
+		currentVersion.setAccessible(false);
+		modifiers.setAccessible(false);
 	}
 
 	@Test

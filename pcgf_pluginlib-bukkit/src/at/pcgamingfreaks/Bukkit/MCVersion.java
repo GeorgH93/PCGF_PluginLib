@@ -140,8 +140,8 @@ public enum MCVersion
 				currentVersion = getFromVersionName(matcher.group("version"));
 			}
 			if(currentVersion == UNKNOWN)
-			{ // Could not identify version from API, trying to use NMS
-				currentVersion = getFromServerVersion(NMSReflection.getVersion());
+			{ // Could not identify version from API, trying to use OBC
+				currentVersion = getFromServerVersion(Bukkit.getServer().getClass().getName().split("\\.")[3]);
 			}
 		}
 		catch(Throwable ignored)
