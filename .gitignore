@@ -57,10 +57,11 @@ Temporary Items
 target/
 bin/
 *.iml
-/.idea/
+/.idea/*
 !/.idea/sqldialects.xml
 !/.idea/templateLanguages.xml
 !/.idea/compiler.xml
+!/.idea/dictionaries
 
 .dependency-reduced-pom.xml
 .flattened-pom.xml
