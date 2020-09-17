@@ -34,6 +34,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-mcversion</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
 			<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
 			<artifactId>pcgf_pluginlib-platform-bukkit</artifactId>
 			<version>${revision}</version>
