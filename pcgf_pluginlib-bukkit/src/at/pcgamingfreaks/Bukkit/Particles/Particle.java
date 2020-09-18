@@ -31,7 +31,6 @@ import java.util.Locale;
 import java.util.Map;
 
 @SuppressWarnings({ "SpellCheckingInspection" })
-@Deprecated
 public enum Particle
 {
 	EXPLOSION       ("explode",         "EXPLOSION_NORMAL"),

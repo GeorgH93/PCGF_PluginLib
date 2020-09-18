@@ -65,4 +65,22 @@ public class ParticleTest
 			assertNotNull(org.bukkit.Particle.valueOf(particle.getName()));
 		}
 	}
+
+	@Test
+	public void testParticleFromBukkitParticle()
+	{
+		for(org.bukkit.Particle particle : org.bukkit.Particle.values())
+		{
+			assertNotNull("There should be a particle representing " + particle, Particle.getFrom(particle));
+		}
+	}
+
+	@Test
+	public void testParticleDataType()
+	{
+		for(Particle particle : Particle.values())
+		{
+			assertEquals(org.bukkit.Particle.valueOf(particle.getName()).getDataType(), particle.getDataType());
+		}
+	}
 }
