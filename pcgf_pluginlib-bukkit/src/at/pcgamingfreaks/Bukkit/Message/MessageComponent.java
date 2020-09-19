@@ -144,7 +144,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 */
 	public MessageComponent setColor(MessageColor color) throws IllegalArgumentException
 	{
-		if(color != null && color.isRGB() && MCVersion.supportsRgbColors()) color = color.getFallbackColor(); // Old MC versions do not support RGB colors, convert them to supported colors
+		if(color != null && color.isRGB() && !MCVersion.supportsRgbColors()) color = color.getFallbackColor(); // Old MC versions do not support RGB colors, convert them to supported colors
 		return super.setColor(color);
 	}
 
