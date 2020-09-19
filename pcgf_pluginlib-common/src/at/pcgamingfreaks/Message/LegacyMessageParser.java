@@ -81,11 +81,11 @@ final class LegacyMessageParser
 		wordBuilder.setLength(0);
 	}
 
-	private @Nullable String toColorString(@NotNull String legacyRGB)
+	private @Nullable String toColorString(final @NotNull String legacyRGB)
 	{
-		if(legacyRGB.matches('(' + MessageColor.COLOR_CHAR + "[\\da-fA-f]){6}"))
+		if(legacyRGB.matches("(" + MessageColor.COLOR_CHAR + "[\\da-fA-F]){6}"))
 		{
-			return '#' + legacyRGB.replaceAll("&", "");
+			return '#' + legacyRGB.replaceAll(MessageColor.COLOR_CHAR + "", "");
 		}
 		return null;
 	}
