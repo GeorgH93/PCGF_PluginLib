@@ -44,4 +44,14 @@ public class LegacyMessageParserTest
 		parser.parse(MessageColor.translateAlternateColorCodes("&eMarried players list&r&f - &r&6showing page {CurrentPage}/{MaxPage}"));
 		assertEquals("[\"\",{\"text\":\"Married players list\",\"color\":\"yellow\"},{\"text\":\" - \",\"color\":\"white\"},{\"text\":\"showing page {CurrentPage}/{MaxPage}\",\"color\":\"gold\"}]", builder.getJson());
 	}
+
+	@Test
+	public void testParseRGB()
+	{
+		TestMessageBuilder builder = new TestMessageBuilder();
+		LegacyMessageParser parser = new LegacyMessageParser(builder);
+		parser.parse(MessageColor.getColor("#123456") + "Test message");
+		assertEquals("[\"\",{\"text\":\"Test message\",\"color\":\"#123456\"}]", builder.getJson());
+		builder.clear();
+	}
 }
