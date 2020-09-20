@@ -32,11 +32,28 @@ public class PlatformResolver
 
 	/**
 	 * @param clazz The class/interface that defines the platform depending class. Must implement {@link IPlatformDependent} and if it is an interface, it's name must start with an I.
-	 * @param <T> The type of the
+	 * @param <T> The type of the class.
 	 * @return The created instance of the platform dependent class. <b>WARNING: Will always return null during unit tests!!!!</b>
 	 */
 	@SneakyThrows
 	public static @NotNull <T extends IPlatformDependent> T createPlatformInstance(final Class<T> clazz)
+	{
+		//region setup
+		Matcher classMatcher = (clazz.isInterface() ? INTERFACE_NAME_PATTERN : CLASS_NAME_PATTERN).matcher(clazz.getName());
+		if(!classMatcher.matches()) throw new IllegalArgumentException("The given class is not valid");
+		String className = classMatcher.group("package") + "." + classMatcher.group("class");
+		//endregion
+		return createPlatformInstance(clazz, className);
+	}
+
+	/**
+	 * @param clazz The class/interface that defines the platform depending class. Must implement {@link IPlatformDependent}.
+	 * @param className The name that should be used as the base for the platform dependent class name.
+	 * @param <T> The type of the class.
+	 * @return The created instance of the platform dependent class. <b>WARNING: Will always return null during unit tests!!!!</b>
+	 */
+	@SneakyThrows
+	public static @NotNull <T extends IPlatformDependent> T createPlatformInstance(final Class<T> clazz, final @NotNull String className)
 	{
 		//region check if running as Test
 		StackTraceElement[] stackTraceElements = new Exception().getStackTrace();
@@ -46,11 +63,7 @@ public class PlatformResolver
 			return null;
 		}
 		//endregion
-		//region setup
-		Matcher classMatcher = (clazz.isInterface() ? INTERFACE_NAME_PATTERN : CLASS_NAME_PATTERN).matcher(clazz.getName());
-		if(!classMatcher.matches()) throw new IllegalArgumentException("The given class is not valid");
-		String className = classMatcher.group("package") + "." + classMatcher.group("class");
-		//endregion
+
 		String nmsServerVersion = Bukkit.getServer().getClass().getName().split("\\.")[3].substring(1);
 		//TODO detect glowstone
 		Class<?> tmp = getClass(className + "_" + nmsServerVersion);
