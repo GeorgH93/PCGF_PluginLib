@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>pcgf_pluginlib-reflection-obc</artifactId>
+	<parent>
+		<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+		<artifactId>pcgf_pluginlib-parent</artifactId>
+		<version>${revision}</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<version>${revision}</version>
+	<packaging>jar</packaging>
+
+	<url>${website}</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-reflection</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<!-- Bukkit API -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${bukkitVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>
