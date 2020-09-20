@@ -17,12 +17,15 @@
 
 package at.pcgamingfreaks.Bukkit.ItemStackSerializer;
 
+import at.pcgamingfreaks.Bukkit.IPlatformDependent;
+import at.pcgamingfreaks.Bukkit.PlatformResolver;
+
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Logger;
 
-public interface ItemStackSerializer
+public interface ItemStackSerializer extends IPlatformDependent
 {
 	/**
 	 * Deserialize a serialized byte array to an ItemStack array.
@@ -55,26 +58,42 @@ public interface ItemStackSerializer
 	default void setLogger(final @Nullable Logger logger) {}
 
 	/**
+	 * Creates a BukkitItemStackSerializer.
+	 * The serializer uses the Bukkit API and therefore should work on every server.
+	 * However, the implementation of it is not stable in all server implementations
+	 * and it is advisable to use the NBTItemStackSerializerGen2 (created with {@link ItemStackSerializer#makeNBTItemStackSerializer} instead.
+	 *
+	 * @return The created BukkitItemStackSerializer. Null if there was a problem creating the serializer.
 	 * @deprecated Unreliable on many MC versions when being used with items that have NBT-tags. Use {@link ItemStackSerializer#makeNBTItemStackSerializer()} instead.
 	 */
 	@Deprecated
-	static ItemStackSerializer makeBukkitItemStackSerializer()
+	static @Nullable ItemStackSerializer makeBukkitItemStackSerializer()
 	{
-		return new BukkitItemStackSerializer();
+		try
+		{
+			return (ItemStackSerializer) Class.forName("at.pcgamingfreaks.Bukkit.ItemStackSerializer.BukkitItemStackSerializer").newInstance();
+		}
+		catch(InstantiationException | IllegalAccessException | NullPointerException | ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	static ItemStackSerializer makeNBTItemStackSerializer()
 	{
-		return new NBTItemStackSerializerGen2();
+		return PlatformResolver.createPlatformInstance(ItemStackSerializer.class, "NBTItemStackSerializer");
 	}
 
 	static ItemStackSerializer makeNBTItemStackSerializer(final @Nullable Logger logger)
 	{
-		return new NBTItemStackSerializerGen2(logger);
+		ItemStackSerializer serializer = makeNBTItemStackSerializer();
+		serializer.setLogger(logger);
+		return serializer;
 	}
 
 	static boolean isNBTItemStackSerializerAvailable()
 	{
-		return NBTItemStackSerializerGen2.isMCVersionCompatible();
+		return makeNBTItemStackSerializer().checkIsMCVersionCompatible();
 	}
 }

@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  */
 @SuppressWarnings("ConstantConditions")
 @Deprecated
-public class NBTItemStackSerializerGen2 implements ItemStackSerializer
+final class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 {
 	//region Reflection Variables
 	private static final Class<?> CLASS_NBT_BASE                    = NmsReflector.INSTANCE.getNmsClass("NBTBase");
@@ -65,7 +65,7 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 	private static final Method METHOD_NBT_COMP_STREAM_A2           = NmsReflector.INSTANCE.getNmsMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", InputStream.class);
 	private static final Method METHOD_NBT_TAG_LIST_SIZE            = NmsReflector.INSTANCE.getNmsMethod(CLASS_NBT_TAG_LIST, "size");
 	private static final Method METHOD_DATA_FIXER_UPDATE;
-	private static final Enum ENUM_DATA_FIX_TYPE;
+	private static final Enum<?> ENUM_DATA_FIX_TYPE;
 	//endregion
 
 
@@ -76,7 +76,7 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 	{
 		Object dataFixer = null;
 		Method fixerUpdate = null;
-		Enum fixType = null;
+		Enum<?> fixType = null;
 		if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13))
 		{
 			try
@@ -135,12 +135,7 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 
 	private Logger logger = null;
 
-	public NBTItemStackSerializerGen2() {}
-
-	public NBTItemStackSerializerGen2(final @Nullable Logger logger)
-	{
-		setLogger(logger);
-	}
+	public NBTItemStackSerializer_Reflection() {}
 
 	@Override
 	public void setLogger(@Nullable Logger logger)

@@ -28,7 +28,7 @@ import java.io.ByteArrayOutputStream;
  * @deprecated Unreliable on many MC versions when being used with items that have NBT-tags. Use {@link ItemStackSerializer#makeNBTItemStackSerializer()} instead.
  */
 @Deprecated
-public class BukkitItemStackSerializer implements ItemStackSerializer
+final class BukkitItemStackSerializer implements ItemStackSerializer
 {
 	/**
 	 * Deserialize a serialized byte array to an ItemStack array.
