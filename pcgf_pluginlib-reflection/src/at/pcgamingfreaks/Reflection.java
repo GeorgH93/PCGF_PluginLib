@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class Reflection
 {
@@ -32,7 +33,7 @@ public class Reflection
 	 * @param classPath The path + name of the class.
 	 * @return The class reference. Null if it was not found.
 	 */
-	public static @Nullable Class<?> getClass(@NotNull String classPath)
+	public static @Nullable Class<?> getClass(final @NotNull String classPath)
 	{
 		try
 		{
@@ -51,12 +52,12 @@ public class Reflection
 	 * @param className The name of the class.
 	 * @return The class reference. Null if it was not found.
 	 */
-	public static @Nullable Class<?> getInnerClass(@NotNull Class clazz, @NotNull String className)
+	public static @Nullable Class<?> getInnerClass(final @NotNull Class<?> clazz, final @NotNull String className)
 	{
 		try
 		{
-			Class[] classes = clazz.getClasses();
-			for(Class innerClass : classes)
+			Class<?>[] classes = clazz.getClasses();
+			for(Class<?> innerClass : classes)
 			{
 				if(innerClass.getSimpleName().equals(className)) return innerClass;
 			}
@@ -75,7 +76,7 @@ public class Reflection
 	 * @param field The name of field to be set.
 	 * @param value The value to be set.
 	 */
-	public static void setStaticField(@NotNull Class clazz, @NotNull String field, @Nullable Object value)
+	public static void setStaticField(final @NotNull Class<?> clazz, final @NotNull String field, final @Nullable Object value)
 	{
 		//noinspection ConstantConditions
 		setStaticField(getField(clazz, field), value);
@@ -87,7 +88,7 @@ public class Reflection
 	 * @param field The field to be set.
 	 * @param value The value to be set.
 	 */
-	public static void setStaticField(@NotNull Field field, @Nullable Object value)
+	public static void setStaticField(final @NotNull Field field, final @Nullable Object value)
 	{
 		setValue(field, (Object) null, value);
 	}
@@ -99,7 +100,7 @@ public class Reflection
 	 * @param instance The object instance to be edited. Null for static field.
 	 * @param value The value to be set.
 	 */
-	public static void setValue(@NotNull Field field, @Nullable Object instance, @Nullable Object value)
+	public static void setValue(final @NotNull Field field, final @Nullable Object instance, final @Nullable Object value)
 	{
 		try
 		{
@@ -120,7 +121,7 @@ public class Reflection
 	 * @param fieldName The name of field to be set.
 	 * @param value The value to be set.
 	 */
-	public static void setValue(@NotNull Object instance, @NotNull String fieldName, @Nullable Object value)
+	public static void setValue(final @NotNull Object instance, final @NotNull String fieldName, final @Nullable Object value)
 	{
 		//noinspection ConstantConditions
 		setValue(getField(instance.getClass(), fieldName), instance, value);
@@ -133,7 +134,7 @@ public class Reflection
 	 * @return The enum reference. Null if it was not found.
 	 */
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static @Nullable Enum<?> getEnum(@NotNull String enumFullName)
+	public static @Nullable Enum<?> getEnum(final @NotNull String enumFullName)
 	{
 		String[] x = enumFullName.split("\\.(?=[^.]+$)");
 		if(x.length == 2)
@@ -157,10 +158,12 @@ public class Reflection
 	 * @param enumName The name of the enum.
 	 * @return The enum reference. Null if it was not found.
 	 */
-	public static @Nullable Enum<?> getEnum(@NotNull Class clazz, @NotNull String enumName)
+	@SuppressWarnings("rawtypes")
+	public static @Nullable Enum<?> getEnum(final @NotNull Class clazz, final @NotNull String enumName)
 	{
 		try
 		{
+			//noinspection unchecked
 			return Enum.valueOf(clazz, enumName);
 		}
 		catch(Exception e)
@@ -177,7 +180,7 @@ public class Reflection
 	 * @param name The name of the field.
 	 * @return The field reference. Null if it was not found.
 	 */
-	public static @Nullable Field getField(@NotNull Class<?> clazz, @NotNull String name)
+	public static @Nullable Field getField(final @NotNull Class<?> clazz, final @NotNull String name)
 	{
 		try
 		{
@@ -199,7 +202,7 @@ public class Reflection
 	 * @param name The name of the field.
 	 * @return The field reference. Null if it was not found.
 	 */
-	public static @Nullable Field getFieldIncludeParents(@NotNull Class<?> clazz, @NotNull String name)
+	public static @Nullable Field getFieldIncludeParents(final @NotNull Class<?> clazz, final @NotNull String name)
 	{
 		try
 		{
@@ -229,7 +232,7 @@ public class Reflection
 	 * @param args The types of the parameters of the method.
 	 * @return The method reference. Null if it was not found.
 	 */
-	public static @Nullable Method getMethod(@NotNull Class<?> clazz, @NotNull String name, @Nullable Class<?>... args)
+	public static @Nullable Method getMethod(final @NotNull Class<?> clazz, final @NotNull String name, final @Nullable Class<?>... args)
 	{
 		Method method = null;
 		try
@@ -252,7 +255,7 @@ public class Reflection
 	 * @param args The types of the parameters of the method.
 	 * @return The method reference. Null if it was not found.
 	 */
-	public static @Nullable Method getMethodIncludeParents(@NotNull Class<?> clazz, @NotNull String name, @Nullable Class<?>... args)
+	public static @Nullable Method getMethodIncludeParents(final @NotNull Class<?> clazz, final @NotNull String name, final @Nullable Class<?>... args)
 	{
 		Method method = null;
 		try
@@ -281,7 +284,7 @@ public class Reflection
 	 * @param args The types of the parameters of the constructor.
 	 * @return The constructor reference. Null if it was not found.
 	 */
-	public static @Nullable Constructor<?> getConstructor(@NotNull Class<?> clazz, @Nullable Class<?>... args)
+	public static @Nullable Constructor<?> getConstructor(final @NotNull Class<?> clazz, final @Nullable Class<?>... args)
 	{
 		try
 		{
@@ -301,7 +304,7 @@ public class Reflection
 	 * @param l2 The second array containing classes.
 	 * @return True if they are the same. False if they are not.
 	 */
-	public static boolean classListEqual(@NotNull Class<?>[] l1, @NotNull Class<?>[] l2)
+	public static boolean classListEqual(final @NotNull Class<?>[] l1, final @NotNull Class<?>[] l2)
 	{
 		if(l1.length != l2.length) return false;
 		for(int i = 0; i < l1.length; i++)
@@ -309,5 +312,24 @@ public class Reflection
 			if(l1[i] != l2[i]) return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Sets the value of an final field!
+	 *
+	 * @param field The final Field that should be set.
+	 * @param value The value that should be set.
+	 */
+	public static void setFinalField(final @NotNull Field field, final @Nullable Object instance, final @Nullable Object value) throws NoSuchFieldException, IllegalAccessException
+	{
+		Field modifiers = Field.class.getDeclaredField("modifiers");
+		modifiers.setAccessible(true);
+		boolean accessible = field.isAccessible();
+		field.setAccessible(true);
+		modifiers.set(field, field.getModifiers() & ~Modifier.FINAL);
+		field.set(instance, value);
+		modifiers.set(field, field.getModifiers() | Modifier.FINAL);
+		field.setAccessible(accessible);
+		modifiers.setAccessible(false);
 	}
 }
