@@ -28,8 +28,7 @@ import java.lang.reflect.Constructor;
 import java.util.EnumMap;
 import java.util.Map;
 
-@Deprecated
-class ParticleSpawnerBukkit_1_8_to_1_12 extends ParticleSpawnerBukkitNMSBase
+final class ParticleSpawner_Reflection extends ParticleSpawnerBukkitNMSBase
 {
 	private static final Map<Particle, Enum<?>> PARTICLE_MAP = new EnumMap<>(Particle.class);
 

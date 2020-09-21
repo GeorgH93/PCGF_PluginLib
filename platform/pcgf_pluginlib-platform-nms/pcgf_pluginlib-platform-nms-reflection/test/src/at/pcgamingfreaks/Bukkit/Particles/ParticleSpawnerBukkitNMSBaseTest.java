@@ -18,7 +18,8 @@
 package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
-import at.pcgamingfreaks.Bukkit.Util.Utils;
+import at.pcgamingfreaks.Bukkit.Util.IUtils;
+import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
@@ -29,6 +30,7 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,14 +44,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class, Utils.class })
+@PrepareForTest({ NMSReflection.class })
 public class ParticleSpawnerBukkitNMSBaseTest
 {
+	IUtils mockedUtils = null;
+
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
@@ -60,19 +62,26 @@ public class ParticleSpawnerBukkitNMSBaseTest
 	@Before
 	public void prepareTestObjects() throws Exception
 	{
-		mockStatic(Utils.class);
-		doNothing().when(Utils.class, "sendPacket", any(Player.class), any());
+		mockedUtils = mock(IUtils.class);
+		doNothing().when(mockedUtils).sendPacket(any(Player.class), any());
+		Reflection.setFinalField(IUtils.class.getDeclaredField("INSTANCE"), null, mockedUtils);
+	}
+
+	@After
+	public void cleanupTestObjects() throws NoSuchFieldException, IllegalAccessException
+	{
+		mockedUtils = null;
+		Reflection.setFinalField(IUtils.class.getDeclaredField("INSTANCE"), null, null);
 	}
 
 	@Test
 	public void testSpawnParticle() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException
 	{
-		ParticleSpawnerBukkitNMSBase effect = new ParticleSpawnerBukkit_1_7();
+		ParticleSpawnerBukkitNMSBase effect = new ParticleSpawner_Reflection_1_7();
 		Method spawnParticle = ParticleSpawnerBukkitNMSBase.class.getDeclaredMethod("spawnParticle", Location.class, double.class, Object.class);
 		spawnParticle.setAccessible(true);
 		spawnParticle.invoke(effect, null, 0.0, null);
-		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), any());
+		verify(mockedUtils, times(0)).sendPacket(any(Player.class), any());
 		List<Entity> players = new ArrayList<>();
 		Location mockedLocation = mock(Location.class);
 		World mockedWorld = mock(World.class);
@@ -87,12 +96,10 @@ public class ParticleSpawnerBukkitNMSBaseTest
 		doReturn(mockedLocation2).when(mockedPlayer).getLocation();
 		players.add(mockedPlayer);
 		spawnParticle.invoke(effect, mockedLocation, 10.0, Particle.CLOUD);
-		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), any());
+		verify(mockedUtils, times(0)).sendPacket(any(Player.class), any());
 		doReturn(mockedLocation).when(mockedPlayer).getLocation();
 		spawnParticle.invoke(effect, mockedLocation, -10.0, Particle.CLOUD);
-		verifyStatic(Utils.class, times(0));
-		Utils.sendPacket(any(Player.class), any());
+		verify(mockedUtils, times(0)).sendPacket(any(Player.class), any());
 		spawnParticle.setAccessible(false);
 	}
 }

@@ -22,7 +22,6 @@ import org.bukkit.Location;
 import java.util.EnumMap;
 import java.util.Map;
 
-@Deprecated
 final class ParticleSpawnerBukkitAPI extends ParticleSpawner
 {
 	private static final Map<Particle, org.bukkit.Particle> PARTICLE_MAP = new EnumMap<>(Particle.class);

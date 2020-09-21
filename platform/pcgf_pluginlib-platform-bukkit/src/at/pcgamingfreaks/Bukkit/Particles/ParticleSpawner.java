@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,9 @@
 
 package at.pcgamingfreaks.Bukkit.Particles;
 
+import at.pcgamingfreaks.Bukkit.IPlatformDependent;
 import at.pcgamingfreaks.Bukkit.MCVersion;
+import at.pcgamingfreaks.Bukkit.PlatformResolver;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -25,12 +27,8 @@ import org.bukkit.material.MaterialData;
 
 /**
  * API to spawn particles.
- * This particle API is compatible with MC versions 1.7 to 1.12.
- * This will work on MC 1.13 and newer, but there will be no more testing or development going into it.
- * Bukkit has a particle api build in now, please use that if you don't need support for very old MC versions!
  */
-@Deprecated
-public abstract class ParticleSpawner
+public abstract class ParticleSpawner implements IPlatformDependent
 {
 	/*
 	 * Spawns a single material based particle.
@@ -124,17 +122,24 @@ public abstract class ParticleSpawner
 	 */
 	public static ParticleSpawner getParticleSpawner()
 	{
-		if (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderThan(MCVersion.MC_1_8))
+		try
 		{
-			return new ParticleSpawnerBukkit_1_7();
+			if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderThan(MCVersion.MC_1_8))
+			{
+				return (ParticleSpawner) Class.forName("at.pcgamingfreaks.Bukkit.Particles.Particles.ParticleSpawner_Reflection_1_7").newInstance();
+			}
+			else if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_8) && MCVersion.isOlderThan(MCVersion.MC_1_13))
+			{
+				return PlatformResolver.createPlatformInstance(ParticleSpawner.class);
+			}
+			else if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13))
+			{
+				return (ParticleSpawner) Class.forName("at.pcgamingfreaks.Bukkit.Particles.Particles.ParticleSpawnerBukkitAPI").newInstance();
+			}
 		}
-		else if (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_8) && MCVersion.isOlderThan(MCVersion.MC_1_13))
+		catch(Exception e)
 		{
-			return new ParticleSpawnerBukkit_1_8_to_1_12();
-		}
-		else if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13))
-		{
-			return new ParticleSpawnerBukkitAPI();
+			e.printStackTrace();
 		}
 		return null;
 	}

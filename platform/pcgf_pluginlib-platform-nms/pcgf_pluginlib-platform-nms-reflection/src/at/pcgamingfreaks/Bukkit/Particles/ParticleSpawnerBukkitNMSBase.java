@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.Util.Utils;
+import at.pcgamingfreaks.Bukkit.Util.IUtils;
 import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.Location;
@@ -29,7 +29,6 @@ import org.bukkit.material.MaterialData;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-@Deprecated
 abstract class ParticleSpawnerBukkitNMSBase extends ParticleSpawner
 {
 	private static final Method METHOD_MATERIAL_DATA_GET_ITEM_TYPE_ID = MCVersion.isOlderThan(MCVersion.MC_1_13) ? Reflection.getMethod(MaterialData.class, "getItemTypeId") : null;
@@ -87,7 +86,7 @@ abstract class ParticleSpawnerBukkitNMSBase extends ParticleSpawner
 			// Getting entitys from a world sometimes returns players which are not actually in that world, so they need to be verified. Also checking world.equals(otherWorld) is sometimes not reliable (on MC 1.11).
 			if(player.getLocation().getWorld().getName().equalsIgnoreCase(worldName) && player.getLocation().distanceSquared(location) < visibleRangeSquared)
 			{
-				Utils.sendPacket(player, particlePacket);
+				IUtils.INSTANCE.sendPacket(player, particlePacket);
 			}
 		}
 	}
