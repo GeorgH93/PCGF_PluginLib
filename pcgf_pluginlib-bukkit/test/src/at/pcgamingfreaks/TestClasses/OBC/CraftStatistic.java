@@ -22,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 
-@SuppressWarnings("unused")
 public class CraftStatistic
 {
 	public static at.pcgamingfreaks.TestClasses.NMS.Achievement getNMSAchievement(Achievement achievement) { return new at.pcgamingfreaks.TestClasses.NMS.Achievement(achievement.name()); }

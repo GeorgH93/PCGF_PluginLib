@@ -18,8 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Message;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.NmsReflector;
-import at.pcgamingfreaks.Bukkit.OBCReflection;
+import at.pcgamingfreaks.Bukkit.PlatformResolver;
 import at.pcgamingfreaks.Bukkit.Util.InventoryUtils;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageFormat;
@@ -35,24 +34,12 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 
 public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent>
 {
-	//region Reflection Variables
-	private static final transient Class<?> CRAFT_STATISTIC = OBCReflection.getOBCClass("CraftStatistic");
-	@SuppressWarnings({ "ConstantConditions" })
-	private static final transient Method GET_NMS_ACHIEVEMENT =  (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? OBCReflection.getMethod(CRAFT_STATISTIC, "getNMSAchievement", Reflection.getClass("org.bukkit.Achievement")) : null;
-	@SuppressWarnings("ConstantConditions")
-	private static final transient Method GET_NMS_STATISTIC = OBCReflection.getMethod(CRAFT_STATISTIC, "getNMSStatistic", Statistic.class);
-	private static final transient Method GET_MATERIAL_STATISTIC = OBCReflection.getMethod(CRAFT_STATISTIC, "getMaterialStatistic", Statistic.class, Material.class);
-	private static final transient Method GET_ENTITY_STATISTIC = OBCReflection.getMethod(CRAFT_STATISTIC, "getEntityStatistic", Statistic.class, EntityType.class);
-	private static final transient Method GET_STATISTIC_NAME = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsMethod("IScoreboardCriteria", "getName") : null;
-	private static final transient Field FIELD_STATISTIC_NAME = MCVersion.isOlderThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsField("Statistic", "name") : null;
-	//endregion
+	private static final IStatisticResolver STATISTIC_RESOLVER = PlatformResolver.createPlatformInstance(IStatisticResolver.class);
 
 	private static final transient MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
 	private static final transient MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
@@ -148,13 +135,6 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 		return super.setColor(color);
 	}
 
-	//region Short message modifier (setter)
-	private static String getStatisticName(Object statistic) throws Exception
-	{
-		if(FIELD_STATISTIC_NAME != null) return (String) FIELD_STATISTIC_NAME.get(statistic);
-		else return (String) GET_STATISTIC_NAME.invoke(statistic);
-	}
-
 	/**
 	 * Set the behavior of the component to display information about an achievement when the client hovers over the text.
 	 * Not supported in MC 1.12 and newer.
@@ -167,14 +147,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 		if(MCVersion.isOlderThan(MCVersion.MC_1_12))
 		{
 			assert achievement instanceof Achievement;
-			try
-			{
-				return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, getStatisticName(GET_NMS_ACHIEVEMENT.invoke(null, achievement)));
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
+			return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, STATISTIC_RESOLVER.getAchievementName((Achievement) achievement));
 		}
 		else
 		{
@@ -194,15 +167,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	{
 		Type type = statistic.getType();
 		if (type != Type.UNTYPED) throw new IllegalArgumentException("That statistic requires an additional " + type + " parameter!");
-		try
-		{
-			return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, getStatisticName(GET_NMS_STATISTIC.invoke(null, statistic)));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return this;
+		return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, STATISTIC_RESOLVER.getStatisticName(statistic));
 	}
 
 	/**
@@ -218,15 +183,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 		Type type = statistic.getType();
 		if (type == Type.UNTYPED) throw new IllegalArgumentException("That statistic needs no additional parameter!");
 		if ((type == Type.BLOCK && material.isBlock()) || type == Type.ENTITY) throw new IllegalArgumentException("Wrong parameter type for that statistic - needs " + type + "!");
-		try
-		{
-			return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, getStatisticName(GET_MATERIAL_STATISTIC.invoke(null, statistic, material)));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return this;
+		return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, STATISTIC_RESOLVER.getStatisticName(statistic, material));
 	}
 
 	/**
@@ -242,15 +199,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 		Type type = statistic.getType();
 		if (type == Type.UNTYPED) throw new IllegalArgumentException("That statistic needs no additional parameter!");
 		if (type != Type.ENTITY) throw new IllegalArgumentException("Wrong parameter type for that statistic - needs " + type + "!");
-		try
-		{
-			return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, getStatisticName(GET_ENTITY_STATISTIC.invoke(null, statistic, entity)));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return this;
+		return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, STATISTIC_RESOLVER.getStatisticName(statistic, entity));
 	}
 
 	/**
@@ -264,5 +213,4 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	{
 		return itemTooltip(InventoryUtils.convertItemStackToJson(itemStack, Bukkit.getLogger()));
 	}
-	//endregion
 }

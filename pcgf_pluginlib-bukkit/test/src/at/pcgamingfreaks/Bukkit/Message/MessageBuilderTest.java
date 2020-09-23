@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit.Message;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
@@ -34,6 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class })
@@ -78,16 +82,25 @@ public class MessageBuilderTest
 
 	@Test
 	@SuppressWarnings("SpellCheckingInspection")
-	public void testTootltips()
+	public void testTootltips() throws NoSuchFieldException, IllegalAccessException
 	{
+		IStatisticResolver statisticResolver = mock(IStatisticResolver.class);
+		Reflection.setFinalField(MessageComponent.class.getDeclaredField("STATISTIC_RESOLVER"), null, statisticResolver);
+
 		MessageBuilder messageBuilder = new MessageBuilder("Test");
+		doReturn("BREED_COW").when(statisticResolver).getAchievementName(any(Achievement.class));
 		messageBuilder.achievementTooltip(Achievement.BREED_COW);
 		assertTrue("The tooltip should match", messageBuilder.getJson().contains("BREED_COW"));
+		doReturn("BANNER_CLEANED").when(statisticResolver).getStatisticName(any(Statistic.class));
 		messageBuilder.statisticTooltip(Statistic.BANNER_CLEANED);
 		assertTrue("The tooltip should match", messageBuilder.getJson().contains("BANNER_CLEANED"));
+		doReturn("ANVIL").when(statisticResolver).getStatisticName(any(Statistic.class), any(Material.class));
 		messageBuilder.statisticTooltip(Statistic.BREAK_ITEM, Material.ANVIL);
 		assertTrue("The tooltip should match", messageBuilder.getJson().contains("ANVIL"));
+		doReturn("ARROW").when(statisticResolver).getStatisticName(any(Statistic.class), any(EntityType.class));
 		messageBuilder.statisticTooltip(Statistic.ENTITY_KILLED_BY, EntityType.ARROW);
 		assertTrue("The tooltip should match", messageBuilder.getJson().contains("ARROW"));
+
+		Reflection.setFinalField(MessageComponent.class.getDeclaredField("STATISTIC_RESOLVER"), null, null);
 	}
 }
