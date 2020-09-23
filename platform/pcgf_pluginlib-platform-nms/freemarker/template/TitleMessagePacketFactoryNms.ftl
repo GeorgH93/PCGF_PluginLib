@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * Reference: http://freemarker.org
  * See template: ${.main_template_name}
  */
-public class TitleMessagePacketFactory_${nmsVersion} implements ITitleMessagePacketFactory
+public final class TitleMessagePacketFactory_${nmsVersion} implements ITitleMessagePacketFactory
 {
 	@Override
 	public Object makeTitlePacket(final @NotNull String json)

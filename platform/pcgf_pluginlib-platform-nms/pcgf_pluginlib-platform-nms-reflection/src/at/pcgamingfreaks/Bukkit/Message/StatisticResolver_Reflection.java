@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class StatisticResolver_Reflection implements IStatisticResolver
+public final class StatisticResolver_Reflection implements IStatisticResolver
 {
 	//region Reflection Variables
 	private static final transient Class<?> CRAFT_STATISTIC = OBCReflection.getOBCClass("CraftStatistic");

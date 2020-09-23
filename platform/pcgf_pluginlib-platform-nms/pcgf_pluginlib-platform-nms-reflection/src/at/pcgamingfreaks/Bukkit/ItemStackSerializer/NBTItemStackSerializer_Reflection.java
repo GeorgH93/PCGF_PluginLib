@@ -31,12 +31,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
-/**
- * @deprecated Use {@link ItemStackSerializer#makeNBTItemStackSerializer()} instead!
- */
 @SuppressWarnings("ConstantConditions")
-@Deprecated
-final class NBTItemStackSerializer_Reflection implements ItemStackSerializer
+public final class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 {
 	//region Reflection Variables
 	private static final Class<?> CLASS_NBT_BASE                    = NmsReflector.INSTANCE.getNmsClass("NBTBase");
@@ -134,8 +130,6 @@ final class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 	}
 
 	private Logger logger = null;
-
-	public NBTItemStackSerializer_Reflection() {}
 
 	@Override
 	public void setLogger(@Nullable Logger logger)

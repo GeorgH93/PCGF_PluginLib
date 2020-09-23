@@ -26,7 +26,7 @@ import org.bukkit.Location;
 
 import java.lang.reflect.Constructor;
 
-final class ParticleSpawner_Reflection_1_7 extends ParticleSpawnerBukkitNMSBase
+public final class ParticleSpawner_Reflection_1_7 extends ParticleSpawnerBukkitNMSBase
 {
 	private static final Constructor<?> PACKET_CONSTRUCTOR = Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutWorldParticles"), String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
 

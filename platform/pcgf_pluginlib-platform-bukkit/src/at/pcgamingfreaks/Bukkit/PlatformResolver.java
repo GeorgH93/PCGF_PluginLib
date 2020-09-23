@@ -71,7 +71,7 @@ public class PlatformResolver
 		{
 			tmp = getClass(className + "_Reflection");
 		}
-		if(tmp == null) throw new ClassNotFoundException("Could not found a Platform implementation for " + clazz.getName());
+		if(tmp == null) throw new ClassNotFoundException("Could not find a platform implementation for " + clazz.getName());
 		if(tmp.isInterface()) throw new IllegalStateException("Found platform class '" + tmp.getName() + "' is an interface!");
 		if(tmp.isInstance(clazz)) throw new IllegalStateException("Found platform class '" + tmp.getName() + "' is not of the expected type!");
 		//noinspection unchecked

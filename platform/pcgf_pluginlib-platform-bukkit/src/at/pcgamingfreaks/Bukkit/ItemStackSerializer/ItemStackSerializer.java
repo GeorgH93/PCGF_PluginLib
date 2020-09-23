@@ -82,7 +82,7 @@ public interface ItemStackSerializer extends IPlatformDependent
 
 	static ItemStackSerializer makeNBTItemStackSerializer()
 	{
-		return PlatformResolver.createPlatformInstance(ItemStackSerializer.class, "NBTItemStackSerializer");
+		return PlatformResolver.createPlatformInstance(ItemStackSerializer.class, "at.pcgamingfreaks.Bukkit.ItemStackSerializer.NBTItemStackSerializer");
 	}
 
 	static ItemStackSerializer makeNBTItemStackSerializer(final @Nullable Logger logger)
