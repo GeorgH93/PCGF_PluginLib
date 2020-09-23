@@ -126,7 +126,7 @@ public abstract class ParticleSpawner implements IPlatformDependent
 		{
 			if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderThan(MCVersion.MC_1_8))
 			{
-				return (ParticleSpawner) Class.forName("at.pcgamingfreaks.Bukkit.Particles.Particles.ParticleSpawner_Reflection_1_7").newInstance();
+				return (ParticleSpawner) Class.forName("at.pcgamingfreaks.Bukkit.Particles.ParticleSpawner_Reflection_1_7").newInstance();
 			}
 			else if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_8) && MCVersion.isOlderThan(MCVersion.MC_1_13))
 			{
@@ -134,7 +134,7 @@ public abstract class ParticleSpawner implements IPlatformDependent
 			}
 			else if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13))
 			{
-				return (ParticleSpawner) Class.forName("at.pcgamingfreaks.Bukkit.Particles.Particles.ParticleSpawnerBukkitAPI").newInstance();
+				return (ParticleSpawner) Class.forName("at.pcgamingfreaks.Bukkit.Particles.ParticleSpawnerBukkitAPI").newInstance();
 			}
 		}
 		catch(Exception e)
