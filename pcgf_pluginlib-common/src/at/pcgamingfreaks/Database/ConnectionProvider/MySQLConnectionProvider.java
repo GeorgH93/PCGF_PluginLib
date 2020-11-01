@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Database.ConnectionProvider;
 
+import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Database.DatabaseConnectionConfiguration;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -39,6 +40,14 @@ public class MySQLConnectionProvider extends PooledConnectionProvider
 	@Override
 	protected @NotNull HikariConfig getPoolConfig()
 	{
+		try
+		{
+			Class.forName("com.mysql.jdbc.Driver"); // For some reason, some plugins, prevent the driver from auto loading, this forces the driver to be loaded and registered.
+		}
+		catch(ClassNotFoundException e)
+		{
+			logger.severe(ConsoleColor.RED + " Failed to load MySQL JDBC driver!" + ConsoleColor.RESET);
+		}
 		HikariConfig poolConfig = new HikariConfig();
 		poolConfig.setJdbcUrl("jdbc:mysql://" + connectionConfiguration.getSQLHost() + "/" + connectionConfiguration.getSQLDatabase() + connectionConfiguration.getSQLConnectionProperties());
 		poolConfig.setUsername(connectionConfiguration.getSQLUser());
