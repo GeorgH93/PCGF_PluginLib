@@ -286,6 +286,6 @@ public class NBTItemStackSerializerGen2 implements ItemStackSerializer
 
 	public static boolean isMCVersionCompatible()
 	{
-		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_16_R2);
+		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_16_R3);
 	}
 }
