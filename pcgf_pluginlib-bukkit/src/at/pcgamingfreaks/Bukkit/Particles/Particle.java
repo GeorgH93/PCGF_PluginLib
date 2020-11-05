@@ -206,7 +206,7 @@ public enum Particle
 		return dataType;
 	}
 
-	public static @Nullable Particle getFrom(org.bukkit.Particle bukkitParticle)
+	public static @Nullable Particle getFrom(Enum<?> bukkitParticle)
 	{
 		return BY_NAME.get(bukkitParticle.name());
 	}
