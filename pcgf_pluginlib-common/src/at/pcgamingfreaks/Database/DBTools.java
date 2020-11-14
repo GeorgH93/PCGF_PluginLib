@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2020 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 public class DBTools
@@ -54,11 +55,12 @@ public class DBTools
 	 */
 	public static void updateDB(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition, @Nullable Logger logger) throws IllegalArgumentException, SQLException
 	{
-		switch(connection.getMetaData().getDatabaseProductName())
+		String dbType = connection.getMetaData().getDatabaseProductName();
+		switch(dbType.toLowerCase(Locale.ENGLISH))
 		{
-			case "MySQL": new MySQLTableValidator().validate(connection, tableDefinition); return;
-			case "SQLite": new SQLiteTableValidator().validate(connection, tableDefinition); return;
-			default: throw new RuntimeException("Unsupported database backend");
+			case "mysql": case "mariadb": new MySQLTableValidator().validate(connection, tableDefinition); return;
+			case "sqlite": new SQLiteTableValidator().validate(connection, tableDefinition); return;
+			default: throw new RuntimeException("Unsupported database backend '" + dbType + "'!");
 		}
 	}
 
