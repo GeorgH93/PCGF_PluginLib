@@ -55,11 +55,12 @@ public class DBTools
 	 */
 	public static void updateDB(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition, @Nullable Logger logger) throws IllegalArgumentException, SQLException
 	{
-		switch(connection.getMetaData().getDatabaseProductName().toLowerCase(Locale.ENGLISH))
+		String dbType = connection.getMetaData().getDatabaseProductName();
+		switch(dbType.toLowerCase(Locale.ENGLISH))
 		{
 			case "mysql": case "mariadb": new MySQLTableValidator().validate(connection, tableDefinition); return;
 			case "sqlite": new SQLiteTableValidator().validate(connection, tableDefinition); return;
-			default: throw new RuntimeException("Unsupported database backend");
+			default: throw new RuntimeException("Unsupported database backend '" + dbType + "'!");
 		}
 	}
 
