@@ -273,7 +273,6 @@ public class Utils extends at.pcgamingfreaks.Utils
 			getConfigMethod.setAccessible(true);
 			YamlConfiguration spigotConfig = (YamlConfiguration) getConfigMethod.invoke(spigotServer);
 			boolean bungee = spigotConfig.getBoolean("settings.bungeecord");
-			System.out.println("BungeeCord: " + bungee);
 			return bungee;
 		}
 		catch(Exception ignored) {}
