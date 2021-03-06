@@ -37,11 +37,10 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("RedundantThrows")
 public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 {
 	//region static stuff
-	private static final String HOST = "https://api.curseforge.com/servermods/files?projectIds=";
+	private static final String HOST = "https://servermods.forgesvc.net/servermods/files?projectIds=";
 	private static final Pattern VERSION_PATTERN = Pattern.compile(Version.VERSION_STING_FORMAT); // Used for locating version numbers in file names, bukkit doesn't provide the version on its own :(
 	//endregion
 

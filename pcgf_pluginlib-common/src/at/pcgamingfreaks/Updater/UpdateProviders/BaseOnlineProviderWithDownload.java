@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import java.net.URL;
 import java.util.logging.Logger;
 
-@SuppressWarnings("RedundantThrows")
 public abstract class BaseOnlineProviderWithDownload extends BaseOnlineProvider
 {
 	protected UpdateFile lastResult = null;
