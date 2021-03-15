@@ -71,6 +71,7 @@ public class TestObjects
 		mockedBukkitPlugin = mock(org.bukkit.plugin.Plugin.class);
 		when(mockedBukkitPlugin.getLogger()).thenReturn(Logger.getLogger("BukkitTestLogger"));
 		when(mockedBukkitPlugin.getDescription()).thenReturn(mockedPluginDescription);
+		when(mockedBukkitPlugin.getName()).thenReturn("TestPlugin");
 	}
 
 	public static void initNMSReflection() throws NoSuchFieldException, IllegalAccessException
