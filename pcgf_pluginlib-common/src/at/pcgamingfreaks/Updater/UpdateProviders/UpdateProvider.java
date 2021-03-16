@@ -23,9 +23,12 @@ import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import lombok.Data;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 public interface UpdateProvider
@@ -161,6 +164,14 @@ public interface UpdateProvider
 
 	boolean providesDependencies();
 	//endregion
+
+	/**
+	 * Opens a connection with all the required connection properties (like API keys)
+	 * @param url The url to connect to
+	 * @return The established connection. Null if a redirect loop was detected.
+	 * @throws IOException The exception caused while connecting.
+	 */
+	@Nullable HttpURLConnection connect(URL url) throws IOException;
 
 	@Data
 	class UpdateFile

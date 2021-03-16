@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 /**
  * An update provider that returns an very high version so that the file gets downloaded every time.
@@ -33,7 +34,7 @@ import java.net.URL;
  * This provider should only be used for preview builds that will always download the newest build from a server.
  */
 @SuppressWarnings("RedundantThrows")
-public class AlwaysUpdateProvider implements UpdateProvider
+public class AlwaysUpdateProvider extends BaseOnlineProvider
 {
 	private final URL downloadUrl;
 	private final String fileName;
@@ -64,6 +65,7 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 */
 	public AlwaysUpdateProvider(@NotNull String url, String fileName, ReleaseType releaseType)
 	{
+		super(Logger.getAnonymousLogger());
 		this.releaseType = releaseType;
 		this.fileName = fileName;
 		URL dlURL = null;
@@ -102,6 +104,7 @@ public class AlwaysUpdateProvider implements UpdateProvider
 	 */
 	public AlwaysUpdateProvider(@NotNull URL url, String fileName, ReleaseType releaseType)
 	{
+		super(Logger.getAnonymousLogger());
 		this.releaseType = releaseType;
 		this.fileName = fileName;
 		this.downloadUrl = url;
