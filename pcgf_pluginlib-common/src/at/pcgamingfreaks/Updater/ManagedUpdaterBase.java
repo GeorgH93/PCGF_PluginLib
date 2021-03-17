@@ -58,7 +58,7 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 		{
 			if(stream == null) throw new IllegalStateException("update.yml missing!");
 			final YAML config = new YAML(stream);
-			final Map<String, UpdateProvider> providerMap = getUpdateProviders(config, logger);
+			final Map<String, UpdateProvider> providerMap = getUpdateProviders(config, logger, getPluginName());
 			updateChannelMap = getUpdateChannels(config, logger, providerMap);
 			defaultChannel = config.getString("DefaultChannel");
 			releaseType = config.getString("ReleaseType", "");
@@ -94,7 +94,7 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 		this.providers = providers.toArray(new UpdateProvider[0]);
 	}
 
-	private static @NotNull Map<String, UpdateProvider> getUpdateProviders(final @NotNull YAML config, final @NotNull Logger logger)
+	private static @NotNull Map<String, UpdateProvider> getUpdateProviders(final @NotNull YAML config, final @NotNull Logger logger, final @NotNull String pluginName)
 	{
 		Map<String, UpdateProvider> providerMap = new HashMap<>();
 		config.getKeysFiltered("UpdateProviders\\.\\w*\\.Type").forEach(typeKey -> {
@@ -130,7 +130,11 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 						updateProvider = new AlwaysUpdateProvider(url, fileName, ReleaseType.valueOf(config.getString(key + ".ReleaseType")));
 					default: logger.warning("Unknown updater type: " + type);
 				}
-				if(updateProvider != null) providerMap.put(provider, updateProvider);
+				if(updateProvider != null)
+				{
+					if(updateProvider instanceof BaseOnlineProvider) ((BaseOnlineProvider) updateProvider).setUserAgent(pluginName + " Updater (PCGF MC-Plugin-Updater)");
+					providerMap.put(provider, updateProvider);
+				}
 			}
 			catch(Exception e)
 			{
@@ -209,10 +213,12 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 		return updater.isRunning();
 	}
 
-	protected abstract UPDATER makeUpdater(final @NotNull UpdateProvider[] updateProvider);
-
 	public void autoUpdate()
 	{
 		update(autoUpdateMode, null);
 	}
+
+	protected abstract UPDATER makeUpdater(final @NotNull UpdateProvider[] updateProvider);
+
+	protected abstract String getPluginName();
 }
