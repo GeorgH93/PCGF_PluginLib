@@ -29,9 +29,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents a {@link Command} belonging to a plugin.
@@ -45,6 +43,12 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 
 	private final Plugin owningPlugin;
 	private CommandExecutor executor;
+
+	/**
+	 * A prefix which is prepended to each command with a ':' one or more times to make the command name unique.
+	 * Default is the plugin name.
+	 */
+	@Getter @Setter private String fallbackPrefix;
 
 	/**
 	 * The {@link TabCompleter} to run when tab-completing this command.
@@ -66,6 +70,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 		this.executor = owner;
 		this.owningPlugin = owner;
 		this.usageMessage = "/<command>";
+		this.fallbackPrefix = owner.getName().toLowerCase(Locale.ENGLISH);
 		List<String> aliasesList = new ArrayList<>();
 		if(aliases != null)
 		{
@@ -87,7 +92,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 		{
 			final Field bukkitCommandMap = owningPlugin.getServer().getClass().getDeclaredField("commandMap");
 			bukkitCommandMap.setAccessible(true);
-			((CommandMap) bukkitCommandMap.get(owningPlugin.getServer())).register(this.getName(), this);
+			((CommandMap) bukkitCommandMap.get(owningPlugin.getServer())).register(fallbackPrefix, this);
 		}
 		catch(Exception e)
 		{
@@ -95,6 +100,8 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 			e.printStackTrace();
 		}
 	}
+
+	private Map<String, Command> knownCommandsMapCache = null;
 
 	/**
 	 * Un-Register command from Bukkit. Command will no longer get executed.
@@ -105,15 +112,11 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 		{
 			Field result = owningPlugin.getServer().getPluginManager().getClass().getDeclaredField("commandMap");
 			result.setAccessible(true);
-			@SuppressWarnings({ "unchecked", "ConstantConditions" })
-			HashMap<String, Command> knownCommands = (HashMap<String, Command>) FIELD_KNOWN_COMMANDS.get(result.get(owningPlugin.getServer().getPluginManager()));
-			knownCommands.remove(getName());
+			knownCommandsMapCache = (Map<String, Command>) FIELD_KNOWN_COMMANDS.get(result.get(owningPlugin.getServer().getPluginManager()));
+			removeCommand(getName(), 3);
 			for (String alias : getAliases())
 			{
-				if(knownCommands.containsKey(alias) && knownCommands.get(alias).toString().contains(getName()))
-				{
-					knownCommands.remove(alias);
-				}
+				removeCommand(alias, 3);
 			}
 		}
 		catch (Exception e)
@@ -121,6 +124,16 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 			owningPlugin.getLogger().warning("Failed unregistering command!");
 			e.printStackTrace();
 		}
+	}
+
+	private void removeCommand(String command, int depth)
+	{
+		if(depth < 0) return;
+		if(knownCommandsMapCache.get(command) == this)
+		{
+			knownCommandsMapCache.remove(command);
+		}
+		removeCommand(fallbackPrefix + ':' + command, depth -1);
 	}
 
 	/**

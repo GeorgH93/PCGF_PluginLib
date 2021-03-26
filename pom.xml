@@ -17,7 +17,7 @@
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<bukkitVersion>1.12.2-R0.1-SNAPSHOT</bukkitVersion>
-		<bungeeVersion>1.16-R0.2-SNAPSHOT</bungeeVersion>
+		<bungeeVersion>1.16-R0.5-SNAPSHOT</bungeeVersion>
 	</properties>
 
 	<scm>

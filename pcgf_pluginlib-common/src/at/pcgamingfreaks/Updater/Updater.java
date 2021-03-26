@@ -172,35 +172,19 @@ public abstract class Updater implements IUpdater
 
 	protected void download(URL url, String fileName) // Saves file into servers update directory
 	{
-		download(url, fileName, 0);
-	}
-
-	protected void download(URL url, String fileName, int movedCount) // Saves file into servers update directory
-	{
 		if(!updateFolder.exists() && !updateFolder.mkdirs())
 		{
 			logger.warning(ConsoleColor.RED + "Failed to create folder for updates!" + ConsoleColor.RESET);
 		}
 		try
 		{
-			//region Allow url redirect
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setInstanceFollowRedirects(false);
-			connection.setConnectTimeout(15000);
-			connection.setReadTimeout(15000);
-			switch (connection.getResponseCode())
+			//region Connect to server
+			HttpURLConnection connection = updateProvider.connect(url);
+			if(connection == null) // connection failed with redirect loop
 			{
-				case HttpURLConnection.HTTP_MOVED_PERM:
-				case HttpURLConnection.HTTP_MOVED_TEMP:
-				case HttpURLConnection.HTTP_SEE_OTHER:
-					if(movedCount == 5) // Prevents endless loops
-					{
-						logger.warning("Target url moved more than 5 times. Abort.");
-						result = UpdateResult.FAIL_DOWNLOAD;
-						return;
-					}
-					download(new URL(url, connection.getHeaderField("Location")), fileName, ++movedCount);
-					return;
+				logger.warning("Target url redirected to often. Abort.");
+				result = UpdateResult.FAIL_DOWNLOAD;
+				return;
 			}
 			//endregion
 			long fileLength = connection.getContentLengthLong();

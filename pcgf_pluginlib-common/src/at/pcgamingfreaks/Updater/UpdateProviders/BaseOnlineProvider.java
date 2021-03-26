@@ -25,23 +25,26 @@ import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-abstract class BaseOnlineProvider implements UpdateProvider
+public abstract class BaseOnlineProvider implements UpdateProvider
 {
 	protected static final Gson GSON = new Gson();
 	private static final String PROPERTY_USER_AGENT = "User-Agent";
 	private static final int TIMEOUT = 5000;
 	protected final Logger logger;
-	private final String userAgent;
+	@Getter @Setter private String userAgent;
 
 	protected BaseOnlineProvider(@NotNull Logger logger)
 	{
-		this("Plugin-Updater", logger);
+		this("PCGF Plugin-Updater", logger);
 	}
 
 	protected BaseOnlineProvider(@NotNull String userAgent, @NotNull Logger logger)
@@ -70,7 +73,8 @@ abstract class BaseOnlineProvider implements UpdateProvider
 		logger.severe(ConsoleColor.RED + "Message: " + message + " " + ConsoleColor.RESET);
 	}
 
-	protected HttpURLConnection connect(URL url) throws IOException
+	@Override
+	public HttpURLConnection connect(URL url) throws IOException
 	{
 		HttpURLConnection connection = null;
 		int status = 0, redirects = 0;

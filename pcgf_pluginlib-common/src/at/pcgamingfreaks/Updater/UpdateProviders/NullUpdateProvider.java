@@ -24,6 +24,8 @@ import at.pcgamingfreaks.Version;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class NullUpdateProvider implements UpdateProvider
@@ -146,5 +148,11 @@ public class NullUpdateProvider implements UpdateProvider
 	public boolean providesDependencies()
 	{
 		return false;
+	}
+
+	@Override
+	public HttpURLConnection connect(URL url) throws IOException
+	{
+		return null;
 	}
 }

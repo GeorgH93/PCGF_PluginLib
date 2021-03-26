@@ -17,13 +17,14 @@
 
 package at.pcgamingfreaks.Bukkit.Util;
 
-import at.pcgamingfreaks.Bukkit.PlatformResolver;
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -256,5 +257,25 @@ public class Utils extends at.pcgamingfreaks.Utils
 	public static @Nullable Object jsonToIChatComponent(final @NotNull String json)
 	{
 		return INSTANCE.jsonToIChatComponent(json);
+	}
+
+	/**
+	 * Checks if the settings.bungeecord config option is enabled in the spigot.yml
+	 *
+	 * @return True if bungeecord is enabled, false if it is disabled or the server is using bukkit.
+	 */
+	public static boolean detectBungeeCord()
+	{
+		try
+		{
+			Object spigotServer = Server.class.getMethod("spigot").invoke(Bukkit.getServer());
+			Method getConfigMethod = spigotServer.getClass().getMethod("getConfig");
+			getConfigMethod.setAccessible(true);
+			YamlConfiguration spigotConfig = (YamlConfiguration) getConfigMethod.invoke(spigotServer);
+			boolean bungee = spigotConfig.getBoolean("settings.bungeecord");
+			return bungee;
+		}
+		catch(Exception ignored) {}
+		return false;
 	}
 }

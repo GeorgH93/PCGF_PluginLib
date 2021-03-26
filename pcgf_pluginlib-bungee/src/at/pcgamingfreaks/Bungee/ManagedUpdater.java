@@ -54,4 +54,10 @@ public class ManagedUpdater extends ManagedUpdaterBase<Updater, Plugin>
 	{
 		return new Updater(plugin, isAnnounceDownloadProgress(), isDownloadDependencies(), updateProviders);
 	}
+
+	@Override
+	protected String getPluginName()
+	{
+		return plugin.getDescription().getName();
+	}
 }
