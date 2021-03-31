@@ -33,11 +33,11 @@
 		</dependency>
 		<!-- Some utils -->
 		<dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>[30.0-jre,)</version>
-            <scope>test</scope>
-        </dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>[30.0-jre,)</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- JDBC connection pool -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
