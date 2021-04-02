@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Debug;
 
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -31,22 +32,27 @@ import java.util.logging.Logger;
  */
 public class EventToStringUtil
 {
+	public static String toString(LivingEntity player)
+	{
+		return String.format("%s (%s)", player.getName(), player.getUniqueId().toString());
+	}
+
 	public static void logEvent(Logger logger, InventoryClickEvent event) { logger.info(toString(event)); }
 
 	public static String toString(InventoryClickEvent event)
 	{
-		return String.format("InventoryClickEvent { action: %s; click: %s; currentItem: %s; cursor: %s; slot: %d; rawSlot: %d; slotType: %s; whoClicked: %s (%s) }", event.getAction().name(), event.getClick().name(),
+		return String.format("InventoryClickEvent { action: %s; click: %s; currentItem: %s; cursor: %s; slot: %d; rawSlot: %d; slotType: %s; whoClicked: %s }", event.getAction().name(), event.getClick().name(),
 		                     event.getCurrentItem() != null ? event.getCurrentItem().getType().name() : "null", event.getCursor() != null ? event.getCursor().getType().name() : "null",
-		                     event.getSlot(), event.getRawSlot(), event.getSlotType().name(), event.getWhoClicked().getName(), event.getWhoClicked().getUniqueId().toString());
+		                     event.getSlot(), event.getRawSlot(), event.getSlotType().name(), toString(event.getWhoClicked()));
 	}
 
 	public static void logEvent(Logger logger, InventoryDragEvent event) { logger.info(toString(event)); }
 
 	public static String toString(InventoryDragEvent event)
 	{
-		return String.format("InventoryDragEvent { cursor: %s; oldCursor: %s; slots: %s; raw-slots: %s whoClicked: %s (%s) }",
+		return String.format("InventoryDragEvent { cursor: %s; oldCursor: %s; slots: %s; raw-slots: %s whoClicked: %s }",
 		                     event.getCursor() != null ? event.getCursor().getType().name() : "null", event.getOldCursor().getType().name(), event.getInventorySlots().toString(),
-		                     event.getRawSlots().toString(), event.getWhoClicked().getName(), event.getWhoClicked().getUniqueId().toString());
+		                     event.getRawSlots().toString(), toString(event.getWhoClicked()));
 	}
 
 
@@ -54,8 +60,8 @@ public class EventToStringUtil
 
 	public static String toString(EntityPickupItemEvent event)
 	{
-		return String.format("EntityPickupItemEvent { item: %s; remaining: %d; entity: %s (%s) }",
-		                     toString(event.getItem()), event.getRemaining(), event.getEntity().getName(), event.getEntity().getUniqueId().toString());
+		return String.format("EntityPickupItemEvent { item: %s; remaining: %d; entity: %s }",
+		                     toString(event.getItem()), event.getRemaining(), toString(event.getEntity()));
 	}
 
 	public static String toString(Item item)
@@ -74,6 +80,11 @@ public class EventToStringUtil
 	public static String toString(PlayerInteractEvent event)
 	{
 		return String.format("PlayerInteractEvent { action: %s; player: %s (%s); item: %s; hand: %s }",
-		                     event.getAction().name(), event.getPlayer().getName(), event.getPlayer().getUniqueId().toString(), toString(event.getItem()), event.getHand());
+		                     event.getAction().name(), toString(event.getPlayer()), toString(event.getItem()), event.getHand());
+	}
+
+	public static void logEvent(Logger logger, PlayerSwapHandItemsEvent event)
+	{
+		logger.info(toSting(event));
 	}
 }
