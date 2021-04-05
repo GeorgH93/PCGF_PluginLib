@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -73,7 +73,15 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 			fallback = getClassicMessage(); // We need a fallback for the console an everything else that isn't a player
 		}
 		else
-		{ // The json has not been deserialized successful
+		{ // The json has not been deserialized successful, probably a legacy message
+			fallback = message; // The message is not a json, so we can use it as a fallback
+			if(message.isEmpty())
+			{
+				messageComponents = new ArrayList<>();
+				json = "[\"\",{\"text\":\"\"}]";
+				return;
+			}
+
 			if(message.length() > 8 && message.charAt(0) != '&' && message.charAt(0) != MessageColor.COLOR_CHAR && StringUtils.containsAny(message, "\"text\":", "\"clickEvent\":"))
 			{ // The message contains elements typically found in json messages and does not start with a color format code. It probably should have been parsed as a json. Show a info for the admin.
 				System.out.println(ConsoleColor.YELLOW + "It appears that message '" + message + "' is a JSON message, but failed to parse (" + errorMessage + ").\n" +
@@ -95,7 +103,6 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 				messageComponents = new ArrayList<>(0);
 			}
 			//endregion
-			fallback = message; // The message is not a json, so we can use it as a fallback
 		}
 	}
 
