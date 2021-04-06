@@ -23,6 +23,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.logging.Logger;
@@ -86,5 +87,10 @@ public class EventToStringUtil
 	public static void logEvent(Logger logger, PlayerSwapHandItemsEvent event)
 	{
 		logger.info(toSting(event));
+	}
+
+	public static String toSting(PlayerSwapHandItemsEvent event)
+	{
+		return String.format("PlayerSwapHandItemsEvent { player: %s; mainHand: %s; offHand: %s }", toString(event.getPlayer()), toString(event.getMainHandItem()), toString(event.getOffHandItem()));
 	}
 }
