@@ -42,7 +42,8 @@ public class EventToStringUtil
 
 	public static String toString(InventoryClickEvent event)
 	{
-		return String.format("InventoryClickEvent { action: %s; click: %s; currentItem: %s; cursor: %s; slot: %d; rawSlot: %d; slotType: %s; whoClicked: %s; hotbarButton: %d }", event.getAction().name(), event.getClick().name(),
+		return String.format("InventoryClickEvent { action: %s; click: %s; currentItem: %s; cursor: %s; slot: %d; rawSlot: %d; slotType: %s; whoClicked: %s; hotbarButton: %d }",
+		                     event.getAction().name(), event.getClick().name(),
 		                     event.getCurrentItem() != null ? event.getCurrentItem().getType().name() : "null", event.getCursor() != null ? event.getCursor().getType().name() : "null",
 		                     event.getSlot(), event.getRawSlot(), event.getSlotType().name(), toString(event.getWhoClicked()), event.getHotbarButton());
 	}
@@ -80,7 +81,7 @@ public class EventToStringUtil
 
 	public static String toString(PlayerInteractEvent event)
 	{
-		return String.format("PlayerInteractEvent { action: %s; player: %s (%s); item: %s; hand: %s }",
+		return String.format("PlayerInteractEvent { action: %s; player: %s; item: %s; hand: %s }",
 		                     event.getAction().name(), toString(event.getPlayer()), toString(event.getItem()), event.getHand());
 	}
 
