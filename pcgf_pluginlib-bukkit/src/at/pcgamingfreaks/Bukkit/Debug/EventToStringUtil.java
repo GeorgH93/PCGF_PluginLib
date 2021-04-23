@@ -87,10 +87,10 @@ public class EventToStringUtil
 
 	public static void logEvent(Logger logger, PlayerSwapHandItemsEvent event)
 	{
-		logger.info(toSting(event));
+		logger.info(toString(event));
 	}
 
-	public static String toSting(PlayerSwapHandItemsEvent event)
+	public static String toString(PlayerSwapHandItemsEvent event)
 	{
 		return String.format("PlayerSwapHandItemsEvent { player: %s; mainHand: %s; offHand: %s }", toString(event.getPlayer()), toString(event.getMainHandItem()), toString(event.getOffHandItem()));
 	}
