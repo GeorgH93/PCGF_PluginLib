@@ -22,7 +22,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -93,5 +95,27 @@ public class EventToStringUtil
 	public static String toString(PlayerSwapHandItemsEvent event)
 	{
 		return String.format("PlayerSwapHandItemsEvent { player: %s; mainHand: %s; offHand: %s }", toString(event.getPlayer()), toString(event.getMainHandItem()), toString(event.getOffHandItem()));
+	}
+
+	public static void logEvent(Logger logger, AsyncPlayerPreLoginEvent event)
+	{
+		logger.info(toString(event));
+	}
+
+	public static String toString(AsyncPlayerPreLoginEvent event)
+	{
+		return String.format("AsyncPreLoginEvent { name: %s; uuid: %s; ip: %s; kickMessage: %s; result: %s }",
+		                     event.getName(), event.getUniqueId().toString(), event.getAddress().toString(), event.getKickMessage(), event.getLoginResult().name());
+	}
+	
+	public static void logEvent(Logger logger, PlayerLoginEvent event)
+	{
+		logger.info(toString(event));
+	}
+
+	public static String toString(PlayerLoginEvent event)
+	{
+		return String.format("PlayerLoginEvent { player: %s; ip: %s (%s); kickMessage: %s; result: %s }",
+		                     toString(event.getPlayer()), event.getAddress().toString(), event.getHostname(), event.getKickMessage(), event.getResult().name());
 	}
 }
