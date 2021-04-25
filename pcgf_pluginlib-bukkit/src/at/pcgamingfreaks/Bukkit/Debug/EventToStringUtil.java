@@ -22,10 +22,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.logging.Logger;
@@ -38,6 +35,11 @@ public class EventToStringUtil
 	public static String toString(LivingEntity player)
 	{
 		return String.format("%s (%s)", player.getName(), player.getUniqueId().toString());
+	}
+
+	public static String toString(ItemStack itemStack)
+	{
+		return String.format("{ type: %s; amount: %d; durability: %d }", itemStack.getType().name(), itemStack.getAmount(), itemStack.getDurability());
 	}
 
 	public static void logEvent(Logger logger, InventoryClickEvent event) { logger.info(toString(event)); }
@@ -71,12 +73,7 @@ public class EventToStringUtil
 	public static String toString(Item item)
 	{
 		return String.format("{ pickupDelay: %d; itemStack: %s}",
-		                     item.getPickupDelay(), toString(item.getItemStack())); //TODO add material data and meta
-	}
-
-	public static String toString(ItemStack itemStack)
-	{
-		return String.format("{ type: %s; amount: %d; durability: %d }", itemStack.getType().name(), itemStack.getAmount(), itemStack.getDurability());
+		                     item.getPickupDelay(), toString(item.getItemStack()));
 	}
 
 	public static void logEvent(Logger logger, PlayerInteractEvent event) { logger.info(toString(event)); }
@@ -94,7 +91,8 @@ public class EventToStringUtil
 
 	public static String toString(PlayerSwapHandItemsEvent event)
 	{
-		return String.format("PlayerSwapHandItemsEvent { player: %s; mainHand: %s; offHand: %s }", toString(event.getPlayer()), toString(event.getMainHandItem()), toString(event.getOffHandItem()));
+		return String.format("PlayerSwapHandItemsEvent { player: %s; mainHand: %s; offHand: %s }",
+		                     toString(event.getPlayer()), toString(event.getMainHandItem()), toString(event.getOffHandItem()));
 	}
 
 	public static void logEvent(Logger logger, AsyncPlayerPreLoginEvent event)
