@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -115,5 +115,16 @@ public class EventToStringUtil
 	{
 		return String.format("PlayerLoginEvent { player: %s; ip: %s (%s); kickMessage: %s; result: %s }",
 		                     toString(event.getPlayer()), event.getAddress().toString(), event.getHostname(), event.getKickMessage(), event.getResult().name());
+	}
+
+	public static void logEvent(Logger logger, PlayerLocaleChangeEvent event)
+	{
+		logger.info(toString(event));
+	}
+
+	public static String toString(PlayerLocaleChangeEvent event)
+	{
+		return String.format("PlayerLocaleChangeEvent { player: %s; locale: %s }",
+		                     toString(event.getPlayer()), event.getLocale());
 	}
 }
