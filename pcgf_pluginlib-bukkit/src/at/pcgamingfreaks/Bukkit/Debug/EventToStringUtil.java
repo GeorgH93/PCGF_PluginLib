@@ -127,4 +127,14 @@ public class EventToStringUtil
 		return String.format("PlayerLocaleChangeEvent { player: %s; locale: %s }",
 		                     toString(event.getPlayer()), event.getLocale());
 	}
+
+	public static void logEvent(Logger logger, PlayerQuitEvent event)
+	{
+		logger.info(toString(event));
+	}
+
+	public static String toString(PlayerQuitEvent event)
+	{
+		return String.format("PlayerQuitEvent { player: %s; quitMessage: %s }", toString(event.getPlayer()), event.getQuitMessage());
+	}
 }
