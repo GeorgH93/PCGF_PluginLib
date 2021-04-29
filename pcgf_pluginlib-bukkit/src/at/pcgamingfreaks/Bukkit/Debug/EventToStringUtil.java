@@ -24,6 +24,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
 
@@ -32,19 +33,25 @@ import java.util.logging.Logger;
  */
 public class EventToStringUtil
 {
-	public static String toString(LivingEntity player)
+	public static String toString(final @NotNull LivingEntity player)
 	{
 		return String.format("%s (%s)", player.getName(), player.getUniqueId().toString());
 	}
 
-	public static String toString(ItemStack itemStack)
+	public static String toString(final @NotNull ItemStack itemStack)
 	{
 		return String.format("{ type: %s; amount: %d; durability: %d }", itemStack.getType().name(), itemStack.getAmount(), itemStack.getDurability());
 	}
 
-	public static void logEvent(Logger logger, InventoryClickEvent event) { logger.info(toString(event)); }
+	public static String toString(final @NotNull Item item)
+	{
+		return String.format("{ pickupDelay: %d; itemStack: %s}",
+		                     item.getPickupDelay(), toString(item.getItemStack()));
+	}
 
-	public static String toString(InventoryClickEvent event)
+	public static void logEvent(final @NotNull Logger logger, final @NotNull InventoryClickEvent event) { logger.info(toString(event)); }
+
+	public static String toString(final @NotNull InventoryClickEvent event)
 	{
 		return String.format("InventoryClickEvent { action: %s; click: %s; currentItem: %s; cursor: %s; slot: %d; rawSlot: %d; slotType: %s; whoClicked: %s; hotbarButton: %d }",
 		                     event.getAction().name(), event.getClick().name(),
@@ -52,9 +59,9 @@ public class EventToStringUtil
 		                     event.getSlot(), event.getRawSlot(), event.getSlotType().name(), toString(event.getWhoClicked()), event.getHotbarButton());
 	}
 
-	public static void logEvent(Logger logger, InventoryDragEvent event) { logger.info(toString(event)); }
+	public static void logEvent(final @NotNull Logger logger, final @NotNull InventoryDragEvent event) { logger.info(toString(event)); }
 
-	public static String toString(InventoryDragEvent event)
+	public static String toString(final @NotNull InventoryDragEvent event)
 	{
 		return String.format("InventoryDragEvent { cursor: %s; oldCursor: %s; slots: %s; raw-slots: %s whoClicked: %s }",
 		                     event.getCursor() != null ? event.getCursor().getType().name() : "null", event.getOldCursor().getType().name(), event.getInventorySlots().toString(),
@@ -62,78 +69,72 @@ public class EventToStringUtil
 	}
 
 
-	public static void logEvent(Logger logger, EntityPickupItemEvent event) { logger.info(toString(event)); }
+	public static void logEvent(final @NotNull Logger logger, final @NotNull EntityPickupItemEvent event) { logger.info(toString(event)); }
 
-	public static String toString(EntityPickupItemEvent event)
+	public static String toString(final @NotNull EntityPickupItemEvent event)
 	{
 		return String.format("EntityPickupItemEvent { item: %s; remaining: %d; entity: %s }",
 		                     toString(event.getItem()), event.getRemaining(), toString(event.getEntity()));
 	}
 
-	public static String toString(Item item)
-	{
-		return String.format("{ pickupDelay: %d; itemStack: %s}",
-		                     item.getPickupDelay(), toString(item.getItemStack()));
-	}
+	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerInteractEvent event) { logger.info(toString(event)); }
 
-	public static void logEvent(Logger logger, PlayerInteractEvent event) { logger.info(toString(event)); }
-
-	public static String toString(PlayerInteractEvent event)
+	public static String toString(final @NotNull PlayerInteractEvent event)
 	{
 		return String.format("PlayerInteractEvent { action: %s; player: %s; item: %s; hand: %s }",
 		                     event.getAction().name(), toString(event.getPlayer()), toString(event.getItem()), event.getHand());
 	}
 
-	public static void logEvent(Logger logger, PlayerSwapHandItemsEvent event)
+	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerSwapHandItemsEvent event)
 	{
 		logger.info(toString(event));
 	}
 
-	public static String toString(PlayerSwapHandItemsEvent event)
+	public static String toString(final @NotNull PlayerSwapHandItemsEvent event)
 	{
 		return String.format("PlayerSwapHandItemsEvent { player: %s; mainHand: %s; offHand: %s }",
 		                     toString(event.getPlayer()), toString(event.getMainHandItem()), toString(event.getOffHandItem()));
 	}
 
-	public static void logEvent(Logger logger, AsyncPlayerPreLoginEvent event)
+	public static void logEvent(final @NotNull Logger logger, final @NotNull AsyncPlayerPreLoginEvent event)
 	{
 		logger.info(toString(event));
 	}
 
-	public static String toString(AsyncPlayerPreLoginEvent event)
+	public static String toString(final @NotNull AsyncPlayerPreLoginEvent event)
 	{
 		return String.format("AsyncPreLoginEvent { name: %s; uuid: %s; ip: %s; kickMessage: %s; result: %s }",
 		                     event.getName(), event.getUniqueId().toString(), event.getAddress().toString(), event.getKickMessage(), event.getLoginResult().name());
 	}
 	
-	public static void logEvent(Logger logger, PlayerLoginEvent event)
+	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerLoginEvent event)
 	{
 		logger.info(toString(event));
 	}
 
-	public static String toString(PlayerLoginEvent event)
+	public static String toString(final @NotNull PlayerLoginEvent event)
 	{
 		return String.format("PlayerLoginEvent { player: %s; ip: %s (%s); kickMessage: %s; result: %s }",
 		                     toString(event.getPlayer()), event.getAddress().toString(), event.getHostname(), event.getKickMessage(), event.getResult().name());
 	}
 
-	public static void logEvent(Logger logger, PlayerLocaleChangeEvent event)
+	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerLocaleChangeEvent event)
 	{
 		logger.info(toString(event));
 	}
 
-	public static String toString(PlayerLocaleChangeEvent event)
+	public static String toString(final @NotNull PlayerLocaleChangeEvent event)
 	{
 		return String.format("PlayerLocaleChangeEvent { player: %s; locale: %s }",
 		                     toString(event.getPlayer()), event.getLocale());
 	}
 
-	public static void logEvent(Logger logger, PlayerQuitEvent event)
+	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerQuitEvent event)
 	{
 		logger.info(toString(event));
 	}
 
-	public static String toString(PlayerQuitEvent event)
+	public static String toString(final @NotNull PlayerQuitEvent event)
 	{
 		return String.format("PlayerQuitEvent { player: %s; quitMessage: %s }", toString(event.getPlayer()), event.getQuitMessage());
 	}
