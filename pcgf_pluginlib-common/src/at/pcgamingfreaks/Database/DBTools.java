@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ public class DBTools
 		}
 		catch(SQLException e)
 		{
-			System.out.println("\nQuery: " + query + "\n" + "Data: " + Arrays.toString(args)); //TODO remove debug output
+			System.out.println("\nQuery: " + query + "\n" + "Data: " + Arrays.toString(args));
 			e.printStackTrace();
 		}
 	}
@@ -138,7 +138,7 @@ public class DBTools
 	 * @param args The values to be set.
 	 * @throws SQLException If there was a problem.
 	 */
-	public static void setParameters(@NotNull PreparedStatement preparedStatement, @Nullable Object... args) throws SQLException
+	public static void setParameters(final @NotNull PreparedStatement preparedStatement, final @Nullable Object... args) throws SQLException
 	{
 		for(int i = 0; args != null && i < args.length; i++)
 		{

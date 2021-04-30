@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,6 +24,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class Reflection
 {
@@ -222,6 +226,22 @@ public class Reflection
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * Gets all the fields of a class including them of the super classes.
+	 *
+	 * @param clazz The class for which the fields should be retrieved.
+	 * @return List of fields.
+	 */
+	public static @NotNull Collection<Field> getFieldsIncludeParents(@NotNull Class<?> clazz)
+	{
+		List<Field> fields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
+		while((clazz = clazz.getSuperclass()) != null)
+		{
+			fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+		}
+		return fields;
 	}
 
 	/**
