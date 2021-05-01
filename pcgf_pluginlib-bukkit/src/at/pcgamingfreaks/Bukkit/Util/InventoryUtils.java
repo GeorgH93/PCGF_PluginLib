@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -148,6 +148,45 @@ public class InventoryUtils
 		{
 			//noinspection deprecation
 			return player.getItemInHand();
+		}
+	}
+
+	/**
+	 * Sets the item in the players main hand.
+	 *
+	 * @param player The player for whom the item in the main hand should be set.
+	 * @param item The item that should be set for the main hand.
+	 */
+	public static void setItemInMainHand(final @NotNull Player player, final @Nullable ItemStack item)
+	{
+		if(MCVersion.isDualWieldingMC())
+		{
+			player.getInventory().setItemInMainHand(item);
+		}
+		else
+		{
+			//noinspection deprecation
+			player.setItemInHand(item);
+		}
+	}
+
+	/**
+	 * Sets the item in the players off hand.
+	 * On MC versions that do not have dual wielding the main hand will be used.
+	 *
+	 * @param player The player for whom the item in the off hand should be set.
+	 * @param item The item that should be set for the off hand.
+	 */
+	public static void setItemInOffHand(final @NotNull Player player, final @Nullable ItemStack item)
+	{
+		if(MCVersion.isDualWieldingMC())
+		{
+			player.getInventory().setItemInOffHand(item);
+		}
+		else
+		{
+			//noinspection deprecation
+			player.setItemInHand(item);
 		}
 	}
 
