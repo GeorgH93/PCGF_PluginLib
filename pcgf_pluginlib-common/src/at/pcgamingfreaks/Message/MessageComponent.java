@@ -757,8 +757,9 @@ public abstract class MessageComponent<T extends MessageComponent>
 	 * @param value the value the client should use for the action.
 	 * @return This message component instance.
 	 */
-	public T onHover(MessageHoverEvent.HoverEventAction action, String value)
+	public T onHover(final @NotNull MessageHoverEvent.HoverEventAction action, final @Nullable String value)
 	{
+		if(value == null) return (T) this;
 		return setHoverEvent(new MessageHoverEvent(action, value));
 	}
 

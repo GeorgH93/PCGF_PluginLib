@@ -17,9 +17,11 @@
 
 package at.pcgamingfreaks.Bukkit.Util;
 
+import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.PlatformResolver;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -87,6 +89,66 @@ public class InventoryUtils
 		if (event.getRawSlot() < 0) return null;
 
 		return event.getRawSlot() < event.getView().getTopInventory().getSize() ? event.getView().getTopInventory() : event.getView().getBottomInventory();
+	}
+
+	/**
+	 * Get the item in the players hand.
+	 * If the player does not have an item in it's main hand, the off hand will be used.
+	 *
+	 * @param player The player for whom the item should be obtained.
+	 * @return The item in the players hand.
+	 */
+	public static @Nullable ItemStack getItemInHand(final @NotNull Player player)
+	{
+		if(MCVersion.isDualWieldingMC())
+		{
+			ItemStack item = player.getInventory().getItemInMainHand();
+			if(item != null && item.getType() != Material.AIR) return item;
+			return player.getInventory().getItemInOffHand();
+		}
+		else
+		{
+			//noinspection deprecation
+			return player.getItemInHand();
+		}
+	}
+
+	/**
+	 * Get the item in the players main hand.
+	 *
+	 * @param player The player for whom the item should be obtained.
+	 * @return The item in the players main hand.
+	 */
+	public static @Nullable ItemStack getItemInMainHand(final @NotNull Player player)
+	{
+		if(MCVersion.isDualWieldingMC())
+		{
+			return player.getInventory().getItemInMainHand();
+		}
+		else
+		{
+			//noinspection deprecation
+			return player.getItemInHand();
+		}
+	}
+
+	/**
+	 * Get the item in the players off hand.
+	 *
+	 * @param player The player for whom the item should be obtained.
+	 * @return The item in the players off hand.
+	 */
+	public static @Nullable ItemStack getItemInOffHand(final @NotNull Player player)
+	{
+		if(MCVersion.isDualWieldingMC())
+		{
+			return player.getInventory().getItemInOffHand();
+		}
+		else
+		{
+			//noinspection deprecation
+			return player.getItemInHand();
+		}
 	}
 
 	/**

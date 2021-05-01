@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit.Message;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
@@ -27,35 +28,46 @@ import com.google.gson.JsonArray;
 
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ NMSReflection.class })
 public class MessageComponentTest
 {
-	private static Field modifiers;
-	private static Method method;
+	private IStatisticResolver statisticResolver = null;
 
 	@BeforeClass
-	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
+	public static void prepClass() throws NoSuchFieldException, IllegalAccessException
 	{
 		Bukkit.setServer(new TestBukkitServer());
 		TestObjects.initNMSReflection();
-		modifiers = Field.class.getDeclaredField("modifiers");
-		modifiers.setAccessible(true);
+	}
+
+	@Before
+	public void prepareTestData() throws NoSuchFieldException, IllegalAccessException
+	{
+		statisticResolver = mock(IStatisticResolver.class);
+		Reflection.setFinalField(MessageComponent.class.getDeclaredField("STATISTIC_RESOLVER"), null, statisticResolver);
+	}
+
+	@After
+	public void cleanupTestData() throws NoSuchFieldException, IllegalAccessException
+	{
+		Reflection.setFinalField(MessageComponent.class.getDeclaredField("STATISTIC_RESOLVER"), null, null);
 	}
 
 	@Test
@@ -74,26 +86,22 @@ public class MessageComponentTest
 	}
 
 	@Test
-	public void testAchievementTooltip() throws NoSuchFieldException, IllegalAccessException
+	public void testAchievementTooltip()
 	{
-		Field getNAchievementField = setMethod("GET_NMS_ACHIEVEMENT");
+		doReturn(null).when(statisticResolver).getAchievementName(any(Achievement.class));
 		assertNull("The achievement tooltip should not be set", new MessageComponent().achievementTooltip(Achievement.BREED_COW).getHoverEvent());
-		resetMethod(getNAchievementField);
 	}
 
 	@Test
-	public void testStatisticTooltip() throws NoSuchFieldException, IllegalAccessException
+	public void testStatisticTooltip()
 	{
-		Field getNMSStatisticField = setMethod("GET_NMS_STATISTIC");
 		MessageComponent messageComponent = new MessageComponent();
+		doReturn(null).when(statisticResolver).getStatisticName(any(Statistic.class));
 		assertNull("The statistic tooltip should not be set", messageComponent.statisticTooltip(Statistic.CAULDRON_USED).getHoverEvent());
-		resetMethod(getNMSStatisticField);
-		Field getMaterialStatisticField = setMethod("GET_MATERIAL_STATISTIC");
+		doReturn(null).when(statisticResolver).getStatisticName(any(Statistic.class), any(Material.class));
 		assertNull("The statistic tooltip should not be set", messageComponent.statisticTooltip(Statistic.MINE_BLOCK, Material.APPLE).getHoverEvent());
-		resetMethod(getMaterialStatisticField);
-		Field getEntityStatisticField = setMethod("GET_ENTITY_STATISTIC");
+		doReturn(null).when(statisticResolver).getStatisticName(any(Statistic.class), any(EntityType.class));
 		assertNull("The statistic tooltip should not be set", messageComponent.statisticTooltip(Statistic.ENTITY_KILLED_BY, EntityType.ARROW).getHoverEvent());
-		resetMethod(getEntityStatisticField);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -130,28 +138,5 @@ public class MessageComponentTest
 	public void testEntityStatisticTooltipWithNoEntity()
 	{
 		new MessageComponent().statisticTooltip(Statistic.MINE_BLOCK, EntityType.COW);
-	}
-
-	private Field setMethod(String name) throws NoSuchFieldException, IllegalAccessException
-	{
-		Field field = MessageComponent.class.getDeclaredField(name);
-		field.setAccessible(true);
-		modifiers.set(field, field.getModifiers() & ~Modifier.FINAL);
-		method = (Method) field.get(null);
-		field.set(null, null);
-		return field;
-	}
-
-	private void resetMethod(Field field) throws IllegalAccessException
-	{
-		field.set(null, method);
-		modifiers.set(field, field.getModifiers() | Modifier.FINAL);
-		field.setAccessible(false);
-	}
-
-	@AfterClass
-	public static void cleanupTestData()
-	{
-		modifiers.setAccessible(false);
 	}
 }

@@ -15,7 +15,7 @@ import java.util.UUID;
  * Reference: http://freemarker.org
  * See template: ${.main_template_name}
  */
-public class ChatMessagePacketFactory_${nmsVersion} implements IChatMessagePacketFactory
+public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessagePacketFactory
 {
 	@Override
 	public Object makeChatPacket(final @NotNull String json, final @NotNull UUID sender)

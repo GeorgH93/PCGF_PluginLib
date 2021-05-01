@@ -7,7 +7,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<revision>1.0.30-SNAPSHOT</revision>
+		<revision>1.0.31-SNAPSHOT</revision>
 		<website>https://github.com/GeorgH93/PCGF_PluginLib/</website>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -40,7 +40,7 @@
 	<licenses>
 		<license>
 			<name>GNU General Public License (GPL) v3</name>
-			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -262,6 +262,9 @@
 	</build>
 	
 	<modules>
+		<module>pcgf_pluginlib-reflection</module>
+		<module>pcgf_pluginlib-reflection-obc</module>
+		<module>pcgf_pluginlib-reflection-nms</module>
 		<module>pcgf_pluginlib-common</module>
 		<module>pcgf_pluginlib-mcversion</module>
 		<module>pcgf_pluginlib-uuid</module>
