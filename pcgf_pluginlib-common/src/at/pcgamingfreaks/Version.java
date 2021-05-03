@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -251,7 +251,7 @@ public class Version implements Comparable<Version>
 		return preRelease;
 	}
 
-	//region Comparision functions
+	//region Comparison functions
 	/**
 	 * Checks if the version is newer than the given version.
 	 *
@@ -295,6 +295,57 @@ public class Version implements Comparable<Version>
 	{
 		return compare(otherVersion) <= SAME;
 	}
+
+	//region String comparison functions
+	/**
+	 * Checks if the version is newer than the given version.
+	 *
+	 * @param otherVersion The version to compare with.
+	 * @return True if the version is newer, false if not.
+	 */
+	public boolean newerThan(@NotNull String otherVersion) throws InvalidVersionStringException
+	{
+		return compare(new Version(otherVersion)) == NEWER;
+	}
+
+	/**
+	 * Checks if the version is newer or the same than the given version.
+	 *
+	 * @param otherVersion The version to compare with.
+	 * @return True if the version is newer or the same, false if not.
+	 */
+	public boolean newerOrEqualThan(@NotNull String otherVersion) throws InvalidVersionStringException
+	{
+		return compare(new Version(otherVersion))>= SAME;
+	}
+
+	/**
+	 * Checks if the version is older than the given version.
+	 *
+	 * @param otherVersion The version to compare with.
+	 * @return True if the version is older, false if not.
+	 */
+	public boolean olderThan(@NotNull String otherVersion) throws InvalidVersionStringException
+	{
+		return compare(new Version(otherVersion)) == OLDER;
+	}
+
+	/**
+	 * Checks if the version is older or the same than the given version.
+	 *
+	 * @param otherVersion The version to compare with.
+	 * @return True if the version is older or the same, false if not.
+	 */
+	public boolean olderOrEqualThan(@NotNull String otherVersion) throws InvalidVersionStringException
+	{
+		return compare(new Version(otherVersion)) <= SAME;
+	}
+
+	public boolean equals(String otherVersion) throws InvalidVersionStringException
+	{
+		return this.equals(new Version(otherVersion));
+	}
+	//endregion
 	//endregion
 
 	//region Overriding functions
