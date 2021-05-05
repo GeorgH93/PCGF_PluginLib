@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -37,28 +37,47 @@ public class YamlFileManager
 {
 	protected static final String KEY_YAML_VERSION = "Version", YAML_FILE_EXT = ".yml";
 
-	@Getter protected final Logger logger; // The logger instance of the using plugin
+	protected final Logger logger; // The logger instance of the using plugin
 	protected final String inJarPrefix, path;
-	protected final int expectedVersion, upgradeThreshold;
+	@Deprecated protected final int expectedVersion, upgradeThreshold;
+	protected final Version versionExpected;
 	protected final File baseDir;
 	protected boolean extracted = false; // Flag to check whether the file has been extracted or not. It is used to prevent endless loops when the file version in the jar is outdated.
 	protected String file;
 	protected YAML yaml; // The object holding the parsed content of the yaml file
 	protected File yamlFile; // The loaded yaml file
-	protected YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.UPDATE; // Defines the update behavior for yaml files
+	@Deprecated protected YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.UPDATE; // Defines the update behavior for yaml files
 	@Getter protected String fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
 
-	YamlFileManager(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @Nullable String file, @NotNull String inJarPrefix, @Nullable YAML oldConfig)
+	YamlFileManager(final @NotNull Logger logger, final @NotNull File baseDir, final int version, final int upgradeThreshold, final @Nullable String path,
+	                final @Nullable String file, final @NotNull String inJarPrefix, final @Nullable YAML oldConfig)
+	{
+		this(logger, baseDir, new Version(version), new Version(upgradeThreshold), path, file, inJarPrefix, oldConfig);
+	}
+
+	YamlFileManager(final @NotNull Logger logger, final @NotNull File baseDir, final Version version, final Version upgradeThreshold, final @Nullable String path,
+	                final @Nullable String file, final @NotNull String inJarPrefix, final @Nullable YAML oldConfig)
 	{
 		this.path = path;
 		this.file = file;
 		this.logger = logger;
 		this.inJarPrefix = inJarPrefix;
-		this.expectedVersion = version;
-		this.upgradeThreshold = upgradeThreshold;
+		this.versionExpected = version;
+		this.expectedVersion = version.getMajor();
+		this.upgradeThreshold = upgradeThreshold.getMajor();
 		this.baseDir = (path != null && !path.isEmpty()) ? new File(baseDir, path) : baseDir;
 		if(file != null) this.yamlFile = new File(this.baseDir, file);
 		if(oldConfig != null) yaml = oldConfig;
+	}
+
+	public @NotNull Logger getLogger()
+	{
+		return logger;
+	}
+
+	protected @NotNull YamlFileUpdateMethod getYamlUpdateMode()
+	{
+		return updateMode;
 	}
 
 	/**
@@ -70,7 +89,7 @@ public class YamlFileManager
 	 *
 	 * @param description The description of the file (e.g.: config or language). Should be all lowercase (the capitalized version will be automatically created).
 	 */
-	public void setFileDescription(@NotNull String description)
+	public void setFileDescription(final @NotNull String description)
 	{
 		fileDescription = description;
 		//noinspection StringToUpperCaseOrToLowerCaseWithoutLocale
@@ -100,7 +119,7 @@ public class YamlFileManager
 	}
 
 	/**
-	 * Gets the version of the configuration.
+	 * Gets the version of the configuration file.
 	 *
 	 * @return The version of the configuration. 0 if there is no version in the file.
 	 * @throws Version.InvalidVersionStringException If the version in the file is not a valid version string.
@@ -108,6 +127,16 @@ public class YamlFileManager
 	public Version version() throws Version.InvalidVersionStringException
 	{
 		return new Version(yaml.getString(KEY_YAML_VERSION, "0"));
+	}
+
+	/**
+	 * Gets the expected version of the configuration.
+	 *
+	 * @return The expected version of the configuration.
+	 */
+	public Version getExpectedVersion()
+	{
+		return versionExpected;
 	}
 
 	//region file handling stuff for inheriting classes
@@ -239,7 +268,7 @@ public class YamlFileManager
 
 	protected void validate()
 	{
-		if(expectedVersion > getVersion())
+		if(getExpectedVersion().newerThan(version()))
 		{
 			if(extracted)
 			{
@@ -258,7 +287,7 @@ public class YamlFileManager
 		}
 		else
 		{
-			if(expectedVersion < getVersion()) logger.info(getFileDescriptionCapitalized() + " file version newer than expected! Expected: " + expectedVersion + " Is: " + getVersion());
+			if(getExpectedVersion().olderThan(version())) logger.info(getFileDescriptionCapitalized() + " file version newer than expected! Expected: " + getExpectedVersion() + " Is: " + version());
 			loaded();
 		}
 	}
@@ -281,7 +310,7 @@ public class YamlFileManager
 		try
 		{
 			doUpdate();
-			yaml.set(KEY_YAML_VERSION, expectedVersion);
+			yaml.set(KEY_YAML_VERSION, getExpectedVersion());
 			save();
 			logger.info(ConsoleColor.GREEN + "Successful updated " + getFileDescription() + " file." + ConsoleColor.RESET);
 		}
@@ -312,7 +341,7 @@ public class YamlFileManager
 			{
 				doUpgrade(new YamlFileManager(logger, baseDir, oldVersion, -1, path, file + ".old_v" + oldVersion, inJarPrefix, oldYAML));
 			}
-			yaml.set(KEY_YAML_VERSION, expectedVersion);
+			yaml.set(KEY_YAML_VERSION, getExpectedVersion());
 			save();
 			logger.info(ConsoleColor.GREEN + "Successful upgraded " + getFileDescription() + " file." + ConsoleColor.RESET);
 		}
