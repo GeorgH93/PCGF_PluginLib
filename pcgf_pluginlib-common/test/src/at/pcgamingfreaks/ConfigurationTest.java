@@ -34,7 +34,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -44,7 +43,6 @@ import java.util.logging.Logger;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ByteStreams.class, YamlFileManager.class, YamlFileUpdateMethod.class, YAML.class })
@@ -53,7 +51,6 @@ public class ConfigurationTest
 	private static Logger mockedLogger;
 	private static File tmpDir;
 
-	@SuppressWarnings("SpellCheckingInspection")
 	private static int loggedInfos = 0;
 
 	@BeforeClass
@@ -101,15 +98,15 @@ public class ConfigurationTest
 	@Test
 	public void testExtendedConfiguration() throws YamlKeyNotFoundException
 	{
-		Configuration oldConfiguration = new Configuration(this, mockedLogger, tmpDir, 1, "config.yml");
-		Configuration upgradeThresholdConfig = new Configuration(this, mockedLogger, tmpDir, 1, 1);
+		Configuration oldConfiguration = new Configuration(this, mockedLogger, tmpDir, new Version(1), "config.yml");
+		Configuration upgradeThresholdConfig = new Configuration(this, mockedLogger, tmpDir, new Version(1), new Version(1));
 		assertEquals("The configuration with the current version as upgrade threshold should return the same configuration", oldConfiguration.getConfig().getString("Version"), upgradeThresholdConfig.getConfig().getString("Version"));
 	}
 
 	@Test
 	public void testSaveConfig() throws FileNotFoundException, YamlKeyNotFoundException
 	{
-		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, 1);
+		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, new Version(1));
 		configuration.set("NewlySavedValue", true);
 		configuration.save();
 		configuration.reload();
@@ -119,71 +116,17 @@ public class ConfigurationTest
 	@Test
 	public void testUpdate()
 	{
-		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, 1);
+		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, new Version(1));
 		int currentLoggedInfo = loggedInfos;
 		configuration.doUpdate();
 		assertEquals("The log count should be one more than before because the update function has been called", currentLoggedInfo + 1, loggedInfos);
 		assertFalse("No new configuration has been created, therefore false should be returned", configuration.newConfigCreated());
 	}
 
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-	@Test
-	public void testLoadConfig() throws Exception
-	{
-		final int[] count = { 0, 0 };
-		Logger mockedLogger = mock(Logger.class);
-		doAnswer(invocationOnMock -> {
-			count[0]++;
-			return null;
-		}).when(mockedLogger).warning(anyString());
-		doAnswer(invocationOnMock -> {
-			count[1]++;
-			return null;
-		}).when(mockedLogger).info(anyString());
-		Configuration configuration = spy(new Configuration(this, mockedLogger, tmpDir, 1));
-		doNothing().when(configuration).extractFile();
-		doNothing().when(configuration).save();
-		doReturn(false).when(configuration).newConfigCreated();
-		File testFile = new File(tmpDir, "NoYAML.yml");
-		try(FileOutputStream fileStream = new FileOutputStream(testFile))
-		{
-			fileStream.write("Dies ist kein YAML\nOder?\n:".getBytes());
-		}
-		Field yamlFileField = TestUtils.setAccessible(YamlFileManager.class, configuration, "yamlFile", testFile);
-		configuration.load();
-		testFile.delete();
-		assertEquals("A warning should be written", 1, count[0]);
-		File mockedFile = mock(File.class);
-		doReturn(true).when(mockedFile).exists();
-		doReturn(0L).when(mockedFile).length();
-		yamlFileField.set(configuration, mockedFile);
-		YAML mockedYAML = mock(YAML.class);
-		whenNew(YAML.class).withAnyArguments().thenReturn(mockedYAML);
-		doNothing().when(mockedYAML).load(any(File.class));
-		configuration.load();
-		assertNotEquals("Info should be written", 0, count[1]);
-		assertEquals("No warning should be written", 1, count[0]);
-		doReturn(false).when(mockedFile).exists();
-		configuration.load();
-		assertNotEquals("Info should be written", 0, count[1]);
-		assertEquals("No warning should be written", 1, count[0]);
-		doReturn(20L).when(mockedFile).length();
-		count[1] = 0;
-		configuration.load();
-		assertNotEquals("Info should be written", 0, count[1]);
-		assertEquals("No warning should be written", 1, count[0]);
-		doThrow(new SecurityException()).when(mockedFile).exists();
-		count[1] = 0;
-		configuration.load();
-		assertEquals("No info should be written", 0, count[1]);
-		assertEquals("A warning should be written", 2, count[0]);
-		TestUtils.setUnaccessible(yamlFileField, configuration, false);
-	}
-
 	@Test
 	public void testGetter() throws IllegalAccessException, NoSuchFieldException, YamlKeyNotFoundException
 	{
-		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, 1);
+		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, new Version(1));
 		YAML mockedYAML = mock(YAML.class);
 		Field yamlField = TestUtils.setAccessible(YamlFileManager.class, configuration, "yaml", mockedYAML);
 		doReturn(123).when(mockedYAML).getInt(anyString());
@@ -212,7 +155,7 @@ public class ConfigurationTest
 	@Test
 	public void testSetter() throws NoSuchFieldException, IllegalAccessException
 	{
-		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, 1);
+		Configuration configuration = new Configuration(this, mockedLogger, tmpDir, new Version(1));
 		YAML mockedYAML = mock(YAML.class);
 		final int[] count = { 0 };
 		doAnswer(invocationOnMock -> {
