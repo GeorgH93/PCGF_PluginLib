@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -86,7 +86,6 @@ public class YamlFileManagerTest
 		assertEquals("No info message should be written to the console", 0, warnCount[0]);
 	}
 
-	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Test
 	public void testLoad() throws Exception
 	{
@@ -132,7 +131,7 @@ public class YamlFileManagerTest
 			return null;
 		}).when(mockedLogger).info(anyString());
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
-		doReturn(5).when(testFileManager).getVersion();
+		doReturn(new Version(5)).when(testFileManager).version();
 		doNothing().when(testFileManager).extractFile();
 		doNothing().when(testFileManager).load();
 		doNothing().when(testFileManager).upgrade();
@@ -143,12 +142,12 @@ public class YamlFileManagerTest
 		Field extractedField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "extracted", true);
 		testFileManager.validate();
 		assertEquals("There should be one warning in the log", 1, count[0]);
-		doReturn(500).when(testFileManager).getVersion();
+		doReturn(new Version(500)).when(testFileManager).version();
 		testFileManager.validate();
 		assertEquals("There should be one info in the log", 2, count[1]);
 		Field updateModeField = TestUtils.setAccessible(YamlFileManager.class, testFileManager, "updateMode", YamlFileUpdateMethod.UPGRADE);
 		testFileManager.validate();
-		doReturn(1).when(testFileManager).getVersion();
+		doReturn(new Version(1)).when(testFileManager).version();
 		testFileManager.validate();
 		assertEquals("There should be new info in the log", 4, count[1]);
 		updateModeField.set(testFileManager, YamlFileUpdateMethod.OVERWRITE);
@@ -177,7 +176,7 @@ public class YamlFileManagerTest
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
 		doNothing().when(testFileManager).doUpdate();
 		doNothing().when(testFileManager).save();
-		doReturn(-1).when(testFileManager).getVersion();
+		doReturn(new Version(0)).when(testFileManager).version();
 		YAML mockedYAML = mock(YAML.class);
 		doNothing().when(mockedYAML).set(anyString(), anyString());
 		testFileManager.update();
@@ -191,7 +190,6 @@ public class YamlFileManagerTest
 		TestUtils.setUnaccessible(yamlField, testFileManager, false);
 	}
 
-	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Test
 	public void testUpgrade() throws Exception
 	{
@@ -201,16 +199,18 @@ public class YamlFileManagerTest
 		Logger mockedLogger = mock(Logger.class);
 		doAnswer(invocationOnMock -> {
 			count[0]++;
+			System.out.println("[Warning] " + invocationOnMock.getArgument(0));
 			return null;
 		}).when(mockedLogger).warning(anyString());
 		doAnswer(invocationOnMock -> {
 			count[1]++;
+			System.out.println("[Info] " + invocationOnMock.getArgument(0));
 			return null;
 		}).when(mockedLogger).info(anyString());
 		YamlFileManager testFileManager = spy(new YamlFileManager(mockedLogger, null, 20, 15, "", null, "", null));
 		doNothing().when(testFileManager).load();
 		doNothing().when(testFileManager).save();
-		doReturn(-1).when(testFileManager).getVersion();
+		doReturn(new Version(0)).when(testFileManager).version();
 		testFileManager.upgrade();
 		assertEquals("A warning should be written out", ++warnings, count[0]);
 		assertEquals("Info should be written out on no upgrade", ++infos, count[1]);

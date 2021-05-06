@@ -294,7 +294,7 @@ public class YamlFileManager
 
 	protected void decideUpdateMode()
 	{
-		if((getVersion() < upgradeThreshold || updateMode == YamlFileUpdateMethod.UPGRADE) && !extracted)
+		if((version().olderThan(new Version(upgradeThreshold)) || updateMode == YamlFileUpdateMethod.UPGRADE) && !extracted)
 		{
 			upgrade();
 		}
@@ -306,7 +306,7 @@ public class YamlFileManager
 
 	protected void update()
 	{
-		logger.info(getFileDescriptionCapitalized() + " version: " + getVersion() + " => " + getFileDescriptionCapitalized() + " outdated! Updating ...");
+		logger.info(getFileDescriptionCapitalized() + " version: " + version() + " => " + getFileDescriptionCapitalized() + " outdated! Updating ...");
 		try
 		{
 			doUpdate();
@@ -324,11 +324,12 @@ public class YamlFileManager
 
 	protected void upgrade()
 	{
-		logger.info(getFileDescriptionCapitalized() + " version: " + getVersion() + " => " + getFileDescriptionCapitalized() + " outdated! Upgrading ...");
+		logger.info(getFileDescriptionCapitalized() + " version: " + version() + " => " + getFileDescriptionCapitalized() + " outdated! Upgrading ...");
 		try
 		{
-			int oldVersion = getVersion();
-			File oldFile = new File(yamlFile + ".old_v" + oldVersion);
+			Version oldVersion = version();
+			String oldExt = ".old_v" + ((oldVersion.toString().startsWith("v") || oldVersion.toString().startsWith("V")) ? oldVersion.toString().substring(1) : oldVersion.toString());
+			File oldFile = new File(yamlFile + oldExt);
 			if(oldFile.exists() && !oldFile.delete()) logger.warning("Failed to delete old " + getFileDescription() + " file backup!");
 			if(!yamlFile.renameTo(oldFile))
 			{
@@ -339,7 +340,7 @@ public class YamlFileManager
 			load();
 			if(isLoaded())
 			{
-				doUpgrade(new YamlFileManager(logger, baseDir, oldVersion, -1, path, file + ".old_v" + oldVersion, inJarPrefix, oldYAML));
+				doUpgrade(new YamlFileManager(logger, baseDir, oldVersion, new Version(0), path, file + oldExt, inJarPrefix, oldYAML));
 			}
 			yaml.set(KEY_YAML_VERSION, getExpectedVersion());
 			save();

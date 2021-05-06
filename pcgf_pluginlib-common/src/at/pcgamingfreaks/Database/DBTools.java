@@ -86,7 +86,7 @@ public class DBTools
 	 * @throws IllegalArgumentException If the create query is not in the right format
 	 * @throws SQLException If any handling with the database failed
 	 */
-	public static void updateDB(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition) throws IllegalArgumentException, SQLException
+	public static void updateDB(final @NotNull Connection connection, final @NotNull @Language("SQL") String tableDefinition) throws IllegalArgumentException, SQLException
 	{
 		updateDB(connection, tableDefinition, null);
 	}
