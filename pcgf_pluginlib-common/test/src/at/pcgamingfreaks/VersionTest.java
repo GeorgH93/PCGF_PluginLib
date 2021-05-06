@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -644,5 +644,19 @@ public class VersionTest
 		String versionString = "1.2-b1" + Long.MAX_VALUE;
 		Version version = new Version(versionString);
 		assertEquals("The version string should match", versionString, version.toString());
+	}
+
+	@Test
+	public void testIntVersions()
+	{
+		Version intVersion = new Version(1);
+		Version stringVersion = new Version("1");
+		assertEquals(intVersion, stringVersion);
+		intVersion = new Version(1,2);
+		stringVersion = new Version("1.2");
+		assertEquals(intVersion, stringVersion);
+		intVersion = new Version(1,2,3);
+		stringVersion = new Version("1.2.3");
+		assertEquals(intVersion, stringVersion);
 	}
 }
