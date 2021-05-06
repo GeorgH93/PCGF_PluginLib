@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ public class Language extends YamlFileManager
 	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
 	 * @param version the current version of the language file
 	 */
+	@Deprecated
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version)
 	{
 		this(logger, baseDir, version, File.separator + "lang", "");
@@ -63,6 +64,7 @@ public class Language extends YamlFileManager
 	 * @param version          The current version of the language file
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
 	 */
+	@Deprecated
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold)
 	{
 		this(logger, baseDir, version, upgradeThreshold, File.separator + "lang", "");
@@ -75,6 +77,7 @@ public class Language extends YamlFileManager
 	 * @param path    The sub-folder for the language file
 	 * @param prefix  The prefix for the language file
 	 */
+	@Deprecated
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path, @NotNull String prefix)
 	{
 		this(logger, baseDir, version, path, prefix, "");
@@ -88,6 +91,7 @@ public class Language extends YamlFileManager
 	 * @param path             The sub-folder for the language file
 	 * @param prefix           The prefix for the language file
 	 */
+	@Deprecated
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix)
 	{
 		this(logger, baseDir, version, upgradeThreshold, path, prefix, "");
@@ -101,9 +105,10 @@ public class Language extends YamlFileManager
 	 * @param prefix      the prefix for the language file
 	 * @param inJarPrefix the prefix for the language file within the jar (e.g.: bungee_)
 	 */
+	@Deprecated
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
-		this(logger, baseDir, version, -1, path, prefix, inJarPrefix);
+		this(logger, baseDir, version, 0, path, prefix, inJarPrefix);
 	}
 
 	/**
@@ -115,13 +120,86 @@ public class Language extends YamlFileManager
 	 * @param prefix           The prefix for the language file
 	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bungee_)
 	 */
+	@Deprecated
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
+	{
+		this(logger, baseDir, new Version(version), new Version(upgradeThreshold), path, prefix, inJarPrefix, null);
+	}
+	/**
+	 * @param logger  The logger instance of the plugin
+	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param version the current version of the language file
+	 */
+	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version)
+	{
+		this(logger, baseDir, version, File.separator + "lang", "");
+	}
+
+	/**
+	 * @param logger           The logger instance of the plugin
+	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 */
+	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold)
+	{
+		this(logger, baseDir, version, upgradeThreshold, File.separator + "lang", "");
+	}
+
+	/**
+	 * @param logger  The logger instance of the plugin
+	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param version The current version of the language file
+	 * @param path    The sub-folder for the language file
+	 * @param prefix  The prefix for the language file
+	 */
+	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version, @Nullable String path, @NotNull String prefix)
+	{
+		this(logger, baseDir, version, path, prefix, "");
+	}
+
+	/**
+	 * @param logger           The logger instance of the plugin
+	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 * @param path             The sub-folder for the language file
+	 * @param prefix           The prefix for the language file
+	 */
+	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold, @Nullable String path, @NotNull String prefix)
+	{
+		this(logger, baseDir, version, upgradeThreshold, path, prefix, "");
+	}
+
+	/**
+	 * @param logger      The logger instance of the plugin
+	 * @param baseDir     The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param version     the current version of the language file
+	 * @param path        the sub-folder for the language file
+	 * @param prefix      the prefix for the language file
+	 * @param inJarPrefix the prefix for the language file within the jar (e.g.: bungee_)
+	 */
+	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
+	{
+		this(logger, baseDir, version, new Version(99999), path, prefix, inJarPrefix);
+	}
+
+	/**
+	 * @param logger           The logger instance of the plugin
+	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 * @param path             The sub-folder for the language file
+	 * @param prefix           The prefix for the language file
+	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bungee_)
+	 */
+	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		this(logger, baseDir, version, upgradeThreshold, path, prefix, inJarPrefix, null);
 	}
 	//endregion
 
-	private Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix, @Nullable YAML yaml)
+	private Language(@NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix, @Nullable YAML yaml)
 	{
 		super(logger, baseDir, version, upgradeThreshold, path, prefix, "/lang/" + inJarPrefix, yaml);
 		this.prefix = prefix;
