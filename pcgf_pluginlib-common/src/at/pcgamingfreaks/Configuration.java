@@ -42,9 +42,9 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param version current version of the config
 	 */
 	@Deprecated
-	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version)
 	{
-		this(plugin, logger, baseDir, version, 99999, DEFAULT_CONFIG_FILE_NAME);
+		this(plugin, logger, baseDir, version, 0, DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -54,9 +54,9 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param path    The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	@Deprecated
-	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, final @Nullable String path)
 	{
-		this(plugin, logger, baseDir, version, 99999, path);
+		this(plugin, logger, baseDir, version, 0, path);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
 	@Deprecated
-	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, int upgradeThreshold)
 	{
 		this(plugin, logger, baseDir, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
 	}
@@ -79,7 +79,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	@Deprecated
-	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, int upgradeThreshold, final @Nullable String path)
 	{
 		this(plugin, logger, baseDir, version, upgradeThreshold, path, "");
 	}
@@ -93,7 +93,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param inJarPrefix      The prefix for the file in the jar (e.g. bungee_)
 	 */
 	@Deprecated
-	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, int upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix)
 	{
 		this(plugin, logger, baseDir, new Version(version), new Version(upgradeThreshold), path, inJarPrefix, null);
 	}
@@ -103,7 +103,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param baseDir The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
 	 * @param version current version of the config
 	 */
-	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, Version version)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version)
 	{
 		this(plugin, logger, baseDir, version, new Version(99999), DEFAULT_CONFIG_FILE_NAME);
 	}
@@ -114,7 +114,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param version The current version of the config
 	 * @param path    The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, Version version, @Nullable String path)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @Nullable String path)
 	{
 		this(plugin, logger, baseDir, version, new Version(99999), path);
 	}
@@ -125,7 +125,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param version          The current version of the config
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
-	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @NotNull Version upgradeThreshold)
 	{
 		this(plugin, logger, baseDir, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
 	}
@@ -137,7 +137,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold, @Nullable String path)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @NotNull Version upgradeThreshold, final @Nullable String path)
 	{
 		this(plugin, logger, baseDir, version, upgradeThreshold, path, "");
 	}
@@ -150,13 +150,13 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 * @param inJarPrefix      The prefix for the file in the jar (e.g. bungee_)
 	 */
-	public Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @NotNull Version upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix)
 	{
 		this(plugin, logger, baseDir, version, upgradeThreshold, path, inJarPrefix, null);
 	}
 	//endregion
 
-	private Configuration(@NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix, @Nullable YAML oldConfig)
+	private Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @NotNull Version upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix, final @Nullable YAML oldConfig)
 	{
 		super(logger, baseDir, version, upgradeThreshold, null, path, inJarPrefix, oldConfig);
 		this.plugin = plugin;
@@ -212,7 +212,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @throws YamlKeyNotFoundException When the given path could not be found in the configuration
 	 * @throws NumberFormatException When the value on the given position can't be converted to an {@link Integer}
 	 */
-	public int getInt(@NotNull String path) throws YamlKeyNotFoundException, NumberFormatException
+	public int getInt(final @NotNull String path) throws YamlKeyNotFoundException, NumberFormatException
 	{
 		return yaml.getInt(path);
 	}
@@ -224,7 +224,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param returnOnNotFound The value returned if the key was not found.
 	 * @return The {@link Integer} value from the configuration file.
 	 */
-	public int getInt(@NotNull String path, int returnOnNotFound)
+	public int getInt(final @NotNull String path, int returnOnNotFound)
 	{
 		return yaml.getInt(path, returnOnNotFound);
 	}
@@ -237,7 +237,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @throws YamlKeyNotFoundException When the given path could not be found in the configuration
 	 * @throws NumberFormatException When the value on the given position can't be converted to an {@link Double}
 	 */
-	public double getDouble(@NotNull String path) throws YamlKeyNotFoundException, NumberFormatException
+	public double getDouble(final @NotNull String path) throws YamlKeyNotFoundException, NumberFormatException
 	{
 		return yaml.getDouble(path);
 	}
@@ -249,7 +249,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param returnOnNotFound The value returned if the key was not found.
 	 * @return The {@link Double} value from the configuration file.
 	 */
-	public double getDouble(@NotNull String path, double returnOnNotFound)
+	public double getDouble(final @NotNull String path, double returnOnNotFound)
 	{
 		return yaml.getDouble(path, returnOnNotFound);
 	}
@@ -261,7 +261,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @return The {@link String} value from the configuration file.
 	 * @throws YamlKeyNotFoundException When the given path could not be found in the configuration
 	 */
-	public @NotNull String getString(@NotNull String path) throws YamlKeyNotFoundException
+	public @NotNull String getString(final @NotNull String path) throws YamlKeyNotFoundException
 	{
 		return yaml.getString(path);
 	}
@@ -274,7 +274,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @return The {@link String} value from the configuration file.
 	 */
 	@Contract("_, !null -> !null")
-	public @Nullable String getString(@NotNull String path, @Nullable String returnOnNotFound)
+	public @Nullable String getString(final @NotNull String path, final @Nullable String returnOnNotFound)
 	{
 		return yaml.getString(path, returnOnNotFound);
 	}
@@ -286,7 +286,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @return The {@link Boolean} value from the configuration file.
 	 * @throws YamlKeyNotFoundException When the given path could not be found in the configuration
 	 */
-	public boolean getBool(@NotNull String path) throws YamlKeyNotFoundException
+	public boolean getBool(final @NotNull String path) throws YamlKeyNotFoundException
 	{
 		return yaml.getBoolean(path);
 	}
@@ -298,7 +298,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param returnOnNotFound The value returned if the key was not found.
 	 * @return The {@link Boolean} value from the configuration file.
 	 */
-	public boolean getBool(@NotNull String path, boolean returnOnNotFound)
+	public boolean getBool(final @NotNull String path, boolean returnOnNotFound)
 	{
 		return yaml.getBoolean(path, returnOnNotFound);
 	}
@@ -335,7 +335,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
 	 */
-	public void set(@NotNull String path, @NotNull String value)
+	public void set(final @NotNull String path, final @NotNull String value)
 	{
 		yaml.set(path, value);
 	}
@@ -346,7 +346,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
 	 */
-	public void set(@NotNull String path, int value)
+	public void set(final @NotNull String path, final int value)
 	{
 		yaml.set(path, value);
 	}
@@ -357,7 +357,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
 	 */
-	public void set(@NotNull String path, double value)
+	public void set(final @NotNull String path, final double value)
 	{
 		yaml.set(path, value);
 	}
@@ -368,7 +368,7 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
 	 */
-	public void set(@NotNull String path, boolean value)
+	public void set(final @NotNull String path, final boolean value)
 	{
 		yaml.set(path, value);
 	}

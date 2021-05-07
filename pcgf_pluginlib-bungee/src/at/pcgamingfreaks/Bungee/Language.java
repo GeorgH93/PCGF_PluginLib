@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Bungee.Message.Message;
 import at.pcgamingfreaks.Bungee.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.Version;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -44,6 +45,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param plugin  The instance of the plugin
 	 * @param version The current version of the language file
 	 */
+	@Deprecated
 	public Language(@NotNull Plugin plugin, int version)
 	{
 		this(plugin, version, File.separator + "lang", "");
@@ -55,6 +57,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param path    The sub-folder for the language file
 	 * @param prefix  The prefix for the language file
 	 */
+	@Deprecated
 	public Language(@NotNull Plugin plugin, int version, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, path, prefix, prefix);
@@ -67,6 +70,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param prefix      The prefix for the language file
 	 * @param inJarPrefix The prefix for the language file within the jar (e.g.: bungee_)
 	 */
+	@Deprecated
 	public Language(@NotNull Plugin plugin, int version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, inJarPrefix);
@@ -78,6 +82,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param version The current version of the language file
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
 	 */
+	@Deprecated
 	public Language(@NotNull Plugin plugin, int version, int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, File.separator + "lang", "");
@@ -90,6 +95,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param path             The sub-folder for the language file
 	 * @param prefix           The prefix for the language file
 	 */
+	@Deprecated
 	public Language(@NotNull Plugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, upgradeThreshold, path, prefix, prefix);
@@ -103,7 +109,77 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param prefix           The prefix for the language file
 	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bungee_)
 	 */
+	@Deprecated
 	public Language(@NotNull Plugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
+	{
+		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, inJarPrefix);
+		this.plugin = plugin;
+	}
+
+	/**
+	 * @param plugin  The instance of the plugin
+	 * @param version The current version of the language file
+	 */
+	public Language(final @NotNull Plugin plugin, final @NotNull Version version)
+	{
+		this(plugin, version, File.separator + "lang", "");
+	}
+
+	/**
+	 * @param plugin  The instance of the plugin
+	 * @param version The current version of the language file
+	 * @param path    The sub-folder for the language file
+	 * @param prefix  The prefix for the language file
+	 */
+	public Language(final @NotNull Plugin plugin, final @NotNull Version version, final @Nullable String path, final @NotNull String prefix)
+	{
+		this(plugin, version, path, prefix, prefix);
+	}
+
+	/**
+	 * @param plugin      The instance of the plugin
+	 * @param version     The current version of the language file
+	 * @param path        The sub-folder for the language file
+	 * @param prefix      The prefix for the language file
+	 * @param inJarPrefix The prefix for the language file within the jar (e.g.: bungee_)
+	 */
+	public Language(final @NotNull Plugin plugin, final @NotNull Version version, final @Nullable String path, final @NotNull String prefix, final @NotNull String inJarPrefix)
+	{
+		super(plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, inJarPrefix);
+		this.plugin = plugin;
+	}
+
+	/**
+	 * @param plugin  The instance of the plugin
+	 * @param version The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 */
+	public Language(final @NotNull Plugin plugin, final @NotNull Version version, final @NotNull Version upgradeThreshold)
+	{
+		this(plugin, version, upgradeThreshold, File.separator + "lang", "");
+	}
+
+	/**
+	 * @param plugin           The instance of the plugin
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 * @param path             The sub-folder for the language file
+	 * @param prefix           The prefix for the language file
+	 */
+	public Language(final @NotNull Plugin plugin, final @NotNull Version version, final @NotNull Version upgradeThreshold, final @Nullable String path, @NotNull String prefix)
+	{
+		this(plugin, version, upgradeThreshold, path, prefix, prefix);
+	}
+
+	/**
+	 * @param plugin           The instance of the plugin
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 * @param path             The sub-folder for the language file
+	 * @param prefix           The prefix for the language file
+	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bungee_)
+	 */
+	public Language(final @NotNull Plugin plugin, final @NotNull Version version, final @NotNull Version upgradeThreshold, final @Nullable String path, final @NotNull String prefix, final @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, inJarPrefix);
 		this.plugin = plugin;

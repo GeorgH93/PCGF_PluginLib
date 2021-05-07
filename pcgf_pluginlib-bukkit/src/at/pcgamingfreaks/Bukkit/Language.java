@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bukkit;
 import at.pcgamingfreaks.Bukkit.Message.Message;
 import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.Version;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -40,9 +41,10 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param plugin  The instance of the plugin
 	 * @param version The current version of the language file
 	 */
+	@Deprecated
 	public Language(@NotNull JavaPlugin plugin, int version)
 	{
-		this(plugin, version, -1);
+		this(plugin, version, 0);
 	}
 
 	/**
@@ -51,9 +53,10 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param path    The sub-folder for the language file
 	 * @param prefix  The prefix for the language file
 	 */
+	@Deprecated
 	public Language(@NotNull JavaPlugin plugin, int version, @Nullable String path, @NotNull String prefix)
 	{
-		this(plugin, version, -1, path, prefix, prefix);
+		this(plugin, version, 0, path, prefix, prefix);
 	}
 
 	/**
@@ -61,6 +64,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param version          The current version of the language file
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
 	 */
+	@Deprecated
 	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, File.separator + "lang", "");
@@ -73,6 +77,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param path             The sub-folder for the language file
 	 * @param prefix           The prefix for the language file
 	 */
+	@Deprecated
 	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, upgradeThreshold, path, prefix, prefix);
@@ -86,7 +91,64 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param prefix           The prefix for the language file
 	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bukkit_)
 	 */
+	@Deprecated
 	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
+	{
+		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, inJarPrefix);
+		this.plugin = plugin;
+	}
+
+	/**
+	 * @param plugin  The instance of the plugin
+	 * @param version The current version of the language file
+	 */
+	public Language(@NotNull JavaPlugin plugin, Version version)
+	{
+		this(plugin, version, new Version(99999));
+	}
+
+	/**
+	 * @param plugin  The instance of the plugin
+	 * @param version The current version of the language file
+	 * @param path    The sub-folder for the language file
+	 * @param prefix  The prefix for the language file
+	 */
+	public Language(@NotNull JavaPlugin plugin, Version version, @Nullable String path, @NotNull String prefix)
+	{
+		this(plugin, version, new Version(99999), path, prefix, prefix);
+	}
+
+	/**
+	 * @param plugin           The instance of the plugin
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 */
+	public Language(@NotNull JavaPlugin plugin, Version version, Version upgradeThreshold)
+	{
+		this(plugin, version, upgradeThreshold, File.separator + "lang", "");
+	}
+
+	/**
+	 * @param plugin           The instance of the plugin
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 * @param path             The sub-folder for the language file
+	 * @param prefix           The prefix for the language file
+	 */
+	public Language(@NotNull JavaPlugin plugin, Version version, Version upgradeThreshold, @Nullable String path, @NotNull String prefix)
+	{
+		this(plugin, version, upgradeThreshold, path, prefix, prefix);
+	}
+
+	/**
+	 * @param plugin           The instance of the plugin
+	 * @param version          The current version of the language file
+	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
+	 * @param path             The sub-folder for the language file
+	 * @param prefix           The prefix for the language file
+	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bukkit_)
+	 */
+	public Language(@NotNull JavaPlugin plugin, Version version, Version upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, inJarPrefix);
 		this.plugin = plugin;

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,17 +19,19 @@ package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.Configuration;
 import at.pcgamingfreaks.Updater.IUpdateConfiguration;
+import at.pcgamingfreaks.Version;
 import at.pcgamingfreaks.YamlFileUpdateMethod;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
 final class Config extends Configuration implements IUpdateConfiguration
 {
-	public Config(JavaPlugin plugin, int version)
+	public Config(final @NotNull JavaPlugin plugin, final int version)
 	{
-		super(plugin, version);
+		super(plugin, new Version(version));
 		languageKey = "Language.Language";
 		languageUpdateKey = "Language.UpdateMode";
 	}

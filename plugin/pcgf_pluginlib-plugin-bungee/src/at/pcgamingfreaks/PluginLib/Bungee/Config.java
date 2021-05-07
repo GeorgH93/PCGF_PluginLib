@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package at.pcgamingfreaks.PluginLib.Bungee;
 
 import at.pcgamingfreaks.Bungee.Configuration;
 import at.pcgamingfreaks.Updater.IUpdateConfiguration;
+import at.pcgamingfreaks.Version;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -26,8 +27,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Config extends Configuration implements IUpdateConfiguration
 {
-	public Config(@NotNull Plugin plugin, int version)
+	public Config(final @NotNull Plugin plugin, final int version)
 	{
-		super(plugin, version);
+		super(plugin, new Version(version));
 	}
 }

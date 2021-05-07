@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Bungee;
 
+import at.pcgamingfreaks.Version;
+
 import net.md_5.bungee.api.plugin.Plugin;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,9 +33,10 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param plugin  the instance of the plugin
 	 * @param version current version of the config
 	 */
-	public Configuration(@NotNull Plugin plugin, int version)
+	@Deprecated
+	public Configuration(final @NotNull Plugin plugin, final int version)
 	{
-		this(plugin, version, -1, DEFAULT_CONFIG_FILE_NAME);
+		this(plugin, version, 0, DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -41,9 +44,10 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param version current version of the config
 	 * @param path    the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(@NotNull Plugin plugin, int version, @Nullable String path)
+	@Deprecated
+	public Configuration(final @NotNull Plugin plugin, final int version, final @Nullable String path)
 	{
-		this(plugin, version, -1, path);
+		this(plugin, version, 0, path);
 	}
 
 	/**
@@ -51,7 +55,8 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param version          current version of the config
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
-	public Configuration(@NotNull Plugin plugin, int version, int upgradeThreshold)
+	@Deprecated
+	public Configuration(final @NotNull Plugin plugin, final int version, final int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
 	}
@@ -62,7 +67,8 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	public Configuration(@NotNull Plugin plugin, int version, int upgradeThreshold, @Nullable String path)
+	@Deprecated
+	public Configuration(final @NotNull Plugin plugin, final int version, final int upgradeThreshold, final @Nullable String path)
 	{
 		this(plugin, version, upgradeThreshold, path, DEFAULT_BUNGEE_CORD_PREFIX);
 	}
@@ -74,9 +80,41 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 * @param inJarPrefix      the prefix for the config file within the jar (e.g.: bungee_)
 	 */
-	public Configuration(@NotNull Plugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String inJarPrefix)
+	@Deprecated
+	public Configuration(final @NotNull Plugin plugin, final int version, final int upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix)
 	{
 		super(plugin, plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, inJarPrefix);
+		this.plugin = plugin;
+	}
+
+	/**
+	 * @param plugin  the instance of the plugin
+	 * @param version current version of the config
+	 */
+	public Configuration(final @NotNull Plugin plugin, final @NotNull Version version)
+	{
+		this(plugin, version, DEFAULT_CONFIG_FILE_NAME);
+	}
+
+	/**
+	 * @param plugin           the instance of the plugin
+	 * @param version          current version of the config
+	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 */
+	public Configuration(final @NotNull Plugin plugin, final @NotNull Version version, final @Nullable String path)
+	{
+		this(plugin, version, path, DEFAULT_BUNGEE_CORD_PREFIX);
+	}
+
+	/**
+	 * @param plugin           the instance of the plugin
+	 * @param version          current version of the config
+	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 * @param inJarPrefix      the prefix for the config file within the jar (e.g.: bungee_)
+	 */
+	public Configuration(final @NotNull Plugin plugin, final @NotNull Version version, final @Nullable String path, final @NotNull String inJarPrefix)
+	{
+		super(plugin, plugin.getLogger(), plugin.getDataFolder(), version, new Version(99999), path, inJarPrefix);
 		this.plugin = plugin;
 	}
 }
