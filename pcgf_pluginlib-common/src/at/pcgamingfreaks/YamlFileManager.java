@@ -75,7 +75,7 @@ public class YamlFileManager
 		return logger;
 	}
 
-	protected @NotNull YamlFileUpdateMethod getYamlUpdateMode()
+	protected @Nullable YamlFileUpdateMethod getYamlUpdateMode()
 	{
 		return updateMode;
 	}
@@ -274,33 +274,23 @@ public class YamlFileManager
 			{
 				logger.warning(ConsoleColor.YELLOW + "The " + getFileDescription() + " file (" + file + ") is outdated in the jar!" + ConsoleColor.RESET);
 			}
-			if(updateMode == YamlFileUpdateMethod.OVERWRITE && !extracted)
+			switch(decideYamlUpdateMode())
 			{
-				extractFile();
-				load();
-				logger.info(ConsoleColor.GREEN + "Successful updated " + getFileDescription() + " file." + ConsoleColor.RESET);
-			}
-			else
-			{
-				decideUpdateMode();
+				case OVERWRITE:
+					extractFile();
+					load();
+					logger.info(ConsoleColor.GREEN + "Successful updated " + getFileDescription() + " file." + ConsoleColor.RESET);
+					break;
+				case UPDATE:
+					update();
+				case UPGRADE:
+					upgrade();
 			}
 		}
 		else
 		{
 			if(getExpectedVersion().olderThan(version())) logger.info(getFileDescriptionCapitalized() + " file version newer than expected! Expected: " + getExpectedVersion() + " Is: " + version());
 			loaded();
-		}
-	}
-
-	protected void decideUpdateMode()
-	{
-		if((version().olderThan(new Version(upgradeThreshold)) || updateMode == YamlFileUpdateMethod.UPGRADE) && !extracted)
-		{
-			upgrade();
-		}
-		else
-		{
-			update();
 		}
 	}
 
@@ -352,6 +342,14 @@ public class YamlFileManager
 			e.printStackTrace();
 			yaml = null;
 		}
+	}
+
+	protected @NotNull YamlFileUpdateMethod decideYamlUpdateMode()
+	{
+		if(extracted) return YamlFileUpdateMethod.UPDATE;
+		if(getYamlUpdateMode() != null) return updateMode;
+		if(version().olderThan(new Version(upgradeThreshold))) return YamlFileUpdateMethod.UPGRADE;
+		return YamlFileUpdateMethod.UPDATE;
 	}
 
 	protected void extractFile()

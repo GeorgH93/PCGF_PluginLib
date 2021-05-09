@@ -324,16 +324,12 @@ public class Language extends YamlFileManager
 		extracted = true;
 	}
 
-	protected void decideUpdateMode()
+	protected @NotNull YamlFileUpdateMethod decideYamlUpdateMode()
 	{
-		if((getVersion() < upgradeThreshold || updateMode == YamlFileUpdateMethod.UPGRADE) && !extractedFallback)
-		{
-			upgrade();
-		}
-		else
-		{
-			update();
-		}
+		if(extractedFallback) return YamlFileUpdateMethod.UPDATE;
+		if(getYamlUpdateMode() != null) return updateMode;
+		if(version().olderThan(new Version(upgradeThreshold))) return YamlFileUpdateMethod.UPGRADE;
+		return YamlFileUpdateMethod.UPDATE;
 	}
 
 	/**
