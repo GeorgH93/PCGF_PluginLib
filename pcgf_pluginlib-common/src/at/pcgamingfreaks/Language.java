@@ -342,7 +342,7 @@ public class Language extends YamlFileManager
 	@Override
 	protected void doUpgrade(@NotNull YamlFileManager oldYamlFile)
 	{
-		logger.info("No custom " + fileDescription + " upgrade code. Copying data from old file to new one.");
+		logger.info("No custom " + getFileDescription() + " upgrade code. Copying data from old file to new one.");
 		for(String key : yaml.getKeys())
 		{
 			if(oldYamlFile.yaml.isSet(key))
@@ -481,7 +481,7 @@ public class Language extends YamlFileManager
 	protected void loaded()
 	{
 		String author = getAuthor().equals("Unknown") ? "" : "  Author: " + getAuthor();
-		logger.info(ConsoleColor.GREEN + fileDescriptionCapitalized + " file successfully loaded. Language: " + getLanguage() + author + ConsoleColor.RESET);
+		logger.info(ConsoleColor.GREEN + getFileDescriptionCapitalized() + " file successfully loaded. Language: " + getLanguage() + author + ConsoleColor.RESET);
 	}
 
 
