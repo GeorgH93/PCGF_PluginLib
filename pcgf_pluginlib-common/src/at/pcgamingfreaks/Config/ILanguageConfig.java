@@ -15,24 +15,42 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks;
+package at.pcgamingfreaks.Config;
+
+import at.pcgamingfreaks.LanguageConfiguration;
+import at.pcgamingfreaks.YamlFileUpdateMethod;
 
 import org.jetbrains.annotations.NotNull;
 
-@Deprecated
-public interface LanguageConfiguration
+public interface ILanguageConfig extends LanguageConfiguration, IConfig
 {
+	default @NotNull String getLanguageKey()
+	{
+		return "Language.Language";
+	}
+
+	default @NotNull String getLanguageUpdateModeKey()
+	{
+		return "Language.UpdateMode";
+	}
+
 	/**
 	 * Gets the language to use, defined in the configuration.
 	 *
 	 * @return The language to use.
 	 */
-	@NotNull String getLanguage();
+	default @NotNull String getLanguage()
+	{
+		return getConfigE().getString(getLanguageKey(), "en");
+	}
 
 	/**
 	 * Gets how the language file should be updated, defined in the configuration.
 	 *
 	 * @return The update method for the language file.
 	 */
-	@NotNull YamlFileUpdateMethod getLanguageUpdateMode();
+	default @NotNull YamlFileUpdateMethod getLanguageUpdateMode()
+	{
+		return YamlFileUpdateMethod.fromString(getConfigE().getString(getLanguageUpdateModeKey(), "upgrade"));
+	}
 }

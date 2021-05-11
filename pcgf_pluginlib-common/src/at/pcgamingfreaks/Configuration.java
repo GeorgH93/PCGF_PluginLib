@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks;
 
+import at.pcgamingfreaks.Config.ILanguageConfig;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
@@ -28,11 +29,23 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.logging.Logger;
 
-public class Configuration extends YamlFileManager implements LanguageConfiguration
+public class Configuration extends YamlFileManager implements ILanguageConfig
 {
 	protected static final String DEFAULT_CONFIG_FILE_NAME = "config" + YAML_FILE_EXT;
 	private final Object plugin;
-	protected String languageKey = "Language", languageUpdateKey = "LanguageUpdateMode"; // Allow to change the keys for the language and the language update mode setting
+	@Deprecated protected String languageKey = "Language", languageUpdateKey = "LanguageUpdateMode"; // Allow to change the keys for the language and the language update mode setting
+
+	@Override
+	public @NotNull String getLanguageKey()
+	{
+		return languageKey;
+	}
+
+	@Override
+	public @NotNull String getLanguageUpdateModeKey()
+	{
+		return languageUpdateKey;
+	}
 
 	//region constructors
 	//region alternative constructors
@@ -309,8 +322,10 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * Gets the language to use, defined in the configuration.
 	 *
 	 * @return The language to use.
+	 * @deprecated implement {@link ILanguageConfig} instead in your config handler
 	 */
 	@Override
+	@Deprecated
 	public @NotNull String getLanguage()
 	{
 		return yaml.getString(languageKey, "en");
@@ -320,8 +335,10 @@ public class Configuration extends YamlFileManager implements LanguageConfigurat
 	 * Gets how the language file should be updated, defined in the configuration.
 	 *
 	 * @return The update method for the language file.
+	 * @deprecated implement {@link ILanguageConfig} instead in your config handler
 	 */
 	@Override
+	@Deprecated
 	public @NotNull YamlFileUpdateMethod getLanguageUpdateMode()
 	{
 		return YamlFileUpdateMethod.fromString(yaml.getString(languageUpdateKey, "upgrade"));
