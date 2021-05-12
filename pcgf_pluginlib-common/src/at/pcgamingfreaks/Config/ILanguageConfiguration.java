@@ -22,7 +22,7 @@ import at.pcgamingfreaks.YamlFileUpdateMethod;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface ILanguageConfig extends LanguageConfiguration, IConfig
+public interface ILanguageConfiguration extends LanguageConfiguration, IConfig
 {
 	default @NotNull String getLanguageKey()
 	{

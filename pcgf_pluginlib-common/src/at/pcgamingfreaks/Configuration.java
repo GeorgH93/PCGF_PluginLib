@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks;
 
-import at.pcgamingfreaks.Config.ILanguageConfig;
+import at.pcgamingfreaks.Config.ILanguageConfiguration;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.logging.Logger;
 
-public class Configuration extends YamlFileManager implements ILanguageConfig
+public class Configuration extends YamlFileManager implements ILanguageConfiguration
 {
 	protected static final String DEFAULT_CONFIG_FILE_NAME = "config" + YAML_FILE_EXT;
 	private final Object plugin;
@@ -322,7 +322,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfig
 	 * Gets the language to use, defined in the configuration.
 	 *
 	 * @return The language to use.
-	 * @deprecated implement {@link ILanguageConfig} instead in your config handler
+	 * @deprecated implement {@link ILanguageConfiguration} instead in your config handler
 	 */
 	@Override
 	@Deprecated
@@ -335,7 +335,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfig
 	 * Gets how the language file should be updated, defined in the configuration.
 	 *
 	 * @return The update method for the language file.
-	 * @deprecated implement {@link ILanguageConfig} instead in your config handler
+	 * @deprecated implement {@link ILanguageConfiguration} instead in your config handler
 	 */
 	@Override
 	@Deprecated

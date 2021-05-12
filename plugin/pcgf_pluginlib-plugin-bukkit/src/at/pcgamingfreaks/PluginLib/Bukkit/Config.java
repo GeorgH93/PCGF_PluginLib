@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.Configuration;
+import at.pcgamingfreaks.Config.ILanguageConfiguration;
 import at.pcgamingfreaks.Updater.IUpdateConfiguration;
 import at.pcgamingfreaks.Version;
 import at.pcgamingfreaks.YamlFileUpdateMethod;
@@ -27,13 +28,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-final class Config extends Configuration implements IUpdateConfiguration
+final class Config extends Configuration implements IUpdateConfiguration, ILanguageConfiguration
 {
 	public Config(final @NotNull JavaPlugin plugin, final int version)
 	{
 		super(plugin, new Version(version));
-		languageKey = "Language.Language";
-		languageUpdateKey = "Language.UpdateMode";
+	}
+
+	@Override
+	public @NotNull String getLanguageKey()
+	{
+		return "Language.Language";
+	}
+
+	@Override
+	public @NotNull String getLanguageUpdateModeKey()
+	{
+		return "Language.UpdateMode";
 	}
 
 	public YamlFileUpdateMethod getItemLangUpdateMode()
