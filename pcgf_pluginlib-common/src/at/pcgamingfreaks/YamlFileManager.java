@@ -273,18 +273,24 @@ public class YamlFileManager
 			if(extracted)
 			{
 				logger.warning(ConsoleColor.YELLOW + "The " + getFileDescription() + " file (" + file + ") is outdated in the jar!" + ConsoleColor.RESET);
+				update();
 			}
-			switch(decideYamlUpdateMode())
+			else
 			{
-				case OVERWRITE:
-					extractFile();
-					load();
-					logger.info(ConsoleColor.GREEN + "Successful updated " + getFileDescription() + " file." + ConsoleColor.RESET);
-					break;
-				case UPDATE:
-					update();
-				case UPGRADE:
-					upgrade();
+				switch(decideYamlUpdateMode())
+				{
+					case OVERWRITE:
+						extractFile();
+						load();
+						logger.info(ConsoleColor.GREEN + "Successful updated " + getFileDescription() + " file." + ConsoleColor.RESET);
+						break;
+					case UPDATE:
+						update();
+						break;
+					case UPGRADE:
+						upgrade();
+						break;
+				}
 			}
 		}
 		else
