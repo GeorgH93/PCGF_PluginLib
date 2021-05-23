@@ -46,7 +46,7 @@ public class YamlFileManager
 	protected String file;
 	protected YAML yaml; // The object holding the parsed content of the yaml file
 	protected File yamlFile; // The loaded yaml file
-	@Deprecated protected YamlFileUpdateMethod updateMode = YamlFileUpdateMethod.UPDATE; // Defines the update behavior for yaml files
+	@Deprecated protected YamlFileUpdateMethod updateMode = null; // Defines the update behavior for yaml files
 	@Getter protected String fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
 
 	YamlFileManager(final @NotNull Logger logger, final @NotNull File baseDir, final int version, final int upgradeThreshold, final @Nullable String path,
@@ -353,7 +353,7 @@ public class YamlFileManager
 	protected @NotNull YamlFileUpdateMethod decideYamlUpdateMode()
 	{
 		if(extracted) return YamlFileUpdateMethod.UPDATE;
-		if(getYamlUpdateMode() != null) return updateMode;
+		if(getYamlUpdateMode() != null) return getYamlUpdateMode();
 		if(version().olderThan(new Version(upgradeThreshold))) return YamlFileUpdateMethod.UPGRADE;
 		return YamlFileUpdateMethod.UPDATE;
 	}
