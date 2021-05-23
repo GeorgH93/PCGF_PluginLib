@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -421,7 +421,8 @@ public abstract class SQLTableValidator
 									}
 									else if(tempKeyMatcher.group(7) != null)
 									{
-										update = true;
+										if(!(tempKeyMatcher.group(7).equalsIgnoreCase("RESTRICT") || tempKeyMatcher.group(7).equalsIgnoreCase("NO ACTION")))
+											update = true;
 									}
 									if(currentMatcher.group(9) != null)
 									{

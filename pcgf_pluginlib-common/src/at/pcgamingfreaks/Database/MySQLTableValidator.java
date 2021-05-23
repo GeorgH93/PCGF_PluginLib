@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -111,8 +111,9 @@ public class MySQLTableValidator extends SQLTableValidator
 	{
 		try(Statement statement = connection.createStatement())
 		{
-			statement.executeUpdate("ALTER TABLE " + tableName + " DROP FOREIGN KEY `" + columnName + "`,  ADD CONSTRAINT `" + columnName + "` FOREIGN KEY (" + foreignKey + ") REFERENCES " + references);
+			statement.executeUpdate("ALTER TABLE " + tableName + " DROP FOREIGN KEY `" + columnName + "`");
 		}
+		addConstraint(connection, tableName, columnName, foreignKey, references);
 	}
 
 	@Override
