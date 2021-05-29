@@ -327,7 +327,7 @@ public class Language extends YamlFileManager
 	protected @NotNull YamlFileUpdateMethod decideYamlUpdateMode()
 	{
 		if(extractedFallback) return YamlFileUpdateMethod.UPDATE;
-		if(getYamlUpdateMode() != null) return updateMode;
+		if(getYamlUpdateMode() != null) return getYamlUpdateMode();
 		if(version().olderThan(new Version(upgradeThreshold))) return YamlFileUpdateMethod.UPGRADE;
 		return YamlFileUpdateMethod.UPDATE;
 	}
