@@ -182,7 +182,14 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 		return args;
 	}
 
-	protected @NotNull String prepareMessage(final boolean useJson, final @Nullable Object... args)
+	/**
+	 * Fills the placeholders in the message and returns it.
+	 *
+	 * @param useJson Weather the json or the legacy message should be used. true = JSON
+	 * @param args The arguments that should be used to fill the placeholders
+	 * @return The message with the filled placeholders
+	 */
+	public @NotNull String prepareMessage(final boolean useJson, final @Nullable Object... args)
 	{
 		final String msg = useJson ? json : fallback;
 		if(args != null && args.length > 0)

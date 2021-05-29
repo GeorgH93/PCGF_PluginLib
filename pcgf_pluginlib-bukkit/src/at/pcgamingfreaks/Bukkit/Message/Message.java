@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bukkit.Message;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Sender.BossBarMetadata;
 import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
+import at.pcgamingfreaks.Bukkit.Util.IUtils;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.TitleMetadata;
@@ -373,5 +374,30 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
 			sendMethod.broadcast(jsonMsg, optionalParameters);
 		}
+	}
+
+	/**
+	 * Fills the placeholders in the message and returns it.
+	 * The message will be returned as a legacy formatted message.
+	 *
+	 * @param args The arguments that should be used to fill the placeholders
+	 * @return The message with the filled placeholders
+	 */
+	public @NotNull String prepareChatLegacy(@Nullable Object... args)
+	{
+		return prepareMessage(false, args);
+	}
+
+	/**
+	 * Fills the placeholders in the message and returns it.
+	 * The message will be returned as an NMS ChatComponent that can be used with most NMS functions.
+	 *
+	 * @param args The arguments that should be used to fill the placeholders
+	 * @return The message with the filled placeholders
+	 */
+	public @NotNull Object prepareChatComponent(@Nullable Object... args)
+	{
+		String json = prepareMessage(true, args);
+		return IUtils.INSTANCE.jsonToIChatComponent(json);
 	}
 }
