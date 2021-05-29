@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -54,11 +54,21 @@ final class LegacyMessageParser
 					append();
 					processFormatting(formatChar);
 				}
-				else if((formatChar == 'x' || formatChar == 'X') && i + 12 < legacyMessage.length() && (rgbCode = toColorString(legacyMessage.substring(i + 1, i + 13))) != null) // handle rgb colors
+				else if(formatChar == 'x' || formatChar == 'X') // handle rgb colors
 				{
-					i += 12;
-					append();
-					color = MessageColor.valueOf(rgbCode);
+					if(i + 12 < legacyMessage.length() && (rgbCode = toColorString(legacyMessage.substring(i + 1, i + 13))) != null)
+					{
+						i += 12;
+						append();
+						color = MessageColor.valueOf(rgbCode);
+					}
+					else if(i + 6 < legacyMessage.length() && (rgbCode = toColorString(legacyMessage.substring(i + 1, i + 7))) != null)
+					{
+						i += 6;
+						append();
+						color = MessageColor.valueOf(rgbCode);
+					}
+					else wordBuilder.append(c).append(formatChar);
 				}
 				else wordBuilder.append(c).append(formatChar);
 			}
@@ -83,7 +93,11 @@ final class LegacyMessageParser
 
 	private @Nullable String toColorString(final @NotNull String legacyRGB)
 	{
-		if(legacyRGB.matches("(" + MessageColor.COLOR_CHAR + "[\\da-fA-F]){6}"))
+		if(legacyRGB.length() == 12 && legacyRGB.matches("(" + MessageColor.COLOR_CHAR + "[\\da-fA-F]){6}"))
+		{
+			return '#' + legacyRGB.replaceAll(MessageColor.COLOR_CHAR + "", "");
+		}
+		else if(legacyRGB.length() == 6 && legacyRGB.matches("[\\da-fA-F]{6}"))
 		{
 			return '#' + legacyRGB.replaceAll(MessageColor.COLOR_CHAR + "", "");
 		}

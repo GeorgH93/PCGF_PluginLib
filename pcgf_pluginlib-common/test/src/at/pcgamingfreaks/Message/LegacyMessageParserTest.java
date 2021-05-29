@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -51,6 +51,16 @@ public class LegacyMessageParserTest
 		TestMessageBuilder builder = new TestMessageBuilder();
 		LegacyMessageParser parser = new LegacyMessageParser(builder);
 		parser.parse(MessageColor.getColor("#123456") + "Test message");
+		assertEquals("[\"\",{\"text\":\"Test message\",\"color\":\"#123456\"}]", builder.getJson());
+		builder.clear();
+	}
+
+	@Test
+	public void testParseShortRGB()
+	{
+		TestMessageBuilder builder = new TestMessageBuilder();
+		LegacyMessageParser parser = new LegacyMessageParser(builder);
+		parser.parse(MessageColor.translateAlternateColorCodes("&x123456") + "Test message");
 		assertEquals("[\"\",{\"text\":\"Test message\",\"color\":\"#123456\"}]", builder.getJson());
 		builder.clear();
 	}
