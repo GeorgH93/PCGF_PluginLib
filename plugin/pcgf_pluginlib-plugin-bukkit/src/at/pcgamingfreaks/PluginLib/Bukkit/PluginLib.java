@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import at.pcgamingfreaks.Bukkit.ItemNameResolver;
 import at.pcgamingfreaks.Bukkit.Language;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.ManagedUpdater;
+import at.pcgamingfreaks.Bukkit.Message.Message;
 import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.ConsoleColor;
@@ -53,6 +54,12 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary
 	@Getter private Version version;
 	@Getter private DatabaseConnectionPoolBase databaseConnectionPool;
 	@Getter private ItemNameResolver itemNameResolver;
+
+	@Override
+	public void onLoad()
+	{
+		new Message(""); // Prefetch message class
+	}
 
 	@Override
 	public void onEnable()
