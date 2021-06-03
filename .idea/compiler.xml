@@ -15,7 +15,6 @@
         <module name="pcgf_pluginlib-plugin-common" />
         <module name="PluginLib" />
         <module name="pcgf_pluginlib-plugin" />
-        <module name="pcgf_pluginlib-reflection" />
         <module name="pcgf_pluginlib-plugin-bukkit" />
         <module name="pcgf_pluginlib-reflection-nms" />
         <module name="pcgf_pluginlib-platform-nms-1_15_R1" />

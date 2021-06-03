@@ -21,11 +21,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This class provides some useful methods around strings as well as some useful strings (and char arrays) as well as regex pattern
@@ -261,6 +260,26 @@ public class StringUtils
 	public static @NotNull String getErrorMessage(final @NotNull Throwable e)
 	{
 		return e.getClass().getName() + ": " + e.getMessage();
+	}
+
+	public static List<String> startsWith(String[] strings, String prefix)
+	{
+		return startsWith(Arrays.asList(strings), prefix);
+	}
+
+	public static List<String> startsWith(Collection<String> strings, String prefix)
+	{
+		return strings.stream().filter(s -> s.startsWith(prefix)).collect(Collectors.toList());
+	}
+
+	public static List<String> startsWithIgnoreCase(String[] strings, String prefix)
+	{
+		return startsWithIgnoreCase(Arrays.asList(strings), prefix);
+	}
+
+	public static List<String> startsWithIgnoreCase(Collection<String> strings, String prefix)
+	{
+		return strings.stream().filter(s -> s.toLowerCase(Locale.ENGLISH).startsWith(prefix.toLowerCase(Locale.ENGLISH))).collect(Collectors.toList());
 	}
 
 	//region Enabled / Disabled messages
