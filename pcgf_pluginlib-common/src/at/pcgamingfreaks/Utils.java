@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -306,5 +307,18 @@ public class Utils
 		{
 			return null;
 		}
+	}
+
+	public static <T extends Enum<T>> T getEnum(String valueName, T defaultValue)
+	{
+		T v = null;
+		try
+		{
+			//noinspection unchecked
+			v = (T) T.valueOf(defaultValue.getClass(), valueName.toUpperCase(Locale.ENGLISH));
+		}
+		catch(Exception ignored) {}
+		if(v == null) v = defaultValue;
+		return v;
 	}
 }
