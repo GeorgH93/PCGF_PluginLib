@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Util;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
+import at.pcgamingfreaks.Bukkit.Message.Message;
 import at.pcgamingfreaks.Bukkit.PlatformResolver;
 
 import org.bukkit.Location;
@@ -219,6 +220,18 @@ public class InventoryUtils
 	 *
 	 * @param player The player for whom the inventory should be opened.
 	 * @param inventory The inventory that should be opened.
+	 * @param title The title of the inventory that should be used on the client.
+	 */
+	public static void openInventoryWithCustomTitle(final @NotNull Player player, final @NotNull Inventory inventory, final  @NotNull Message title, final Object... args)
+	{
+		INSTANCE.openInventoryWithCustomTitlePrepared(player, inventory, prepareTitleForOpenInventoryWithCustomTitle(title, args));
+	}
+
+	/**
+	 * Opens an inventory for a player with a different title than was sued when creating the inventory.
+	 *
+	 * @param player The player for whom the inventory should be opened.
+	 * @param inventory The inventory that should be opened.
 	 * @param title The title of the inventory that should be used on the client. <b>Must have been generated with the {@link InventoryUtils#prepareTitleForOpenInventoryWithCustomTitle(String)} method!</b>
 	 */
 	public static void openInventoryWithCustomTitlePrepared(final @NotNull Player player, final @NotNull Inventory inventory, final  @NotNull Object title)
@@ -235,6 +248,25 @@ public class InventoryUtils
 	public static Object prepareTitleForOpenInventoryWithCustomTitle(final @NotNull String title)
 	{
 		return INSTANCE.prepareTitleForOpenInventoryWithCustomTitle(title);
+	}
+
+	/**
+	 * Prepares a title to be used with the {@link InventoryUtils#openInventoryWithCustomTitlePrepared(Player, Inventory, Object)} method.
+	 *
+	 * @param title The title that should be prepared.
+	 * @param args The values that should be used to fill the placeholders of the title.
+	 * @return The prepared title.
+	 */
+	public static Object prepareTitleForOpenInventoryWithCustomTitle(final @NotNull Message title, final Object... args)
+	{
+		if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_16))
+		{
+			return title.prepareChatComponent(args);
+		}
+		else
+		{
+			return prepareTitleForOpenInventoryWithCustomTitle(title.prepareChatLegacy(args));
+		}
 	}
 
 	/**
