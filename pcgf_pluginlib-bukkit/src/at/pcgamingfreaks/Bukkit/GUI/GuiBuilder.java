@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Bukkit.GUI.Navigation.CompactNavigationStyleProducer;
 import at.pcgamingfreaks.Bukkit.GUI.Navigation.DefaultNavigationStyleProducer;
 import at.pcgamingfreaks.Bukkit.GUI.Navigation.INavigationStyleProducer;
 import at.pcgamingfreaks.Bukkit.GUI.Navigation.PagesOnlyNavigationStyleProducer;
+import at.pcgamingfreaks.Bukkit.Message.Message;
 
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -35,22 +36,31 @@ import java.util.List;
 
 public class GuiBuilder
 {
-	private final  @NotNull List<GuiButton> buttons;
+	private final @NotNull List<GuiButton> buttons = new ArrayList<>();
 	@Getter private int minRowsPerPage = 1, maxRowsPerPage = 6;
-	@Getter @Setter private @NotNull String title, multiPageTitleFormat;
+	@Getter @Setter private @NotNull Message title, multiPageTitleFormat;
 	@Getter @Setter private @NotNull INavigationStyleProducer navigationStyleProducer = new DefaultNavigationStyleProducer();
 
 	public GuiBuilder(final @NotNull String title)
 	{
+		this(new Message(title));
+	}
+
+	public GuiBuilder(final @NotNull String title, final @Nullable String multiPageTitleFormat)
+	{
+		this(new Message(title), multiPageTitleFormat != null ? new Message(multiPageTitleFormat) : null);
+	}
+
+	public GuiBuilder(final @NotNull Message title)
+	{
 		this(title, title);
 	}
 
-	public GuiBuilder(final @NotNull String title, @Nullable String multiPageTitleFormat)
+	public GuiBuilder(final @NotNull Message title, @Nullable Message multiPageTitleFormat)
 	{
 		this.title = title;
 		if(multiPageTitleFormat == null) multiPageTitleFormat = title;
 		this.multiPageTitleFormat = multiPageTitleFormat.replaceAll("\\{PageNr}", "%d");
-		buttons = new ArrayList<>();
 	}
 
 	public void setMinRowsPerPage(int rows)

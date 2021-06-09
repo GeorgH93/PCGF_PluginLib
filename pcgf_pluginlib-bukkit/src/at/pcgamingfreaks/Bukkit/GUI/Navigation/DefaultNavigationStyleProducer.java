@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ public class DefaultNavigationStyleProducer extends INavigationStyleProducer
 		for(int i = 0; i < pageCount; i++)
 		{
 			// add controls
-			final MultiPageGuiPage page = pages[i] = new MultiPageGuiPage(String.format(builder.getMultiPageTitleFormat(), i + 1), builder.getMaxRowsPerPage());
+			final MultiPageGuiPage page = pages[i] = new MultiPageGuiPage(builder.getMultiPageTitleFormat(), builder.getMaxRowsPerPage(), i + 1);
 			page.setButton(slot, navigationButtonProducer.producePreviousButton(gui, i + 1, pageCount));
 			page.setButton(slot + 8, navigationButtonProducer.produceNextButton(gui, i + 1, pageCount));
 			if(pageCount > 7)

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,9 @@
 
 package at.pcgamingfreaks.Bukkit.GUI;
 
+import at.pcgamingfreaks.Bukkit.Message.Message;
+import at.pcgamingfreaks.Bukkit.Util.InventoryUtils;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -30,12 +33,19 @@ public class SimpleGui implements IGui
 {
 	@Getter private final Inventory inventory;
 	private final GuiButton[] buttons;
+	private final Object preparedTitle;
 
 	public SimpleGui(String title, int rows)
 	{
+		this(new Message(title), rows);
+	}
+
+	public SimpleGui(Message title, int rows, Object... args)
+	{
 		assert rows > 0 && rows <= 7;
-		inventory = Bukkit.createInventory(this, rows * 9, title);
+		inventory = Bukkit.createInventory(this, rows * 9, title.getClassicMessage());
 		buttons = new GuiButton[9 * rows];
+		preparedTitle = InventoryUtils.prepareTitleForOpenInventoryWithCustomTitle(title, args);
 	}
 
 	public void setButton(final int slot, final @Nullable GuiButton button)
@@ -77,7 +87,7 @@ public class SimpleGui implements IGui
 	@Override
 	public void show(final @NotNull Player player)
 	{
-		player.openInventory(inventory);
+		InventoryUtils.openInventoryWithCustomTitlePrepared(player, inventory, preparedTitle);
 	}
 
 	@Override

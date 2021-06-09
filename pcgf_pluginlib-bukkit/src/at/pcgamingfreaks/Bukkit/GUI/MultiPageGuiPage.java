@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Bukkit.GUI;
 
+import at.pcgamingfreaks.Bukkit.Message.Message;
+
 import org.jetbrains.annotations.NotNull;
 
 import lombok.Getter;
@@ -26,8 +28,8 @@ public class MultiPageGuiPage extends SimpleGui
 {
 	@Getter @Setter private @NotNull MultiPageGui owner;
 
-	public MultiPageGuiPage(final @NotNull String title, final int rows)
+	public MultiPageGuiPage(final @NotNull Message title, final int rows, final Object... args)
 	{
-		super(title, rows);
+		super(title, rows, args);
 	}
 }
