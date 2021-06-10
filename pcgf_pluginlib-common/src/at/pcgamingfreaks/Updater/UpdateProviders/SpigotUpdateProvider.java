@@ -12,7 +12,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
@@ -85,7 +85,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 		try
 		{
 			UpdateFile result = new UpdateFile();
-			HttpURLConnection connection = connect(new URL("http://api.spiget.org/v2/resources/" + projectID));
+			HttpURLConnection connection = connect(new URL("https://api.spiget.org/v2/resources/" + projectID));
 			if(connection == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 			JsonParser parser = new JsonParser();
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
@@ -94,7 +94,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 				downloadable = !resObject.get("external").getAsBoolean();
 				if(downloadable)
 				{
-					result.setDownloadURL(new URL("http://api.spiget.org/v2/resources/" + projectID + "/download"));
+					result.setDownloadURL(new URL("https://api.spiget.org/v2/resources/" + projectID + "/download"));
 				}
 				else
 				{
@@ -122,7 +122,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 			}
 			connection.disconnect();
 			//region get version
-			connection = connect(new URL("http://api.spiget.org/v2/resources/" + projectID + "/versions/latest"));
+			connection = connect(new URL("https://api.spiget.org/v2/resources/" + projectID + "/versions/latest"));
 			if(connection == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
 			{

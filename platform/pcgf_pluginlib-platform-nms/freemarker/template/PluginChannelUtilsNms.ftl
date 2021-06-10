@@ -14,7 +14,7 @@ import io.netty.buffer.Unpooled;
 
 /*
  * NOTE: Generated code !! DO NOT EDIT !!
- * Reference: http://freemarker.org
+ * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
 public class PluginChannelUtils_${nmsVersion} extends PluginChannelUtils_Reflection

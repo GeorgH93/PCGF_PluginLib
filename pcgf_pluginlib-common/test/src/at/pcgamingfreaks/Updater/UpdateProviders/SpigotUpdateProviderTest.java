@@ -12,7 +12,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
@@ -88,7 +88,7 @@ public class SpigotUpdateProviderTest
 		SpigotUpdateProvider sup = new SpigotUpdateProvider(PLUGIN_ID_HOSTED, mockedLogger);
 		assertEquals(UpdateResult.SUCCESS, sup.query());
 		assertTrue(sup.providesDownloadURL());
-		assertEquals("http://api.spiget.org/v2/resources/" + PLUGIN_ID_HOSTED + "/download", sup.getLatestFileURL().getProtocol() + "://" + sup.getLatestFileURL().getHost() + sup.getLatestFileURL().getPath());
+		assertEquals("https://api.spiget.org/v2/resources/" + PLUGIN_ID_HOSTED + "/download", sup.getLatestFileURL().getProtocol() + "://" + sup.getLatestFileURL().getHost() + sup.getLatestFileURL().getPath());
 		assertEquals(PLUGIN_ID_HOSTED + ".jar", sup.getLatestFileName());
 		assertEquals("MobMerge", sup.getLatestName());
 	}

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 /*
  * NOTE: Generated code !! DO NOT EDIT !!
- * Reference: http://freemarker.org
+ * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
 public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessagePacketFactory

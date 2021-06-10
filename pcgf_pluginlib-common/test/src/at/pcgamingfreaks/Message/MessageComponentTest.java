@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Message;
@@ -119,9 +119,9 @@ public class MessageComponentTest
 		messageComponent.file("C:\\Test\\Path");
 		assertEquals("The click action should be as given", MessageClickEvent.ClickEventAction.OPEN_FILE, messageComponent.getClickEvent().getAction());
 		assertEquals("The file path should match", "C:\\Test\\Path", messageComponent.getClickEvent().getValue());
-		messageComponent.link("http:\\\\test.page.org");
+		messageComponent.link("https:\\\\test.page.org");
 		assertEquals("The click action should be as given", MessageClickEvent.ClickEventAction.OPEN_URL, messageComponent.getClickEvent().getAction());
-		assertEquals("The link url should match", "http:\\\\test.page.org", messageComponent.getClickEvent().getValue());
+		assertEquals("The link url should match", "https:\\\\test.page.org", messageComponent.getClickEvent().getValue());
 		messageComponent.suggest("cmd run");
 		assertEquals("The click action should be as given", MessageClickEvent.ClickEventAction.SUGGEST_COMMAND, messageComponent.getClickEvent().getAction());
 		assertEquals("The given command should be suggested", "cmd run", messageComponent.getClickEvent().getValue());

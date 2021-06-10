@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Message;
@@ -54,8 +54,8 @@ public class MessageBuilderTest
 		messageBuilder.onClick(MessageClickEvent.ClickEventAction.RUN_COMMAND, "cmd run");
 		assertEquals("The message text should match", "MessageBuilder text", messageBuilder.getCurrentComponent().getText());
 		messageBuilder.file("C:\\Test\\Path");
-		messageBuilder.link("http:\\test.url.org");
-		assertEquals("The url should match", "http:\\test.url.org", messageBuilder.getCurrentComponent().getClickEvent().getValue());
+		messageBuilder.link("https:\\test.url.org");
+		assertEquals("The url should match", "https:\\test.url.org", messageBuilder.getCurrentComponent().getClickEvent().getValue());
 		messageBuilder.suggest("cmd run");
 		messageBuilder.command("cmd run");
 		messageBuilder.insert("Inserted String");

@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
@@ -116,7 +116,7 @@ public class BukkitUpdateProviderTest
 		PowerMockito.doReturn(devBukkitVersions).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
-		Field downloadURLField = TestUtils.setAccessible(devBukkitVersionClass, devBukkitVersion, "downloadUrl", "http://dl.url.org/dl");
+		Field downloadURLField = TestUtils.setAccessible(devBukkitVersionClass, devBukkitVersion, "downloadUrl", "https://dl.url.org/dl");
 		assertEquals("No valid version should be found", UpdateResult.FAIL_NO_VERSION_FOUND, bukkitUpdateProvider.query());
 		TestUtils.setUnaccessible(downloadURLField, devBukkitVersion, false);
 		TestUtils.setUnaccessible(latestNameField, devBukkitVersion, false);

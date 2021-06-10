@@ -12,7 +12,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
@@ -73,7 +73,7 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 	public JenkinsUpdateProvider(@NotNull String host, @NotNull String job, @Nullable String token, @NotNull Logger logger, @Nullable @Language("RegExp") String artifactSearchRegex)
 	{
 		super(logger);
-		StringBuilder urlBuilder = new StringBuilder((host.contains("://") ? "" : "http://"));
+		StringBuilder urlBuilder = new StringBuilder((host.contains("://") ? "" : "https://"));
 		urlBuilder.append(host);
 		if(!host.endsWith("/")) urlBuilder.append('/');
 		urlBuilder.append("job/");

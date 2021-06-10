@@ -12,7 +12,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 
 public class AlwaysUpdateProviderTest
 {
-	private static final String URL = "http://test.com/download/test.jar";
+	private static final String URL = "https://test.com/download/test.jar";
 	private final AlwaysUpdateProvider provider = new AlwaysUpdateProvider(URL);
 
 	@Test
@@ -182,7 +182,7 @@ public class AlwaysUpdateProviderTest
 	@Test
 	public void testAlwaysUpdateProvider() throws MalformedURLException, NotSuccessfullyQueriedException
 	{
-		AlwaysUpdateProvider updateProvider = new AlwaysUpdateProvider(new URL("http://this.is.a.url/"));
+		AlwaysUpdateProvider updateProvider = new AlwaysUpdateProvider(new URL("https://this.is.a.url/"));
 		assertEquals("The release type should match", ReleaseType.RELEASE, updateProvider.getLatestReleaseType());
 	}
 }

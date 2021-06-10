@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
@@ -31,7 +31,7 @@ public class UpdateProviderTest
 	@Test
 	public void testUpdateFileClass() throws MalformedURLException
 	{
-		URL downloadURL = new URL("http://www.download.url/File.dl");
+		URL downloadURL = new URL("https://www.download.url/File.dl");
 		String name = "Update File";
 		Version version = new Version("1.3.6");
 		String fileName = "UpdateFile-1.3.6.zip";

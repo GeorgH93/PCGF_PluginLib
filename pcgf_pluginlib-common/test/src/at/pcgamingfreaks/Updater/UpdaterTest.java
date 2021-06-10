@@ -12,7 +12,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package at.pcgamingfreaks.Updater;
@@ -227,9 +227,9 @@ public class UpdaterTest
 		doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestFileURL();
 		updater.update();
 		assertEquals("There should not be an update response", shouldHaveUpdateResponses, updateResponses[0]);
-		doReturn(new URL("http://www.test.xyz")).when(mockedUpdateProvider).getLatestFileURL();
+		doReturn(new URL("https://www.test.xyz")).when(mockedUpdateProvider).getLatestFileURL();
 		doReturn(true).when(mockedUpdateProvider).providesDependencies();
-		UpdateProvider.UpdateFile updateFile = new UpdateProvider.UpdateFile(new URL("http://www.test.download.link"), "DepFile", new Version("1.0"), "", "", "", "");
+		UpdateProvider.UpdateFile updateFile = new UpdateProvider.UpdateFile(new URL("https://www.test.download.link"), "DepFile", new Version("1.0"), "", "", "", "");
 		doReturn(new UpdateProvider.UpdateFile[] { updateFile }).when(mockedUpdateProvider).getLatestDependencies();
 		Field downloadDependencies = TestUtils.setAccessible(Updater.class, updater, "downloadDependencies", true);
 		doAnswer(invocationOnMock -> {

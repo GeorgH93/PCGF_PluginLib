@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /*
  * NOTE: Generated code !! DO NOT EDIT !!
- * Reference: http://freemarker.org
+ * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
 public final class TitleMessagePacketFactory_${nmsVersion} implements ITitleMessagePacketFactory
