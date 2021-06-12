@@ -1,8 +1,14 @@
 package at.pcgamingfreaks.Bukkit.Util;
 
+<#if mcVersion < 100170000>
 import net.minecraft.server.v${nmsVersion}.EntityPlayer;
 import net.minecraft.server.v${nmsVersion}.Packet;
 import net.minecraft.server.v${nmsVersion}.IChatBaseComponent;
+<#else>
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.EntityPlayer;
+</#if>
 
 import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -23,13 +29,17 @@ public final class Utils_${nmsVersion} extends Utils_Reflection
 	@Override
 	public int getPing(final @NotNull Player player)
 	{
+		<#if mcVersion < 100170000>
 		return getHandle(player).ping;
+		<#else>
+		return getHandle(player).e;
+		</#if>
 	}
 
 	@Override
 	public void sendPacket(final @NotNull Player player, final @NotNull Object packet)
 	{
-		getHandle(player).playerConnection.sendPacket((Packet<?>) packet);
+		getHandle(player).<#if mcVersion < 100170000>playerConnection<#else>b</#if>.sendPacket((Packet<?>) packet);
 	}
 
 	@Override

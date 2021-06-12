@@ -2,9 +2,15 @@ package at.pcgamingfreaks.Bukkit.Protocol;
 
 import at.pcgamingfreaks.Bukkit.Util.IUtils;
 
+<#if mcVersion < 100170000>
 import net.minecraft.server.v${nmsVersion}.ChatMessageType;
 import net.minecraft.server.v${nmsVersion}.IChatBaseComponent;
 import net.minecraft.server.v${nmsVersion}.PacketPlayOutChat;
+<#else>
+import net.minecraft.network.chat.ChatMessageType;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.protocol.game.PacketPlayOutChat;
+</#if>
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,8 +28,10 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 	{
 		<#if mcVersion < 100160000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.CHAT);
-		<#else>
+		<#elseif mcVersion < 100170000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.CHAT, sender);
+		<#else>
+		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.a, sender);
 		</#if>
 	}
 
@@ -32,8 +40,10 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 	{
 		<#if mcVersion < 100160000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.SYSTEM);
-		<#else>
+		<#elseif mcVersion < 100170000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.SYSTEM, EMPTY_UUID);
+		<#else>
+		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.b, EMPTY_UUID);
 		</#if>
 	}
 
@@ -42,8 +52,10 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 	{
 		<#if mcVersion < 100160000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.GAME_INFO);
-		<#else>
+		<#elseif mcVersion < 100170000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.GAME_INFO, EMPTY_UUID);
+		<#else>
+		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.c, EMPTY_UUID);
 		</#if>
 	}
 }

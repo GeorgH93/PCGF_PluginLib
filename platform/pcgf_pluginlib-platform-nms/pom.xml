@@ -118,4 +118,17 @@
 		<module>pcgf_pluginlib-platform-nms-1_16_R2</module>
 		<module>pcgf_pluginlib-platform-nms-1_16_R3</module>
 	</modules>
+
+	<profiles>
+		<profile>
+			<id>Java16AndUp</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<jdk>[16,)</jdk>
+			</activation>
+			<modules>
+				<module>pcgf_pluginlib-platform-nms-1_17_R1</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>

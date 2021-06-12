@@ -1,9 +1,15 @@
 package at.pcgamingfreaks.Bukkit.Util;
 
+<#if mcVersion < 100170000>
 <#if 100130000 <= mcVersion>
 import net.minecraft.server.v${nmsVersion}.MinecraftKey;
 import net.minecraft.server.v${nmsVersion}.PacketDataSerializer;
 import net.minecraft.server.v${nmsVersion}.PacketPlayOutCustomPayload;
+</#if>
+<#else>
+import net.minecraft.network.PacketDataSerializer;
+import net.minecraft.network.protocol.game.PacketPlayOutCustomPayload;
+import net.minecraft.resources.MinecraftKey;
 </#if>
 
 import org.bukkit.entity.Player;
