@@ -49,6 +49,23 @@ public class Reflection
 		}
 		return null;
 	}
+
+	/**
+	 * Gets a class reference. Does not print an exception if there is an exception.
+	 *
+	 * @param classPath The path + name of the class.
+	 * @return The class reference. Null if it was not found.
+	 */
+	public static @Nullable Class<?> getClassSilent(final @NotNull String classPath)
+	{
+		try
+		{
+			return Class.forName(classPath);
+		}
+		catch(Exception ignroed) {}
+		return null;
+	}
+
 	/**
 	 * Gets a class reference for a class contained within another class.
 	 *
