@@ -117,6 +117,7 @@
 		<module>pcgf_pluginlib-platform-nms-1_16_R1</module>
 		<module>pcgf_pluginlib-platform-nms-1_16_R2</module>
 		<module>pcgf_pluginlib-platform-nms-1_16_R3</module>
+		<module>pcgf_pluginlib-platform-nms-1_17_R1</module>
 	</modules>
 
 	<profiles>
