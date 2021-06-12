@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,6 +26,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Locale;
 
+/**
+ * @deprecated Use {@link NmsReflector#INSTANCE} instead!
+ */
+@Deprecated
 public class NMSReflection extends OBCReflection implements NmsReflector
 {
 	private static final String NMS_CLASS_PATH = "net.minecraft.server." + BUKKIT_VERSION + ".";
@@ -140,21 +144,9 @@ public class NMSReflection extends OBCReflection implements NmsReflector
 	}
 
 	@Override
-	public @Nullable Method getNmsMethod(@NotNull String className, @NotNull String name, @NotNull Class<?>... args)
-	{
-		return getNMSMethod(className, name, args);
-	}
-
-	@Override
 	public @Nullable Method getNmsMethod(@Nullable Class<?> clazz, @NotNull String name, @NotNull Class<?>... args)
 	{
 		return getNMSMethod(clazz, name, args);
-	}
-
-	@Override
-	public @Nullable Field getNmsField(@NotNull String className, @NotNull String name)
-	{
-		return getNMSField(className, name);
 	}
 
 	@Override
@@ -173,11 +165,5 @@ public class NMSReflection extends OBCReflection implements NmsReflector
 	public @Nullable Enum<?> getNmsEnum(@NotNull String enumClass, @NotNull String enumName)
 	{
 		return getNMSEnum(enumClass, enumName);
-	}
-
-	@Override
-	public @Nullable Object getNmsHandle(@NotNull Object obj)
-	{
-		return getHandle(obj);
 	}
 }

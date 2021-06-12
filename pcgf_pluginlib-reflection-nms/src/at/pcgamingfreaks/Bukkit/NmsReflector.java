@@ -53,7 +53,10 @@ public interface NmsReflector
 	 * @param args The types of the parameters of the method.
 	 * @return The method reference. Null if it was not found.
 	 */
-	@Nullable Method getNmsMethod(@NotNull String className, @NotNull String name, @NotNull Class<?>... args);
+	default @Nullable Method getNmsMethod(@NotNull String className, @NotNull String name, @NotNull Class<?>... args)
+	{
+		return getNmsMethod(getNmsClass(className), name, args);
+	}
 
 	/**
 	 * Gets a method reference from a net.minecraft.server class.
@@ -73,7 +76,10 @@ public interface NmsReflector
 	 * @param name The name of the field.
 	 * @return The field reference. Null if it was not found.
 	 */
-	@Nullable Field getNmsField(@NotNull String className, @NotNull String name);
+	default @Nullable Field getNmsField(@NotNull String className, @NotNull String name)
+	{
+		return getNmsField(getNmsClass(className), name);
+	}
 
 	/**
 	 * Gets a field reference from a net.minecraft.server class.
@@ -89,7 +95,10 @@ public interface NmsReflector
 
 	@Nullable Enum<?> getNmsEnum(@NotNull String enumClass, @NotNull String enumName);
 
-	@Nullable Object getNmsHandle(@NotNull Object obj);
+	default @Nullable Object getNmsHandle(@NotNull Object obj)
+	{
+		return getHandle(obj);
+	}
 
 	static @Nullable Object getHandle(@NotNull Object obj)
 	{
