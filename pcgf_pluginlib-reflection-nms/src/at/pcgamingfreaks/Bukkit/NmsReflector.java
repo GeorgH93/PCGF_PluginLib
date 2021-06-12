@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Locale;
@@ -35,7 +36,7 @@ public interface NmsReflector
 		return Bukkit.getServer().getName().toLowerCase(Locale.ROOT).contains("cauldron") || Bukkit.getServer().getName().toLowerCase(Locale.ROOT).contains("uranium");
 	}
 
-	NmsReflector INSTANCE = isCauldron() ? new NMSReflectionCauldron() : new NMSReflection();
+	NmsReflector INSTANCE = isCauldron() ? new NMSReflectionCauldron() : MCVersion.isOlderThan(MCVersion.MC_1_17) ? new NMSReflection() : new NMSReflectionRemapped();
 
 	/**
 	 * Gets a net.minecraft.server class reference.
@@ -94,6 +95,12 @@ public interface NmsReflector
 	@Nullable Enum<?> getNmsEnum(@NotNull String enumClassAndEnumName);
 
 	@Nullable Enum<?> getNmsEnum(@NotNull String enumClass, @NotNull String enumName);
+
+	default @Nullable Constructor<?> getNmsConstructor(@NotNull String className, @NotNull Class<?>... args)
+	{
+		Class<?> clazz = getNmsClass(className);
+		return clazz != null ? Reflection.getConstructor(clazz, args) : null;
+	}
 
 	default @Nullable Object getNmsHandle(@NotNull Object obj)
 	{
