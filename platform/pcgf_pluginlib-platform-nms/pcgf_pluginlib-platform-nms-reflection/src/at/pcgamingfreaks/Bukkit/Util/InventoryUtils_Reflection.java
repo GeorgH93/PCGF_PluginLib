@@ -49,7 +49,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	private static final Constructor<?> CONSTRUCTOR_CHAT_MESSAGE = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("ChatMessage"), String.class, Object[].class);
 	private static final Constructor<?> CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutOpenWindow"), int.class, CLASS_CONTAINERS, NmsReflector.INSTANCE.getNmsClass("IChatBaseComponent"));
 	private static final Field FIELD_ACTIVE_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : (MCVersion.isOlderThan(MCVersion.MC_1_17)) ? Reflection.getFieldIncludeParents(ENTITY_PLAYER, "activeContainer") : NmsReflector.INSTANCE.getNmsField("EntityHuman", "activeContainer");
-	private static final Field FIELD_CONTAINER_WINDOW_ID = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getField(CLASS_CONTAINER, "windowId");
+	private static final Field FIELD_CONTAINER_WINDOW_ID = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINER, "windowId");
 	private static final Method METHOD_ENTITY_PLAYER_UPDATE_INVENTORY = (MCVersion.isOlderThan(MCVersion.MC_1_14) || MCVersion.isNewerOrEqualThan(MCVersion.MC_1_17)) ? null : NmsReflector.INSTANCE.getNmsMethod(ENTITY_PLAYER, "updateInventory", CLASS_CONTAINER);
 	private static final Method METHOD_CONTAINER_UPDATE_INVENTORY = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_17) ? NmsReflector.INSTANCE.getNmsMethod(CLASS_CONTAINER, "updateInventory") : null;
 

@@ -2,7 +2,7 @@
 net.minecraft.server.level.EntityPlayer#playerConnection b
 net.minecraft.server.level.EntityPlayer#ping e
 
-net.minecraft.server.level.EntityHuman#activeContainer bV
+net.minecraft.world.entity.player.EntityHuman#activeContainer bV
 
 net.minecraft.world.inventory.Container#windowId j
 

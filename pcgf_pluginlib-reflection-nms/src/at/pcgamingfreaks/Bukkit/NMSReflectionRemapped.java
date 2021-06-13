@@ -96,9 +96,9 @@ public final class NMSReflectionRemapped implements NmsReflector
 	@Override
 	public @Nullable Class<?> getNmsClass(@NotNull String className)
 	{
-		if(CLASS_MAP.containsKey(className)) return CLASS_MAP.get(className); // Use cached result
-		String remappedName = CLASS_NAME_MAP.get(className);
-		Class<?> clazz = Reflection.getClassSilent(remappedName);
+		Class<?> clazz = CLASS_MAP.get(className);
+		if(clazz != null) return clazz;
+		clazz = Reflection.getClassSilent(CLASS_NAME_MAP.getOrDefault(className, className));
 		if(clazz == null) clazz = findClass(className);
 		if(clazz == null) Reflection.getClass(className);
 		if(clazz != null) CLASS_MAP.put(className, clazz);
