@@ -221,6 +221,7 @@ public class InventoryUtils
 	 * @param player The player for whom the inventory should be opened.
 	 * @param inventory The inventory that should be opened.
 	 * @param title The title of the inventory that should be used on the client.
+	 * @param args The values that should be used to fill the placeholders of the title.
 	 */
 	public static void openInventoryWithCustomTitle(final @NotNull Player player, final @NotNull Inventory inventory, final  @NotNull Message title, final Object... args)
 	{
@@ -270,11 +271,11 @@ public class InventoryUtils
 	}
 
 	/**
-	 * Changes the title of an existing inventory.<br/>
+	 * Changes the title of an existing inventory.
 	 * <b>WARNING:</b>
 	 * <ul>
-	 *     <li>MC version <= 1.13: If the inventory is currently opened by a player the title will only get updated for them once they reopen the inventory.</li>
-	 *     <li>MC version >= 1.14: If the inventory is currently opened by a player it will become invallid! All interactions with it will fail on the server with an {@link IndexOutOfBoundsException}. The content of the inventory might disappear on the client.</li>
+	 *     <li>MC version &lt;= 1.13: If the inventory is currently opened by a player the title will only get updated for them once they reopen the inventory.</li>
+	 *     <li>MC version &gt;= 1.14: If the inventory is currently opened by a player it will become invalid! All interactions with it will fail on the server with an {@link IndexOutOfBoundsException}. The content of the inventory might disappear on the client.</li>
 	 * </ul>
 	 *
 	 * @param inventory The inventory for which the title should be changed.
