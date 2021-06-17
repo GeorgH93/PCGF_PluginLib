@@ -79,6 +79,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 				else if(inventoryType == InventoryType.ENCHANTING) type = "ENCHANTMENT";
 				else if(type.equals("BARREL")) type = "GENERIC_9X3";
 				else if(type.equals("CARTOGRAPHY") && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_15_R1)) type = "CARTOGRAPHY_TABLE";
+				else if(type.equals("COMPOSTER")) continue;
 				try
 				{
 					Field field = NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINERS, type);
