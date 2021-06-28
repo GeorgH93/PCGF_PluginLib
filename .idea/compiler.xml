@@ -10,12 +10,12 @@
         <outputRelativeToContentRoot value="true" />
         <module name="pcgf_pluginlib-plugin-bungee" />
         <module name="pcgf_pluginlib-bukkit" />
-        <module name="pcgf_pluginlib-nms-reflection" />
         <module name="pcgf_pluginlib-reflection-obc" />
         <module name="pcgf_pluginlib-plugin-common" />
         <module name="PluginLib" />
         <module name="pcgf_pluginlib-plugin" />
         <module name="pcgf_pluginlib-plugin-bukkit" />
+        <module name="pcgf_pluginlib-platform-nms-1_17_R1" />
         <module name="pcgf_pluginlib-reflection-nms" />
         <module name="pcgf_pluginlib-platform-nms-1_15_R1" />
         <module name="pcgf_pluginlib-platform-nms-1_16_R2" />
@@ -37,12 +37,14 @@
       <module name="pcgf_pluginlib-mcversion" target="1.8" />
       <module name="pcgf_pluginlib-nms" target="1.8" />
       <module name="pcgf_pluginlib-nms-reflection" target="1.8" />
+      <module name="pcgf_pluginlib-parent" target="1.8" />
       <module name="pcgf_pluginlib-platform-bukkit" target="1.8" />
       <module name="pcgf_pluginlib-platform-nms" target="1.8" />
       <module name="pcgf_pluginlib-platform-nms-1_15_R1" target="1.8" />
       <module name="pcgf_pluginlib-platform-nms-1_16_R1" target="1.8" />
       <module name="pcgf_pluginlib-platform-nms-1_16_R2" target="1.8" />
       <module name="pcgf_pluginlib-platform-nms-1_16_R3" target="1.8" />
+      <module name="pcgf_pluginlib-platform-nms-1_17_R1" target="16" />
       <module name="pcgf_pluginlib-platform-nms-reflection" target="1.8" />
       <module name="pcgf_pluginlib-plugin" target="1.8" />
       <module name="pcgf_pluginlib-plugin-bukkit" target="1.8" />
