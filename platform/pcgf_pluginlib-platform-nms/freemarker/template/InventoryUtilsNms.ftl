@@ -1,7 +1,24 @@
+/*
+ *   Copyright (C) 2021 GeorgH93
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package at.pcgamingfreaks.Bukkit.Util;
 
+<#if mcVersion < 100170000>
 <#if 100140000 <= mcVersion>
-import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
 import net.minecraft.server.v${nmsVersion}.IChatBaseComponent;
 import net.minecraft.server.v${nmsVersion}.ChatMessage;
 import net.minecraft.server.v${nmsVersion}.Containers;
@@ -9,6 +26,16 @@ import net.minecraft.server.v${nmsVersion}.EntityPlayer;
 import net.minecraft.server.v${nmsVersion}.PacketPlayOutOpenWindow;
 </#if>
 import net.minecraft.server.v${nmsVersion}.NBTTagCompound;
+<#else>
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.chat.ChatMessage;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.protocol.game.PacketPlayOutOpenWindow;
+import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.world.inventory.Containers;
+</#if>
+
+import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v${nmsVersion}.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -59,9 +86,13 @@ public final class InventoryUtils_${nmsVersion} extends InventoryUtils_Reflectio
 		if(topInv.getType() == InventoryType.CRAFTING) return;
 
 		EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
-		PacketPlayOutOpenWindow packet = new PacketPlayOutOpenWindow(entityPlayer.activeContainer.windowId, (Containers) getInvContainersObject(topInv), (IChatBaseComponent) newTitle);
-		entityPlayer.playerConnection.sendPacket(packet);
+		PacketPlayOutOpenWindow packet = new PacketPlayOutOpenWindow(entityPlayer.<#if mcVersion < 100170000>activeContainer.windowId<#else>bV.j</#if>, (Containers) getInvContainersObject(topInv), (IChatBaseComponent) newTitle);
+		entityPlayer.<#if mcVersion < 100170000>playerConnection<#else>b</#if>.sendPacket(packet);
+		<#if mcVersion < 100170000>
 		entityPlayer.updateInventory(entityPlayer.activeContainer);
+		<#else>
+		entityPlayer.bV.updateInventory();
+		</#if>
 		</#if>
 	}
 

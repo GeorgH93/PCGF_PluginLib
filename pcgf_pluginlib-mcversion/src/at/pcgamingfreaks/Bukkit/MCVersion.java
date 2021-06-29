@@ -168,7 +168,7 @@ public enum MCVersion
 
 	private final int versionID;
 	@Getter private final int protocolVersion;
-	private final String identifier;
+	@Getter private final String identifier;
 	private final MCVersion mainVersion;
 	private final boolean supportsUUIDs, supportsRgbColors;
 	@Getter private final boolean dualWielding;

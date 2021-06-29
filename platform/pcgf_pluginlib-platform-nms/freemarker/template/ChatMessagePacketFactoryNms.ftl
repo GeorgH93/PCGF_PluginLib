@@ -1,10 +1,33 @@
+/*
+ *   Copyright (C) 2021 GeorgH93
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package at.pcgamingfreaks.Bukkit.Protocol;
 
 import at.pcgamingfreaks.Bukkit.Util.IUtils;
 
+<#if mcVersion < 100170000>
 import net.minecraft.server.v${nmsVersion}.ChatMessageType;
 import net.minecraft.server.v${nmsVersion}.IChatBaseComponent;
 import net.minecraft.server.v${nmsVersion}.PacketPlayOutChat;
+<#else>
+import net.minecraft.network.chat.ChatMessageType;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.protocol.game.PacketPlayOutChat;
+</#if>
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,8 +45,10 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 	{
 		<#if mcVersion < 100160000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.CHAT);
-		<#else>
+		<#elseif mcVersion < 100170000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.CHAT, sender);
+		<#else>
+		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.a, sender);
 		</#if>
 	}
 
@@ -32,8 +57,10 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 	{
 		<#if mcVersion < 100160000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.SYSTEM);
-		<#else>
+		<#elseif mcVersion < 100170000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.SYSTEM, EMPTY_UUID);
+		<#else>
+		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.b, EMPTY_UUID);
 		</#if>
 	}
 
@@ -42,8 +69,10 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 	{
 		<#if mcVersion < 100160000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.GAME_INFO);
-		<#else>
+		<#elseif mcVersion < 100170000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.GAME_INFO, EMPTY_UUID);
+		<#else>
+		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.c, EMPTY_UUID);
 		</#if>
 	}
 }

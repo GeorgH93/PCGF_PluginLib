@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -77,7 +77,10 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 		{
 			try
 			{
-				dataFixer = NmsReflector.INSTANCE.getNmsField("MinecraftServer", "dataConverterManager").get(OBCReflection.getOBCMethod("CraftServer", "getServer").invoke(Bukkit.getServer()));
+				if(MCVersion.isOlderThan(MCVersion.MC_1_17))
+					dataFixer = NmsReflector.INSTANCE.getNmsField("MinecraftServer", "dataConverterManager").get(OBCReflection.getOBCMethod("CraftServer", "getServer").invoke(Bukkit.getServer()));
+				else
+					dataFixer = NmsReflector.INSTANCE.getNmsMethod("MinecraftServer", "getDataFixer").invoke(OBCReflection.getOBCMethod("CraftServer", "getServer").invoke(Bukkit.getServer()));
 				if(MCVersion.isOlderThan(MCVersion.MC_1_14))
 				{
 					fixerUpdate = NmsReflector.INSTANCE.getNmsMethod("GameProfileSerializer", "a", OBCReflection.getClass("com.mojang.datafixers.DataFixer"), OBCReflection.getClass("com.mojang.datafixers.DSL$TypeReference"), CLASS_NBT_TAG_COMPOUND, int.class);
@@ -275,6 +278,6 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 
 	public static boolean isMCVersionCompatible()
 	{
-		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_16_R3);
+		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_17_R1);
 	}
 }

@@ -356,7 +356,9 @@ public class Reflection
 	 *
 	 * @param field The final Field that should be set.
 	 * @param value The value that should be set.
+	 * @deprecated Does not work on Java 16 and up
 	 */
+	@Deprecated
 	public static void setFinalField(final @NotNull Field field, final @Nullable Object instance, final @Nullable Object value) throws NoSuchFieldException, IllegalAccessException
 	{
 		Field modifiers = Field.class.getDeclaredField("modifiers");

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 package at.pcgamingfreaks.Bukkit.Util;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.NmsReflector;
 import at.pcgamingfreaks.Bukkit.OBCReflection;
 import at.pcgamingfreaks.Reflection;
@@ -48,18 +47,19 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	private static final Class<?> CLASS_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Container");
 	private static final Class<?> CLASS_CONTAINERS = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Containers");
 	private static final Constructor<?> CONSTRUCTOR_CHAT_MESSAGE = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("ChatMessage"), String.class, Object[].class);
-	private static final Constructor<?> CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutOpenWindow"), int.class, CLASS_CONTAINERS, NMSReflection.getNMSClass("IChatBaseComponent"));
-	private static final Field FIELD_ACTIVE_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getFieldIncludeParents(ENTITY_PLAYER, "activeContainer");
-	private static final Field FIELD_CONTAINER_WINDOW_ID = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getField(CLASS_CONTAINER, "windowId");
-	private static final Method METHOD_ENTITY_PLAYER_UPDATE_INVENTORY = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getMethod(ENTITY_PLAYER, "updateInventory", CLASS_CONTAINER);
+	private static final Constructor<?> CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutOpenWindow"), int.class, CLASS_CONTAINERS, NmsReflector.INSTANCE.getNmsClass("IChatBaseComponent"));
+	private static final Field FIELD_ACTIVE_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : (MCVersion.isOlderThan(MCVersion.MC_1_17)) ? Reflection.getFieldIncludeParents(ENTITY_PLAYER, "activeContainer") : NmsReflector.INSTANCE.getNmsField("EntityHuman", "activeContainer");
+	private static final Field FIELD_CONTAINER_WINDOW_ID = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINER, "windowId");
+	private static final Method METHOD_ENTITY_PLAYER_UPDATE_INVENTORY = (MCVersion.isOlderThan(MCVersion.MC_1_14) || MCVersion.isNewerOrEqualThan(MCVersion.MC_1_17)) ? null : NmsReflector.INSTANCE.getNmsMethod(ENTITY_PLAYER, "updateInventory", CLASS_CONTAINER);
+	private static final Method METHOD_CONTAINER_UPDATE_INVENTORY = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_17) ? NmsReflector.INSTANCE.getNmsMethod(CLASS_CONTAINER, "updateInventory") : null;
 
 	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NmsReflector.INSTANCE.getNmsClass("NBTTagCompound");
 	private static final Method AS_NMS_COPY_METHOD = OBCReflection.getOBCMethod("inventory.CraftItemStack", "asNMSCopy", ItemStack.class);
 	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NmsReflector.INSTANCE.getNmsMethod("ItemStack", "save", NBT_TAG_COMPOUND_CLASS);
 
-	private final static Method METHOD_GET_INVENTORY = NMSReflection.getOBCMethod("inventory.CraftInventory", "getInventory");
-	private final static Method METHOD_CRAFT_CHAT_MESSAGE_FROM_STRING = MCVersion.isAny(MCVersion.MC_1_13) ? NMSReflection.getOBCMethod("util.CraftChatMessage", "wrapOrNull", String.class) : null;
-	private final static Field FIELD_TITLE = NMSReflection.getOBCField("inventory.CraftInventoryCustom$MinecraftInventory", "title");
+	private final static Method METHOD_GET_INVENTORY = OBCReflection.getOBCMethod("inventory.CraftInventory", "getInventory");
+	private final static Method METHOD_CRAFT_CHAT_MESSAGE_FROM_STRING = MCVersion.isAny(MCVersion.MC_1_13) ? OBCReflection.getOBCMethod("util.CraftChatMessage", "wrapOrNull", String.class) : null;
+	private final static Field FIELD_TITLE = OBCReflection.getOBCField("inventory.CraftInventoryCustom$MinecraftInventory", "title");
 
 	private static final EnumMap<InventoryType, Object> INVENTORY_TYPE_MAP = new EnumMap<>(InventoryType.class);
 	private static final Object[] INVENTORY_TYPE_CHEST = new Object[6];
@@ -79,9 +79,10 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 				else if(inventoryType == InventoryType.ENCHANTING) type = "ENCHANTMENT";
 				else if(type.equals("BARREL")) type = "GENERIC_9X3";
 				else if(type.equals("CARTOGRAPHY") && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_15_R1)) type = "CARTOGRAPHY_TABLE";
+				else if(type.equals("COMPOSTER")) continue;
 				try
 				{
-					Field field = Reflection.getField(CLASS_CONTAINERS, type);
+					Field field = NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINERS, type);
 					if(field == null) continue;
 					INVENTORY_TYPE_MAP.put(inventoryType, field.get(null));
 				}
@@ -91,7 +92,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 			{
 				try
 				{
-					INVENTORY_TYPE_CHEST[i] = Reflection.getField(CLASS_CONTAINERS, "GENERIC_9X" + (i + 1)).get(null);
+					INVENTORY_TYPE_CHEST[i] = NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINERS, "GENERIC_9X" + (i + 1)).get(null);
 				}
 				catch(IllegalAccessException | NullPointerException ignored) {}
 			}
@@ -164,7 +165,10 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 			else if(topInv.getType() == InventoryType.BREWING) type = "BREWING_STAND";
 			Object packet = CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW.newInstance(windowId, Reflection.getField(CLASS_CONTAINERS, type).get(null), title);
 			SEND_PACKET.invoke(PLAYER_CONNECTION.get(entityPlayer), packet);
-			METHOD_ENTITY_PLAYER_UPDATE_INVENTORY.invoke(entityPlayer, activeContainer);
+			if(METHOD_ENTITY_PLAYER_UPDATE_INVENTORY != null)
+				METHOD_ENTITY_PLAYER_UPDATE_INVENTORY.invoke(entityPlayer, activeContainer);
+			else if(METHOD_CONTAINER_UPDATE_INVENTORY != null)
+				METHOD_CONTAINER_UPDATE_INVENTORY.invoke(activeContainer);
 		}
 		catch(Exception e)
 		{
