@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,11 +32,10 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public class StringUtils
 {
-	private static final Pattern PAGE_REGEX = Pattern.compile("(?<page>\\d+)(?<op>\\+\\d+|-\\d+|\\+\\+|--)?");
+	public static final Pattern PAGE_REGEX = Pattern.compile("(?<page>\\d+)(?<op>\\+\\d+|-\\d+|\\+\\+|--)?");
 	//region some useful strings
 	@SuppressWarnings("SpellCheckingInspection")
 	public static final String ALPHABET_LOWERCASE = "abcdefghijklmnopqrstuvwxyz", ALPHABET_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", NUMBERS = "0123456789", CHAT_COLORS = "0123456789abcdef";
-	@SuppressWarnings("unused")
 	public static final String ALPHABET = ALPHABET_LOWERCASE + ALPHABET_UPPERCASE, ALPHANUMERIC = ALPHABET_LOWERCASE + ALPHABET_UPPERCASE + NUMBERS;
 	//endregion
 	//region some useful char collections
