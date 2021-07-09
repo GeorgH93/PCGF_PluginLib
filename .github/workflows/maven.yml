@@ -35,4 +35,4 @@ jobs:
         with:
           java-version: 16
       - name: Build with Maven
-        run: mvn -B -s .github/workflows/settings.xml clean package --file pom.xml
+        run: mvn -B -s .github/workflows/settings.xml -DskipTests=true clean package --file pom.xml

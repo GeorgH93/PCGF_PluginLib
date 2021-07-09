@@ -3,8 +3,6 @@ os: linux
 language: java
 jdk:
   - openjdk8
-  - openjdk11
-  - openjdk16
 
 cache:
   directories:
