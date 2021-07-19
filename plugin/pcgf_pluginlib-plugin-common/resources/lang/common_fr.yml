@@ -1,0 +1,46 @@
+# This file contains common translation
+
+Language:
+  Date:
+    Days:
+      Monday: Lundi
+      Tuesday: Mardi
+      Wednesday: Mercredi
+      Thursday: Jeudi
+      Friday: Vendredi
+      Saturday: Samedi
+      Sunday: Dimanche
+    Month:
+      January: Janvier
+      February: Février
+      March: Mars
+      April: Avril
+      May: Mai
+      June: Juin
+      July: Juillet
+      August: Août
+      September: Septembre
+      October: Octobre
+      November: Novembre
+      December: Décembre
+    Units:
+      Year: année
+      Years: années
+      Month: mois
+      Months: mois
+      Day: jour
+      Days: jours
+      Hour: heure
+      Hours: heures
+      Minute: minute
+      Minutes: minutes
+      Second: seconde
+      Seconds: secondes
+
+LanguageName: french
+Author: Nogapra
+#Discord: Nogapra#2800
+#Minecraft® serveur : play.jaime-la-survie.fr
+
+# Language file version. Don't touch it!
+Version: 2
