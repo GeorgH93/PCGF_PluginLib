@@ -12,6 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<powermock.version>2.0.7</powermock.version><!-- property so that we have to change only one value to update all the powermock dependencies -->
+		<mavenShade.version>3.3.0-SNAPSHOT</mavenShade.version>
 		<pluginName>PCGF_PluginLib</pluginName>
 		<author>GeorgH93</author>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
@@ -109,6 +110,7 @@
 			<artifactId>org.jacoco.agent</artifactId>
 			<version>0.8.4</version>
 			<classifier>runtime</classifier>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -188,6 +190,22 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>flatten-maven-plugin</artifactId>
 				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<flattenedPomFilename>target/.flattened-pom.xml</flattenedPomFilename>
 					<updatePomFile>true</updatePomFile>
@@ -205,22 +223,6 @@
 						<url/>
 					</pomElements>
 				</configuration>
-				<executions>
-					<execution>
-						<id>flatten</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>flatten</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>flatten.clean</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<!-- Creates the coverage report -->
 			<plugin>
@@ -277,6 +279,7 @@
 		<module>plugin/pcgf_pluginlib-plugin-bungee</module>
 		<module>plugin/pcgf_pluginlib-plugin</module>
 		<module>plugin/PluginLib</module>
+		<module>other/IMessage</module>
 	</modules>
 
 	<distributionManagement>
