@@ -48,6 +48,13 @@
 						<configuration>
 							<createDependencyReducedPom>true</createDependencyReducedPom>
 							<dependencyReducedPomLocation>${basedir}/.dependency-reduced-pom.xml</dependencyReducedPomLocation>
+							<artifactSet>
+								<includes>
+									<include>at.pcgamingfreaks.pcgf_pluginlib:pcgf_pluginlib-common</include>
+									<include>at.pcgamingfreaks.pcgf_pluginlib:pcgf_pluginlib-bukkit</include>
+									<include>at.pcgamingfreaks.pcgf_pluginlib:pcgf_pluginlib-bungee</include>
+								</includes>
+							</artifactSet>
 							<filters>
 								<filter>
 									<artifact>at.pcgamingfreaks.pcgf_pluginlib:*</artifact>
