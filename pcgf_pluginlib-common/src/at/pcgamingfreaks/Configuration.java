@@ -328,7 +328,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	@Deprecated
 	public @NotNull String getLanguage()
 	{
-		return yaml.getString(languageKey, "en");
+		return yaml.getString(getLanguageKey(), "en");
 	}
 
 	/**
@@ -341,7 +341,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	@Deprecated
 	public @NotNull YamlFileUpdateMethod getLanguageUpdateMode()
 	{
-		return YamlFileUpdateMethod.fromString(yaml.getString(languageUpdateKey, "upgrade"));
+		return YamlFileUpdateMethod.fromString(yaml.getString(getLanguageUpdateModeKey(), "upgrade"));
 	}
 	//endregion
 
