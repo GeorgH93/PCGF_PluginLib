@@ -217,7 +217,7 @@ public class Language extends YamlFileManager
 		//noinspection StringEquality
 		if(msg == MESSAGE_NOT_FOUND) // == is correct! We want to check if the string is the given fallback string object and not if it is the same text. If someone would put the fallback text in the language file no info should be shown.
 		{
-			logger.info("No translation for key: " + path);
+			logger.warning("No translation for key: " + path);
 		}
 		return msg;
 	}
