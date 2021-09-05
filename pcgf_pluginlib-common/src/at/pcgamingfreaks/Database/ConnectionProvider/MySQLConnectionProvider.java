@@ -40,14 +40,24 @@ public class MySQLConnectionProvider extends PooledConnectionProvider
 	@Override
 	protected @NotNull HikariConfig getPoolConfig()
 	{
+		//region force loading of jdbc driver
+		// Some plugins, prevent the driver from auto-loading for some reason, this forces the driver to be loaded and registered.
 		try
 		{
-			Class.forName("com.mysql.jdbc.Driver"); // For some reason, some plugins, prevent the driver from auto loading, this forces the driver to be loaded and registered.
+			try
+			{ // Check the new driver name first
+				Class.forName("com.mysql.cj.jdbc.Driver");
+			}
+			catch(ClassNotFoundException ignored)
+			{
+				Class.forName("com.mysql.jdbc.Driver");
+			}
 		}
 		catch(ClassNotFoundException e)
 		{
 			logger.severe(ConsoleColor.RED + " Failed to load MySQL JDBC driver!" + ConsoleColor.RESET);
 		}
+		//endregion
 		HikariConfig poolConfig = new HikariConfig();
 		poolConfig.setJdbcUrl("jdbc:mysql://" + connectionConfiguration.getSQLHost() + "/" + connectionConfiguration.getSQLDatabase() + connectionConfiguration.getSQLConnectionProperties());
 		poolConfig.setUsername(connectionConfiguration.getSQLUser());
