@@ -143,7 +143,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 				METHOD_NBT_COMP_STREAM_A2 == null || METHOD_GET_INT == null || METHOD_HAS_KEY_OF_TYPE == null || METHOD_AS_BUKKIT_COPY == null || METHOD_GET_COMPOUND == null ||
 				(METHOD_CREATE_STACK == null && CONSTRUCTOR_NMS_ITEM_STACK == null))
 		{
-			logger.warning("It seems like the system wasn't able to find the some of the Bukkit/Minecraft classes and/or methods.\n" +
+			logger.warning("It seems like the system wasn't able to find some Bukkit/Minecraft classes and/or methods.\n" +
 					               "Is the plugin up-to-date and compatible with the used server version?\nBukkit Version: " + Bukkit.getVersion());
 		}
 	}

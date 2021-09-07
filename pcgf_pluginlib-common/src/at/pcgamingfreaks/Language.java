@@ -215,7 +215,7 @@ public class Language extends YamlFileManager
 	{
 		String msg = yaml.getString(KEY_LANGUAGE + path, MESSAGE_NOT_FOUND);
 		//noinspection StringEquality
-		if(msg == MESSAGE_NOT_FOUND) // == is correct! We want to check if the string is the given fallback string object and not if it is the same text. If someone would put the fallback text in the language file no info should be shown.
+		if(msg == MESSAGE_NOT_FOUND) // == is correct! We want to check if the string is the given fallback string object and not if it is the same text. If someone put the fallback text in the language file no warning should be shown.
 		{
 			logger.warning("No translation for key: " + path);
 		}
