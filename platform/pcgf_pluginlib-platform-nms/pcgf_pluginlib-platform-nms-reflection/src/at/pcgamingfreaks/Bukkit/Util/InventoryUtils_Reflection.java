@@ -71,7 +71,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 			for(InventoryType inventoryType : InventoryType.values())
 			{
 				String type = inventoryType.name();
-				if(inventoryType == InventoryType.CHEST | inventoryType == InventoryType.PLAYER | inventoryType == InventoryType.CREATIVE) continue;
+				if(inventoryType == InventoryType.CHEST || inventoryType == InventoryType.PLAYER || inventoryType == InventoryType.CREATIVE) continue;
 				else if(inventoryType == InventoryType.DISPENSER || inventoryType == InventoryType.DROPPER) type = "GENERIC_3X3";
 				else if(inventoryType == InventoryType.BREWING) type = "BREWING_STAND";
 				else if(inventoryType == InventoryType.WORKBENCH) type = "CRAFTING";
