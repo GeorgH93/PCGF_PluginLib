@@ -590,24 +590,24 @@ public class VersionTest
 		assertNotEquals("The version should not be the same", version_v2_0, version_2_0_snapshot);
 		//noinspection ObjectEqualsNull
 		assertNotEquals("The version should not be the same", null, version_v2_0);
-		assertEquals("The versions should match", new Version(VERSION_1), version_1);
-		assertEquals("The versions should match", new Version(VERSION_1_0), version_1_0);
-		assertEquals("The versions should match", new Version(VERSION_1_0), version_1);
-		assertEquals("The versions should match", new Version(VERSION_V1_0), version_v1_0);
-		assertEquals("The versions should match", new Version(VERSION_1_2), version_1_2);
-		assertEquals("The versions should match", new Version(VERSION_1_2_SNAPSHOT), version_1_2_snapshot);
-		assertEquals("The versions should match", new Version(VERSION_1_2_BETA), version_1_2_beta);
-		assertEquals("The versions should match", new Version(VERSION_1_2_BETA2), version_1_2_beta2);
-		assertEquals("The versions should match", new Version(VERSION_V2_0), version_v2_0);
-		assertEquals("The versions should match", new Version(VERSION_1_2), version_1_2_it);
-		assertNotEquals("The versions should not match", new Version(VERSION_1_2_SNAPSHOT), version_1_2_snapshot_it);
-		assertEquals("The versions should match", new Version(VERSION_1, true), version_1);
-		assertEquals("The versions should match", new Version(VERSION_1_0, true), version_1_0);
-		assertEquals("The versions should match", new Version(VERSION_V1_0, true), version_v1_0);
-		assertEquals("The versions should match", new Version(VERSION_1_2, true), version_1_2);
-		assertNotEquals("The versions should not match", new Version(VERSION_1_2_SNAPSHOT, true), version_1_2_snapshot);
-		assertEquals("The versions should not match", new Version(VERSION_1_2, true), version_1_2_it);
-		assertEquals("The versions should not match", new Version(VERSION_1_2_SNAPSHOT, true), version_1_2_snapshot_it);
+		assertEquals("The versions should match", version_1, new Version(VERSION_1));
+		assertEquals("The versions should match", version_1_0, new Version(VERSION_1_0));
+		assertEquals("The versions should match", version_1, new Version(VERSION_1_0));
+		assertEquals("The versions should match", version_v1_0, new Version(VERSION_V1_0));
+		assertEquals("The versions should match", version_1_2, new Version(VERSION_1_2));
+		assertEquals("The versions should match", version_1_2_snapshot, new Version(VERSION_1_2_SNAPSHOT));
+		assertEquals("The versions should match", version_1_2_beta, new Version(VERSION_1_2_BETA));
+		assertEquals("The versions should match", version_1_2_beta2, new Version(VERSION_1_2_BETA2));
+		assertEquals("The versions should match", version_v2_0, new Version(VERSION_V2_0));
+		assertEquals("The versions should match", version_1_2_it, new Version(VERSION_1_2));
+		assertNotEquals("The versions should not match", version_1_2_snapshot_it, new Version(VERSION_1_2_SNAPSHOT));
+		assertEquals("The versions should match", version_1, new Version(VERSION_1, true));
+		assertEquals("The versions should match", version_1_0, new Version(VERSION_1_0, true));
+		assertEquals("The versions should match", version_v1_0, new Version(VERSION_V1_0, true));
+		assertEquals("The versions should match", version_1_2, new Version(VERSION_1_2, true));
+		assertNotEquals("The versions should not match", version_1_2_snapshot, new Version(VERSION_1_2_SNAPSHOT, true));
+		assertEquals("The versions should not match", version_1_2_it, new Version(VERSION_1_2, true));
+		assertEquals("The versions should not match", version_1_2_snapshot_it, new Version(VERSION_1_2_SNAPSHOT, true));
 	}
 
 	@Test
