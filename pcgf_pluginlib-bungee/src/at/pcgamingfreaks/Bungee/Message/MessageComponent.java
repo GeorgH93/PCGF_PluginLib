@@ -33,8 +33,8 @@ import java.util.Locale;
 
 public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent>
 {
-	private static final transient MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
-	private static final transient MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
+	private static final MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
+	private static final MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 
 	static
 	{

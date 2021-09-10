@@ -41,8 +41,8 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 {
 	private static final IStatisticResolver STATISTIC_RESOLVER = PlatformResolver.createPlatformInstance(IStatisticResolver.class);
 
-	private static final transient MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
-	private static final transient MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
+	private static final MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
+	private static final MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 
 	static
 	{
