@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings({ "unchecked", "UnusedReturnValue" })
-public abstract class MessageComponent<T extends MessageComponent>
+public abstract class MessageComponent<T extends MessageComponent> implements Serializable
 {
 	//region JSON Variables
 	protected MessageClickEvent clickEvent = null;
