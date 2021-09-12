@@ -245,8 +245,7 @@ public abstract class Updater implements IUpdater
 		}
 		catch(RequestTypeNotAvailableException e)
 		{
-			logger.warning(ConsoleColor.RED + "The update provider provide invalid data about it's capabilities!" + ConsoleColor.RESET);
-			e.printStackTrace();
+			logger.log(Level.WARNING, ConsoleColor.RED + "The update provider provide invalid data about it's capabilities!" + ConsoleColor.RESET, e);
 		}
 		catch(NotSuccessfullyQueriedException e)
 		{
