@@ -121,11 +121,6 @@ public class BukkitUpdateProviderTest
 		TestUtils.setUnaccessible(downloadURLField, devBukkitVersion, false);
 		TestUtils.setUnaccessible(latestNameField, devBukkitVersion, false);
 		TestUtils.setUnaccessible(gsonField, null, true);
-		bukkitUpdateProvider = new BukkitUpdateProvider(74734, "Nothing", mockedLogger);
-		assertEquals("The API key isn't correct, therefore it should fail", UpdateResult.FAIL_API_KEY, bukkitUpdateProvider.query());
-		currentSevere += 3;
-		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
-		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
 		versionConstructor.newInstance();
 		versionConstructor.setAccessible(false);
 	}
