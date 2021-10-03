@@ -1,8 +1,8 @@
 [ci]: https://ci.pcgamingfreaks.at/job/PluginLib/
 [ciImg]: https://ci.pcgamingfreaks.at/job/PluginLib/badge/icon
 [versionImg]: https://img.shields.io/maven-metadata/v?color=blue&label=version&metadataUrl=https%3A%2F%2Frepo.pcgamingfreaks.at%2Frepository%2Fmaven-snapshots%2Fat%2Fpcgamingfreaks%2FPluginLib%2Fmaven-metadata.xml
-[coverageImg]:https://coveralls.io/repos/github/GeorgH93/PCGF_PluginLib/badge.svg
-[coverage]: https://coveralls.io/github/GeorgH93/PCGF_PluginLib
+[coverageImg]:https://codecov.io/gh/GeorgH93/PCGF_PluginLib/branch/master/graph/badge.svg?token=EKWJRvdGny
+[coverage]: https://codecov.io/gh/GeorgH93/PCGF_PluginLib
 [license]: https://github.com/GeorgH93/PCGF_PluginLib/blob/master/LICENSE
 [licenseImg]: https://img.shields.io/github/license/GeorgH93/PCGF_PluginLib.svg
 [javadoc]: https://ci.pcgamingfreaks.at/job/PluginLib/javadoc/

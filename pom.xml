@@ -11,8 +11,8 @@
 		<website>https://github.com/GeorgH93/PCGF_PluginLib/</website>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<powermock.version>2.0.7</powermock.version><!-- property so that we have to change only one value to update all the powermock dependencies -->
-		<mavenShade.version>3.3.0-SNAPSHOT</mavenShade.version>
+		<powermock.version>2.0.9</powermock.version><!-- property so that we have to change only one value to update all the powermock dependencies -->
+		<mavenShade.version>3.3.1-SNAPSHOT</mavenShade.version>
 		<pluginName>PCGF_PluginLib</pluginName>
 		<author>GeorgH93</author>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
@@ -62,13 +62,13 @@
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>17.0.0</version>
+			<version>22.0.0</version>
 		</dependency>
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.20</version>
+			<version>1.18.22</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- region test dependencies -->
@@ -76,7 +76,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.1</version>
+			<version>4.13.2</version>
 			<scope>test</scope>
 			<optional>true</optional>
 		</dependency>
@@ -174,7 +174,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Sets the working directory for the junit tests -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -231,20 +230,25 @@
 				<version>0.8.7</version>
 				<executions>
 					<execution>
-						<id>default-instrument</id>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>instrument</id>
 						<goals>
 							<goal>instrument</goal>
 						</goals>
 					</execution>
 					<execution>
-						<id>default-restore-instrumented-classes</id>
+						<id>restore-instrumented-classes</id>
 						<goals>
 							<goal>restore-instrumented-classes</goal>
 						</goals>
 					</execution>
 					<execution>
 						<id>report</id>
-						<phase>prepare-package</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
@@ -253,12 +257,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<!-- Pushes the coverage report to coveralls -->
-			<plugin>
-				<groupId>org.eluder.coveralls</groupId>
-				<artifactId>coveralls-maven-plugin</artifactId>
-				<version>4.3.0</version>
 			</plugin>
 		</plugins>
 	</build>
