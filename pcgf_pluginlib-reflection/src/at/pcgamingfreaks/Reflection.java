@@ -62,7 +62,7 @@ public class Reflection
 		{
 			return Class.forName(classPath);
 		}
-		catch(Exception ignroed) {}
+		catch(Exception ignored) {}
 		return null;
 	}
 
@@ -217,7 +217,7 @@ public class Reflection
 	}
 
 	/**
-	 * Gets a field reference from a class or one of it's parent classes.
+	 * Gets a field reference from a class or one of its parent classes.
 	 *
 	 * @param clazz The class that should be searched.
 	 * @param name The name of the field.
@@ -285,7 +285,7 @@ public class Reflection
 	}
 
 	/**
-	 * Gets a method reference from a class or one of it's parent classes.
+	 * Gets a method reference from a class or one of its parent classes.
 	 *
 	 * @param clazz The class that should be searched for the method.
 	 * @param name The name of the method.
@@ -352,7 +352,7 @@ public class Reflection
 	}
 
 	/**
-	 * Sets the value of an final field!
+	 * Sets the value of a final field!
 	 *
 	 * @param field The final Field that should be set.
 	 * @param value The value that should be set.
