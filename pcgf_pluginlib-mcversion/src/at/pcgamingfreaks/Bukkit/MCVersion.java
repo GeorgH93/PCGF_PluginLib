@@ -29,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This enum allows to compare minecraft version. Useful for reflection and version depending stuff.
+ * This enum allows comparing minecraft version. Useful for reflection and features only available in certain minecraft versions.
  */
 public enum MCVersion
 {
@@ -107,10 +107,11 @@ public enum MCVersion
 	MC_NMS_1_16_R3(103, 754, "1_16", "1.16_NMS_R3", MC_1_16),
 	MC_1_17(111, 755, "1_17", "1.17"),
 	MC_1_17_1(111, 756, "1_17", "1.17.1", MC_1_17),
-	MC_1_17_2(111, Integer.MAX_VALUE, "1_17", "1.17.2", MC_1_17),
 	MC_NMS_1_17_R1(111, 756, "1_17", "1.17_NMS_R1", MC_1_17),
-	MC_1_18(121, Integer.MAX_VALUE, "1_18", "1.18"),
-	MC_NMS_1_18_R1(121, Integer.MAX_VALUE, "1_18", "1.18_NMS_R1", MC_1_17);
+	MC_1_18(121, 757, "1_18", "1.18"),
+	MC_NMS_1_18_R1(121, 757, "1_18", "1.18_NMS_R1", MC_1_18),
+	MC_1_19(131, Integer.MAX_VALUE, "1_19", "1.19"),
+	MC_NMS_1_19_R1(131, Integer.MAX_VALUE, "1_19", "1.19_NMS_R1", MC_1_19);
 
 	private static final Map<String, MCVersion> VERSION_MAP = new HashMap<>();
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new HashMap<>();
@@ -249,7 +250,7 @@ public enum MCVersion
 	/**
 	 * Checks weather the given version is from the same major MC version.
 	 * e.g. MC 1.7.2 and MC 1.7.10 are both MC 1.7 and will result in true.
-	 * while MC 1.7.10 and MC 1.8.8 are MC 1.7 and MC 1.8 and will therefor result in false.
+	 * while MC 1.7.10 and MC 1.8.8 are MC 1.7 and MC 1.8 and will therefore result in false.
 	 *
 	 * @param other The other version to compare with
 	 * @return True if both are from the same major MC version. false if not.
@@ -262,7 +263,7 @@ public enum MCVersion
 	/**
 	 * Checks weather the given version is from the same major MC version as the currently running server version.
 	 * e.g. MC 1.7.2 and MC 1.7.10 are both MC 1.7 and will result in true.
-	 * while MC 1.7.10 and MC 1.8.8 are MC 1.7 and MC 1.8 and will therefor result in false.
+	 * while MC 1.7.10 and MC 1.8.8 are MC 1.7 and MC 1.8 and will therefore result in false.
 	 *
 	 * @param other The other version to compare with
 	 * @return True if both are from the same major MC version. false if not.
