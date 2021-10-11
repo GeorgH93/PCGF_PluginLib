@@ -8,6 +8,7 @@ on: [push, pull_request]
 jobs:
   buildAndTest:
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
         java-version:
@@ -27,6 +28,7 @@ jobs:
   # tests are not updated for java 16+
   buildOnly:
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
         java-version:
