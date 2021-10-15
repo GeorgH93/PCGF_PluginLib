@@ -110,7 +110,7 @@ public class YamlFileManager
 	 * Gets the version of the configuration.
 	 * Deprecated! use version() instead
 	 *
-	 * @return The version of the configuration. -1 if there is no or an invalid "Version" value in the configuration file.
+	 * @return The version of the configuration. -1 if there is an invalid or no "Version" value in the configuration file.
 	 */
 	@Deprecated
 	public int getVersion()
@@ -237,7 +237,7 @@ public class YamlFileManager
 	/**
 	 * Saves all changes to the file.
 	 *
-	 * @throws FileNotFoundException If the file the should be saved to does not exist.
+	 * @throws FileNotFoundException If the file that should be saved doesn't exist.
 	 */
 	public void save() throws FileNotFoundException
 	{
@@ -356,11 +356,11 @@ public class YamlFileManager
 
 	protected void extractFile()
 	{
-		Utils.extractFile(JarClass(), logger, inJarPrefix + file, yamlFile);
+		Utils.extractFile(jarClass(), logger, inJarPrefix + file, yamlFile);
 		extracted = true;
 	}
 
-	protected Class<?> JarClass()
+	protected Class<?> jarClass()
 	{
 		return getClass();
 	}

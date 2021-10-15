@@ -309,11 +309,11 @@ public class Language extends YamlFileManager
 
 	protected void extractFile()
 	{
-		if(extracted || !Utils.extractFile(JarClass(), logger, inJarPrefix + file, yamlFile))
+		if(extracted || !Utils.extractFile(jarClass(), logger, inJarPrefix + file, yamlFile))
 		{
 			if(!language.equals(fallbackLanguage))
 			{
-				Utils.extractFile(JarClass(), logger, inJarPrefix + fallbackLanguage + YAML_FILE_EXT, yamlFile);
+				Utils.extractFile(jarClass(), logger, inJarPrefix + fallbackLanguage + YAML_FILE_EXT, yamlFile);
 				extractedFallback = true;
 			}
 			else

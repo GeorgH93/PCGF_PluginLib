@@ -210,7 +210,7 @@ public class Language extends at.pcgamingfreaks.Language
 	}
 
 	@Override
-	protected Class<?> JarClass()
+	protected Class<?> jarClass()
 	{
 		return plugin.getClass();
 	}

@@ -400,7 +400,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	}
 
 	@Override
-	protected Class<?> JarClass()
+	protected Class<?> jarClass()
 	{
 		return plugin.getClass();
 	}
