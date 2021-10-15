@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit.Util;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NmsReflector;
+import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -30,13 +31,14 @@ import java.lang.reflect.Method;
 @SuppressWarnings("ConstantConditions")
 public class Utils_Reflection implements IUtils
 {
-	//region Reflection constants for the send packet method
+	//region Reflection constants for the sendPacket method
 	static final Class<?> ENTITY_PLAYER = NmsReflector.INSTANCE.getNmsClass("EntityPlayer");
 	static final Class<?> PACKET = NmsReflector.INSTANCE.getNmsClass("Packet");
 	static final Method SEND_PACKET = NmsReflector.INSTANCE.getNmsMethod("PlayerConnection", "sendPacket", PACKET);
 	static final Field PLAYER_CONNECTION = NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "playerConnection");
 	//endregion
-	private static final Field PLAYER_PING = NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "ping");
+	private static final Field PLAYER_PING = MCVersion.isOlderThan(MCVersion.MC_1_18) ? NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "ping") : null;
+	private static final Method GET_PLAYER_PING = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_18) ? Reflection.getMethod(Player.class, "getPing") : null;
 	//region Reflection constants for the json to IChatComponent converter
 	private static final Class<?> CHAT_SERIALIZER = NmsReflector.INSTANCE.getNmsClass((MCVersion.is(MCVersion.MC_NMS_1_8_R1)) ? "ChatSerializer" : "IChatBaseComponent$ChatSerializer");
 	private static final Method CHAT_SERIALIZER_METHOD_A = NmsReflector.INSTANCE.getNmsMethod(CHAT_SERIALIZER, "a", String.class);
@@ -45,17 +47,28 @@ public class Utils_Reflection implements IUtils
 	@Override
 	public int getPing(final @NotNull Player player)
 	{
-		Object handle = NmsReflector.getHandle(player);
-		if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
+		if(PLAYER_PING != null)
+		{
+			Object handle = NmsReflector.getHandle(player);
+			if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
+			{
+				try
+				{
+					return PLAYER_PING.getInt(handle);
+				}
+				catch(IllegalAccessException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		else
 		{
 			try
 			{
-				return PLAYER_PING.getInt(handle);
+				return (int) GET_PLAYER_PING.invoke(player);
 			}
-			catch(IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
+			catch(IllegalAccessException | InvocationTargetException ignored) {}
 		}
 		return -1;
 	}

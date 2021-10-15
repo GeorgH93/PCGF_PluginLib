@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public final class Utils_${nmsVersion} extends Utils_Reflection
+public final class Utils_${nmsVersion} implements IUtils
 {
 	static EntityPlayer getHandle(final @NotNull Player player)
 	{
@@ -48,8 +48,10 @@ public final class Utils_${nmsVersion} extends Utils_Reflection
 	{
 		<#if mcVersion < 100170000>
 		return getHandle(player).ping;
-		<#else>
+		<#elseif mcVersion < 100180000>
 		return getHandle(player).e;
+		<#else>
+		return player.getPing();
 		</#if>
 	}
 
