@@ -75,11 +75,9 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 		forgeClassMappings = new HashMap<>();
 		forgeFieldMappings = new HashMap<>();
 		forgeMethodMappings = new HashMap<>();
-		try
+		try(InputStream stream = Class.forName("net.minecraftforge.common.MinecraftForge").getClassLoader().getResourceAsStream("mappings/" + BUKKIT_VERSION + "/cb2numpkg.srg");
+		    BufferedReader reader = new BufferedReader(new InputStreamReader(stream)))
 		{
-			InputStream stream = Class.forName("net.minecraftforge.common.MinecraftForge").getClassLoader().getResourceAsStream("mappings/" + BUKKIT_VERSION + "/cb2numpkg.srg");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-
 			// 1: cb-simpleName
 			// 2: forge-fullName (Needs dir2fqn())
 			Pattern classPattern = Pattern.compile("^CL: net/minecraft/server/([" + nameseg_class + "]+) ([" + fqn_class + "]+)$");
