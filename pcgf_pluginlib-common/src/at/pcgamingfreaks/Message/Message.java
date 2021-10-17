@@ -153,6 +153,12 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 		return this == otherObject || (otherObject instanceof Message<?,?,?,?> && json.equals(((Message<?,?,?,?>) otherObject).json));
 	}
 
+	@Override
+	public int hashCode()
+	{
+		return json.hashCode();
+	}
+
 	/**
 	 * Replaces strings within the JSON and the classic message of this message.
 	 * This can be used to replace placeholders with static texts or with whitespaces for string format.
