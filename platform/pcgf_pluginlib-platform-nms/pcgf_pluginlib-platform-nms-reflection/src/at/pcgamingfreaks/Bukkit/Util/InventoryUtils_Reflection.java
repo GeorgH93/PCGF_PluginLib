@@ -159,11 +159,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 			if(entityPlayer == null || entityPlayer.getClass() != ENTITY_PLAYER) return; // Not a real player
 			Object activeContainer = FIELD_ACTIVE_CONTAINER.get(entityPlayer);
 			Object windowId = FIELD_CONTAINER_WINDOW_ID.get(activeContainer);
-			String type = topInv.getType().name();
-			if(topInv.getType() == InventoryType.CHEST) type = "GENERIC_9X" + (topInv.getSize() / 9);
-			else if(topInv.getType() == InventoryType.DISPENSER || topInv.getType() == InventoryType.DROPPER) type = "GENERIC_3X3";
-			else if(topInv.getType() == InventoryType.BREWING) type = "BREWING_STAND";
-			Object packet = CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW.newInstance(windowId, Reflection.getField(CLASS_CONTAINERS, type).get(null), title);
+			Object packet = CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW.newInstance(windowId, getInvContainersObject(topInv), title);
 			SEND_PACKET.invoke(PLAYER_CONNECTION.get(entityPlayer), packet);
 			if(METHOD_ENTITY_PLAYER_UPDATE_INVENTORY != null)
 				METHOD_ENTITY_PLAYER_UPDATE_INVENTORY.invoke(entityPlayer, activeContainer);
