@@ -81,8 +81,6 @@ public class Utils_ReflectionTest
 		assertEquals("The Ping field should not be found", -1, utils.getPing(player));
 		doReturn("Test").when(player).getHandle();
 		assertEquals("The Ping field should not be found", -1, utils.getPing(player));
-		playerPingField.set(null, null);
-		assertEquals("The Ping field should not be found", -1, utils.getPing(player));
 		TestUtils.setUnaccessible(playerPingField, null, true);
 	}
 }
