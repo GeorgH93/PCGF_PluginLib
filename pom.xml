@@ -7,7 +7,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<revision>1.0.33-SNAPSHOT</revision>
+		<revision>1.0.34-SNAPSHOT</revision>
 		<website>https://github.com/GeorgH93/PCGF_PluginLib/</website>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -19,6 +19,9 @@
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<bukkitVersion>1.12.2-R0.1-SNAPSHOT</bukkitVersion>
 		<bungeeVersion>1.17-R0.1-SNAPSHOT</bungeeVersion>
+
+		<sonar.organization>georgh93</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<scm>
