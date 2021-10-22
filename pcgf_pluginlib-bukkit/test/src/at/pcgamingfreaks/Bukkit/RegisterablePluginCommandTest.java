@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import at.pcgamingfreaks.Bukkit.Command.RegisterablePluginCommand;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 

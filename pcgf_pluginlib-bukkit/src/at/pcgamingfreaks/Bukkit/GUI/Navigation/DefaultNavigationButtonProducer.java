@@ -19,7 +19,7 @@ package at.pcgamingfreaks.Bukkit.GUI.Navigation;
 
 import at.pcgamingfreaks.Bukkit.GUI.GuiButton;
 import at.pcgamingfreaks.Bukkit.GUI.MultiPageGui;
-import at.pcgamingfreaks.Bukkit.HeadUtils;
+import at.pcgamingfreaks.Bukkit.Util.HeadUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
