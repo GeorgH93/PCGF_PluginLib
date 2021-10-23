@@ -55,10 +55,9 @@ public abstract class PooledConnectionProvider implements ConnectionProvider
 		}
 		catch(Exception e)
 		{
-			logger.severe(ConsoleColor.RED + "There was a problem creating the connection pool for the SQL server! Please check your configuration." + ConsoleColor.RESET);
 			Throwable cause = e;
-			while(cause.getCause() != null) { cause.getCause(); }
-			logger.severe("Error: " + cause.getMessage());
+			while(cause.getCause() != null) { cause = cause.getCause(); }
+			logger.severe(ConsoleColor.RED + "There was a problem creating the connection pool for the SQL server! Please check your configuration." + ConsoleColor.RESET + "\nError: " + cause.getMessage());
 		}
 	}
 
