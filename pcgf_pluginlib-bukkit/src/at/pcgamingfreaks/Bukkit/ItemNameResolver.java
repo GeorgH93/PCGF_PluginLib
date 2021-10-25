@@ -164,7 +164,6 @@ public class ItemNameResolver
 	{
 		if(itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName())
 		{
-			//noinspection ConstantConditions
 			return MessageColor.stripColorAndFormat(itemStack.getItemMeta().getDisplayName());
 		}
 		return getName(itemStack.getType(), itemStack.getDurability());

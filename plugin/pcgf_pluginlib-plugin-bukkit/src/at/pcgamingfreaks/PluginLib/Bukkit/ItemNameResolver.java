@@ -19,6 +19,7 @@ package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.Language;
 import at.pcgamingfreaks.Bukkit.MCVersion;
+import at.pcgamingfreaks.Version;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +27,7 @@ import java.io.File;
 import java.util.logging.Logger;
 
 /**
- * This class allows to translate minecraft items names.
+ * This class allows translating minecraft items names.
  */
 public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameResolver
 {
@@ -46,19 +47,19 @@ public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameRes
 	{
 		if(MCVersion.isOlderThan(MCVersion.MC_1_13))
 		{
-			Language itemNameLanguage = new Language(plugin, 1, 1, File.separator + "lang", "items_", "legacy_items_");
+			Language itemNameLanguage = new Language(plugin, new Version(1), new Version(1), File.separator + "lang", "items_", "legacy_items_");
 			itemNameLanguage.setFileDescription("item name language");
-			itemNameLanguage.load(plugin.getConfiguration().getLanguage(), plugin.getConfiguration().getItemLangUpdateMode());
+			itemNameLanguage.load(plugin.getConfiguration());
 			super.loadLegacy(itemNameLanguage, plugin.getLogger());
 		}
 		else
 		{
-			Language itemNameLanguage = new Language(plugin, 2, File.separator + "lang", "items_");
+			Language itemNameLanguage = new Language(plugin, new Version(2), File.separator + "lang", "items_");
 			itemNameLanguage.setFileDescription("item name language");
-			itemNameLanguage.load(plugin.getConfiguration().getLanguage(), plugin.getConfiguration().getItemLangUpdateMode());
+			itemNameLanguage.load(plugin.getConfiguration());
 			super.load(itemNameLanguage, plugin.getLogger());
 		}
-		instance = this;
+		ItemNameResolver.instance = this;
 	}
 
 	@Override
