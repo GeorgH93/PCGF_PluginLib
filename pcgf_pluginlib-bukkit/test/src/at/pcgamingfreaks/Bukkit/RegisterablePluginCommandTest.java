@@ -59,7 +59,7 @@ public class RegisterablePluginCommandTest
 		RegisterablePluginCommand pluginCommand = new RegisterablePluginCommand(plugin, "TestPlugin", "TestPlugin", "Test", "Plugin");
 		assertNotNull("The registerable plugin command should not be null", pluginCommand);
 		assertEquals("The plugin should be set correctly", plugin, pluginCommand.getPlugin());
-		assertEquals("The plugin command string should match", "at.pcgamingfreaks.Bukkit.RegisterablePluginCommand(TestPlugin, TestPlugin)", pluginCommand.toString());
+		assertEquals("The plugin command string should match", "at.pcgamingfreaks.Bukkit.Command.RegisterablePluginCommand(TestPlugin, TestPlugin)", pluginCommand.toString());
 		pluginCommand.registerCommand();
 		pluginCommand.unregisterCommand();
 		TestBukkitServer server = new TestBukkitServer();
