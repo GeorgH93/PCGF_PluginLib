@@ -17,16 +17,22 @@
 
 package at.pcgamingfreaks.Bukkit.Util;
 
-<#if mcVersion < 100170000>
-<#if 100130000 <= mcVersion>
+<#if mojangMapped>
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
+import net.minecraft.resources.ResourceLocation;
+<#else>
+	<#if mcVersion < 100170000>
+		<#if 100130000 <= mcVersion>
 import net.minecraft.server.v${nmsVersion}.MinecraftKey;
 import net.minecraft.server.v${nmsVersion}.PacketDataSerializer;
 import net.minecraft.server.v${nmsVersion}.PacketPlayOutCustomPayload;
-</#if>
-<#else>
+		</#if>
+	<#else>
 import net.minecraft.network.PacketDataSerializer;
 import net.minecraft.network.protocol.game.PacketPlayOutCustomPayload;
 import net.minecraft.resources.MinecraftKey;
+	</#if>
 </#if>
 
 import org.bukkit.entity.Player;
@@ -45,12 +51,18 @@ public class PluginChannelUtils_${nmsVersion} extends PluginChannelUtils_Reflect
 	@Override
 	public void sendPluginMessageUnchecked(final @NotNull Plugin plugin, final @NotNull Player player, final @NotNull String channel, final @NotNull byte[] message)
 	{
-		<#if 100130000 <= mcVersion>
+		<#if mojangMapped>
+		FriendlyByteBuf serializer = new FriendlyByteBuf(Unpooled.wrappedBuffer(message));
+		ClientboundCustomPayloadPacket packet = new ClientboundCustomPayloadPacket(new ResourceLocation(channel), serializer);
+		IUtils.INSTANCE.sendPacket(player, packet);
+		<#else>
+			<#if 100130000 <= mcVersion>
 		PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.wrappedBuffer(message));
 		PacketPlayOutCustomPayload packet = new PacketPlayOutCustomPayload(new MinecraftKey(channel), serializer);
 		IUtils.INSTANCE.sendPacket(player, packet);
-		<#else>
+			<#else>
 		player.sendPluginMessage(plugin, channel, message);
+			</#if>
 		</#if>
 	}
 }

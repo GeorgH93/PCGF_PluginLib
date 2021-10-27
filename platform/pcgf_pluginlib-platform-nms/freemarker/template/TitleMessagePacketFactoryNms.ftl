@@ -23,7 +23,7 @@ import at.pcgamingfreaks.Bukkit.Util.IUtils;
 import net.minecraft.server.v${nmsVersion}.IChatBaseComponent;
 import net.minecraft.server.v${nmsVersion}.PacketPlayOutTitle;
 <#else>
-import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.chat.<#if !mojangMapped>IChatBase</#if>Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
@@ -45,7 +45,7 @@ public final class TitleMessagePacketFactory_${nmsVersion} implements ITitleMess
 		<#if mcVersion < 100170000>
 		return new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, (IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json));
 		<#else>
-		return new ClientboundSetTitleTextPacket((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json));
+		return new ClientboundSetTitleTextPacket((<#if !mojangMapped>IChatBase</#if>Component) IUtils.INSTANCE.jsonToIChatComponent(json));
 		</#if>
 	}
 
@@ -55,7 +55,7 @@ public final class TitleMessagePacketFactory_${nmsVersion} implements ITitleMess
 		<#if mcVersion < 100170000>
 		return new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, (IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json));
 		<#else>
-		return new ClientboundSetSubtitleTextPacket((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json));
+		return new ClientboundSetSubtitleTextPacket((<#if !mojangMapped>IChatBase</#if>Component) IUtils.INSTANCE.jsonToIChatComponent(json));
 		</#if>
 	}
 
@@ -77,7 +77,7 @@ public final class TitleMessagePacketFactory_${nmsVersion} implements ITitleMess
 		<#elseif mcVersion < 100170000>
 		return new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.ACTIONBAR, (IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json));
 		<#else>
-		return new ClientboundSetActionBarTextPacket((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json));
+		return new ClientboundSetActionBarTextPacket((<#if !mojangMapped>IChatBase</#if>Component) IUtils.INSTANCE.jsonToIChatComponent(json));
 		</#if>
 	}
 }

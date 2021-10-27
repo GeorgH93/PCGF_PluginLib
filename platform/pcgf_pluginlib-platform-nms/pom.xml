@@ -15,6 +15,7 @@
 	<properties>
 		<nmsVersion/>
 		<mcVersion/>
+		<mojangMapped>false</mojangMapped>
 	</properties>
 
 	<repositories>
@@ -125,9 +126,25 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 				<jdk>[16,)</jdk>
+				<property>
+					<name>!mojangMappedSpigotInstalled</name>
+				</property>
 			</activation>
 			<modules>
 				<module>pcgf_pluginlib-platform-nms-1_17_R1</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>Java17AndUp</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<jdk>[17,)</jdk>
+				<property>
+					<name>mojangMappedSpigotInstalled</name>
+				</property>
+			</activation>
+			<modules>
+				<module>pom_mojang_mapped.xml</module>
 			</modules>
 		</profile>
 	</profiles>

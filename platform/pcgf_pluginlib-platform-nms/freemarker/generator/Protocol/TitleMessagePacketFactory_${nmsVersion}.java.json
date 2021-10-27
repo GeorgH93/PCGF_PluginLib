@@ -2,6 +2,7 @@
   "templateName": "TitleMessagePacketFactoryNms.ftl",
   "dataModel": {
     "nmsVersion": "${nmsVersion}",
-    "mcVersion": ${mcVersion}
+    "mcVersion": ${mcVersion},
+    "mojangMapped": ${mojangMapped}
   }
 }

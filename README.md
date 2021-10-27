@@ -44,7 +44,7 @@ and provides cross version support for a lot of Minecraft features
 * Particles handler
 * Item-Stack serializer
 * Material name resolver
-* Late registerable commands
+* Late registrable commands
 
 ## Plugins using it:
 * [Marriage Master](https://www.spigotmc.org/resources/19273/) (V2.0 and newer)
@@ -60,7 +60,7 @@ The library can be added in two ways to your plugin.
 1. Requiring it to be installed as a plugin (will be published on dev.bukkit.org and spigotmc.org soon)
 2. Shading it into your plugin (requires more RAM and some features will not work)
 
-### Adding the library as an dependency with maven:
+### Adding the library as a dependency with maven:
 #### Repository:
 ```xml
 <repository>
@@ -118,6 +118,33 @@ The recommended shading settings:
 ```
 Replace `your_package` with the package of your plugin.  
 **Do not shade this library into your plugin without relocation!!!**
+
+## Building from source:
+### Requirements:
+* Java JDK
+  * Min: 8
+  * Recommended: 17
+    * Acceleration for Minecraft 1.17 can only be built with Java >= 16
+    * Acceleration for Minecraft 1.18 can only be built with Java >= 17
+* Maven >= 3.6.3
+* git
+* (Optional) Mojang mapped Spigot artifacts installed in your local maven repository
+
+### Building:
+```bash
+git clone https://github.com/GeorgH93/PCGF_PluginLib
+cd PCGF_PluginLib
+mvn package
+```
+
+### Building with Mojang mapped Spigot:
+Make sure that you have installed the Mojang mapped Spigot artifacts installed in your local maven repository (Using the `--remapped` switch when building with the Spigot BuildTools).
+You must have them installed for all MC version >= 1.17.
+```bash
+git clone https://github.com/GeorgH93/PCGF_PluginLib
+cd PCGF_PluginLib
+mvn package -DmojangMappedSpigotInstalled
+```
 
 ## Links:
 * [Build Server ![Build Status][ciImg]][ci]

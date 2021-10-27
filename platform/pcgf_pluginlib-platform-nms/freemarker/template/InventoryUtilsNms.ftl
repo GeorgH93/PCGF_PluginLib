@@ -17,22 +17,31 @@
 
 package at.pcgamingfreaks.Bukkit.Util;
 
-<#if mcVersion < 100170000>
-<#if 100140000 <= mcVersion>
+<#if mojangMapped>
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.MenuType;
+<#else>
+	<#if mcVersion < 100170000>
+		<#if 100140000 <= mcVersion>
 import net.minecraft.server.v${nmsVersion}.IChatBaseComponent;
 import net.minecraft.server.v${nmsVersion}.ChatMessage;
 import net.minecraft.server.v${nmsVersion}.Containers;
 import net.minecraft.server.v${nmsVersion}.EntityPlayer;
 import net.minecraft.server.v${nmsVersion}.PacketPlayOutOpenWindow;
-</#if>
+		</#if>
 import net.minecraft.server.v${nmsVersion}.NBTTagCompound;
-<#else>
+	<#else>
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.chat.ChatMessage;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.game.PacketPlayOutOpenWindow;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.world.inventory.Containers;
+	</#if>
 </#if>
 
 import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
@@ -56,16 +65,20 @@ public final class InventoryUtils_${nmsVersion} extends InventoryUtils_Reflectio
 	@Override
 	public String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
 	{
-		return CraftItemStack.asNMSCopy(itemStack).save(new NBTTagCompound()).toString();
+		return CraftItemStack.asNMSCopy(itemStack).save(new <#if mojangMapped>CompoundTag<#else>NBTTagCompound</#if>()).toString();
 	}
 
 	@Override
 	public Object prepareTitleForUpdateInventoryTitle(final @NotNull String title)
 	{
-		<#if 100140000 <= mcVersion>
-		return new ChatMessage(title);
+		<#if mojangMapped>
+		return new TranslatableComponent(title);
 		<#else>
+			<#if 100140000 <= mcVersion>
+		return new ChatMessage(title);
+			<#else>
 		return null;
+			</#if>
 		</#if>
 	}
 
@@ -85,14 +98,21 @@ public final class InventoryUtils_${nmsVersion} extends InventoryUtils_Reflectio
 		Inventory topInv = view.getTopInventory();
 		if(topInv.getType() == InventoryType.CRAFTING) return;
 
+			<#if mojangMapped>
+		ServerPlayer entityPlayer = ((CraftPlayer)player).getHandle();
+		ClientboundOpenScreenPacket packet = new ClientboundOpenScreenPacket(entityPlayer.containerMenu.containerId, (MenuType<?>) getInvContainersObject(topInv), (Component) newTitle);
+		entityPlayer.connection.send(packet);
+		entityPlayer.containerMenu.sendAllDataToRemote();
+			<#else>
 		EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
 		PacketPlayOutOpenWindow packet = new PacketPlayOutOpenWindow(entityPlayer.<#if mcVersion < 100170000>activeContainer.windowId<#else>bV.j</#if>, (Containers) getInvContainersObject(topInv), (IChatBaseComponent) newTitle);
 		entityPlayer.<#if mcVersion < 100170000>playerConnection<#else>b</#if>.sendPacket(packet);
-		<#if mcVersion < 100170000>
+				<#if mcVersion < 100170000>
 		entityPlayer.updateInventory(entityPlayer.activeContainer);
-		<#else>
+				<#else>
 		entityPlayer.bV.updateInventory();
-		</#if>
+				</#if>
+			</#if>
 		</#if>
 	}
 

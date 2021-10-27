@@ -17,14 +17,20 @@
 
 package at.pcgamingfreaks.Bukkit.Util;
 
-<#if mcVersion < 100170000>
+<#if mojangMapped>
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerPlayer;
+<#else>
+	<#if mcVersion < 100170000>
 import net.minecraft.server.v${nmsVersion}.EntityPlayer;
 import net.minecraft.server.v${nmsVersion}.Packet;
 import net.minecraft.server.v${nmsVersion}.IChatBaseComponent;
-<#else>
+	<#else>
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.EntityPlayer;
+	</#if>
 </#if>
 
 import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
@@ -38,7 +44,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class Utils_${nmsVersion} implements IUtils
 {
-	static EntityPlayer getHandle(final @NotNull Player player)
+	static <#if mojangMapped>ServerPlayer<#else>EntityPlayer</#if> getHandle(final @NotNull Player player)
 	{
 		return ((CraftPlayer) player).getHandle();
 	}
@@ -48,8 +54,6 @@ public final class Utils_${nmsVersion} implements IUtils
 	{
 		<#if mcVersion < 100170000>
 		return getHandle(player).ping;
-		<#elseif mcVersion < 100180000>
-		return getHandle(player).e;
 		<#else>
 		return player.getPing();
 		</#if>
@@ -58,12 +62,21 @@ public final class Utils_${nmsVersion} implements IUtils
 	@Override
 	public void sendPacket(final @NotNull Player player, final @NotNull Object packet)
 	{
-		getHandle(player).<#if mcVersion < 100170000>playerConnection<#else>b</#if>.sendPacket((Packet<?>) packet);
+		getHandle(player).
+		<#if mojangMapped>
+			connection.send((Packet<?>) packet);
+		<#else>
+			<#if mcVersion < 100170000>playerConnection<#else>b</#if>.sendPacket((Packet<?>) packet);
+		</#if>
 	}
 
 	@Override
 	public Object jsonToIChatComponent(@NotNull String json)
 	{
+		<#if mojangMapped>
+		return Component.Serializer.fromJson(json);
+		<#else>
 		return IChatBaseComponent.ChatSerializer.a(json);
+		</#if>
 	}
 }
