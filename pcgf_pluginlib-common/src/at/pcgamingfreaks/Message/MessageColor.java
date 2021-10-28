@@ -293,6 +293,7 @@ public final class MessageColor
 	}
 
 	//region strip code
+	@Contract("!null->!null; null->null")
 	public @Nullable String strip(final @Nullable String input)
 	{
 		if(input == null) return null;

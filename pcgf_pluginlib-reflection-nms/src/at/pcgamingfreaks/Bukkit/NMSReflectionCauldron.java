@@ -182,6 +182,7 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 		return getNMSMethod(clazz, name, args);
 	}
 
+	@Contract("null,_,_->null")
 	public static Method getNMSMethod(@Nullable Class<?> clazz, @NotNull String methodName, @NotNull Class<?>... args)
 	{
 		if(clazz == null) return null;

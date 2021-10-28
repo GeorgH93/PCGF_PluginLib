@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bukkit;
 import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -106,6 +107,7 @@ public final class NMSReflectionRemapped implements NmsReflector
 	}
 
 	@Override
+	@Contract("null,_,_->null")
 	public @Nullable Method getNmsMethod(@Nullable Class<?> clazz, @NotNull String name, @NotNull Class<?>... args)
 	{
 		if(clazz == null) return null;
@@ -115,6 +117,7 @@ public final class NMSReflectionRemapped implements NmsReflector
 	}
 
 	@Override
+	@Contract("null,_->null")
 	public @Nullable Field getNmsField(@Nullable Class<?> clazz, @NotNull String name)
 	{
 		if(clazz == null) return null;

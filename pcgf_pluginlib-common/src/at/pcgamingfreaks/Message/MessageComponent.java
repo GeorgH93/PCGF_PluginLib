@@ -124,7 +124,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param messageList The message components that should be converted into a classic minecraft chat message.
 	 * @return The JSON message component in the classic chat format.
 	 */
-	public static String getClassicMessage(Collection<? extends MessageComponent> messageList)
+	public static @NotNull String getClassicMessage(Collection<? extends MessageComponent> messageList)
 	{
 		if(messageList == null) return ""; // If we don't have a JSON we can't calculate the classic message from it so we will use an empty message
 		StringBuilder builder = new StringBuilder();

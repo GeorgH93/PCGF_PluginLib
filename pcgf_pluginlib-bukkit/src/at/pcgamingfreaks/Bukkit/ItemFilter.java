@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -51,6 +52,7 @@ public class ItemFilter
 		this.filteredMaterials.addAll(filteredMaterialsToBeAdded);
 	}
 
+	@Contract("null->false")
 	public boolean isItemBlocked(final @Nullable ItemStack item)
 	{
 		if(item == null) return false;
