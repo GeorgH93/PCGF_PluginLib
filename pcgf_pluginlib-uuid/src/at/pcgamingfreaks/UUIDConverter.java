@@ -328,6 +328,14 @@ public final class UUIDConverter
 		return uuid;
 	}
 
+	public static UUID getUUIDCacheOnly(@NotNull String name, boolean offlineModeFallback)
+	{
+		String uuidString = UUID_CACHE.get(name);
+		if(uuidString != null) return UUID.fromString(uuidString.replaceAll(UUID_FORMAT_REGEX, UUID_FORMAT_REPLACE_TO));
+		if(offlineModeFallback) return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
+		return null;
+	}
+
 	private static String getOnlineUUID(@NotNull String name, @Nullable Date at)
 	{
 		if((at == null || at.after(new Date(System.currentTimeMillis() - 1000L*24*3600* 30))) && UUID_CACHE.containsKey(name))
