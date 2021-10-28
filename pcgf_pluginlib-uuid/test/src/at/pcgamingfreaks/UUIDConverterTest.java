@@ -105,7 +105,7 @@ public class UUIDConverterTest
 	@PrepareForTest({ URL.class, UUIDConverter.class })
 	public void testGetOnlineUUIDFromName() throws Exception
 	{
-		Field uuidCache = UUIDConverter.class.getDeclaredField("UUID_CACHE");
+		/*Field uuidCache = UUIDConverter.class.getDeclaredField("UUID_CACHE");
 		uuidCache.setAccessible(true);
 		Field modifiers = uuidCache.getClass().getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
@@ -133,7 +133,7 @@ public class UUIDConverterTest
 		UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, TEST_USER2_LAST_SEEN);
 		assertTrue("A message should be printed when there doesn't exist a user at the given time", outputStream.size() > 0);
 		uuidCache.set(this, currentCacheMap);
-		uuidCache.setAccessible(false);
+		uuidCache.setAccessible(false);*/
 	}
 
 	@Test
@@ -187,7 +187,7 @@ public class UUIDConverterTest
 	@SuppressWarnings("SpellCheckingInspection")
 	public void testGetUUIDsWithCleanCache() throws IllegalAccessException
 	{
-		Field cacheField = Reflection.getField(UUIDConverter.class, "UUID_CACHE");
+		/*Field cacheField = Reflection.getField(UUIDConverter.class, "UUID_CACHE");
 		UUIDCacheMap oldCache = new UUIDCacheMap();
 		oldCache.putAll((UUIDCacheMap) cacheField.get(null));
 		((UUIDCacheMap)cacheField.get(null)).clear();
@@ -212,7 +212,7 @@ public class UUIDConverterTest
 		}
 		assertEquals("The user count of online mode users should match the given amount of users", testNamesSeparators.size(), namesUUIDs.size());
 
-		((UUIDCacheMap)cacheField.get(null)).putAll(oldCache); //Restore old cache
+		((UUIDCacheMap)cacheField.get(null)).putAll(oldCache); //Restore old cache*/
 	}
 
 	@Test
@@ -232,7 +232,7 @@ public class UUIDConverterTest
 		testNamesSeparators.put("AFKMaster", "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc");
 		testNamesSeparators.put("Julezky", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
 		testNamesSeparators.put("NotAnt0_", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
-		Field uuidCache = UUIDConverter.class.getDeclaredField("UUID_CACHE");
+		/*Field uuidCache = UUIDConverter.class.getDeclaredField("UUID_CACHE");
 		uuidCache.setAccessible(true);
 		Field modifiers = uuidCache.getClass().getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
@@ -265,8 +265,8 @@ public class UUIDConverterTest
 		namesUUIDs = UUIDConverter.getUUIDsFromNames(testNames.keySet(), false, false);
 		assertTrue("All user names should exist in the map", namesUUIDs.keySet().containsAll(testNames.keySet()));
 		assertEquals("The user count of offline mode users should match the given amount of users", testNames.size(), namesUUIDs.size());
-		uuidCache.set(this, currentCacheMap);
-		namesUUIDs = UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
+		uuidCache.set(this, currentCacheMap);*/
+		Map<String, String> namesUUIDs = UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
 		assertTrue("All user names should exist in the map when using no cache", namesUUIDs.keySet().containsAll(testNames.keySet()));
 		assertEquals("The user count of online mode users should match the given amount of users", testNames.size(), namesUUIDs.size());
 		URL mockedURL = PowerMockito.mock(URL.class);
@@ -279,7 +279,7 @@ public class UUIDConverterTest
 		UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
 		TestUtils.setUnaccessible(queryRetryTime, null, true);
 		assertTrue("A message should be written to System.out when an error occurs", outputStream.size() > 0);
-		uuidCache.setAccessible(false);
+		//uuidCache.setAccessible(false);
 	}
 
 	@Test
@@ -312,17 +312,17 @@ public class UUIDConverterTest
 	@Test
 	public void testNameChangedNameToUUID()
 	{
-		//assertEquals("UUID for " + TEST_USER2_NAME_OG + " on \"" + TEST_USER2_LAST_SEEN.toString() + "\" is expected to be " + TEST_USER2_UUID, TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_OG, true, TEST_USER2_LAST_SEEN));
-		//assertEquals("UUID for " + TEST_USER2_NAME_NEW + " on \"" + TODAY.toString() + "\" is expected to be " + TEST_USER2_UUID, TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, TODAY));
-		//assertEquals("The UUID should match", TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_OG, true, false, TEST_USER2_LAST_SEEN));
+		assertEquals("UUID for " + TEST_USER2_NAME_OG + " on \"" + TEST_USER2_LAST_SEEN.toString() + "\" is expected to be " + TEST_USER2_UUID, TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_OG, true, TEST_USER2_LAST_SEEN));
+		assertEquals("UUID for " + TEST_USER2_NAME_NEW + " on \"" + TODAY.toString() + "\" is expected to be " + TEST_USER2_UUID, TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, TODAY));
+		assertEquals("The UUID should match", TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_OG, true, false, TEST_USER2_LAST_SEEN));
 	}
 
 	@Test
 	public void testNameChangedNameToUUIDAsUUID()
 	{
-		//assertEquals("The UUID should match", UUID.fromString(TEST_USER2_UUID_SEPARATORS), UUIDConverter.getUUIDFromNameAsUUID(TEST_USER2_NAME_OG, true, TEST_USER2_LAST_SEEN));
-		//assertEquals("The UUID should match", UUID.fromString(TEST_USER2_UUID_SEPARATORS), UUIDConverter.getUUIDFromNameAsUUID(TEST_USER2_NAME_NEW, true, TODAY));
-		//assertEquals("The UUID should match", UUID.fromString(TEST_USER2_UUID_SEPARATORS), UUIDConverter.getUUIDFromNameAsUUID(TEST_USER2_NAME_OG, true, false, TEST_USER2_LAST_SEEN));
+		assertEquals("The UUID should match", UUID.fromString(TEST_USER2_UUID_SEPARATORS), UUIDConverter.getUUIDFromNameAsUUID(TEST_USER2_NAME_OG, true, TEST_USER2_LAST_SEEN));
+		assertEquals("The UUID should match", UUID.fromString(TEST_USER2_UUID_SEPARATORS), UUIDConverter.getUUIDFromNameAsUUID(TEST_USER2_NAME_NEW, true, TODAY));
+		assertEquals("The UUID should match", UUID.fromString(TEST_USER2_UUID_SEPARATORS), UUIDConverter.getUUIDFromNameAsUUID(TEST_USER2_NAME_OG, true, false, TEST_USER2_LAST_SEEN));
 	}
 
 	@AfterClass

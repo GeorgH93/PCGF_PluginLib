@@ -1,0 +1,66 @@
+/*
+ *   Copyright (C) 2021 GeorgH93
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package at.pcgamingfreaks.UUID;
+
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+import java.util.logging.Logger;
+
+public class UuidConverter
+{
+	private final UuidCache cache;
+	private final MojangUuidResolver mojangUuidResolver;
+
+	public UuidConverter()
+	{
+		this(UuidCache.getSHARED_UUID_CACHE(), null);
+	}
+
+	public UuidConverter(@Nullable UuidCache uuidCache, @Nullable Logger logger)
+	{
+		if(uuidCache == null) uuidCache = UuidCache.getSHARED_UUID_CACHE();
+		if(logger == null) logger = Logger.getLogger("UUID Converter");
+
+		this.cache = uuidCache;
+		this.mojangUuidResolver = new MojangUuidResolver(uuidCache);
+	}
+
+	public static UUID getOfflineModeUUID(final @NotNull String name)
+	{
+		return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
+	}
+
+	@Contract("_,true->!null")
+	public @Nullable UUID getUUIDCacheOnly(final @NotNull String name, boolean offlineModeFallback)
+	{
+		if(offlineModeFallback && !cache.contains(name)) return getOfflineModeUUID(name);
+		return cache.getUuidFromName(name);
+	}
+
+	@Contract("_,true->!null")
+	public @Nullable UUID getUUID(final @NotNull String name, boolean offlineModeFallback)
+	{
+		UUID uuid = mojangUuidResolver.getUUID(name, null);
+		if(uuid != null || !offlineModeFallback) return uuid;
+		return getOfflineModeUUID(name);
+	}
+}
