@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 
 public final class MojangUuidResolver
 {
-	public static final String UUID_FORMAT_REGEX = "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})";
+	public static final String UUID_FORMAT_REGEX = "([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{12})";
 	public static final String UUID_FORMAT_REPLACE_TO = "$1-$2-$3-$4-$5";
 
 	private static final Gson GSON = new Gson();
@@ -250,6 +250,13 @@ public final class MojangUuidResolver
 		}
 		log(Level.INFO, "Converted " + (fromCache + fromWeb) + "/" + names.size() + " UUIDs (" + fromCache + " of them from the cache and " + fromWeb + " from Mojang).");
 		return result;
+	}
+
+	public @Nullable String getName(final @NotNull UUID uuid)
+	{
+		NameChange[] names = getNameHistory(uuid);
+		if(names == null || names.length == 0) return null;
+		return names[names.length - 1].name;
 	}
 
 	public @Nullable NameChange[] getNameHistory(final @NotNull UUID uuid)

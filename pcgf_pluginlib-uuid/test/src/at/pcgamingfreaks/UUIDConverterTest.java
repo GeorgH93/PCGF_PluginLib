@@ -105,7 +105,7 @@ public class UUIDConverterTest
 	@PrepareForTest({ URL.class, UUIDConverter.class })
 	public void testGetOnlineUUIDFromName() throws Exception
 	{
-		/*Field uuidCache = UUIDConverter.class.getDeclaredField("UUID_CACHE");
+		Field uuidCache = UUIDConverter.class.getDeclaredField("UUID_CACHE");
 		uuidCache.setAccessible(true);
 		Field modifiers = uuidCache.getClass().getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
@@ -133,7 +133,7 @@ public class UUIDConverterTest
 		UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, TEST_USER2_LAST_SEEN);
 		assertTrue("A message should be printed when there doesn't exist a user at the given time", outputStream.size() > 0);
 		uuidCache.set(this, currentCacheMap);
-		uuidCache.setAccessible(false);*/
+		uuidCache.setAccessible(false);
 	}
 
 	@Test

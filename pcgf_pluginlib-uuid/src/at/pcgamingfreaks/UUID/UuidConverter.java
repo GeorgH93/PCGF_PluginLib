@@ -24,9 +24,12 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 public class UuidConverter
 {
+	private static final Pattern UUID_FORMAT_PATTERN = Pattern.compile("([0-9a-fA-F]{8})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{12})");
+
 	private final UuidCache cache;
 	private final MojangUuidResolver mojangUuidResolver;
 
@@ -42,6 +45,16 @@ public class UuidConverter
 
 		this.cache = uuidCache;
 		this.mojangUuidResolver = new MojangUuidResolver(uuidCache);
+	}
+
+	public static @NotNull UUID uuidFromString(@NotNull String uuid) throws IllegalArgumentException
+	{
+		if(uuid.matches(MojangUuidResolver.UUID_FORMAT_REGEX))
+		{
+			if(uuid.length() != 36) uuid = uuid.replaceAll(MojangUuidResolver.UUID_FORMAT_REGEX, MojangUuidResolver.UUID_FORMAT_REPLACE_TO);
+			return UUID.fromString(uuid);
+		}
+		throw new IllegalArgumentException("Invalid uuid format!");
 	}
 
 	public static UUID getOfflineModeUUID(final @NotNull String name)
