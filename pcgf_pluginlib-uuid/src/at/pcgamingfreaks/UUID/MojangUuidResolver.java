@@ -174,7 +174,7 @@ public final class MojangUuidResolver
 				HttpURLConnection connection = null;
 				try
 				{
-					connection = (HttpURLConnection) new URL(mojangApiHost + "users/profiles/minecraft").openConnection();
+					connection = (HttpURLConnection) new URL(mojangApiHost + "profiles/minecraft").openConnection();
 					connection.setRequestMethod("POST");
 					connection.setRequestProperty("Content-Type", "application/json; encoding=UTF-8");
 					connection.setUseCaches(false);

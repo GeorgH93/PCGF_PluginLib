@@ -29,13 +29,24 @@ import java.util.regex.Pattern;
 public class UuidConverter
 {
 	private static final Pattern UUID_FORMAT_PATTERN = Pattern.compile("([0-9a-fA-F]{8})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{12})");
+	private final @NotNull UuidCache cache;
+	private final @NotNull MojangUuidResolver mojangUuidResolver;
+	private final @NotNull Logger logger;
 
-	private final UuidCache cache;
-	private final MojangUuidResolver mojangUuidResolver;
-
+	//region Constructors
 	public UuidConverter()
 	{
-		this(UuidCache.getSHARED_UUID_CACHE(), null);
+		this(null, null);
+	}
+
+	public UuidConverter(final @NotNull Logger logger)
+	{
+		this(null, logger);
+	}
+
+	public UuidConverter(@Nullable UuidCache uuidCache)
+	{
+		this(uuidCache, null);
 	}
 
 	public UuidConverter(@Nullable UuidCache uuidCache, @Nullable Logger logger)
@@ -45,11 +56,13 @@ public class UuidConverter
 
 		this.cache = uuidCache;
 		this.mojangUuidResolver = new MojangUuidResolver(uuidCache);
+		this.logger = logger;
 	}
+	//endregion
 
 	public static @NotNull UUID uuidFromString(@NotNull String uuid) throws IllegalArgumentException
 	{
-		if(uuid.matches(MojangUuidResolver.UUID_FORMAT_REGEX))
+		if(UUID_FORMAT_PATTERN.matcher(uuid).matches())
 		{
 			if(uuid.length() != 36) uuid = uuid.replaceAll(MojangUuidResolver.UUID_FORMAT_REGEX, MojangUuidResolver.UUID_FORMAT_REPLACE_TO);
 			return UUID.fromString(uuid);

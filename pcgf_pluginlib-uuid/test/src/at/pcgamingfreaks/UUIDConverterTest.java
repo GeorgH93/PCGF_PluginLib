@@ -18,6 +18,9 @@
 package at.pcgamingfreaks;
 
 import at.pcgamingfreaks.TestClasses.TestUtils;
+import at.pcgamingfreaks.UUID.MojangUuidResolver;
+import at.pcgamingfreaks.UUID.UuidCache;
+import at.pcgamingfreaks.UUID.UuidConverter;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -105,35 +108,22 @@ public class UUIDConverterTest
 	@PrepareForTest({ URL.class, UUIDConverter.class })
 	public void testGetOnlineUUIDFromName() throws Exception
 	{
-		Field uuidCache = UUIDConverter.class.getDeclaredField("UUID_CACHE");
-		uuidCache.setAccessible(true);
-		Field modifiers = uuidCache.getClass().getDeclaredField("modifiers");
+		Field resolver = UUIDConverter.class.getDeclaredField("MOJANG_RESOLVER");
+		resolver.setAccessible(true);
+		Field modifiers = resolver.getClass().getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
-		modifiers.setInt(uuidCache, uuidCache.getModifiers() & ~Modifier.FINAL);
-		UUIDCacheMap currentCacheMap = (UUIDCacheMap) uuidCache.get(this);
-		UUIDCacheMap mockedUUIDCacheMap = mock(UUIDCacheMap.class);
-		mockedUUIDCacheMap.clear();
-		uuidCache.set(this, mockedUUIDCacheMap);
+		modifiers.setInt(resolver, resolver.getModifiers() & ~Modifier.FINAL);
+		UuidCache mockedUUIDCache = mock(UuidCache.class);
+		resolver.set(this, new MojangUuidResolver(mockedUUIDCache));
 		assertEquals("Username with no time given and no cache should match the current username", TEST_USER_UUID, UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, null));
 		assertEquals("Username at the current time with no cache should match the current username", TEST_USER_UUID, UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, TODAY));
-		when(mockedUUIDCacheMap.containsKey(TEST_USER_NAME)).thenReturn(true);
-		when(mockedUUIDCacheMap.get(TEST_USER_NAME)).thenReturn(TEST_USER_UUID);
+		when(mockedUUIDCache.contains(TEST_USER_NAME)).thenReturn(true);
+		when(mockedUUIDCache.getUuidFromName(TEST_USER_NAME)).thenReturn(UuidConverter.uuidFromString(TEST_USER_UUID));
 		assertEquals("Username with no time given and available cache should match the current username", TEST_USER_UUID, UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, null));
 		assertEquals("Username at the current time and available cache should match the current username", TEST_USER_UUID, UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, TODAY));
-		reset(mockedUUIDCacheMap);
-		URL mockedURL = PowerMockito.mock(URL.class);
-		whenNew(URL.class).withArguments(anyString()).thenThrow(new MalformedURLException());
-		UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, null);
-		assertTrue("An error should be printed when a malformed URL occurs", errorStream.toString().contains("MalformedURLException"));
-		PowerMockito.doThrow(new IOException("HTTP response code: 429")).when(mockedURL).openStream();
-		whenNew(URL.class).withAnyArguments().thenReturn(mockedURL);
-		UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, null);
-		assertTrue("An error should be printed when the URL can't open the stream", errorStream.toString().contains("IOException"));
-		PowerMockito.doAnswer(invocationOnMock -> null).when(mockedURL).openStream();
-		UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, TEST_USER2_LAST_SEEN);
-		assertTrue("A message should be printed when there doesn't exist a user at the given time", outputStream.size() > 0);
-		uuidCache.set(this, currentCacheMap);
-		uuidCache.setAccessible(false);
+		reset(mockedUUIDCache);
+		resolver.set(this, new MojangUuidResolver(UuidCache.getSHARED_UUID_CACHE()));
+		resolver.setAccessible(false);
 	}
 
 	@Test
@@ -178,9 +168,9 @@ public class UUIDConverterTest
 		testNamesSeparators.put("Julezky", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
 		testNamesSeparators.put("NotAnt0_", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
 		Map<String, String> namesUUIDs = UUIDConverter.getUUIDsFromNames(testNamesSeparators.keySet(), true, true);
-		assertEquals("All user UUIDs should match the given ones with separators", namesUUIDs, testNamesSeparators);
+		assertEquals("All user UUIDs should match the given ones with separators", testNamesSeparators, namesUUIDs);
 		namesUUIDs = UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
-		assertEquals("All user UUIDs should match the given ones with separators", namesUUIDs, testNames);
+		assertEquals("All user UUIDs should match the given ones with separators", testNames, namesUUIDs);
 	}
 
 	@Test
@@ -312,8 +302,8 @@ public class UUIDConverterTest
 	@Test
 	public void testNameChangedNameToUUID()
 	{
-		assertEquals("UUID for " + TEST_USER2_NAME_OG + " on \"" + TEST_USER2_LAST_SEEN.toString() + "\" is expected to be " + TEST_USER2_UUID, TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_OG, true, TEST_USER2_LAST_SEEN));
-		assertEquals("UUID for " + TEST_USER2_NAME_NEW + " on \"" + TODAY.toString() + "\" is expected to be " + TEST_USER2_UUID, TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, TODAY));
+		assertEquals("UUID for " + TEST_USER2_NAME_OG + " on \"" + TEST_USER2_LAST_SEEN + "\" is expected to be " + TEST_USER2_UUID, TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_OG, true, TEST_USER2_LAST_SEEN));
+		assertEquals("UUID for " + TEST_USER2_NAME_NEW + " on \"" + TODAY + "\" is expected to be " + TEST_USER2_UUID, TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, TODAY));
 		assertEquals("The UUID should match", TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_OG, true, false, TEST_USER2_LAST_SEEN));
 	}
 

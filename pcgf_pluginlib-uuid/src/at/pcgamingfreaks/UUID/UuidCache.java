@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class UuidCache
+public class UuidCache
 {
 	@Getter private static final UuidCache SHARED_UUID_CACHE = new UuidCache();
 
@@ -85,7 +85,7 @@ public final class UuidCache
 
 	public @Nullable UUID getUuidFromName(final @NotNull String name)
 	{
-		return nameToUuidMap.get(name);
+		return nameToUuidMap.get(name.toLowerCase(Locale.ROOT));
 	}
 
 	public @Nullable String getNameFromUuid(final @NotNull UUID uuid)
@@ -95,11 +95,17 @@ public final class UuidCache
 
 	public boolean contains(final @NotNull String name)
 	{
-		return nameToUuidMap.containsKey(name);
+		return nameToUuidMap.containsKey(name.toLowerCase(Locale.ROOT));
 	}
 
 	public boolean contains(final @NotNull UUID uuid)
 	{
 		return uuidToNameMap.containsKey(uuid);
+	}
+
+	void clear()
+	{
+		uuidToNameMap.clear();
+		nameToUuidMap.clear();
 	}
 }
