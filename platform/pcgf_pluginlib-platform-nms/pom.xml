@@ -127,7 +127,7 @@
 				<activeByDefault>false</activeByDefault>
 				<jdk>[16,)</jdk>
 				<property>
-					<name>!mojangMappedSpigotInstalled</name>
+					<name>useBukkitMappedMc17</name>
 				</property>
 			</activation>
 			<modules>
@@ -139,9 +139,6 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 				<jdk>[17,)</jdk>
-				<property>
-					<name>mojangMappedSpigotInstalled</name>
-				</property>
 			</activation>
 			<modules>
 				<module>pom_mojang_mapped.xml</module>
