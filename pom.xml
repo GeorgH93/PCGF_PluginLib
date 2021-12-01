@@ -281,6 +281,19 @@
 		<module>other/IMessage</module>
 	</modules>
 
+	<profiles>
+		<profile>
+			<id>DisableTestsOnJava16AndUp</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<jdk>[16,)</jdk>
+			</activation>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
+	</profiles>
+
 	<distributionManagement>
 		<repository>
 			<id>releases</id>

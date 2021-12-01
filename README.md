@@ -128,22 +128,12 @@ Replace `your_package` with the package of your plugin.
     * Acceleration for Minecraft 1.18 can only be built with Java >= 17
 * Maven >= 3.6.3
 * git
-* (Optional) Mojang mapped Spigot artifacts installed in your local maven repository
 
 ### Building:
 ```bash
 git clone https://github.com/GeorgH93/PCGF_PluginLib
 cd PCGF_PluginLib
 mvn package
-```
-
-### Building with Mojang mapped Spigot:
-Make sure that you have installed the Mojang mapped Spigot artifacts installed in your local maven repository (Using the `--remapped` switch when building with the Spigot BuildTools).
-You must have them installed for all MC version >= 1.17.
-```bash
-git clone https://github.com/GeorgH93/PCGF_PluginLib
-cd PCGF_PluginLib
-mvn package -DmojangMappedSpigotInstalled
 ```
 
 ## Links:

@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java-version: [ 8, 11 ]
+        java-version: [ 8, 11, 16, 17 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,24 +22,6 @@ jobs:
           java-version: ${{ matrix.java-version }}
       - name: Build and test with maven
         run: mvn -B -s .github/workflows/settings.xml clean package --file pom.xml
-
-  # tests are not updated for java 16+
-  buildOnly:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        java-version: [ 16, 17 ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up JDK ${{ matrix.java-version }}
-        uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: ${{ matrix.java-version }}
-      - name: Build and test with maven
-        run: mvn -B -s .github/workflows/settings.xml -DskipTests=true clean package --file pom.xml
 
   coverage:
     runs-on: ubuntu-latest
