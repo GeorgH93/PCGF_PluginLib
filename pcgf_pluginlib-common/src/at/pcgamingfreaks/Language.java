@@ -421,7 +421,7 @@ public class Language extends YamlFileManager
 		T msg = null;
 		try
 		{
-			final String msgString = (escapeStringFormatCharacters) ? getTranslated(path).replaceAll("%", "%%") : getTranslated(path);
+			final String msgString = getTranslated(path);
 			//noinspection unchecked
 			msg = (T) messageClasses.messageConstructor.newInstance(msgString);
 			if(msgString.isEmpty())
@@ -429,6 +429,7 @@ public class Language extends YamlFileManager
 				messageClasses.setSendMethod.invoke(msg, Enum.valueOf(messageClasses.enumType, "DISABLED"));
 				return msg;
 			}
+			if(escapeStringFormatCharacters) msg.escapeStringFormatCharacters();
 			final String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
 			if(yaml.isSet(pathSendMethod))
 			{
@@ -455,14 +456,14 @@ public class Language extends YamlFileManager
 			}
 			if(yaml.getBoolean(KEY_LANGUAGE + path + KEY_ADDITION_PAPI, false))
 			{
-                try
-                {
-                    msg.setPlaceholderApiEnabled(true);
-                }
-                catch(UnsupportedOperationException e)
-                {
-                    logger.warning(ConsoleColor.RED + e.getMessage() + ConsoleColor.RESET);
-                }
+				try
+				{
+					msg.setPlaceholderApiEnabled(true);
+				}
+				catch(UnsupportedOperationException e)
+				{
+					logger.warning(ConsoleColor.RED + e.getMessage() + ConsoleColor.RESET);
+				}
 			}
 		}
 		catch(Exception e)
