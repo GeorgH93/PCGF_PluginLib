@@ -308,13 +308,13 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		if(getSendMethod() == SendMethod.DISABLED) return;
 		if(target instanceof Player && getSendMethod() != SendMethod.CHAT_CLASSIC)
 		{
-			String jsonMsg = (args != null && args.length > 0) ? String.format(json, quoteArgs(args)) : json;
+			String jsonMsg = prepareMessage(true, args);
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders(playerForPAPI, jsonMsg);
 			sendMethod.getActiveSender().send((Player) target, jsonMsg, optionalParameters);
 		}
 		else
 		{
-			String msg = (args != null && args.length > 0) ? String.format(fallback, args) : fallback;
+			String msg = prepareMessage(false, args);
 			if(isPlaceholderApiEnabled()) msg = PlaceholderAPI.setPlaceholders(playerForPAPI, msg);
 			target.sendMessage(msg);
 		}

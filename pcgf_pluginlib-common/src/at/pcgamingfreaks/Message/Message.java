@@ -57,6 +57,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 	protected List<MESSAGE_COMPONENT> messageComponents = null;
 	@Getter protected boolean placeholderApiEnabled = false;
 	@Getter private boolean legacy = false;
+	private boolean escaped; // % -> %%
 	//endregion
 
 	//region Constructors
@@ -183,6 +184,15 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 		return (MESSAGE) this;
 	}
 
+	public void escapeStringFormatCharacters()
+	{
+		if (!escaped)
+		{
+			replaceAll("%", "%%");
+			escaped = true;
+		}
+	}
+
 	protected Object[] quoteArgs(final Object[] args)
 	{
 		for(int i = 0; i < args.length; i++)
@@ -208,8 +218,8 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 		if(args != null && args.length > 0)
 		{
 			if(useJson) quoteArgs(args);
-			return String.format(msg, args);
+			return String.format(msg, args);  // %% will be converted to % automatically
 		}
-		return msg;
+		return escaped ? msg.replaceAll("%%", "%") : msg; // manually convert %% to %
 	}
 }
