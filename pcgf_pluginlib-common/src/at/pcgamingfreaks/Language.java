@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 public class Language extends YamlFileManager
 {
 	private static final String MESSAGE_NOT_FOUND = "§cMessage not found!";
-	private static final String KEY_LANGUAGE = "Language.", KEY_ADDITION_SEND_METHOD = "_SendMethod", KEY_ADDITION_PARAMETERS = "_Parameters";
+	private static final String KEY_LANGUAGE = "Language.", KEY_ADDITION_SEND_METHOD = "_SendMethod", KEY_ADDITION_PARAMETERS = "_Parameters", KEY_ADDITION_PAPI = "_PAPI";
 	protected static MessageClassesReflectionDataHolder messageClasses;
 
 	private final String prefix;
@@ -452,6 +452,17 @@ public class Language extends YamlFileManager
 						if(meta != null) msg.setOptionalParameters(meta);
 					}
 				}
+			}
+			if(yaml.getBoolean(KEY_LANGUAGE + path + KEY_ADDITION_PAPI, false))
+			{
+                try
+                {
+                    msg.setPlaceholderApiEnabled(true);
+                }
+                catch(UnsupportedOperationException e)
+                {
+                    logger.warning(ConsoleColor.RED + e.getMessage() + ConsoleColor.RESET);
+                }
 			}
 		}
 		catch(Exception e)

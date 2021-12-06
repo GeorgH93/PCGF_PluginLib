@@ -66,7 +66,6 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 * Gets the method used to display this message on the client.
 	 */
 	@Getter private @NotNull SendMethod sendMethod = PRE_1_8_MC ? SendMethod.CHAT_CLASSIC : SendMethod.CHAT;
-	@Getter private boolean placeholderApiEnabled = false;
 	//endregion
 
 	//region Constructors
@@ -200,6 +199,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		super.setOptionalParameters(optionalParameters);
 	}
 
+	@Override
 	public void setPlaceholderApiEnabled(boolean enabled)
 	{
 		placeholderApiEnabled = enabled && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;

@@ -33,6 +33,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.UnsupportedOperationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,6 +55,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 	@Setter @Getter protected IMetadata optionalParameters = null;
 	@Getter protected String json, fallback;
 	protected List<MESSAGE_COMPONENT> messageComponents = null;
+	@Getter protected boolean placeholderApiEnabled = false;
 	@Getter private boolean legacy = false;
 	//endregion
 
@@ -113,6 +115,11 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 		json = MessageComponent.GSON.toJson(message); // We need a JSON string to send to the player, so lets generate one from the component list
 	}
 	//endregion
+
+	public void setPlaceholderApiEnabled(boolean enabled)
+	{
+		throw new UnsupportedOperationException("Placeholder API is not available for your server type!");
+	}
 
 	/**
 	 * Gets the message in the classic minecraft chat format (used for minecraft version below 1.7).
