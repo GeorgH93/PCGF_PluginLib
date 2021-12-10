@@ -99,7 +99,7 @@ public final class NMSReflectionRemapped implements NmsReflector
 	{
 		Class<?> clazz = CLASS_MAP.get(className);
 		if(clazz != null) return clazz;
-		clazz = Reflection.getClassSilent(CLASS_NAME_MAP.getOrDefault(className, className));
+		clazz = Reflection.getClassSilent(CLASS_NAME_MAP.getOrDefault(className, NMSReflection.NMS_CLASS_PATH + className));
 		if(clazz == null) clazz = findClass(className);
 		if(clazz == null) Reflection.getClass(className);
 		if(clazz != null) CLASS_MAP.put(className, clazz);

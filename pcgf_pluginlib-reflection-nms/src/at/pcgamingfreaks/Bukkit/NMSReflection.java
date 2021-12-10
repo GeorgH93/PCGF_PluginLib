@@ -32,7 +32,7 @@ import java.util.Locale;
 @Deprecated
 public class NMSReflection extends OBCReflection implements NmsReflector
 {
-	private static final String NMS_CLASS_PATH = "net.minecraft.server." + BUKKIT_VERSION + ".";
+	protected static final String NMS_CLASS_PATH = "net.minecraft.server." + BUKKIT_VERSION + ".";
 
 	static
 	{
