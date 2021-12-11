@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@ public class Utils
 	 * Converts a byte array into a hex string.
 	 *
 	 * @param bytes The byte array to convert to hex.
-	 * @return The hex string matching the given byte array. The chars a-f will be lower case!
+	 * @return The hex string matching the given byte array. The chars a-f will be lower-case!
 	 */
-	public static @NotNull String byteArrayToHex(@Nullable byte[] bytes)
+	public static @NotNull String byteArrayToHex(byte[] bytes)
 	{
 		if(bytes == null || bytes.length == 0) return "";
 		StringBuilder hexBuilder = new StringBuilder(bytes.length * 2);
@@ -65,7 +65,7 @@ public class Utils
 	}
 
 	/**
-	 * Checks if an array contains an certain value
+	 * Checks if an array contains a certain value
 	 *
 	 * @param array The array that should be checked
 	 * @param data  The data that should be searched for in the array
@@ -111,20 +111,25 @@ public class Utils
 		{
 			if(targetFile.exists() && !targetFile.delete())
 			{
-				logger.info("Failed to delete old file (" + targetFile.toString() + ").");
+				logger.warning("Failed to delete old file (" + targetFile + ").");
 			}
 			File parentFile = targetFile.getParentFile();
 			if(!parentFile.exists() && !parentFile.mkdirs())
 			{
-				logger.info("Failed creating directory's! Expected path: " + parentFile.toString());
+				logger.warning("Failed creating directory's! Expected path: " + parentFile);
 			}
 			if(!targetFile.createNewFile())
 			{
-				logger.info("Failed create new file (" + targetFile.toString() + ").");
+				logger.warning("Failed create new file (" + targetFile + ").");
 			}
 			if(!inJarPath.startsWith("/")) inJarPath = "/" + inJarPath;
 			try(InputStream is = pluginClass.getResourceAsStream(inJarPath); OutputStream os = new FileOutputStream(targetFile))
 			{
+				if(is == null)
+				{
+					logger.severe("Failed to extract \"" + inJarPath + "\" because it does not exist!");
+					return false;
+				}
 				streamCopy(is, os);
 				os.flush();
 			}
@@ -133,14 +138,13 @@ public class Utils
 		}
 		catch (IOException | NullPointerException e)
 		{
-			logger.warning("Failed to extract file \"" + inJarPath + "\"!");
-			//e.printStackTrace();
+			logger.warning("Failed to extract file \"" + inJarPath + "\"! Reason: " + e.getMessage());
 		}
 		return false;
 	}
 
 	/**
-	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 * Parses a string into a number. Unlike Java's implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
 	 *
 	 * @param string The string that should be parsed.
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
@@ -157,7 +161,7 @@ public class Utils
 	}
 
 	/**
-	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 * Parses a string into a number. Unlike Java's implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
 	 *
 	 * @param string The string that should be parsed.
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
@@ -174,7 +178,7 @@ public class Utils
 	}
 
 	/**
-	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 * Parses a string into a number. Unlike Java's implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
 	 *
 	 * @param string The string that should be parsed.
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
@@ -208,7 +212,7 @@ public class Utils
 	}
 
 	/**
-	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 * Parses a string into a number. Unlike Java's implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
 	 *
 	 * @param string The string that should be parsed.
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
@@ -225,7 +229,7 @@ public class Utils
 	}
 
 	/**
-	 * Parses an string into a number. Unlike Javas implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
+	 * Parses a string into a number. Unlike Java's implementation this method doesn't throw an exception, but will return a given value, when the given string couldn't be parsed.
 	 *
 	 * @param string The string that should be parsed.
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
@@ -245,7 +249,7 @@ public class Utils
 	 * Extracts files from a loaded .jar file.
 	 *
 	 * @param pluginClass The main-class of the plugin that holds the file to be extracted.
-	 * @param inJarPath   The files path in the jar file.
+	 * @param inJarPath   The file path in the jar file.
 	 * @param targetDir   The directory in which the files should be extracted.
 	 * @param overwrite   If existing files should be overwritten.
 	 */
@@ -258,7 +262,7 @@ public class Utils
 	 * Extracts files from a loaded .jar file.
 	 *
 	 * @param jar         The url to the jar file
-	 * @param inJarPath   The files path in the jar file.
+	 * @param inJarPath   The file path in the jar file.
 	 * @param targetDir   The directory in which the files should be extracted.
 	 * @param overwrite   If existing files should be overwritten.
 	 */
@@ -309,7 +313,7 @@ public class Utils
 		}
 	}
 
-	public static <T extends Enum<T>> T getEnum(String valueName, T defaultValue)
+	public static <T extends Enum<T>> @NotNull T getEnum(@NotNull String valueName, @NotNull T defaultValue)
 	{
 		T v = null;
 		try
