@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import java.util.Collection;
 /**
  * The hover event is used for the JSON messages when the part of the message using it is hovered by the player with the cursor.
  */
+@SuppressWarnings("rawtypes")
 public class MessageHoverEvent
 {
 	/**
@@ -40,7 +41,6 @@ public class MessageHoverEvent
 	/**
 	 * The value of the hover event.
 	 */
-	@SuppressWarnings("NotNullFieldNotInitialized")
 	@Getter private @NotNull Object value;
 
 	/**
@@ -51,8 +51,8 @@ public class MessageHoverEvent
 	 */
 	public MessageHoverEvent(final @NotNull HoverEventAction action, final @NotNull String value)
 	{
-		setAction(action);
-		setValue(value);
+		this.action = action;
+		this.value = value;
 	}
 
 	/**
@@ -63,8 +63,8 @@ public class MessageHoverEvent
 	 */
 	public MessageHoverEvent(final @NotNull HoverEventAction action, final @NotNull JsonObject value)
 	{
-		setAction(action);
-		setValue(value);
+		this.action = action;
+		this.value = value;
 	}
 
 	/**
@@ -75,8 +75,8 @@ public class MessageHoverEvent
 	 */
 	public MessageHoverEvent(final @NotNull HoverEventAction action, final @NotNull Message value)
 	{
-		setAction(action);
-		setValue(value);
+		this.action = action;
+		this.value = value.getMessageComponents();
 	}
 
 	/**
@@ -87,8 +87,8 @@ public class MessageHoverEvent
 	 */
 	public MessageHoverEvent(final @NotNull HoverEventAction action, final @NotNull Collection<? extends MessageComponent> value)
 	{
-		setAction(action);
-		setValue(value);
+		this.action = action;
+		this.value = value;
 	}
 
 	/**
@@ -97,10 +97,10 @@ public class MessageHoverEvent
 	 * @param action The action that should be executed when the user hovers over the text with his cursor.
 	 * @param value  The value used for the action of the event.
 	 */
-	public MessageHoverEvent(final @NotNull HoverEventAction action, final @NotNull MessageComponent[] value)
+	public MessageHoverEvent(final @NotNull HoverEventAction action, final @NotNull MessageComponent @NotNull [] value)
 	{
-		setAction(action);
-		setValue(value);
+		this.action = action;
+		this.value = value;
 	}
 
 	/**

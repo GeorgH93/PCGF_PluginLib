@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ public enum SendMethod implements ISendMethod, ISender
 		}
 		else fallback = this;
 		fallbackSendMethod = fallback;
-		activeSender = (isAvailable()) ? sender : fallback.getActiveSender();
+		activeSender = (sender != null) ? sender : fallback.getActiveSender();
 	}
 
 	/**
@@ -85,7 +85,7 @@ public enum SendMethod implements ISendMethod, ISender
 	}
 
 	/**
-	 * Checks if the send method allows to set additional parameters via a metadata class.
+	 * Checks if the send method allows setting additional parameters via a metadata class.
 	 *
 	 * @return True if the send method supports additional send method parameters. False if not.
 	 */
