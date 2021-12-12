@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ public abstract class Updater implements IUpdater
 {
 	private static final int BUFFER_SIZE = 1024;
 
-	private final File pluginsFolder, updateFolder;
+	@NotNull private final File pluginsFolder, updateFolder;
 	protected final UpdateProvider[] updateProviders;
 	protected UpdateProvider updateProvider;
 	private final boolean announceDownloadProgress, downloadDependencies;
@@ -78,7 +78,7 @@ public abstract class Updater implements IUpdater
 		this(pluginsFolder, new File(pluginsFolder, "updates"), announceProgress, downloadDependencies, logger, updateProviders, localVersion, targetFileName);
 	}
 
-	protected Updater(final File pluginsFolder, final File updateFolder, final boolean announceProgress, final boolean downloadDependencies, final Logger logger, final UpdateProvider[] updateProviders, final String localVersion, final String targetFileName)
+	protected Updater(final @NotNull File pluginsFolder, final @NotNull File updateFolder, final boolean announceProgress, final boolean downloadDependencies, final Logger logger, final UpdateProvider[] updateProviders, final String localVersion, final String targetFileName)
 	{
 		assert updateProviders.length > 0;
 		this.pluginsFolder = pluginsFolder;
@@ -96,9 +96,8 @@ public abstract class Updater implements IUpdater
 		final File updaterConfigFile = new File(pluginsFolder, "Updater" + File.separator + "config.yml");
 		if(updaterConfigFile.exists())
 		{
-			try
+			try(YAML gravityUpdaterGlobalConfig = new YAML(updaterConfigFile))
 			{
-				YAML gravityUpdaterGlobalConfig = new YAML(updaterConfigFile);
 				if(gravityUpdaterGlobalConfig.getBoolean("disable", false))
 				{
 					result = UpdateResult.DISABLED;
@@ -182,7 +181,7 @@ public abstract class Updater implements IUpdater
 			HttpURLConnection connection = updateProvider.connect(url);
 			if(connection == null) // connection failed with redirect loop
 			{
-				logger.warning("Target url redirected to often. Abort.");
+				logger.warning("Target url redirected too often. Abort.");
 				result = UpdateResult.FAIL_DOWNLOAD;
 				return;
 			}
@@ -195,7 +194,7 @@ public abstract class Updater implements IUpdater
 			{
 				if(announceDownloadProgress)
 				{
-					logger.info("Start downloading update: " + updateProvider.getLatestVersion().toString());
+					logger.info("Start downloading update: " + updateProvider.getLatestVersion());
 				}
 				int count, downloaded = 0, progress, lastProgress = 1;
 				float percentPerByte = 100f / fileLength;
@@ -245,7 +244,7 @@ public abstract class Updater implements IUpdater
 		}
 		catch(RequestTypeNotAvailableException e)
 		{
-			logger.log(Level.WARNING, ConsoleColor.RED + "The update provider provide invalid data about it's capabilities!" + ConsoleColor.RESET, e);
+			logger.log(Level.WARNING, ConsoleColor.RED + "The update provider provided invalid data about its capabilities!" + ConsoleColor.RESET, e);
 		}
 		catch(NotSuccessfullyQueriedException e)
 		{
@@ -254,7 +253,7 @@ public abstract class Updater implements IUpdater
 		}
 		catch(IOException e)
 		{
-			logger.warning("The auto-updater tried to download a new update, but was unsuccessful.\n\t\tReason: " + e.toString());
+			logger.warning("The auto-updater tried to download a new update, but was unsuccessful.\n\t\tReason: " + e);
 			result = UpdateResult.FAIL_DOWNLOAD;
 		}
 	}
@@ -296,7 +295,9 @@ public abstract class Updater implements IUpdater
 
 	protected boolean isPluginFile(String name)
 	{
-		for(final File file : pluginsFolder.listFiles())
+		File[] files = pluginsFolder.listFiles();
+		if(files == null) return false;
+		for(final File file : files)
 		{
 			if(file.getName().equals(name)) return true;
 		}
