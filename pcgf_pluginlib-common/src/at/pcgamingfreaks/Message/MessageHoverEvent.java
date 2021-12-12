@@ -75,8 +75,7 @@ public class MessageHoverEvent
 	 */
 	public MessageHoverEvent(final @NotNull HoverEventAction action, final @NotNull Message value)
 	{
-		this.action = action;
-		this.value = value.getMessageComponents();
+		this(action, value.getMessageComponents());
 	}
 
 	/**
