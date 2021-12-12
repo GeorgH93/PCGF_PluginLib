@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 public class Version implements Comparable<Version>
 { //TODO support 1.0a and 1.0b (a, b) as alpha/beta markers
 	public static final String VERSION_STING_FORMAT = "[vV]?(?<version>\\d+(\\.\\d+)*)(?<tags>(-[^-\\s]+)*)";
+	private static final List<String> EMPTY_TAG_LIST = new ArrayList<>(0);
 	private static final byte SAME = 0, OLDER = -1, NEWER = 1;
 	private static final String VERSION_SPLIT_REGEX = "\\.", TAG_SPLIT_REGEX = "-", UNIMPORTANT_VERSION_PARTS_REGEX = "(\\.0)*$", PRE_RELEASE_TAG_FORMAT = "(?<tag>\\w+)\\.?(?<number>\\d+)";
 	private static final Pattern PRE_RELEASE_TAG_FORMAT_PATTERN = Pattern.compile(PRE_RELEASE_TAG_FORMAT), VERSION_STING_FORMAT_PATTERN = Pattern.compile(VERSION_STING_FORMAT);
@@ -87,8 +88,8 @@ public class Version implements Comparable<Version>
 		// Prepare data
 		this.tags = versionMatcher.group("tags").split(TAG_SPLIT_REGEX); // Split the tags
 		String[] comps = version.split(VERSION_SPLIT_REGEX);
-		List<String> tags = (!ignoreTags) ? getAll(this.tags, PRE_RELEASE_TAGS) : null;
-		boolean notAFinalVersion = !ignoreTags && tags.size() > 0;
+		List<String> tags = (!ignoreTags) ? getAll(this.tags, PRE_RELEASE_TAGS) : EMPTY_TAG_LIST;
+		boolean notAFinalVersion = tags.size() > 0;
 		this.version = new int[notAFinalVersion ? comps.length + 1 : comps.length];
 		for(int i = 0; i < comps.length; i++)
 		{
@@ -242,9 +243,9 @@ public class Version implements Comparable<Version>
 	}
 
 	/**
-	 * Checks if the version is a pre release version or not.
+	 * Checks if the version is a pre-release version or not.
 	 *
-	 * @return True if the version is a pre release version. False if not.
+	 * @return True if the version is a pre-release version. False if not.
 	 */
 	public boolean isPreRelease()
 	{
@@ -264,7 +265,7 @@ public class Version implements Comparable<Version>
 	}
 
 	/**
-	 * Checks if the version is newer or the same than the given version.
+	 * Checks if the version is newer or the same as the given version.
 	 *
 	 * @param otherVersion The version to compare with.
 	 * @return True if the version is newer or the same, false if not.
@@ -286,7 +287,7 @@ public class Version implements Comparable<Version>
 	}
 
 	/**
-	 * Checks if the version is older or the same than the given version.
+	 * Checks if the version is older or the same as the given version.
 	 *
 	 * @param otherVersion The version to compare with.
 	 * @return True if the version is older or the same, false if not.
@@ -309,7 +310,7 @@ public class Version implements Comparable<Version>
 	}
 
 	/**
-	 * Checks if the version is newer or the same than the given version.
+	 * Checks if the version is newer or the same as the given version.
 	 *
 	 * @param otherVersion The version to compare with.
 	 * @return True if the version is newer or the same, false if not.
@@ -331,7 +332,7 @@ public class Version implements Comparable<Version>
 	}
 
 	/**
-	 * Checks if the version is older or the same than the given version.
+	 * Checks if the version is older or the same as the given version.
 	 *
 	 * @param otherVersion The version to compare with.
 	 * @return True if the version is older or the same, false if not.
