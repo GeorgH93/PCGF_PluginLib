@@ -88,8 +88,8 @@ public class Version implements Comparable<Version>
 		// Prepare data
 		this.tags = versionMatcher.group("tags").split(TAG_SPLIT_REGEX); // Split the tags
 		String[] comps = version.split(VERSION_SPLIT_REGEX);
-		List<String> tags = (!ignoreTags) ? getAll(this.tags, PRE_RELEASE_TAGS) : EMPTY_TAG_LIST;
-		boolean notAFinalVersion = tags.size() > 0;
+		List<String> tagsList = (!ignoreTags) ? getAll(this.tags, PRE_RELEASE_TAGS) : EMPTY_TAG_LIST;
+		boolean notAFinalVersion = !tagsList.isEmpty();
 		this.version = new int[notAFinalVersion ? comps.length + 1 : comps.length];
 		for(int i = 0; i < comps.length; i++)
 		{
@@ -99,7 +99,7 @@ public class Version implements Comparable<Version>
 		{
 			this.preRelease = true;
 			int last = 0;
-			for(String str : tags)
+			for(String str : tagsList)
 			{
 				if(last == 0) last = Integer.MAX_VALUE;
 				int preReleaseTagNumber = 0;
