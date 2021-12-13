@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class SubCommand extends at.pcgamingfreaks.Command.SubCommand<CommandSender>
 {
-	public SubCommand(@NotNull String name, @NotNull String description, @Nullable String permission, @Nullable String... aliases)
+	protected SubCommand(@NotNull String name, @NotNull String description, @Nullable String permission, @Nullable String... aliases)
 	{
 		super(name, description, permission, aliases);
 	}

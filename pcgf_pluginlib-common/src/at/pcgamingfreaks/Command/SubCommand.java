@@ -25,16 +25,16 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Represents an ready to use base class for sub commands.
+ * Represents a ready to use base class for sub commands.
  *
  * @param <COMMAND_SENDER> The command sender class of either Bukkit/Spigot or BungeeCord
  */
 public abstract class SubCommand<COMMAND_SENDER>
 {
-	private String name, description, permission;
-	private List<String> aliases;
+	private final String name, description,permission;
+	private final List<String> aliases;
 
-	public SubCommand(@NotNull String name, @NotNull String description, @Nullable String permission, @Nullable String... aliases)
+	protected SubCommand(@NotNull String name, @NotNull String description, @Nullable String permission, @Nullable String... aliases)
 	{
 		this.name = name.toLowerCase(Locale.ROOT);
 		if(aliases != null)
@@ -119,22 +119,22 @@ public abstract class SubCommand<COMMAND_SENDER>
 	public void unRegisterSubCommands() {}
 
 	/**
-	 * Allows to perform actions before the sub-command will be registered in the command manager.
+	 * Allows performing actions before the sub-command will be registered in the command manager.
 	 */
 	public void beforeRegister() {}
 
 	/**
-	 * Allows to perform actions after the sub-command has been registered in the command manager.
+	 * Allows performing actions after the sub-command has been registered in the command manager.
 	 */
 	public void afterRegister() {}
 
 	/**
-	 * Allows to perform actions before the sub-command will be un-registered from the command manager.
+	 * Allows performing actions before the sub-command will be un-registered from the command manager.
 	 */
 	public void beforeUnregister() {}
 
 	/**
-	 * Allows to perform actions after the sub-command has been un-registered from the command manager.
+	 * Allows performing actions after the sub-command has been un-registered from the command manager.
 	 */
 	public void afterUnRegister() {}
 	//endregion
