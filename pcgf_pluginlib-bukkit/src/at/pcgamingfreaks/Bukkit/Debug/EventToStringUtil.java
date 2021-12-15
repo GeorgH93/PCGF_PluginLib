@@ -29,10 +29,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.logging.Logger;
 
 /**
- * An class that is useful for debugging. It converts bukkit events into short and readable strings that can be logged into a log file
+ * A class that is useful for debugging. It converts bukkit events into short and readable strings that can be logged into a log file
  */
-public class EventToStringUtil
+public final class EventToStringUtil
 {
+	private EventToStringUtil() {}
+
 	public static String toString(final @NotNull LivingEntity player)
 	{
 		return String.format("%s (%s)", player.getName(), player.getUniqueId().toString());
@@ -49,7 +51,7 @@ public class EventToStringUtil
 		                     item.getPickupDelay(), toString(item.getItemStack()));
 	}
 
-	public static void logEvent(final @NotNull Logger logger, final @NotNull InventoryClickEvent event) { logger.info(toString(event)); }
+	public static void logEvent(final @NotNull Logger logger, final @NotNull InventoryClickEvent event) { logger.info(() -> toString(event)); }
 
 	public static String toString(final @NotNull InventoryClickEvent event)
 	{
@@ -59,7 +61,7 @@ public class EventToStringUtil
 		                     event.getSlot(), event.getRawSlot(), event.getSlotType().name(), toString(event.getWhoClicked()), event.getHotbarButton());
 	}
 
-	public static void logEvent(final @NotNull Logger logger, final @NotNull InventoryDragEvent event) { logger.info(toString(event)); }
+	public static void logEvent(final @NotNull Logger logger, final @NotNull InventoryDragEvent event) { logger.info(() -> toString(event)); }
 
 	public static String toString(final @NotNull InventoryDragEvent event)
 	{
@@ -69,7 +71,7 @@ public class EventToStringUtil
 	}
 
 
-	public static void logEvent(final @NotNull Logger logger, final @NotNull EntityPickupItemEvent event) { logger.info(toString(event)); }
+	public static void logEvent(final @NotNull Logger logger, final @NotNull EntityPickupItemEvent event) { logger.info(() -> toString(event)); }
 
 	public static String toString(final @NotNull EntityPickupItemEvent event)
 	{
@@ -77,7 +79,7 @@ public class EventToStringUtil
 		                     toString(event.getItem()), event.getRemaining(), toString(event.getEntity()));
 	}
 
-	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerInteractEvent event) { logger.info(toString(event)); }
+	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerInteractEvent event) { logger.info(() -> toString(event)); }
 
 	public static String toString(final @NotNull PlayerInteractEvent event)
 	{
@@ -87,7 +89,7 @@ public class EventToStringUtil
 
 	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerSwapHandItemsEvent event)
 	{
-		logger.info(toString(event));
+		logger.info(() -> toString(event));
 	}
 
 	public static String toString(final @NotNull PlayerSwapHandItemsEvent event)
@@ -98,7 +100,7 @@ public class EventToStringUtil
 
 	public static void logEvent(final @NotNull Logger logger, final @NotNull AsyncPlayerPreLoginEvent event)
 	{
-		logger.info(toString(event));
+		logger.info(() -> toString(event));
 	}
 
 	public static String toString(final @NotNull AsyncPlayerPreLoginEvent event)
@@ -109,7 +111,7 @@ public class EventToStringUtil
 	
 	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerLoginEvent event)
 	{
-		logger.info(toString(event));
+		logger.info(() -> toString(event));
 	}
 
 	public static String toString(final @NotNull PlayerLoginEvent event)
@@ -120,7 +122,7 @@ public class EventToStringUtil
 
 	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerLocaleChangeEvent event)
 	{
-		logger.info(toString(event));
+		logger.info(() -> toString(event));
 	}
 
 	public static String toString(final @NotNull PlayerLocaleChangeEvent event)
@@ -131,7 +133,7 @@ public class EventToStringUtil
 
 	public static void logEvent(final @NotNull Logger logger, final @NotNull PlayerQuitEvent event)
 	{
-		logger.info(toString(event));
+		logger.info(() -> toString(event));
 	}
 
 	public static String toString(final @NotNull PlayerQuitEvent event)
