@@ -38,7 +38,7 @@ public final class MessageColor
 	private static final MessageColor[] COLORS = new MessageColor[17];
 
 	public static final char COLOR_CHAR = '\u00A7';
-	public static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx";
+	public static final String ALL_CODES = "0123456789AaBbCcDdEeFfRrXx";
 
 	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-F]");
 	private static final Pattern STRIP_COLOR_AND_FORMAT_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-FK-OR]");
@@ -355,20 +355,6 @@ public final class MessageColor
 			}
 		}
 		return new String(chars);
-	}
-	//endregion
-
-	//region deprecated methods (will be removed at some point)
-	@Deprecated
-	public boolean isFormat()
-	{
-		return false;
-	}
-
-	@Deprecated
-	public boolean isColor()
-	{
-		return this != RESET;
 	}
 	//endregion
 

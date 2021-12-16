@@ -24,49 +24,6 @@ import static org.junit.Assert.*;
 public class MessageColorTest
 {
 	@Test
-	public void testIsColor()
-	{
-		assertTrue(MessageColor.BLACK.isColor());
-		assertTrue(MessageColor.DARK_BLUE.isColor());
-		assertTrue(MessageColor.DARK_GREEN.isColor());
-		assertTrue(MessageColor.DARK_AQUA.isColor());
-		assertTrue(MessageColor.DARK_RED.isColor());
-		assertTrue(MessageColor.DARK_PURPLE.isColor());
-		assertTrue(MessageColor.DARK_GRAY.isColor());
-		assertTrue(MessageColor.GRAY.isColor());
-		assertTrue(MessageColor.GOLD.isColor());
-		assertTrue(MessageColor.BLUE.isColor());
-		assertTrue(MessageColor.GREEN.isColor());
-		assertTrue(MessageColor.AQUA.isColor());
-		assertTrue(MessageColor.RED.isColor());
-		assertTrue(MessageColor.LIGHT_PURPLE.isColor());
-		assertTrue(MessageColor.YELLOW.isColor());
-		assertTrue(MessageColor.WHITE.isColor());
-	}
-
-	@Test
-	public void testIsFormat()
-	{
-		assertFalse(MessageColor.BLACK.isFormat());
-		assertFalse(MessageColor.DARK_BLUE.isFormat());
-		assertFalse(MessageColor.DARK_GREEN.isFormat());
-		assertFalse(MessageColor.DARK_AQUA.isFormat());
-		assertFalse(MessageColor.DARK_RED.isFormat());
-		assertFalse(MessageColor.DARK_PURPLE.isFormat());
-		assertFalse(MessageColor.DARK_GRAY.isFormat());
-		assertFalse(MessageColor.GRAY.isFormat());
-		assertFalse(MessageColor.GOLD.isFormat());
-		assertFalse(MessageColor.BLUE.isFormat());
-		assertFalse(MessageColor.GREEN.isFormat());
-		assertFalse(MessageColor.AQUA.isFormat());
-		assertFalse(MessageColor.RED.isFormat());
-		assertFalse(MessageColor.LIGHT_PURPLE.isFormat());
-		assertFalse(MessageColor.YELLOW.isFormat());
-		assertFalse(MessageColor.WHITE.isFormat());
-		assertFalse(MessageColor.RESET.isFormat());
-	}
-
-	@Test
 	public void testToString()
 	{
 		assertEquals(MessageColor.BLACK.toString(), "\u00A7" + 0);
