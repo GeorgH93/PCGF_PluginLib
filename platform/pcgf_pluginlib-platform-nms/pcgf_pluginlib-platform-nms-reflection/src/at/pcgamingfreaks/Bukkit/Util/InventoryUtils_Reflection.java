@@ -57,9 +57,9 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	private static final Method AS_NMS_COPY_METHOD = OBCReflection.getOBCMethod("inventory.CraftItemStack", "asNMSCopy", ItemStack.class);
 	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NmsReflector.INSTANCE.getNmsMethod("ItemStack", "save", NBT_TAG_COMPOUND_CLASS);
 
-	private final static Method METHOD_GET_INVENTORY = OBCReflection.getOBCMethod("inventory.CraftInventory", "getInventory");
-	private final static Method METHOD_CRAFT_CHAT_MESSAGE_FROM_STRING = MCVersion.isAny(MCVersion.MC_1_13) ? OBCReflection.getOBCMethod("util.CraftChatMessage", "wrapOrNull", String.class) : null;
-	private final static Field FIELD_TITLE = OBCReflection.getOBCField("inventory.CraftInventoryCustom$MinecraftInventory", "title");
+	private static final Method METHOD_GET_INVENTORY = OBCReflection.getOBCMethod("inventory.CraftInventory", "getInventory");
+	private static final Method METHOD_CRAFT_CHAT_MESSAGE_FROM_STRING = MCVersion.isAny(MCVersion.MC_1_13) ? OBCReflection.getOBCMethod("util.CraftChatMessage", "wrapOrNull", String.class) : null;
+	private static final Field FIELD_TITLE = OBCReflection.getOBCField("inventory.CraftInventoryCustom$MinecraftInventory", "title");
 
 	private static final EnumMap<InventoryType, Object> INVENTORY_TYPE_MAP = new EnumMap<>(InventoryType.class);
 	private static final Object[] INVENTORY_TYPE_CHEST = new Object[6];
