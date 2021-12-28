@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -117,13 +117,20 @@ public class Utils extends at.pcgamingfreaks.Utils
 		}
 	}
 
-	public static @NotNull List<String> getPlayerNamesStartingWith(@NotNull String startingWith, final @NotNull CommandSender exclude)
+	public static @NotNull List<String> getPlayerNamesStartingWith(@NotNull String startingWith, final @Nullable CommandSender forUser)
 	{
-		String excludeName = exclude.getName().toLowerCase(Locale.ROOT);
+		return getPlayerNamesStartingWithVisibleOnly(startingWith, forUser, "*");
+	}
+	
+	public static @NotNull List<String> getPlayerNamesStartingWithVisibleOnly(@NotNull String startingWith, final @Nullable CommandSender forUser, final @NotNull String vanishBypassPermission)
+	{
+		String excludeName = (forUser instanceof Player) ? forUser.getName().toLowerCase(Locale.ROOT) : null;
 		startingWith = startingWith.toLowerCase(Locale.ROOT);
-		List<String> names = new ArrayList<>();
+		List<String> names = new ArrayList<>(Bukkit.getOnlinePlayers().size());
+		final boolean excludeVanished = forUser instanceof Player && !"*".equals(vanishBypassPermission) && !forUser.hasPermission(vanishBypassPermission);
 		for(Player player : Bukkit.getOnlinePlayers())
 		{
+			if(excludeVanished && !((Player) forUser).canSee(player)) continue; // Hide vanished players
 			String nameLower = player.getName().toLowerCase(Locale.ROOT);
 			if(!nameLower.equals(excludeName) && nameLower.startsWith(startingWith)) names.add(player.getName());
 		}
