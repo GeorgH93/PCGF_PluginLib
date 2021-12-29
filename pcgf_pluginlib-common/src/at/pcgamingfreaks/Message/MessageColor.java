@@ -117,6 +117,7 @@ public final class MessageColor
 	@Getter private final char code;
 	private final String toString;
 	@Getter private final String rgbColor, name;
+	private final String nameUpper;
 	private final int rgb;
 	@Getter private final MessageColor fallbackColor;
 
@@ -127,22 +128,24 @@ public final class MessageColor
 		this.toString = new String(new char[]{ COLOR_CHAR, code});
 		this.fallbackColor = this;
 		COLORS[ordinal()] = this;
-		if(name == null)
+		if(name == null) // Only reset will have no color-name
 		{
 			this.rgbColor = null;
 			this.rgb = -1;
+			this.nameUpper = "RESET";
 		}
 		else
 		{
 			this.rgbColor = '#' + rgbColor;
 			this.rgb = Integer.parseInt(rgbColor, 16);
+			this.nameUpper = name.toUpperCase(Locale.ENGLISH);
 			BY_NAME.put(name, this);
-			BY_NAME.put(name.toUpperCase(Locale.ROOT), this);
+			BY_NAME.put(nameUpper, this);
 			if(name.contains("_"))
 			{
 				name = name.replaceAll("_", "");
 				BY_NAME.put(name, this);
-				BY_NAME.put(name.toUpperCase(Locale.ROOT), this);
+				BY_NAME.put(name.toUpperCase(Locale.ENGLISH), this);
 			}
 		}
 	}
@@ -158,6 +161,7 @@ public final class MessageColor
 		this.toString = builder.toString();
 		this.rgbColor = '#' + rgbColor;
 		this.name = null;
+		this.nameUpper = "RGB";
 		this.rgb = Integer.parseInt(rgbColor, 16);
 		fallbackColor = getNearestColor(rgb);
 	}
@@ -281,9 +285,14 @@ public final class MessageColor
 		return 16;
 	}
 
-	public String name()
+	/**
+	 * Gets the name of the color object.
+	 *
+	 * @return The name of the color, "RGB" for RGB colors.
+	 */
+	public @NotNull String name()
 	{
-		return name;
+		return nameUpper;
 	}
 	//endregion
 
