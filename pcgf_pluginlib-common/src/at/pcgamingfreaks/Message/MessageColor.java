@@ -26,11 +26,9 @@ import org.jetbrains.annotations.Nullable;
 import lombok.Getter;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public final class MessageColor
 {
@@ -187,6 +185,12 @@ public final class MessageColor
 		return toString.equals(other.toString());
 	}
 	//endregion
+
+	public static @NotNull List<String> getNamesStartingWith(final @NotNull String startsWith)
+	{
+		final String starts = startsWith.toLowerCase(Locale.ENGLISH);
+		return BY_NAME.keySet().stream().filter(name -> name.startsWith(starts)).collect(Collectors.toList());
+	}
 
 	public static boolean isColorChar(char code)
 	{
