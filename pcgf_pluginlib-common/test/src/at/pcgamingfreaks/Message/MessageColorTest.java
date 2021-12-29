@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,7 +19,8 @@ package at.pcgamingfreaks.Message;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class MessageColorTest
 {
@@ -104,5 +105,21 @@ public class MessageColorTest
 		assertEquals(MessageColor.LIGHT_PURPLE, MessageColor.getColor("lightpurple"));
 		assertEquals(MessageColor.LIGHT_PURPLE, MessageColor.getColor("light_purple"));
 		assertEquals(MessageColor.DARK_RED, MessageColor.getColor("#fF0000").getFallbackColor());
+	}
+
+	@Test
+	public void testName()
+	{
+		assertEquals("RED", MessageColor.RED.name());
+		assertEquals("RESET", MessageColor.RESET.name());
+		assertEquals("GREEN", MessageColor.GREEN.name());
+	}
+
+	@Test
+	public void testGetNamesStartingWith()
+	{
+		assertEquals(0, MessageColor.getNamesStartingWith("rese").size());
+		assertEquals(1, MessageColor.getNamesStartingWith("red").size());
+		assertEquals(1, MessageColor.getNamesStartingWith("RED").size());
 	}
 }
