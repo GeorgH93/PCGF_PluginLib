@@ -189,8 +189,8 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 			setInventoryTitle(inventory, title);
 		}
 		player.openInventory(inventory);
-		if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_14)) updateInventoryTitle(player, title);
-		else setInventoryTitlePrepared(inventory, currentTitle);
+		if(currentTitle != null) setInventoryTitlePrepared(inventory, currentTitle);
+		else updateInventoryTitle(player, title);
 	}
 
 	@Override
@@ -203,8 +203,8 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 			setInventoryTitlePrepared(inventory, title);
 		}
 		player.openInventory(inventory);
-		if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_14)) updateInventoryTitlePrepared(player, title);
-		else setInventoryTitlePrepared(inventory, currentTitle);
+		if (currentTitle != null) setInventoryTitlePrepared(inventory, currentTitle);
+		else updateInventoryTitlePrepared(player, title);
 	}
 
 	@Override
