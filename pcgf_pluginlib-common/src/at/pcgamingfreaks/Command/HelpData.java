@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@ public class HelpData
 	/**
 	 * The parameters to be displayed. null or "" for no parameters.
 	 */
-	@SuppressWarnings("NotNullFieldNotInitialized")
 	@Getter @NotNull private String parameter;
 
 	/**
@@ -73,10 +72,10 @@ public class HelpData
 	 */
 	public HelpData(final @NotNull String translatedSubCommand, final @Nullable String parameter, final @NotNull String description, final @NotNull MessageClickEvent.ClickEventAction clickAction)
 	{
-		setTranslatedSubCommand(translatedSubCommand);
-		setParameter(parameter);
-		setDescription(description);
-		setClickAction(clickAction);
+		this.translatedSubCommand = translatedSubCommand;
+		this.parameter = (parameter == null) ? "" : parameter;
+		this.description = description;
+		this.clickAction = clickAction;
 	}
 
 	/**
