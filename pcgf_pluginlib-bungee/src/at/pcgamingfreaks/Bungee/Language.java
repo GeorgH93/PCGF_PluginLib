@@ -189,12 +189,12 @@ public class Language extends at.pcgamingfreaks.Language
 	@Deprecated
 	public @NotNull String getString(@NotNull String option)
 	{
-		return MessageColor.translateAlternateColorCodes(get(option));
+		return MessageColor.translateAlternateColorAndFormatCodes(get(option));
 	}
 
 	public @NotNull BaseComponent[] getReady(@NotNull String option)
 	{
-		return TextComponent.fromLegacyText(MessageColor.translateAlternateColorCodes(get(option)));
+		return TextComponent.fromLegacyText(MessageColor.translateAlternateColorAndFormatCodes(get(option)));
 	}
 
 	public @NotNull Message getMessage(@NotNull String path)

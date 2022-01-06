@@ -36,7 +36,8 @@ public final class MessageColor
 	private static final MessageColor[] COLORS = new MessageColor[17];
 
 	public static final char COLOR_CHAR = '\u00A7';
-	public static final String ALL_CODES = "0123456789AaBbCcDdEeFfRrXx";
+	public static final String COLOR_CODES = "0123456789AaBbCcDdEeFfRrXx";
+	public static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx";
 
 	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-F]");
 	private static final Pattern STRIP_COLOR_AND_FORMAT_PATTERN = Pattern.compile("(?i)" + COLOR_CHAR + "[0-9A-FK-OR]");
@@ -339,7 +340,7 @@ public final class MessageColor
 	@Contract("_,!null->!null; _,null->null")
 	public static @Nullable String translateAlternateColorCodes(char altColorChar, @Nullable String textToTranslate)
 	{
-		return translateColorCode(altColorChar, COLOR_CHAR, textToTranslate);
+		return translateColorCode(altColorChar, COLOR_CHAR, textToTranslate, COLOR_CODES);
 	}
 
 	@Contract("!null->!null; null->null")
@@ -351,17 +352,23 @@ public final class MessageColor
 	@Contract("_,!null->!null; _,null->null")
 	public static @Nullable String translateToAlternateColorCodes(char altColorChar, @Nullable String textToTranslate)
 	{
-		return translateColorCode(COLOR_CHAR, altColorChar, textToTranslate);
+		return translateColorCode(COLOR_CHAR, altColorChar, textToTranslate, COLOR_CODES);
 	}
 
-	@Contract("_,_,!null->!null; _,_,null->null")
-	private static @Nullable String translateColorCode(char from, char to, @Nullable String textToTranslate)
+	@Contract("!null->!null; null->null")
+	public static @Nullable String translateAlternateColorAndFormatCodes(final @Nullable String textToTranslate)
+	{
+		return translateColorCode('&', COLOR_CHAR, textToTranslate, ALL_CODES);
+	}
+
+	@Contract("_,_,!null,_->!null; _,_,null,_->null")
+	private static @Nullable String translateColorCode(char from, char to, @Nullable String textToTranslate, @NotNull String charSet)
 	{
 		if(textToTranslate == null || textToTranslate.length() < 2) return textToTranslate;
 		char[] chars = textToTranslate.toCharArray();
 		for(int i = 0; i + 1 < chars.length; i++)
 		{
-			if(chars[i] == from && ALL_CODES.indexOf(chars[i + 1]) > -1)
+			if(chars[i] == from && charSet.indexOf(chars[i + 1]) > -1)
 			{
 				chars[i] = to;
 				chars[i + 1] = Character.toLowerCase(chars[i + 1]);

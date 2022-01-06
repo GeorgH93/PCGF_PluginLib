@@ -408,7 +408,7 @@ public class Language extends YamlFileManager
 
 	public @NotNull String translateColorCodes(final @NotNull String string)
 	{
-		return MessageColor.translateAlternateColorCodes(string);
+		return MessageColor.translateAlternateColorAndFormatCodes(string);
 	}
 
 	protected @Nullable <T extends Message> T getMessage(boolean escapeStringFormatCharacters, @NotNull String path)
