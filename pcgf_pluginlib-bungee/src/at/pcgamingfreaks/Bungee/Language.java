@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,6 +47,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param version The current version of the language file
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull Plugin plugin, int version)
 	{
 		this(plugin, version, File.separator + "lang", "");
@@ -58,6 +60,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param prefix  The prefix for the language file
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull Plugin plugin, int version, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, path, prefix, prefix);
@@ -71,6 +74,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param inJarPrefix The prefix for the language file within the jar (e.g.: bungee_)
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull Plugin plugin, int version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, inJarPrefix);
@@ -83,6 +87,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull Plugin plugin, int version, int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, File.separator + "lang", "");
@@ -96,6 +101,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param prefix           The prefix for the language file
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull Plugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, upgradeThreshold, path, prefix, prefix);
@@ -110,6 +116,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bungee_)
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull Plugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, inJarPrefix);

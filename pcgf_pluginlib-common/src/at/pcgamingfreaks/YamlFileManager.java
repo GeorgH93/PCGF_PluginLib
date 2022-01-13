@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,6 +50,8 @@ public class YamlFileManager
 	@Deprecated protected YamlFileUpdateMethod updateMode = null; // Defines the update behavior for yaml files
 	@Getter protected String fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
 
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	YamlFileManager(final @NotNull Logger logger, final @NotNull File baseDir, final int version, final int upgradeThreshold, final @Nullable String path,
 	                final @Nullable String file, final @NotNull String inJarPrefix, final @Nullable YAML oldConfig)
 	{

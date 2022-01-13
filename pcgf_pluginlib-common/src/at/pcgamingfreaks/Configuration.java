@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,6 +56,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	 * @param version current version of the config
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version)
 	{
 		this(plugin, logger, baseDir, version, 0, DEFAULT_CONFIG_FILE_NAME);
@@ -67,6 +69,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	 * @param path    The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, final @Nullable String path)
 	{
 		this(plugin, logger, baseDir, version, 0, path);
@@ -79,6 +82,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, int upgradeThreshold)
 	{
 		this(plugin, logger, baseDir, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
@@ -92,6 +96,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, int upgradeThreshold, final @Nullable String path)
 	{
 		this(plugin, logger, baseDir, version, upgradeThreshold, path, "");
@@ -106,6 +111,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	 * @param inJarPrefix      The prefix for the file in the jar (e.g. bungee_)
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, int upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix)
 	{
 		this(plugin, logger, baseDir, new Version(version), new Version(upgradeThreshold), path, inJarPrefix, null);

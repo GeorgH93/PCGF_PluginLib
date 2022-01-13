@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Version;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +35,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param version current version of the config
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Configuration(final @NotNull Plugin plugin, final int version)
 	{
 		this(plugin, version, 0, DEFAULT_CONFIG_FILE_NAME);
@@ -45,6 +47,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param path    the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Configuration(final @NotNull Plugin plugin, final int version, final @Nullable String path)
 	{
 		this(plugin, version, 0, path);
@@ -56,6 +59,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Configuration(final @NotNull Plugin plugin, final int version, final int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
@@ -68,6 +72,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Configuration(final @NotNull Plugin plugin, final int version, final int upgradeThreshold, final @Nullable String path)
 	{
 		this(plugin, version, upgradeThreshold, path, DEFAULT_BUNGEE_CORD_PREFIX);
@@ -81,6 +86,7 @@ public class Configuration extends at.pcgamingfreaks.Configuration
 	 * @param inJarPrefix      the prefix for the config file within the jar (e.g.: bungee_)
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Configuration(final @NotNull Plugin plugin, final int version, final int upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix)
 	{
 		super(plugin, plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, inJarPrefix);

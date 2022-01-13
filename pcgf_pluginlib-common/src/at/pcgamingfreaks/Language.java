@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +54,7 @@ public class Language extends YamlFileManager
 	 * @param version the current version of the language file
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version)
 	{
 		this(logger, baseDir, version, File.separator + "lang", "");
@@ -65,6 +67,7 @@ public class Language extends YamlFileManager
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold)
 	{
 		this(logger, baseDir, version, upgradeThreshold, File.separator + "lang", "");
@@ -78,6 +81,7 @@ public class Language extends YamlFileManager
 	 * @param prefix  The prefix for the language file
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path, @NotNull String prefix)
 	{
 		this(logger, baseDir, version, path, prefix, "");
@@ -92,6 +96,7 @@ public class Language extends YamlFileManager
 	 * @param prefix           The prefix for the language file
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix)
 	{
 		this(logger, baseDir, version, upgradeThreshold, path, prefix, "");
@@ -106,6 +111,7 @@ public class Language extends YamlFileManager
 	 * @param inJarPrefix the prefix for the language file within the jar (e.g.: bungee_)
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		this(logger, baseDir, version, 0, path, prefix, inJarPrefix);
@@ -121,6 +127,7 @@ public class Language extends YamlFileManager
 	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bungee_)
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		this(logger, baseDir, new Version(version), new Version(upgradeThreshold), path, prefix, inJarPrefix, null);

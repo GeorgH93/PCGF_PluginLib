@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.Version;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,6 +43,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param version The current version of the language file
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull JavaPlugin plugin, int version)
 	{
 		this(plugin, version, 0);
@@ -54,6 +56,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param prefix  The prefix for the language file
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull JavaPlugin plugin, int version, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, 0, path, prefix, prefix);
@@ -65,6 +68,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, File.separator + "lang", "");
@@ -78,6 +82,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param prefix           The prefix for the language file
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, upgradeThreshold, path, prefix, prefix);
@@ -92,6 +97,7 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bukkit_)
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, inJarPrefix);
