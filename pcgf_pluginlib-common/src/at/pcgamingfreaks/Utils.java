@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -315,11 +316,17 @@ public class Utils
 
 	public static <T extends Enum<T>> @NotNull T getEnum(@NotNull String valueName, @NotNull T defaultValue)
 	{
+		return getEnum(valueName, defaultValue, defaultValue.getClass());
+	}
+
+	@Contract("_,!null,_->!null")
+	public static <T extends Enum<T>> @Nullable T getEnum(@NotNull String valueName, @Nullable T defaultValue, Class<? extends Enum> clazz)
+	{
 		T v = null;
 		try
 		{
 			//noinspection unchecked
-			v = (T) T.valueOf(defaultValue.getClass(), valueName.toUpperCase(Locale.ENGLISH));
+			v = (T) T.valueOf(clazz, valueName.toUpperCase(Locale.ENGLISH));
 		}
 		catch(Exception ignored) {}
 		if(v == null) v = defaultValue;
