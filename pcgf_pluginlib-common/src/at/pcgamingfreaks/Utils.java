@@ -316,6 +316,7 @@ public class Utils
 
 	public static <T extends Enum<T>> @NotNull T getEnum(@NotNull String valueName, @NotNull T defaultValue)
 	{
+		if(defaultValue == null) return null; // Fix needed because of old code using this method wrong
 		return getEnum(valueName, defaultValue, defaultValue.getClass());
 	}
 
