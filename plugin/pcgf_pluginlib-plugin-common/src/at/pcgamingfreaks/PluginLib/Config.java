@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,36 +15,24 @@
  *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.PluginLib.Bukkit;
+package at.pcgamingfreaks.PluginLib;
 
-import at.pcgamingfreaks.Bukkit.Configuration;
 import at.pcgamingfreaks.Config.ILanguageConfiguration;
+import at.pcgamingfreaks.Configuration;
+import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.Updater.IUpdateConfiguration;
 import at.pcgamingfreaks.Version;
 import at.pcgamingfreaks.YamlFileUpdateMethod;
 
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-final class Config extends Configuration implements IUpdateConfiguration, ILanguageConfiguration
+public final class Config extends Configuration implements IUpdateConfiguration, ILanguageConfiguration
 {
-	public Config(final @NotNull JavaPlugin plugin, final int version)
+	public Config(final @NotNull IPlugin plugin, final Version version)
 	{
-		super(plugin, new Version(version));
-	}
-
-	@Override
-	public @NotNull String getLanguageKey()
-	{
-		return "Language.Language";
-	}
-
-	@Override
-	public @NotNull String getLanguageUpdateModeKey()
-	{
-		return "Language.UpdateMode";
+		super(plugin, version);
 	}
 
 	public YamlFileUpdateMethod getItemLangUpdateMode()

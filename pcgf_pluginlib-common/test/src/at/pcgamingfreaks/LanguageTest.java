@@ -106,18 +106,6 @@ public class LanguageTest
 	}
 
 	@Test
-	public void testLoadWithConfig()
-	{
-		
-		Language language = spy(new Language(mockedLogger, tmpDir, 1));
-		doReturn(false).when(language).load(anyString(), any(YamlFileUpdateMethod.class));
-		Configuration mockedConfig = mock(Configuration.class);
-		doReturn("").when(mockedConfig).getLanguage();
-		language.load(mockedConfig);
-		assertNotNull("The language object should not be null", language);
-	}
-
-	@Test
 	public void testExtract() throws NoSuchFieldException, IllegalAccessException
 	{
 		mockStatic(Utils.class);

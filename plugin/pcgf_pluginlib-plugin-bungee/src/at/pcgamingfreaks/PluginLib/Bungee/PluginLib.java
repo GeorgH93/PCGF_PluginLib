@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,11 +22,14 @@ import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
 import at.pcgamingfreaks.*;
 import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
+import at.pcgamingfreaks.Plugin.IPlugin;
+import at.pcgamingfreaks.PluginLib.Config;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import lombok.AccessLevel;
@@ -35,7 +38,7 @@ import lombok.Setter;
 
 import java.io.File;
 
-public final class PluginLib extends Plugin implements PluginLibrary
+public final class PluginLib extends Plugin implements PluginLibrary, IPlugin
 {
 	@Getter @Setter(AccessLevel.PRIVATE) private static PluginLibrary instance = null;
 
@@ -49,7 +52,7 @@ public final class PluginLib extends Plugin implements PluginLibrary
 	{
 		this.updater = new ManagedUpdater(this);
 		this.version = new Version(this.getDescription().getVersion());
-		this.config = new Config(this, 1);
+		this.config = new Config(this, new Version(1));
 		if(!this.config.isLoaded())
 		{
 			this.getLogger().warning(ConsoleColor.RED + "Failed to load config! Can't start up!" + ConsoleColor.RESET);
@@ -97,5 +100,11 @@ public final class PluginLib extends Plugin implements PluginLibrary
 	public @Nullable ConnectionProvider getConnectionProvider()
 	{
 		return databaseConnectionPool;
+	}
+
+	@Override
+	public @NotNull String getName()
+	{
+		return getDescription().getName();
 	}
 }

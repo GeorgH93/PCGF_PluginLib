@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,20 +15,22 @@
  *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.PluginLib.Bungee;
+package at.pcgamingfreaks.Plugin;
 
-import at.pcgamingfreaks.Bungee.Configuration;
-import at.pcgamingfreaks.Updater.IUpdateConfiguration;
 import at.pcgamingfreaks.Version;
-
-import net.md_5.bungee.api.plugin.Plugin;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class Config extends Configuration implements IUpdateConfiguration
+import java.io.File;
+import java.util.logging.Logger;
+
+public interface IPlugin
 {
-	public Config(final @NotNull Plugin plugin, final int version)
-	{
-		super(plugin, new Version(version));
-	}
+	@NotNull Logger getLogger();
+
+	@NotNull File getDataFolder();
+
+	@NotNull Version getVersion();
+
+	@NotNull String getName();
 }

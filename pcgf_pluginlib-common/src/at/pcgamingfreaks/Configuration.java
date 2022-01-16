@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks;
 
-import at.pcgamingfreaks.Config.ILanguageConfiguration;
+import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
@@ -30,23 +30,10 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.logging.Logger;
 
-public class Configuration extends YamlFileManager implements ILanguageConfiguration
+public class Configuration extends YamlFileManager
 {
 	protected static final String DEFAULT_CONFIG_FILE_NAME = "config" + YAML_FILE_EXT;
 	private final Object plugin;
-	@Deprecated protected String languageKey = "Language", languageUpdateKey = "LanguageUpdateMode"; // Allow to change the keys for the language and the language update mode setting
-
-	@Override
-	public @NotNull String getLanguageKey()
-	{
-		return languageKey;
-	}
-
-	@Override
-	public @NotNull String getLanguageUpdateModeKey()
-	{
-		return languageUpdateKey;
-	}
 
 	//region constructors
 	//region alternative constructors
@@ -172,6 +159,36 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @NotNull Version upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix)
 	{
 		this(plugin, logger, baseDir, version, upgradeThreshold, path, inJarPrefix, null);
+	}
+
+	/**
+	 * @param plugin           The plugin instance
+	 * @param version          The current version of the config
+	 */
+	public Configuration(final @NotNull IPlugin plugin, final @NotNull Version version)
+	{
+		this(plugin, version, DEFAULT_CONFIG_FILE_NAME);
+	}
+
+	/**
+	 * @param plugin           The plugin instance
+	 * @param version          The current version of the config
+	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 */
+	public Configuration(final @NotNull IPlugin plugin, final @NotNull Version version, final @Nullable String path)
+	{
+		this(plugin, version, path, "");
+	}
+
+	/**
+	 * @param plugin           The plugin instance
+	 * @param version          The current version of the config
+	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
+	 * @param inJarPrefix      The prefix for the file in the jar (e.g. bungee_)
+	 */
+	public Configuration(final @NotNull IPlugin plugin, final @NotNull Version version, final @Nullable String path, final @NotNull String inJarPrefix)
+	{
+		this(plugin, plugin.getLogger(), plugin.getDataFolder(), version, new Version(99999), path, inJarPrefix);
 	}
 	//endregion
 
@@ -323,37 +340,9 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	}
 	//endregion
 
-	//region Getter for language settings
-	/**
-	 * Gets the language to use, defined in the configuration.
-	 *
-	 * @return The language to use.
-	 * @deprecated implement {@link ILanguageConfiguration} instead in your config handler
-	 */
-	@Override
-	@Deprecated
-	public @NotNull String getLanguage()
-	{
-		return yaml.getString(getLanguageKey(), "en");
-	}
-
-	/**
-	 * Gets how the language file should be updated, defined in the configuration.
-	 *
-	 * @return The update method for the language file.
-	 * @deprecated implement {@link ILanguageConfiguration} instead in your config handler
-	 */
-	@Override
-	@Deprecated
-	public @NotNull YamlFileUpdateMethod getLanguageUpdateMode()
-	{
-		return YamlFileUpdateMethod.fromString(yaml.getString(getLanguageUpdateModeKey(), "upgrade"));
-	}
-	//endregion
-
 	//region General setter
 	/**
-	 * Sets a option in the configuration.
+	 * Sets an option in the configuration.
 	 *
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
@@ -364,7 +353,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	}
 
 	/**
-	 * Sets a option in the configuration.
+	 * Sets an option in the configuration.
 	 *
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
@@ -375,7 +364,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	}
 
 	/**
-	 * Sets a option in the configuration.
+	 * Sets an option in the configuration.
 	 *
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.
@@ -386,7 +375,7 @@ public class Configuration extends YamlFileManager implements ILanguageConfigura
 	}
 
 	/**
-	 * Sets a option in the configuration.
+	 * Sets an option in the configuration.
 	 *
 	 * @param path  The path to the configuration option inside the configuration file.
 	 * @param value The value it should be set to.

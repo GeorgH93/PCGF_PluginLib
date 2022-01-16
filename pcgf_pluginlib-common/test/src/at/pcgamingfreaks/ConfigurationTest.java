@@ -145,10 +145,6 @@ public class ConfigurationTest
 		assertFalse("The boolean should match", configuration.getBool("Test"));
 		doReturn(true).when(mockedYAML).getBoolean(anyString(), anyBoolean());
 		assertTrue("The boolean should match", configuration.getBool("Test", false));
-		assertEquals("The string should match", "Hello World!", configuration.getLanguage());
-		assertEquals("The file update mode should be upgrade", YamlFileUpdateMethod.UPGRADE, configuration.getLanguageUpdateMode());
-		doReturn("overwrite").when(mockedYAML).getString(anyString(), anyString());
-		assertEquals("The file update mode should be overwrite", YamlFileUpdateMethod.OVERWRITE, configuration.getLanguageUpdateMode());
 		TestUtils.setUnaccessible(yamlField, configuration, false);
 	}
 
