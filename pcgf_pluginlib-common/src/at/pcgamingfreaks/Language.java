@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks;
 
+import at.pcgamingfreaks.Config.ILanguageConfiguration;
 import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
@@ -263,6 +264,19 @@ public class Language extends YamlFileManager
 	 * @param config the config with the settings that should be used to load the language file
 	 * @return True if it's loaded successfully. False if not.
 	 */
+	public boolean load(@NotNull ILanguageConfiguration config)
+	{
+		return load(config.getLanguage(), config.getLanguageUpdateMode());
+	}
+
+	/**
+	 * Loads the language file
+	 *
+	 * @param config the config with the settings that should be used to load the language file
+	 * @return True if it's loaded successfully. False if not.
+	 */
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.35")
 	public boolean load(@NotNull LanguageConfiguration config)
 	{
 		return load(config.getLanguage(), config.getLanguageUpdateMode());
