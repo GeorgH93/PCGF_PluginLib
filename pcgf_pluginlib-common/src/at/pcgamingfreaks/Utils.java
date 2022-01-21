@@ -314,23 +314,38 @@ public class Utils
 		}
 	}
 
-	public static <T extends Enum<T>> @NotNull T getEnum(@NotNull String valueName, @NotNull T defaultValue)
+	public static <T extends Enum<T>> @NotNull T getEnum(final @NotNull String valueName, final @NotNull T defaultValue)
 	{
 		if(defaultValue == null) return null; // Fix needed because of old code using this method wrong
 		return getEnum(valueName, defaultValue, defaultValue.getClass());
 	}
 
 	@Contract("_,!null,_->!null")
-	public static <T extends Enum<T>> @Nullable T getEnum(@NotNull String valueName, @Nullable T defaultValue, Class<? extends Enum> clazz)
+	public static <T extends Enum<T>> @Nullable T getEnum(final @NotNull String valueName, final @Nullable T defaultValue, final @NotNull Class<? extends Enum> clazz)
 	{
+		return getEnum(valueName, defaultValue, clazz, null);
+	}
+
+	public static <T extends Enum<T>> @NotNull T getEnum(final @NotNull String valueName, final @NotNull T defaultValue, final @Nullable Logger logger)
+	{
+		return getEnum(valueName, defaultValue, defaultValue.getClass(), logger);
+	}
+
+	@Contract("_,!null,_,_->!null")
+	public static <T extends Enum<T>> @Nullable T getEnum(@NotNull String valueName, final @Nullable T defaultValue, final @NotNull Class<? extends Enum> clazz, final @Nullable Logger logger)
+	{
+		valueName = valueName.toUpperCase(Locale.ENGLISH);
 		T v = null;
 		try
 		{
 			//noinspection unchecked
-			v = (T) T.valueOf(clazz, valueName.toUpperCase(Locale.ENGLISH));
+			v = (T) T.valueOf(clazz, valueName);
 		}
-		catch(Exception ignored) {}
-		if(v == null) v = defaultValue;
-		return v;
+		catch(IllegalArgumentException ignored)
+		{
+			if(logger != null)
+				logger.info(valueName + " is not a valid option for " + clazz.getSimpleName());
+		}
+		return (v == null) ? defaultValue : v;
 	}
 }
