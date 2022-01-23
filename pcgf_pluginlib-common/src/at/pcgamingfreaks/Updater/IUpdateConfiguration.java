@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,10 +18,9 @@
 package at.pcgamingfreaks.Updater;
 
 import at.pcgamingfreaks.Config.IConfig;
+import at.pcgamingfreaks.Utils;
 
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Locale;
 
 public interface IUpdateConfiguration extends IConfig
 {
@@ -34,15 +33,7 @@ public interface IUpdateConfiguration extends IConfig
 	{
 		if(!useUpdater()) return UpdateMode.DISABLED;
 		String updateMode = getConfigE().getString("Misc.AutoUpdate.UpdateMode", "UPDATE");
-		try
-		{
-			return UpdateMode.valueOf(updateMode.toUpperCase(Locale.ENGLISH));
-		}
-		catch(IllegalArgumentException e)
-		{
-			getLogger().warning("Unknown update mode: " + updateMode);
-		}
-		return UpdateMode.UPDATE;
+		return Utils.getEnum(updateMode, UpdateMode.UPDATE, getLogger());
 	}
 
 	default @Nullable String getUpdateChannel()
