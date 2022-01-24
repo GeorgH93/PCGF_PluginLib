@@ -17,10 +17,13 @@
 
 package at.pcgamingfreaks;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 public enum YamlFileUpdateMethod
 {
 	UPDATE,

@@ -17,12 +17,9 @@
 
 package at.pcgamingfreaks.Config;
 
-import at.pcgamingfreaks.LanguageConfiguration;
-import at.pcgamingfreaks.YamlFileUpdateMethod;
-
 import org.jetbrains.annotations.NotNull;
 
-public interface ILanguageConfiguration extends LanguageConfiguration, IConfig
+public interface ILanguageConfiguration extends IConfig
 {
 	default @NotNull String getLanguageKey()
 	{

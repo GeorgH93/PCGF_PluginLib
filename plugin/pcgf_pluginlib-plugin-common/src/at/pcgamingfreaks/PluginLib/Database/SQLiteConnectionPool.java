@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks.PluginLib.Database;
 
-import at.pcgamingfreaks.Configuration;
+import at.pcgamingfreaks.Config.Configuration;
 
 import com.zaxxer.hikari.HikariConfig;
 

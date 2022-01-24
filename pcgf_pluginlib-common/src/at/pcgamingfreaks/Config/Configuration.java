@@ -15,14 +15,14 @@
  *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks;
+package at.pcgamingfreaks.Config;
 
 import at.pcgamingfreaks.Plugin.IPlugin;
+import at.pcgamingfreaks.Version;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,144 +30,14 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.logging.Logger;
 
-
-/**
- * This class has been deprecated! Do not use it for new plugins!
- * @deprecated Implement {@link at.pcgamingfreaks.Plugin.IPlugin} in your plugin and use the {@link at.pcgamingfreaks.Config.Configuration} class instead!
- */
-@Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 public class Configuration extends YamlFileManager
 {
 	protected static final String DEFAULT_CONFIG_FILE_NAME = "config" + YAML_FILE_EXT;
+
 	private final Object plugin;
 
 	//region constructors
 	//region alternative constructors
-	/**
-	 * @param logger  The logger instance of the plugin
-	 * @param baseDir The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version current version of the config
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version)
-	{
-		this(plugin, logger, baseDir, version, 0, DEFAULT_CONFIG_FILE_NAME);
-	}
-
-	/**
-	 * @param logger  The logger instance of the plugin
-	 * @param baseDir The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version The current version of the config
-	 * @param path    The name/path to a config not named "config.yml" or not placed in the plugins folders root
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, final @Nullable String path)
-	{
-		this(plugin, logger, baseDir, version, 0, path);
-	}
-
-	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the config
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, int upgradeThreshold)
-	{
-		this(plugin, logger, baseDir, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
-	}
-
-	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the config
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
-	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, int upgradeThreshold, final @Nullable String path)
-	{
-		this(plugin, logger, baseDir, version, upgradeThreshold, path, "");
-	}
-
-	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the config
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
-	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
-	 * @param inJarPrefix      The prefix for the file in the jar (e.g. bungee_)
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, int version, int upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix)
-	{
-		this(plugin, logger, baseDir, new Version(version), new Version(upgradeThreshold), path, inJarPrefix, null);
-	}
-
-	/**
-	 * @param logger  The logger instance of the plugin
-	 * @param baseDir The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version current version of the config
-	 */
-	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version)
-	{
-		this(plugin, logger, baseDir, version, new Version(99999), DEFAULT_CONFIG_FILE_NAME);
-	}
-
-	/**
-	 * @param logger  The logger instance of the plugin
-	 * @param baseDir The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version The current version of the config
-	 * @param path    The name/path to a config not named "config.yml" or not placed in the plugins folders root
-	 */
-	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @Nullable String path)
-	{
-		this(plugin, logger, baseDir, version, new Version(99999), path);
-	}
-
-	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the config
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
-	 */
-	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @NotNull Version upgradeThreshold)
-	{
-		this(plugin, logger, baseDir, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
-	}
-
-	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the config
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
-	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
-	 */
-	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @NotNull Version upgradeThreshold, final @Nullable String path)
-	{
-		this(plugin, logger, baseDir, version, upgradeThreshold, path, "");
-	}
-
-	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the configs should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the config
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new config file) instead of updated
-	 * @param path             The name/path to a config not named "config.yml" or not placed in the plugins folders root
-	 * @param inJarPrefix      The prefix for the file in the jar (e.g. bungee_)
-	 */
-	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @NotNull Version upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix)
-	{
-		this(plugin, logger, baseDir, version, upgradeThreshold, path, inJarPrefix, null);
-	}
-
 	/**
 	 * @param plugin           The plugin instance
 	 * @param version          The current version of the config
@@ -195,18 +65,15 @@ public class Configuration extends YamlFileManager
 	 */
 	public Configuration(final @NotNull IPlugin plugin, final @NotNull Version version, final @Nullable String path, final @NotNull String inJarPrefix)
 	{
-		this(plugin, plugin.getLogger(), plugin.getDataFolder(), version, new Version(99999), path, inJarPrefix);
+		this(plugin, plugin.getLogger(), plugin.getDataFolder(), version, path, inJarPrefix);
 	}
 	//endregion
 
-	private Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @NotNull Version upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix, final @Nullable YAML oldConfig)
+	public Configuration(final @NotNull Object plugin, final @NotNull Logger logger, final @NotNull File baseDir, final @NotNull Version version, final @Nullable String path, final @NotNull String inJarPrefix)
 	{
-		super(logger, baseDir, version, upgradeThreshold, null, path, inJarPrefix, oldConfig);
+		super(logger, baseDir, version, null, path, inJarPrefix, null);
 		this.plugin = plugin;
-		if(oldConfig == null)
-		{
-			load();
-		}
+		load();
 	}
 	//endregion
 
@@ -393,8 +260,12 @@ public class Configuration extends YamlFileManager
 	}
 	//endregion
 
-	public static class ConfigNotInitializedException extends at.pcgamingfreaks.Config.Configuration.ConfigNotInitializedException
+	public static class ConfigNotInitializedException extends RuntimeException
 	{
+		public ConfigNotInitializedException()
+		{
+			super("The config file has not been loaded successful");
+		}
 	}
 
 	@Override

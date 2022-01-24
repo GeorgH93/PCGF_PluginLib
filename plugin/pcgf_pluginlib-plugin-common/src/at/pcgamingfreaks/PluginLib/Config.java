@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.PluginLib;
 
 import at.pcgamingfreaks.Config.ILanguageConfiguration;
-import at.pcgamingfreaks.Configuration;
+import at.pcgamingfreaks.Config.Configuration;
 import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.Updater.IUpdateConfiguration;
 import at.pcgamingfreaks.Version;

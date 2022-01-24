@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2019 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,26 +15,25 @@
  *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks;
+package at.pcgamingfreaks.Config;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-@Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-public interface LanguageConfiguration
-{
-	/**
-	 * Gets the language to use, defined in the configuration.
-	 *
-	 * @return The language to use.
-	 */
-	@NotNull String getLanguage();
+import java.util.Locale;
 
-	/**
-	 * Gets how the language file should be updated, defined in the configuration.
-	 *
-	 * @return The update method for the language file.
-	 */
-	@NotNull YamlFileUpdateMethod getLanguageUpdateMode();
+public enum YamlFileUpdateMethod
+{
+	UPDATE,
+	UPGRADE,
+	OVERWRITE;
+
+	public static @NotNull YamlFileUpdateMethod fromString(@NotNull String mode)
+	{
+		try
+		{
+			return YamlFileUpdateMethod.valueOf(mode.toUpperCase(Locale.ROOT));
+		}
+		catch(IllegalArgumentException ignored) {}
+		return YamlFileUpdateMethod.UPGRADE;
+	}
 }

@@ -15,12 +15,14 @@
  *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks;
+package at.pcgamingfreaks.Config;
 
+import at.pcgamingfreaks.ConsoleColor;
+import at.pcgamingfreaks.Utils;
+import at.pcgamingfreaks.Version;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,45 +33,31 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.logging.Logger;
 
-
 /**
- * This class has been deprecated! Do not use it for new plugins!
- * @deprecated Implement {@link at.pcgamingfreaks.Plugin.IPlugin} in your plugin and use the {@link at.pcgamingfreaks.Config.YamlFileManager} class instead!
+ * Handles YAML files.
  */
-@Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 public class YamlFileManager
 {
 	protected static final String KEY_YAML_VERSION = "Version", YAML_FILE_EXT = ".yml";
 
 	protected final Logger logger; // The logger instance of the using plugin
 	protected final String inJarPrefix, path;
-	@Deprecated protected final int expectedVersion, upgradeThreshold;
-	protected final Version versionExpected;
+	protected final Version expectedVersion;
 	protected final File baseDir;
 	protected boolean extracted = false; // Flag to check whether the file has been extracted or not. It is used to prevent endless loops when the file version in the jar is outdated.
 	protected String file;
 	protected YAML yaml; // The object holding the parsed content of the yaml file
 	protected File yamlFile; // The loaded yaml file
-	@Deprecated protected YamlFileUpdateMethod updateMode = null; // Defines the update behavior for yaml files
 	@Getter protected String fileDescription = "config", fileDescriptionCapitalized = "Config"; // Used to allow customisation of log messages based on what the yaml file is used for
 
-	YamlFileManager(final @NotNull Logger logger, final @NotNull File baseDir, final int version, final int upgradeThreshold, final @Nullable String path,
-	                final @Nullable String file, final @NotNull String inJarPrefix, final @Nullable YAML oldConfig)
-	{
-		this(logger, baseDir, new Version(version), new Version(upgradeThreshold), path, file, inJarPrefix, oldConfig);
-	}
-
-	YamlFileManager(final @NotNull Logger logger, final @NotNull File baseDir, final Version version, final Version upgradeThreshold, final @Nullable String path,
+	YamlFileManager(final @NotNull Logger logger, final @NotNull File baseDir, final Version version, final @Nullable String path,
 	                final @Nullable String file, final @NotNull String inJarPrefix, final @Nullable YAML oldConfig)
 	{
 		this.path = path;
 		this.file = file;
 		this.logger = logger;
 		this.inJarPrefix = inJarPrefix;
-		this.versionExpected = version;
-		this.expectedVersion = version.getMajor();
-		this.upgradeThreshold = upgradeThreshold.getMajor();
+		this.expectedVersion = version;
 		this.baseDir = (path != null && !path.isEmpty()) ? new File(baseDir, path) : baseDir;
 		if(file != null) this.yamlFile = new File(this.baseDir, file);
 		if(oldConfig != null) yaml = oldConfig;
@@ -82,7 +70,7 @@ public class YamlFileManager
 
 	protected @Nullable YamlFileUpdateMethod getYamlUpdateMode()
 	{
-		return updateMode;
+		return YamlFileUpdateMethod.UPGRADE;
 	}
 
 	/**
@@ -112,15 +100,14 @@ public class YamlFileManager
 	}
 
 	/**
-	 * Gets the version of the configuration.
-	 * Deprecated! use version() instead
+	 * Gets the version of the configuration file.
 	 *
-	 * @return The version of the configuration. -1 if there is an invalid or no "Version" value in the configuration file.
+	 * @return The version of the configuration. 0 if there is no version in the file.
+	 * @throws Version.InvalidVersionStringException If the version in the file is not a valid version string.
 	 */
-	@Deprecated
-	public int getVersion()
+	public Version getVersion() throws Version.InvalidVersionStringException
 	{
-		return yaml.getInt(KEY_YAML_VERSION, -1);
+		return version();
 	}
 
 	/**
@@ -141,7 +128,7 @@ public class YamlFileManager
 	 */
 	public Version getExpectedVersion()
 	{
-		return versionExpected;
+		return expectedVersion;
 	}
 
 	//region file handling stuff for inheriting classes
@@ -337,7 +324,7 @@ public class YamlFileManager
 			load();
 			if(isLoaded())
 			{
-				doUpgrade(new YamlFileManager(logger, baseDir, oldVersion, new Version(0), path, file + oldExt, inJarPrefix, oldYAML));
+				doUpgrade(new YamlFileManager(logger, baseDir, oldVersion, path, file + oldExt, inJarPrefix, oldYAML));
 			}
 			yaml.set(KEY_YAML_VERSION, getExpectedVersion());
 			save();
@@ -355,8 +342,7 @@ public class YamlFileManager
 	{
 		if(extracted) return YamlFileUpdateMethod.UPDATE;
 		if(getYamlUpdateMode() != null) return getYamlUpdateMode();
-		if(version().olderThan(new Version(upgradeThreshold))) return YamlFileUpdateMethod.UPGRADE;
-		return YamlFileUpdateMethod.UPDATE;
+		return YamlFileUpdateMethod.UPGRADE;
 	}
 
 	protected void extractFile()

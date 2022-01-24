@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks.Config;
 
-import at.pcgamingfreaks.Configuration;
 import at.pcgamingfreaks.yaml.YAML;
 
 import org.jetbrains.annotations.NotNull;

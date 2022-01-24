@@ -18,8 +18,9 @@
 package at.pcgamingfreaks.Bungee;
 
 import at.pcgamingfreaks.Config.ILanguageConfiguration;
+import at.pcgamingfreaks.Config.YamlFileUpdateMethod;
+import at.pcgamingfreaks.LanguageConfiguration;
 import at.pcgamingfreaks.Version;
-import at.pcgamingfreaks.YamlFileUpdateMethod;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -33,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @Deprecated
 @ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-public class Configuration extends at.pcgamingfreaks.Configuration implements ILanguageConfiguration
+public class Configuration extends at.pcgamingfreaks.Configuration implements LanguageConfiguration
 {
 	protected static final String DEFAULT_BUNGEE_CORD_PREFIX = "bungee_";
 	protected final Plugin plugin;
@@ -41,13 +42,11 @@ public class Configuration extends at.pcgamingfreaks.Configuration implements IL
 	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	@Deprecated protected String languageKey = "Language", languageUpdateKey = "LanguageUpdateMode"; // Allow to change the keys for the language and the language update mode setting
 
-	@Override
 	public @NotNull String getLanguageKey()
 	{
 		return languageKey;
 	}
 
-	@Override
 	public @NotNull String getLanguageUpdateModeKey()
 	{
 		return languageUpdateKey;
@@ -57,8 +56,6 @@ public class Configuration extends at.pcgamingfreaks.Configuration implements IL
 	 * @param plugin  the instance of the plugin
 	 * @param version current version of the config
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Configuration(final @NotNull Plugin plugin, final int version)
 	{
 		this(plugin, version, 0, DEFAULT_CONFIG_FILE_NAME);
@@ -69,8 +66,6 @@ public class Configuration extends at.pcgamingfreaks.Configuration implements IL
 	 * @param version current version of the config
 	 * @param path    the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Configuration(final @NotNull Plugin plugin, final int version, final @Nullable String path)
 	{
 		this(plugin, version, 0, path);
@@ -81,8 +76,6 @@ public class Configuration extends at.pcgamingfreaks.Configuration implements IL
 	 * @param version          current version of the config
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Configuration(final @NotNull Plugin plugin, final int version, final int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, DEFAULT_CONFIG_FILE_NAME);
@@ -94,8 +87,6 @@ public class Configuration extends at.pcgamingfreaks.Configuration implements IL
 	 * @param upgradeThreshold versions below this will be upgraded (settings copied into a new config file) instead of updated
 	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Configuration(final @NotNull Plugin plugin, final int version, final int upgradeThreshold, final @Nullable String path)
 	{
 		this(plugin, version, upgradeThreshold, path, DEFAULT_BUNGEE_CORD_PREFIX);
@@ -108,8 +99,6 @@ public class Configuration extends at.pcgamingfreaks.Configuration implements IL
 	 * @param path             the name/path to a config not named "config.yml" or not placed in the plugins folders root
 	 * @param inJarPrefix      the prefix for the config file within the jar (e.g.: bungee_)
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Configuration(final @NotNull Plugin plugin, final int version, final int upgradeThreshold, final @Nullable String path, final @NotNull String inJarPrefix)
 	{
 		super(plugin, plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, inJarPrefix);
@@ -150,7 +139,6 @@ public class Configuration extends at.pcgamingfreaks.Configuration implements IL
 
 
 
-
 	//region Getter for language settings
 	/**
 	 * Gets the language to use, defined in the configuration.
@@ -173,9 +161,9 @@ public class Configuration extends at.pcgamingfreaks.Configuration implements IL
 	 */
 	@Override
 	@Deprecated
-	public @NotNull YamlFileUpdateMethod getLanguageUpdateMode()
+	public @NotNull at.pcgamingfreaks.YamlFileUpdateMethod getLanguageUpdateMode()
 	{
-		return YamlFileUpdateMethod.fromString(yaml.getString(getLanguageUpdateModeKey(), "upgrade"));
+		return at.pcgamingfreaks.YamlFileUpdateMethod.fromString(yaml.getString(getLanguageUpdateModeKey(), "upgrade"));
 	}
 	//endregion
 }

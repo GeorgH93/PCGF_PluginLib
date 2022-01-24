@@ -15,20 +15,24 @@
  *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks;
+package at.pcgamingfreaks.Config;
 
-import at.pcgamingfreaks.Config.ILanguageConfiguration;
+import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.ISendMethod;
+import at.pcgamingfreaks.Plugin.IPlugin;
+import at.pcgamingfreaks.Utils;
+import at.pcgamingfreaks.Version;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlGetter;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import lombok.Getter;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -37,187 +41,59 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-/**
- * This class has been deprecated! Do not use it for new plugins!
- * @deprecated Implement {@link at.pcgamingfreaks.Plugin.IPlugin} in your plugin and use the {@link at.pcgamingfreaks.Config.Language} class instead!
- */
-@Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 public class Language extends YamlFileManager
 {
-	private static final String MESSAGE_NOT_FOUND = "§cMessage not found!";
+	private static final String MESSAGE_NOT_FOUND = MessageColor.RED + "Message not found!";
 	private static final String KEY_LANGUAGE = "Language.", KEY_ADDITION_SEND_METHOD = "_SendMethod", KEY_ADDITION_PARAMETERS = "_Parameters", KEY_ADDITION_PAPI = "_PAPI";
 	protected static MessageClassesReflectionDataHolder messageClasses;
 
+	private final Object plugin;
 	private final String prefix;
 	protected String language = "en", fallbackLanguage = "en";
 	private boolean extractedFallback = false;
+	@Getter private YamlFileUpdateMethod yamlUpdateMode;
 
 	//region constructors
 	//region alternative constructors
 	/**
-	 * @param logger  The logger instance of the plugin
-	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param plugin  the plugin instance
 	 * @param version the current version of the language file
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Language(@NotNull Logger logger, @NotNull File baseDir, int version)
+	public Language(@NotNull IPlugin plugin, Version version)
 	{
-		this(logger, baseDir, version, File.separator + "lang", "");
+		this(plugin, version, File.separator + "lang", "");
 	}
 
 	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the language file
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold)
-	{
-		this(logger, baseDir, version, upgradeThreshold, File.separator + "lang", "");
-	}
-
-	/**
-	 * @param logger  The logger instance of the plugin
-	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
+	 * @param plugin  The plugin instance
 	 * @param version The current version of the language file
 	 * @param path    The sub-folder for the language file
 	 * @param prefix  The prefix for the language file
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path, @NotNull String prefix)
+	public Language(@NotNull IPlugin plugin, Version version, @Nullable String path, @NotNull String prefix)
 	{
-		this(logger, baseDir, version, path, prefix, "");
+		this(plugin, version, path, prefix, "");
 	}
 
 	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the language file
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
-	 * @param path             The sub-folder for the language file
-	 * @param prefix           The prefix for the language file
+	 * @param plugin      The plugin instance
+	 * @param version     The current version of the language file
+	 * @param path        The sub-folder for the language file
+	 * @param prefix      The prefix for the language file
+	 * @param inJarPrefix The prefix for the language file within the jar (e.g.: bungee_)
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix)
+	public Language(@NotNull IPlugin plugin, Version version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
-		this(logger, baseDir, version, upgradeThreshold, path, prefix, "");
-	}
-
-	/**
-	 * @param logger      The logger instance of the plugin
-	 * @param baseDir     The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version     the current version of the language file
-	 * @param path        the sub-folder for the language file
-	 * @param prefix      the prefix for the language file
-	 * @param inJarPrefix the prefix for the language file within the jar (e.g.: bungee_)
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
-	{
-		this(logger, baseDir, version, 0, path, prefix, inJarPrefix);
-	}
-
-	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the language file
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
-	 * @param path             The sub-folder for the language file
-	 * @param prefix           The prefix for the language file
-	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bungee_)
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public Language(@NotNull Logger logger, @NotNull File baseDir, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
-	{
-		this(logger, baseDir, new Version(version), new Version(upgradeThreshold), path, prefix, inJarPrefix, null);
-	}
-	/**
-	 * @param logger  The logger instance of the plugin
-	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version the current version of the language file
-	 */
-	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version)
-	{
-		this(logger, baseDir, version, File.separator + "lang", "");
-	}
-
-	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the language file
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
-	 */
-	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold)
-	{
-		this(logger, baseDir, version, upgradeThreshold, File.separator + "lang", "");
-	}
-
-	/**
-	 * @param logger  The logger instance of the plugin
-	 * @param baseDir The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version The current version of the language file
-	 * @param path    The sub-folder for the language file
-	 * @param prefix  The prefix for the language file
-	 */
-	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version, @Nullable String path, @NotNull String prefix)
-	{
-		this(logger, baseDir, version, path, prefix, "");
-	}
-
-	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the language file
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
-	 * @param path             The sub-folder for the language file
-	 * @param prefix           The prefix for the language file
-	 */
-	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold, @Nullable String path, @NotNull String prefix)
-	{
-		this(logger, baseDir, version, upgradeThreshold, path, prefix, "");
-	}
-
-	/**
-	 * @param logger      The logger instance of the plugin
-	 * @param baseDir     The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version     the current version of the language file
-	 * @param path        the sub-folder for the language file
-	 * @param prefix      the prefix for the language file
-	 * @param inJarPrefix the prefix for the language file within the jar (e.g.: bungee_)
-	 */
-	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
-	{
-		this(logger, baseDir, version, new Version(99999), path, prefix, inJarPrefix);
-	}
-
-	/**
-	 * @param logger           The logger instance of the plugin
-	 * @param baseDir          The base directory where the language file should be saved (normally plugin_instance.getDataFolder())
-	 * @param version          The current version of the language file
-	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
-	 * @param path             The sub-folder for the language file
-	 * @param prefix           The prefix for the language file
-	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bungee_)
-	 */
-	public Language(@NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
-	{
-		this(logger, baseDir, version, upgradeThreshold, path, prefix, inJarPrefix, null);
+		this(plugin, plugin.getLogger(), plugin.getDataFolder(), version, path, prefix, inJarPrefix);
 	}
 	//endregion
 
-	private Language(@NotNull Logger logger, @NotNull File baseDir, Version version, Version upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix, @Nullable YAML yaml)
+	public Language(final @NotNull Object plugin, @NotNull Logger logger, @NotNull File baseDir, Version version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
-		super(logger, baseDir, version, upgradeThreshold, path, prefix, "/lang/" + inJarPrefix, yaml);
+		super(logger, baseDir, version, path, prefix, "/lang/" + inJarPrefix, null);
 		this.prefix = prefix;
 		setFileDescription("language");
+		this.plugin = plugin;
 	}
 	//endregion
 
@@ -260,7 +136,7 @@ public class Language extends YamlFileManager
 	 */
 	public void reload()
 	{
-		load(language, updateMode);
+		load(language, yamlUpdateMode);
 	}
 
 	//region load methods
@@ -270,13 +146,6 @@ public class Language extends YamlFileManager
 	 * @param config the config with the settings that should be used to load the language file
 	 * @return True if it's loaded successfully. False if not.
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public boolean load(@NotNull LanguageConfiguration config)
-	{
-		return load(config.getLanguage(), config.getLanguageUpdateMode());
-	}
-
 	public boolean load(@NotNull ILanguageConfiguration config)
 	{
 		return load(config.getLanguage(), config.getLanguageUpdateMode());
@@ -289,31 +158,7 @@ public class Language extends YamlFileManager
 	 * @param updateMode how the language file should be updated
 	 * @return True if it's loaded successfully. False if not.
 	 */
-	public boolean load(@NotNull String language, @NotNull String updateMode)
-	{
-		return load(language, YamlFileUpdateMethod.fromString(updateMode));
-	}
-
-	/**
-	 * Loads the language file
-	 *
-	 * @param language   the language to load
-	 * @param updateMode how the language file should be updated
-	 * @return True if it's loaded successfully. False if not.
-	 */
-	public boolean load(@NotNull String language, @NotNull at.pcgamingfreaks.Config.YamlFileUpdateMethod updateMode)
-	{
-		return load(language, at.pcgamingfreaks.YamlFileUpdateMethod.valueOf(updateMode.name()), "en");
-	}
-
-	/**
-	 * Loads the language file
-	 *
-	 * @param language   the language to load
-	 * @param updateMode how the language file should be updated
-	 * @return True if it's loaded successfully. False if not.
-	 */
-	public boolean load(@NotNull String language, @NotNull at.pcgamingfreaks.YamlFileUpdateMethod updateMode)
+	public boolean load(@NotNull String language, @NotNull YamlFileUpdateMethod updateMode)
 	{
 		return load(language, updateMode, "en");
 	}
@@ -329,7 +174,7 @@ public class Language extends YamlFileManager
 	public boolean load(@NotNull String language, @NotNull YamlFileUpdateMethod updateMode, @NotNull String fallbackLanguage)
 	{
 		this.language = language.toLowerCase(Locale.ROOT);
-		this.updateMode = updateMode;
+		this.yamlUpdateMode = updateMode;
 		this.fallbackLanguage = fallbackLanguage;
 		this.extractedFallback = false;
 		extracted = false;
@@ -361,8 +206,7 @@ public class Language extends YamlFileManager
 	{
 		if(extractedFallback) return YamlFileUpdateMethod.UPDATE;
 		if(getYamlUpdateMode() != null) return getYamlUpdateMode();
-		if(version().olderThan(new Version(upgradeThreshold))) return YamlFileUpdateMethod.UPGRADE;
-		return YamlFileUpdateMethod.UPDATE;
+		return YamlFileUpdateMethod.UPGRADE;
 	}
 
 	/**
@@ -555,5 +399,11 @@ public class Language extends YamlFileManager
 		{
 			super("The language file has not been loaded successful");
 		}
+	}
+
+	@Override
+	protected Class<?> jarClass()
+	{
+		return plugin.getClass();
 	}
 }

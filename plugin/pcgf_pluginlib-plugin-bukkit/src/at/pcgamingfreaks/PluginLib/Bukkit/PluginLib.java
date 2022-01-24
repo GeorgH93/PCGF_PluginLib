@@ -89,7 +89,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary, IPlugi
 		itemNameResolver = new at.pcgamingfreaks.PluginLib.Bukkit.ItemNameResolver(this);
 
 		Language commonLanguage = new Language(this, 2, 2, File.separator + "lang", "common_");
-		commonLanguage.load(config.getLanguage(), config.getLanguageUpdateMode());
+		commonLanguage.load(config);
 		if(commonLanguage.isLoaded())
 		{
 			String[] unitNames = new String[] { commonLanguage.get("Date.Units.Year"), commonLanguage.get("Date.Units.Years"), commonLanguage.get("Date.Units.Month"), commonLanguage.get("Date.Units.Months"), commonLanguage.get("Date.Units.Day"), commonLanguage.get("Date.Units.Days"), commonLanguage.get("Date.Units.Hour"), commonLanguage.get("Date.Units.Hours"), commonLanguage.get("Date.Units.Minute"), commonLanguage.get("Date.Units.Minutes"), commonLanguage.get("Date.Units.Second"), commonLanguage.get("Date.Units.Seconds") };
