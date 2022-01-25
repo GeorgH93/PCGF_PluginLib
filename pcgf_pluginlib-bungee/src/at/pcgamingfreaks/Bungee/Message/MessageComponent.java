@@ -107,6 +107,8 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 * Gets the color of the component.
 	 *
 	 * @return The color of the component as a {@link ChatColor}, null if no color is defined.
+	 *
+	 * @deprecated Use {@link at.pcgamingfreaks.Message.MessageComponent#getColor()} instead.
 	 */
 	@Deprecated
 	public ChatColor getChatColor()
