@@ -101,7 +101,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 * Creates a new Message instance from a string which can be a JSON or just a simple text.
 	 *
 	 * @param message The text represented by the message object. Can be a normal string or a JSON.
-	 * @param method  The method used to display the message on the players client.
+	 * @param method  The method used to display the message on the player's client.
 	 */
 	public Message(@NotNull String message, @NotNull SendMethod method)
 	{
@@ -123,7 +123,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 * Creates a new Message instance from an array of {@link MessageComponent}'s.
 	 *
 	 * @param message The message represented by an array of {@link MessageComponent}'s.
-	 * @param method  The method used to display the message on the players client.
+	 * @param method  The method used to display the message on the player's client.
 	 */
 	public Message(@NotNull MessageComponent[] message, @NotNull SendMethod method)
 	{
@@ -145,7 +145,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 * Creates a new Message instance from a collection of {@link MessageComponent}'s.
 	 *
 	 * @param message The message represented by a collection of {@link MessageComponent}'s.
-	 * @param method  The method used to display the message on the players client.
+	 * @param method  The method used to display the message on the player's client.
 	 */
 	public Message(@NotNull Collection<MessageComponent> message, @NotNull SendMethod method)
 	{
@@ -167,7 +167,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 * Creates a new Message instance from a {@link MessageBuilder}.
 	 *
 	 * @param messageBuilder The {@link MessageBuilder} used to build the message.
-	 * @param method         The method used to display the message on the players client.
+	 * @param method         The method used to display the message on the player's client.
 	 */
 	public Message(@NotNull MessageBuilder messageBuilder, @NotNull SendMethod method)
 	{
