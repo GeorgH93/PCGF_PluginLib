@@ -331,7 +331,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	/**
 	 * Set the behavior of the current component to instruct the client to open a file on the client side filesystem when the current component is clicked.
 	 *
-	 * @param path The path of the file on the clients filesystem.
+	 * @param path The path of the file on the clients' filesystem.
 	 * @return The message builder instance (for chaining).
 	 */
 	public MESSAGE_BUILDER file(String path)

@@ -82,8 +82,8 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * Creates a new MessageBuilder from a given text and format information.
 	 *
 	 * @param text    The text that should be used to initialize the first {@link MessageComponent} of the message.
-	 * @param color   The color the should be used to initialize the first {@link MessageComponent} of the message.
-	 * @param formats The style the should be used to initialize the first {@link MessageComponent} of the message.
+	 * @param color   The color that should be used to initialize the first {@link MessageComponent} of the message.
+	 * @param formats The style that should be used to initialize the first {@link MessageComponent} of the message.
 	 */
 	public MessageBuilder(String text, MessageColor color, MessageFormat... formats)
 	{
@@ -94,7 +94,8 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * Creates a new MessageBuilder from a given text and format information.
 	 *
 	 * @param text   The text that should be used to initialize the first {@link MessageComponent} of the message.
-	 * @param styles The style the should be used to initialize the first {@link MessageComponent} of the message.
+	 * @param styles The style that should be used to initialize the first {@link MessageComponent} of the message.
+	 * @deprecated   Use the constructor with MessageColor instead!
 	 */
 	@Deprecated
 	public MessageBuilder(String text, ChatColor[] styles)
@@ -159,7 +160,9 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 *
 	 * @param color The new color of the current component.
 	 * @return The message builder instance (for chaining).
+	 * @deprecated Use {@link at.pcgamingfreaks.Message.MessageBuilder#color(MessageColor)} instead!
 	 */
+	@Deprecated
 	public MessageBuilder color(ChatColor color)
 	{
 		if(color.ordinal() > 15 && color != ChatColor.RESET) throw new IllegalArgumentException(color.name() + " is not a color!");
@@ -173,7 +176,9 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @param formats The array of formats to apply to the current component.
 	 * @return The message builder instance (for chaining).
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
+	 * @deprecated Use {@link at.pcgamingfreaks.Message.MessageBuilder#format(MessageFormat...)} instead!
 	 */
+	@Deprecated
 	public MessageBuilder format(ChatColor... formats) throws IllegalArgumentException
 	{
 		List<MessageFormat> formatsList = new ArrayList<>(formats.length);
@@ -191,7 +196,9 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 *
 	 * @param styles The array of styles to apply to the current component.
 	 * @return The message builder instance (for chaining).
+	 * @deprecated Use {@link at.pcgamingfreaks.Message.MessageBuilder#format(MessageFormat...)} or {@link at.pcgamingfreaks.Message.MessageBuilder#color(MessageColor)} instead!
 	 */
+	@Deprecated
 	public MessageBuilder style(ChatColor... styles)
 	{
 		for(ChatColor style : styles)
