@@ -147,15 +147,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 */
 	public MessageComponent achievementTooltip(Object achievement)
 	{
-		if(MCVersion.isOlderThan(MCVersion.MC_1_12))
-		{
-			assert achievement instanceof Achievement;
-			return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, STATISTIC_RESOLVER.getAchievementName((Achievement) achievement));
-		}
-		else
-		{
-			System.out.println("Achievements are not supported in your minecraft version!");
-		}
+		MessageTooltipFactory.achievementTooltip(this, achievement);
 		return this;
 	}
 
@@ -168,9 +160,8 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 */
 	public MessageComponent statisticTooltip(Statistic statistic) throws IllegalArgumentException
 	{
-		Type type = statistic.getType();
-		if (type != Type.UNTYPED) throw new IllegalArgumentException("That statistic requires an additional " + type + " parameter!");
-		return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, STATISTIC_RESOLVER.getStatisticName(statistic));
+		MessageTooltipFactory.statisticTooltip(this, statistic);
+		return this;
 	}
 
 	/**
@@ -183,10 +174,8 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 */
 	public MessageComponent statisticTooltip(Statistic statistic, Material material) throws IllegalArgumentException
 	{
-		Type type = statistic.getType();
-		if (type == Type.UNTYPED) throw new IllegalArgumentException("That statistic needs no additional parameter!");
-		if ((type == Type.BLOCK && material.isBlock()) || type == Type.ENTITY) throw new IllegalArgumentException("Wrong parameter type for that statistic - needs " + type + "!");
-		return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, STATISTIC_RESOLVER.getStatisticName(statistic, material));
+		MessageTooltipFactory.statisticTooltip(this, statistic, material);
+		return this;
 	}
 
 	/**
@@ -199,10 +188,8 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 */
 	public MessageComponent statisticTooltip(Statistic statistic, EntityType entity) throws IllegalArgumentException
 	{
-		Type type = statistic.getType();
-		if (type == Type.UNTYPED) throw new IllegalArgumentException("That statistic needs no additional parameter!");
-		if (type != Type.ENTITY) throw new IllegalArgumentException("Wrong parameter type for that statistic - needs " + type + "!");
-		return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, STATISTIC_RESOLVER.getStatisticName(statistic, entity));
+		MessageTooltipFactory.statisticTooltip(this, statistic, entity);
+		return this;
 	}
 
 	/**
@@ -214,6 +201,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	@SuppressWarnings("UnusedReturnValue")
 	public MessageComponent itemTooltip(ItemStack itemStack)
 	{
-		return itemTooltip(InventoryUtils.convertItemStackToJson(itemStack, Bukkit.getLogger()));
+		MessageTooltipFactory.itemTooltip(this, itemStack);
+		return this;
 	}
 }

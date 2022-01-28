@@ -167,7 +167,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder achievementTooltip(Achievement achievement)
 	{
-		getCurrentComponent().achievementTooltip(achievement);
+		MessageTooltipFactory.achievementTooltip(getCurrentComponent(), achievement);
 		return this;
 	}
 
@@ -180,7 +180,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder statisticTooltip(Statistic statistic) throws IllegalArgumentException
 	{
-		getCurrentComponent().statisticTooltip(statistic);
+		MessageTooltipFactory.statisticTooltip(getCurrentComponent(), statistic);
 		return this;
 	}
 
@@ -194,7 +194,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder statisticTooltip(Statistic statistic, Material material) throws IllegalArgumentException
 	{
-		getCurrentComponent().statisticTooltip(statistic, material);
+		MessageTooltipFactory.statisticTooltip(getCurrentComponent(), statistic, material);
 		return this;
 	}
 
@@ -208,7 +208,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder statisticTooltip(Statistic statistic, EntityType entity) throws IllegalArgumentException
 	{
-		getCurrentComponent().statisticTooltip(statistic, entity);
+		MessageTooltipFactory.statisticTooltip(getCurrentComponent(), statistic, entity);
 		return this;
 	}
 
@@ -220,7 +220,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 */
 	public MessageBuilder itemTooltip(ItemStack itemStack)
 	{
-		getCurrentComponent().itemTooltip(itemStack);
+		MessageTooltipFactory.itemTooltip(getCurrentComponent(), itemStack);
 		return this;
 	}
 
