@@ -100,6 +100,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 *
 	 * @param text   The text that should be used to initialize the first {@link MessageComponent} of the message.
 	 * @param styles The style that should be used to initialize the first {@link MessageComponent} of the message.
+	 * @deprecated   Use {@link MessageBuilder#MessageBuilder(String, MessageColor, MessageFormat...)} instead.
 	 */
 	@Deprecated
 	public MessageBuilder(String text, ChatColor[] styles)
@@ -148,7 +149,9 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @param text   The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
 	 * @param styles The style information for the new {@link MessageComponent} that will be added to the builder.
 	 * @return The message builder instance (for chaining).
+	 * @deprecated Use {@link at.pcgamingfreaks.Message.MessageBuilder#append(String, MessageColor, MessageFormat...)} instead.
 	 */
+	@Deprecated
 	public MessageBuilder append(String text, ChatColor[] styles)
 	{
 

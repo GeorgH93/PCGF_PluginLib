@@ -144,7 +144,9 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @param text   The text that should be used to generate the new {@link MessageComponent} that will be added to the builder.
 	 * @param styles The style information for the new {@link MessageComponent} that will be added to the builder.
 	 * @return The message builder instance (for chaining).
+	 * @deprecated Use {@link at.pcgamingfreaks.Message.MessageBuilder#append(String, MessageColor, MessageFormat...)} instead.
 	 */
+	@Deprecated
 	public MessageBuilder append(String text, ChatColor[] styles)
 	{
 
