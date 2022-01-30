@@ -20,6 +20,7 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.UUID.MojangUuidResolver;
 import at.pcgamingfreaks.UUID.UuidCache;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +35,7 @@ import java.util.logging.Logger;
  * @deprecated Use at.pcgamingfreaks.UUID.UuidConverter instead
  */
 @Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "1.0.50")
 public final class UUIDConverter
 {
 	private static final MojangUuidResolver MOJANG_RESOLVER = new MojangUuidResolver(UuidCache.getSHARED_UUID_CACHE(), Logger.getLogger("UUID Converter"));
