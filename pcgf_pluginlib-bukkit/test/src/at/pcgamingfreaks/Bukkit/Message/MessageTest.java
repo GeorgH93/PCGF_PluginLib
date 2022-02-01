@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bukkit.Message;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Sender.*;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;

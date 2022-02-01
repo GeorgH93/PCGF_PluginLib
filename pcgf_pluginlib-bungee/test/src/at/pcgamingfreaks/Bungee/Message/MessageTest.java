@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bungee.Message;
 
+import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Bungee.Message.Sender.BossBarMetadata;
 import at.pcgamingfreaks.Bungee.Message.Sender.ISender;
 import at.pcgamingfreaks.Bungee.Message.Sender.SendMethod;

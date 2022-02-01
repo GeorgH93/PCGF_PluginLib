@@ -19,7 +19,6 @@ package at.pcgamingfreaks.Message;
 
 import at.pcgamingfreaks.TestClasses.TestMessage;
 import at.pcgamingfreaks.TestClasses.TestMessageBuilder;
-import at.pcgamingfreaks.TestClasses.TestMessageComponent;
 import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.junit.BeforeClass;
@@ -35,19 +34,19 @@ import static org.junit.Assert.assertNull;
 
 public class MessageBuilderTest
 {
-	private static TestMessageComponent initComponent;
+	private static MessageComponent initComponent;
 
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException
 	{
-		initComponent = new TestMessageComponent("Init");
+		initComponent = new MessageComponent("Init");
 		TestUtils.initReflection();
 	}
 
 	@Test
 	public void testMessageBuilder()
 	{
-		TestMessageBuilder messageBuilder = new TestMessageBuilder(new TestMessageComponent());
+		TestMessageBuilder messageBuilder = new TestMessageBuilder(new MessageComponent());
 		messageBuilder.text("MessageBuilder text");
 		messageBuilder.color("green");
 		messageBuilder.bold().italic().underlined().obfuscated().strikethrough();
@@ -61,8 +60,8 @@ public class MessageBuilderTest
 		messageBuilder.insert("Inserted String");
 		assertEquals("The insertion should match", "Inserted String", messageBuilder.getCurrentComponent().getInsertion());
 		messageBuilder.onHover(MessageHoverEvent.HoverEventAction.SHOW_TEXT, "Hover text");
-		List<TestMessageComponent> messageComponents = new ArrayList<>();
-		messageComponents.add(new TestMessageComponent("Another hover text"));
+		List<MessageComponent> messageComponents = new ArrayList<>();
+		messageComponents.add(new MessageComponent("Another hover text"));
 		messageBuilder.onHover(MessageHoverEvent.HoverEventAction.SHOW_TEXT, messageComponents);
 		assertEquals("The hover text should match", messageComponents, messageBuilder.getCurrentComponent().getHoverEvent().getValue());
 		messageBuilder.achievementTooltip("Achievement");
@@ -80,35 +79,12 @@ public class MessageBuilderTest
 	@Test
 	public void testMessageBuilderSpecialCases()
 	{
-		TestMessageBuilder messageBuilder = new TestMessageBuilder(new TestMessageComponent("MessageComponent"));
+		TestMessageBuilder messageBuilder = new TestMessageBuilder(new MessageComponent("MessageComponent"));
 		assertEquals("The message string should match", "MessageComponent§r", messageBuilder.getClassicMessage());
 		messageBuilder.appendNewLine();
 		assertEquals("The message string should match", "MessageComponent\n§r§r", messageBuilder.getClassicMessage());
-		messageBuilder.append(new TestMessageComponent("New component"));
+		messageBuilder.append(new MessageComponent("New component"));
 		assertEquals("The message component count should match", 2, messageBuilder.size());
-	}
-
-	@Test
-	public void testAppend() throws NoSuchFieldException, IllegalAccessException
-	{
-		String currentMessage = "Init§r\n§r";
-		TestMessageBuilder messageBuilder = new TestMessageBuilder(initComponent);
-		messageBuilder.appendNewLineFromFatherClass = true;
-		assertEquals("The new line should have been appended", currentMessage, messageBuilder.appendNewLine().getClassicMessage());
-		messageBuilder.appendNewLineFromFatherClass = false;
-		Field constructor = TestUtils.setAccessible(MessageBuilder.class, null, "EMPTY_COMPONENT_CONSTRUCTOR", null);
-		assertEquals("The append method should fail", currentMessage, messageBuilder.append().getClassicMessage());
-		TestUtils.setUnaccessible(constructor, null, false);
-		currentMessage += "§9new text§r";
-		assertEquals("The append method should append a new component", currentMessage, messageBuilder.append("new text", MessageColor.BLUE).getClassicMessage());
-		constructor = TestUtils.setAccessible(MessageBuilder.class, null, "INIT_COMPONENT_CONSTRUCTOR_TEXT_AND_FORMAT", null);
-		assertEquals("The append method should not append a new component", currentMessage, messageBuilder.append("new text").getClassicMessage());
-		TestUtils.setUnaccessible(constructor, null, false);
-		assertEquals("The append method should not append a new component", currentMessage, messageBuilder.append((TestMessageComponent[]) null).getClassicMessage());
-		assertEquals("The append method should not append a new component", currentMessage, messageBuilder.append(new TestMessageComponent[] {}).getClassicMessage());
-		Iterator<TestMessageComponent> iterator = messageBuilder.iterator();
-		assertEquals("The first message component should match", "Init§r", iterator.next().getClassicMessage());
-		assertEquals("The second message component should match", "\n§r", iterator.next().getClassicMessage());
 	}
 
 	@Test

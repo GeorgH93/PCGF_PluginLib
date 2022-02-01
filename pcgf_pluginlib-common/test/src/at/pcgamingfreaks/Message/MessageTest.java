@@ -19,7 +19,6 @@ package at.pcgamingfreaks.Message;
 
 import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestMessage;
-import at.pcgamingfreaks.TestClasses.TestMessageComponent;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,8 +39,8 @@ public class MessageTest
 	@Test
 	public void testMessage()
 	{
-		List<TestMessageComponent> messageComponents = new ArrayList<>();
-		messageComponents.add(new TestMessageComponent("Message text"));
+		List<MessageComponent> messageComponents = new ArrayList<>();
+		messageComponents.add(new MessageComponent("Message text"));
 		TestMessage message1 = new TestMessage("A message text");
 		TestMessage message2 = new TestMessage("Message text");
 		TestMessage message3 = new TestMessage(messageComponents);
@@ -62,8 +61,8 @@ public class MessageTest
 	@Test
 	public void testMessageJSON()
 	{
-		TestMessage message = new TestMessage("{\"text\":\"Test\"}");
-		assertEquals("The message text should match", "Test§r", message.getClassicMessage());
+		TestMessage message = new TestMessage("[{\"text\":\"Test\"}]");
+		assertEquals("The message text should match", "Test" + MessageColor.RESET, message.getClassicMessage());
 	}
 
 	@Test

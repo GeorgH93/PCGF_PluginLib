@@ -85,7 +85,7 @@ public class MessageBuilderTest
 	public void testTootltips() throws NoSuchFieldException, IllegalAccessException
 	{
 		IStatisticResolver statisticResolver = mock(IStatisticResolver.class);
-		Reflection.setFinalField(MessageComponent.class.getDeclaredField("STATISTIC_RESOLVER"), null, statisticResolver);
+		Reflection.setFinalField(MessageTooltipFactory.class.getDeclaredField("STATISTIC_RESOLVER"), null, statisticResolver);
 
 		MessageBuilder messageBuilder = new MessageBuilder("Test");
 		doReturn("BREED_COW").when(statisticResolver).getAchievementName(any(Achievement.class));
@@ -101,6 +101,6 @@ public class MessageBuilderTest
 		messageBuilder.statisticTooltip(Statistic.ENTITY_KILLED_BY, EntityType.ARROW);
 		assertTrue("The tooltip should match", messageBuilder.getJson().contains("ARROW"));
 
-		Reflection.setFinalField(MessageComponent.class.getDeclaredField("STATISTIC_RESOLVER"), null, null);
+		Reflection.setFinalField(MessageTooltipFactory.class.getDeclaredField("STATISTIC_RESOLVER"), null, null);
 	}
 }

@@ -18,44 +18,27 @@
 package at.pcgamingfreaks.Bukkit.Message;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Bukkit.PlatformResolver;
-import at.pcgamingfreaks.Bukkit.Util.InventoryUtils;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageFormat;
-import at.pcgamingfreaks.Message.MessageHoverEvent;
-import at.pcgamingfreaks.Reflection;
-
-import com.google.gson.JsonArray;
 
 import org.bukkit.*;
-import org.bukkit.Statistic.Type;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Locale;
 
-public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent>
+/**
+ * Message component class.
+ *
+ * @deprecated Use {@link at.pcgamingfreaks.Message.MessageComponent} instead. Use MessageBuilder if you need the tooltips.
+ */
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "1.0.37")
+public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent
 {
-	private static final IStatisticResolver STATISTIC_RESOLVER = PlatformResolver.createPlatformInstance(IStatisticResolver.class);
-
-	private static final MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
-	private static final MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
-
-	static
-	{
-		messageComponentClass = MessageComponent.class;
-		messageComponentConstructor = Reflection.getConstructor(MessageComponent.class);
-	}
-
-	@Override
-	protected MessageComponent getNewLineComponent()
-	{
-		return NEW_LINE_HELPER;
-	}
-
 	//region Constructors
 	/**
 	 * Creates a new empty MessageComponent instance.
@@ -86,30 +69,6 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	}
 	//endregion
 
-	//region Deserializer and Deserializer Functions
-	/**
-	 * Generates a MessageComponent list from a given JSON string.
-	 *
-	 * @param jsonString The JSON string representing the components.
-	 * @return A list of MessageComponent objects. An empty list if there are no components in the given {@link JsonArray}.
-	 */
-	public static List<MessageComponent> fromJson(String jsonString)
-	{
-		return MESSAGE_COMPONENT_INSTANCE.fromJsonWorker(jsonString);
-	}
-
-	/**
-	 * Generates a MessageComponent list from a given {@link JsonArray} object.
-	 *
-	 * @param componentArray The {@link JsonArray} containing all the components, from the deserializer.
-	 * @return A list of MessageComponent objects. An empty list if there are no components in the given {@link JsonArray}.
-	 */
-	public static List<MessageComponent> fromJsonArray(JsonArray componentArray)
-	{
-		return MESSAGE_COMPONENT_INSTANCE.fromJsonArrayWorker(componentArray);
-	}
-	//endregion
-
 	//region Message modifier (getter/setter).
 	/**
 	 * Gets the color of the component.
@@ -135,7 +94,8 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	public MessageComponent setColor(MessageColor color) throws IllegalArgumentException
 	{
 		if(color != null && color.isRGB() && !MCVersion.supportsRgbColors()) color = color.getFallbackColor(); // Old MC versions do not support RGB colors, convert them to supported colors
-		return super.setColor(color);
+		super.setColor(color);
+		return this;
 	}
 
 	/**

@@ -19,35 +19,25 @@ package at.pcgamingfreaks.Bungee.Message;
 
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageFormat;
-import at.pcgamingfreaks.Reflection;
-
-import com.google.gson.JsonArray;
 
 import net.md_5.bungee.api.ChatColor;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
 
-public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent<MessageComponent>
+/**
+ * Message component class.
+ *
+ * @deprecated Use {@link at.pcgamingfreaks.Message.MessageComponent} instead.
+ */
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "1.0.37")
+public final class MessageComponent extends at.pcgamingfreaks.Message.MessageComponent
 {
-	private static final MessageComponent NEW_LINE_HELPER = new MessageComponent("\n");
-	private static final MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
-
-	static
-	{
-		messageComponentClass = MessageComponent.class;
-		messageComponentConstructor = Reflection.getConstructor(MessageComponent.class);
-	}
-
-	@Override
-	protected MessageComponent getNewLineComponent()
-	{
-		return NEW_LINE_HELPER;
-	}
-
 	//region Constructors
 	/**
 	 * Creates a new empty MessageComponent instance.
@@ -75,30 +65,6 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	public MessageComponent(final @NotNull String text, final @Nullable MessageColor color, final MessageFormat... formats)
 	{
 		super(text, color, formats);
-	}
-	//endregion
-
-	//region Deserializer and Deserializer Functions
-	/**
-	 * Generates a MessageComponent list from a given JSON string.
-	 *
-	 * @param jsonString The JSON string representing the components.
-	 * @return A list of MessageComponent objects. An empty list if there are no components in the given {@link JsonArray}.
-	 */
-	public static List<MessageComponent> fromJson(String jsonString)
-	{
-		return MESSAGE_COMPONENT_INSTANCE.fromJsonWorker(jsonString);
-	}
-
-	/**
-	 * Generates a MessageComponent list from a given {@link JsonArray} object.
-	 *
-	 * @param componentArray The {@link JsonArray} containing all the components, from the deserializer.
-	 * @return A list of MessageComponent objects. An empty list if there are no components in the given {@link JsonArray}.
-	 */
-	public static List<MessageComponent> fromJsonArray(JsonArray componentArray)
-	{
-		return MESSAGE_COMPONENT_INSTANCE.fromJsonArrayWorker(componentArray);
 	}
 	//endregion
 

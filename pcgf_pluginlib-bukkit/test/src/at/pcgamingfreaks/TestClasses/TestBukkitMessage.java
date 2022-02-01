@@ -20,6 +20,7 @@ package at.pcgamingfreaks.TestClasses;
 import at.pcgamingfreaks.Bukkit.Message.MessageBuilder;
 import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Message.Message;
+import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.command.CommandSender;
@@ -30,11 +31,11 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 
-public class TestBukkitMessage extends Message<TestBukkitMessage, Player, CommandSender, TestMessageComponent>
+public class TestBukkitMessage extends Message<TestBukkitMessage, Player, CommandSender>
 {
 	static
 	{
-		setMessageComponentClass(TestMessageComponent.class, (Constructor<? extends at.pcgamingfreaks.Message.MessageBuilder>) Reflection.getConstructor(MessageBuilder.class));
+		setMessageComponentClass((Constructor<? extends at.pcgamingfreaks.Message.MessageBuilder>) Reflection.getConstructor(MessageBuilder.class));
 	}
 
 	public TestBukkitMessage(String message)
@@ -42,7 +43,7 @@ public class TestBukkitMessage extends Message<TestBukkitMessage, Player, Comman
 		super(message);
 	}
 
-	public TestBukkitMessage(Collection<? extends TestMessageComponent> message)
+	public TestBukkitMessage(Collection<? extends MessageComponent> message)
 	{
 		super(message);
 	}

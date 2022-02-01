@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.TestClasses;
 
 import at.pcgamingfreaks.Message.Message;
+import at.pcgamingfreaks.Message.MessageComponent;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 
-public class TestMessage extends Message<TestMessage, Object, Object, TestMessageComponent>
+public class TestMessage extends Message<TestMessage, Object, Object>
 {
 	static
 	{
@@ -38,7 +39,7 @@ public class TestMessage extends Message<TestMessage, Object, Object, TestMessag
 		{
 			e.printStackTrace();
 		}
-		setMessageComponentClass(TestMessageComponent.class, builderConstructor);
+		setMessageComponentClass(builderConstructor);
 	}
 
 	public TestMessage(String message)
@@ -46,7 +47,7 @@ public class TestMessage extends Message<TestMessage, Object, Object, TestMessag
 		super(message);
 	}
 
-	public TestMessage(Collection<? extends TestMessageComponent> message)
+	public TestMessage(Collection<? extends MessageComponent> message)
 	{
 		super(message);
 	}

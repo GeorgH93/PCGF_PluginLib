@@ -22,6 +22,7 @@ import at.pcgamingfreaks.Bukkit.Message.Sender.BossBarMetadata;
 import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Bukkit.Util.IUtils;
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 
@@ -42,7 +43,7 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender, MessageComponent> implements IMessage
+public final class Message extends at.pcgamingfreaks.Message.Message<Message, Player, CommandSender> implements IMessage
 {
 	static
 	{
@@ -55,7 +56,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		{
 			e.printStackTrace();
 		}
-		setMessageComponentClass(MessageComponent.class, builderConstructor);
+		setMessageComponentClass(builderConstructor);
 	}
 
 	//region Variables

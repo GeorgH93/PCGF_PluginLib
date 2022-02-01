@@ -18,34 +18,28 @@
 package at.pcgamingfreaks.TestClasses;
 
 import at.pcgamingfreaks.Message.MessageBuilder;
-import at.pcgamingfreaks.Message.MessageColor;
-import at.pcgamingfreaks.Message.MessageFormat;
+import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Reflection;
 
 import java.util.Collection;
 
-public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestMessageComponent, TestMessage>
+public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestMessage>
 {
 	public boolean appendNewLineFromFatherClass = false;
 
-	private final TestMessageComponent messageComponent;
+	private final MessageComponent messageComponent;
 
 	static
 	{
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "NEW_LINE_HELPER", new TestMessageComponent("\n"));
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "EMPTY_COMPONENT_CONSTRUCTOR", Reflection.getConstructor(TestMessageComponent.class));
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "INIT_COMPONENT_CONSTRUCTOR", Reflection.getConstructor(TestMessageComponent.class, String.class, MessageColor.class, MessageFormat[].class));
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "INIT_COMPONENT_CONSTRUCTOR_TEXT_AND_FORMAT", Reflection.getConstructor(TestMessageComponent.class, String.class, MessageFormat[].class));
 		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "MESSAGE_CONSTRUCTOR", Reflection.getConstructor(TestMessage.class, Collection.class));
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "COMPONENT_CLASS", TestMessageComponent.class);
 	}
 
 	public TestMessageBuilder()
 	{
-		this(new TestMessageComponent());
+		this(new MessageComponent());
 	}
 
-	public TestMessageBuilder(TestMessageComponent initComponent)
+	public TestMessageBuilder(MessageComponent initComponent)
 	{
 		super(initComponent);
 		messageComponent = initComponent;
@@ -58,7 +52,7 @@ public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestM
 		{
 			return super.appendNewLine();
 		}
-		messageComponent.addExtra(messageComponent.getNewLineComponent());
+		messageComponent.addExtra(MessageComponent.makeNewLineComponent());
 		return this;
 	}
 

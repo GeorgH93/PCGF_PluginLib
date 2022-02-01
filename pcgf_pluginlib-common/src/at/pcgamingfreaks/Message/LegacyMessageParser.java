@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks.Message;
 
-
 import at.pcgamingfreaks.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,13 +26,13 @@ import java.util.EnumSet;
 
 final class LegacyMessageParser
 {
-	private final MessageBuilder<?,?,?> builder;
+	private final MessageBuilder<?,?> builder;
 	private final StringBuilder stringBuilder = new StringBuilder(), wordBuilder = new StringBuilder();
 	private final EnumSet<MessageFormat> formats = EnumSet.noneOf(MessageFormat.class);
 	private MessageColor color;
 	private String url;
 
-	LegacyMessageParser(final MessageBuilder<?,?,?> builder)
+	LegacyMessageParser(final MessageBuilder<?,?> builder)
 	{
 		this.builder = builder;
 	}

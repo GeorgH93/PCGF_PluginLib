@@ -25,14 +25,13 @@ import org.jetbrains.annotations.Nullable;
 import lombok.Getter;
 
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-@SuppressWarnings({ "unchecked", "UnusedReturnValue" })
-public abstract class MessageComponent<T extends MessageComponent> implements Serializable
+@SuppressWarnings({ "UnusedReturnValue" })
+public class MessageComponent implements Serializable
 {
 	//region JSON Variables
 	protected MessageClickEvent clickEvent = null;
@@ -40,7 +39,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	protected String text, insertion;
 	protected MessageColor color;
 	protected Boolean bold, italic, underlined, strikethrough, obfuscated;
-	protected List<T> extra = null;
+	protected List<MessageComponent> extra = null;
 
 	/**
 	 * The font of the component. null = default font
@@ -68,7 +67,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	/**
 	 * Creates a new empty MessageComponent instance.
 	 */
-	protected MessageComponent() {}
+	public MessageComponent() {}
 
 	/**
 	 * Creates a new empty MessageComponent instance.
@@ -76,7 +75,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param text    The text for the {@link MessageComponent}.
 	 * @param formats The style for the {@link MessageComponent}.
 	 */
-	protected MessageComponent(final String text, MessageFormat... formats)
+	public MessageComponent(final String text, MessageFormat... formats)
 	{
 		setText(text);
 		if(formats != null) setFormats(formats);
@@ -89,7 +88,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param color   The color for the {@link MessageComponent}.
 	 * @param formats The style for the {@link MessageComponent}.
 	 */
-	protected MessageComponent(final String text, final @Nullable MessageColor color, MessageFormat... formats)
+	public MessageComponent(final String text, final @Nullable MessageColor color, MessageFormat... formats)
 	{
 		setText(text);
 		if(color != null) setColor(color);
@@ -126,7 +125,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 */
 	public static @NotNull String getClassicMessage(Collection<? extends MessageComponent> messageList)
 	{
-		if(messageList == null) return ""; // If we don't have a JSON we can't calculate the classic message from it so we will use an empty message
+		if(messageList == null) return ""; // If we don't have a JSON we can't calculate the classic message from it, so we will use an empty message
 		StringBuilder builder = new StringBuilder();
 		boolean first = true;
 		String classFormat = "";
@@ -182,10 +181,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param clickEvent The click event for the component.
 	 * @return This message component instance.
 	 */
-	public T setClickEvent(MessageClickEvent clickEvent)
+	public MessageComponent setClickEvent(MessageClickEvent clickEvent)
 	{
 		this.clickEvent = clickEvent;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -205,10 +204,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param hoverEvent The hover event for the component.
 	 * @return This message component instance.
 	 */
-	public T setHoverEvent(MessageHoverEvent hoverEvent)
+	public MessageComponent setHoverEvent(MessageHoverEvent hoverEvent)
 	{
 		this.hoverEvent = hoverEvent;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -227,10 +226,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param text The new text of the component.
 	 * @return This message component instance.
 	 */
-	public T setText(String text)
+	public MessageComponent setText(String text)
 	{
 		this.text = text;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -259,7 +258,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param color The new color of the component.
 	 * @return This message component instance.
 	 */
-	public T setColor(final @NotNull String color)
+	public MessageComponent setColor(final @NotNull String color)
 	{
 		MessageColor c = MessageColor.getColor(color);
 		if(c == null) throw new IllegalArgumentException(color + " not a valid color!");
@@ -273,10 +272,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
 	 */
-	public T setColor(MessageColor color) throws IllegalArgumentException
+	public MessageComponent setColor(MessageColor color) throws IllegalArgumentException
 	{
 		this.color = color == MessageColor.RESET ? null : color;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -296,10 +295,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param insertionText The text to append to the chat bar of the client.
 	 * @return This message component instance.
 	 */
-	public T setInsertion(String insertionText)
+	public MessageComponent setInsertion(String insertionText)
 	{
 		insertion = (insertionText.length() > 100) ? insertionText.substring(0, 100) : insertionText;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -317,7 +316,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return This message component instance.
 	 */
-	public T setBold()
+	public MessageComponent setBold()
 	{
 		return setBold(true);
 	}
@@ -328,10 +327,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param bold Defines if the component should or should not be bold.
 	 * @return This message component instance.
 	 */
-	public T setBold(boolean bold)
+	public MessageComponent setBold(boolean bold)
 	{
 		this.bold = bold;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -349,7 +348,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return This message component instance.
 	 */
-	public T setItalic()
+	public MessageComponent setItalic()
 	{
 		return setItalic(true);
 	}
@@ -360,10 +359,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param italic Defines if the component should or should not be italic.
 	 * @return This message component instance.
 	 */
-	public T setItalic(boolean italic)
+	public MessageComponent setItalic(boolean italic)
 	{
 		this.italic = italic;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -381,7 +380,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return This message component instance.
 	 */
-	public T setUnderlined()
+	public MessageComponent setUnderlined()
 	{
 		return setUnderlined(true);
 	}
@@ -392,10 +391,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param underlined Defines if the component should or should not be underlined.
 	 * @return This message component instance.
 	 */
-	public T setUnderlined(boolean underlined)
+	public MessageComponent setUnderlined(boolean underlined)
 	{
 		this.underlined = underlined;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -413,7 +412,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return This message component instance.
 	 */
-	public T setStrikethrough()
+	public MessageComponent setStrikethrough()
 	{
 		return setStrikethrough(true);
 	}
@@ -424,10 +423,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param strikethrough Defines if the component should or should not be strikethrough.
 	 * @return This message component instance.
 	 */
-	public T setStrikethrough(boolean strikethrough)
+	public MessageComponent setStrikethrough(boolean strikethrough)
 	{
 		this.strikethrough = strikethrough;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -445,7 +444,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return This message component instance.
 	 */
-	public T setObfuscated()
+	public MessageComponent setObfuscated()
 	{
 		return setObfuscated(true);
 	}
@@ -456,10 +455,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param obfuscated Defines if the component should or should not be obfuscated.
 	 * @return This message component instance.
 	 */
-	public T setObfuscated(boolean obfuscated)
+	public MessageComponent setObfuscated(boolean obfuscated)
 	{
 		this.obfuscated = obfuscated;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -467,7 +466,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return A list of MessageComponents used as extras for the component.
 	 */
-	public List<T> getExtras()
+	public List<? extends MessageComponent> getExtras()
 	{
 		return extra;
 	}
@@ -478,10 +477,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param extras A list of MessageComponents used as extras for the component.
 	 * @return This message component instance.
 	 */
-	public T setExtras(List<T> extras)
+	public MessageComponent setExtras(List<MessageComponent> extras)
 	{
 		extra = extras;
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -490,11 +489,11 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param extras The extras to be added to the component.
 	 * @return This message component instance.
 	 */
-	public T addExtra(T... extras)
+	public MessageComponent addExtra(MessageComponent... extras)
 	{
 		if(extras != null)
 		{
-			for(T extra : extras)
+			for(MessageComponent extra : extras)
 			{
 				if (extra == null) continue;
 				if(this.extra == null)
@@ -504,7 +503,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 				this.extra.add(extra);
 			}
 		}
-		return (T)this;
+		return this;
 	}
 
 	/**
@@ -514,7 +513,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
-	public T setFormats(MessageFormat... formats)
+	public MessageComponent setFormats(MessageFormat... formats)
 	{
 		if(formats != null)
 		{
@@ -531,7 +530,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 				}
 			}
 		}
-		return (T)this;
+		return this;
 	}
 
 
@@ -542,10 +541,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
-	public T setFormats(Collection<MessageFormat> formats)
+	public MessageComponent setFormats(Collection<MessageFormat> formats)
 	{
 		formats.forEach(this::setFormats);
-		return (T) this;
+		return this;
 	}
 
 	/**
@@ -554,10 +553,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param font The name of the font that should be used.
 	 * @return This message component instance.
 	 */
-	public T setFont(final @Nullable String font)
+	public MessageComponent setFont(final @Nullable String font)
 	{
 		this.font = font;
-		return (T)this;
+		return this;
 	}
 	//endregion
 
@@ -568,7 +567,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param text The new text of the component.
 	 * @return This message component instance.
 	 */
-	public T text(String text)
+	public MessageComponent text(String text)
 	{
 		return setText(text);
 	}
@@ -579,7 +578,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param color The new color of the component.
 	 * @return This message component instance.
 	 */
-	public T color(String color)
+	public MessageComponent color(String color)
 	{
 		return setColor(color);
 	}
@@ -591,7 +590,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
 	 */
-	public T color(MessageColor color) throws IllegalArgumentException
+	public MessageComponent color(MessageColor color) throws IllegalArgumentException
 	{
 		return setColor(color);
 	}
@@ -603,7 +602,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
-	public T format(MessageFormat... formats) throws IllegalArgumentException
+	public MessageComponent format(MessageFormat... formats) throws IllegalArgumentException
 	{
 		return setFormats(formats);
 	}
@@ -615,7 +614,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
-	public T format(Collection<MessageFormat> formats) throws IllegalArgumentException
+	public MessageComponent format(Collection<MessageFormat> formats) throws IllegalArgumentException
 	{
 		return setFormats(formats);
 	}
@@ -626,7 +625,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param font The name of the font that should be used.
 	 * @return This message component instance.
 	 */
-	public T font(final @Nullable String font)
+	public MessageComponent font(final @Nullable String font)
 	{
 		return setFont(font);
 	}
@@ -636,7 +635,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return This message component instance.
 	 */
-	public T bold()
+	public MessageComponent bold()
 	{
 		return setBold();
 	}
@@ -646,7 +645,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return This message component instance.
 	 */
-	public T italic()
+	public MessageComponent italic()
 	{
 		return setItalic();
 	}
@@ -656,7 +655,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return This message component instance.
 	 */
-	public T underlined()
+	public MessageComponent underlined()
 	{
 		return setUnderlined();
 	}
@@ -666,7 +665,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return This message component instance.
 	 */
-	public T obfuscated()
+	public MessageComponent obfuscated()
 	{
 		return setObfuscated();
 	}
@@ -676,7 +675,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 *
 	 * @return This message component instance.
 	 */
-	public T strikethrough()
+	public MessageComponent strikethrough()
 	{
 		return setStrikethrough();
 	}
@@ -688,7 +687,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param value the value the client should use for the action.
 	 * @return This message component instance.
 	 */
-	public T onClick(MessageClickEvent.ClickEventAction action, String value)
+	public MessageComponent onClick(MessageClickEvent.ClickEventAction action, String value)
 	{
 		return setClickEvent(new MessageClickEvent(action, value));
 	}
@@ -696,10 +695,10 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	/**
 	 * Set the behavior of the component to instruct the client to open a file on the client side filesystem when the component is clicked.
 	 *
-	 * @param path The path of the file on the clients filesystem.
+	 * @param path The path of the file on the clients' filesystem.
 	 * @return This message component instance.
 	 */
-	public T file(String path)
+	public MessageComponent file(String path)
 	{
 		return onClick(MessageClickEvent.ClickEventAction.OPEN_FILE, path);
 	}
@@ -710,7 +709,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param url The URL of the page to open when the link is clicked.
 	 * @return This message component instance.
 	 */
-	public T link(String url)
+	public MessageComponent link(String url)
 	{
 		return onClick(MessageClickEvent.ClickEventAction.OPEN_URL, url);
 	}
@@ -722,7 +721,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param command The text to display in the chat bar of the client.
 	 * @return This message component instance.
 	 */
-	public T suggest(String command)
+	public MessageComponent suggest(String command)
 	{
 		return onClick(MessageClickEvent.ClickEventAction.SUGGEST_COMMAND, command);
 	}
@@ -734,7 +733,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param command The text to display in the chat bar of the client.
 	 * @return This message component instance.
 	 */
-	public T command(final String command)
+	public MessageComponent command(final String command)
 	{
 		return onClick(MessageClickEvent.ClickEventAction.RUN_COMMAND, command);
 	}
@@ -746,7 +745,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param insert The text to append to the chat bar of the client.
 	 * @return This message component instance.
 	 */
-	public T insert(String insert)
+	public MessageComponent insert(String insert)
 	{
 		return setInsertion(insert);
 	}
@@ -758,9 +757,9 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param value the value the client should use for the action.
 	 * @return This message component instance.
 	 */
-	public T onHover(final @NotNull MessageHoverEvent.HoverEventAction action, final @Nullable String value)
+	public MessageComponent onHover(final @NotNull MessageHoverEvent.HoverEventAction action, final @Nullable String value)
 	{
-		if(value == null) return (T) this;
+		if(value == null) return this;
 		return setHoverEvent(new MessageHoverEvent(action, value));
 	}
 
@@ -771,7 +770,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param value the value the client should use for the action.
 	 * @return This message component instance.
 	 */
-	public T onHover(MessageHoverEvent.HoverEventAction action, Collection<? extends MessageComponent> value)
+	public MessageComponent onHover(MessageHoverEvent.HoverEventAction action, Collection<? extends MessageComponent> value)
 	{
 		return setHoverEvent(new MessageHoverEvent(action, value));
 	}
@@ -782,7 +781,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param name The name of the achievement to display, excluding the "achievement." prefix.
 	 * @return This message component instance.
 	 */
-	public T achievementTooltip(String name)
+	public MessageComponent achievementTooltip(String name)
 	{
 		return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, "achievement." + name);
 	}
@@ -793,7 +792,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param name The name of the statistic to display, excluding the "stat." prefix.
 	 * @return This message component instance.
 	 */
-	public T statisticTooltip(String name)
+	public MessageComponent statisticTooltip(String name)
 	{
 		return onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, "stat." + name);
 	}
@@ -804,7 +803,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param itemJSON A string representing the JSON-serialized NBT data tag of an ItemStack.
 	 * @return This message component instance.
 	 */
-	public T itemTooltip(String itemJSON)
+	public MessageComponent itemTooltip(String itemJSON)
 	{
 		return onHover(MessageHoverEvent.HoverEventAction.SHOW_ITEM, itemJSON);
 	}
@@ -815,7 +814,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param lines The lines of text which will be displayed to the client upon hovering.
 	 * @return This message component instance.
 	 */
-	public T tooltip(String... lines)
+	public MessageComponent tooltip(String... lines)
 	{
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < lines.length; i++)
@@ -835,7 +834,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param text The formatted text which will be displayed to the client upon hovering.
 	 * @return This message component instance.
 	 */
-	public T formattedTooltip(MessageComponent... text) throws IllegalArgumentException
+	public MessageComponent formattedTooltip(MessageComponent... text) throws IllegalArgumentException
 	{
 		StringBuilder builder = new StringBuilder();
 		for(MessageComponent t : text)
@@ -847,7 +846,15 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 		return onHover(MessageHoverEvent.HoverEventAction.SHOW_TEXT, builder.toString());
 	}
 
-	protected abstract T getNewLineComponent();
+	public MessageComponent getNewLineComponent()
+	{
+		return new MessageComponent("\n");
+	}
+
+	public static MessageComponent makeNewLineComponent()
+	{
+		return new MessageComponent("\n");
+	}
 
 	/**
 	 * Set the behavior of the component to display the specified lines of formatted text when the client hovers over the text.
@@ -855,7 +862,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param lines The lines of formatted text which will be displayed to the client upon hovering.
 	 * @return This message component instance.
 	 */
-	public T formattedTooltip(Message... lines) throws IllegalArgumentException
+	public MessageComponent formattedTooltip(Message... lines) throws IllegalArgumentException
 	{
 		if(lines.length < 1)
 		{
@@ -886,7 +893,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param extras The extras to be added to the component.
 	 * @return This message component instance.
 	 */
-	public T extra(T... extras)
+	public MessageComponent extra(MessageComponent... extras)
 	{
 		return addExtra(extras);
 	}
@@ -894,10 +901,9 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 
 	//region Deserializer and Deserializer Functions
 	//region deserializer variables
-	protected transient static Constructor messageComponentConstructor;
-	protected transient static Class messageComponentClass;
 	protected transient static final Gson GSON = new GsonBuilder().registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).disableHtmlEscaping().create();
 	protected transient static final JsonParser JSON_PARSER = new JsonParser();
+	protected transient static final MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 	//endregion
 
 	/**
@@ -906,7 +912,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param jsonString The JSON string representing the components.
 	 * @return A list of MessageComponent objects. An empty list if there are no components in the given {@link JsonArray}.
 	 */
-	protected List<T> fromJsonWorker(String jsonString)
+	protected List<MessageComponent> fromJsonWorker(String jsonString)
 	{
 		return fromJsonArrayWorker(JSON_PARSER.parse(jsonString).getAsJsonArray());
 	}
@@ -917,16 +923,16 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 	 * @param componentArray The {@link JsonArray} containing all the components, from the deserializer.
 	 * @return A list of MessageComponent objects. An empty list if there are no components in the given {@link JsonArray}.
 	 */
-	protected List<T> fromJsonArrayWorker(JsonArray componentArray)
+	protected List<MessageComponent> fromJsonArrayWorker(JsonArray componentArray)
 	{
-		List<T> components = new ArrayList<>();
+		List<MessageComponent> components = new ArrayList<>();
 		for(JsonElement component : componentArray)
 		{
 			if(component instanceof JsonPrimitive)
 			{
 				try
 				{
-					T messageComponent = (T) messageComponentConstructor.newInstance();
+					MessageComponent messageComponent = new MessageComponent();
 					messageComponent.setText(component.getAsString());
 					components.add(messageComponent);
 				}
@@ -937,7 +943,7 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 			}
 			else if(component instanceof JsonObject)
 			{
-				components.add((T) GSON.fromJson(component, messageComponentClass));
+				components.add(GSON.fromJson(component, MessageComponent.class));
 			}
 			else if(component instanceof JsonArray)
 			{
@@ -945,6 +951,28 @@ public abstract class MessageComponent<T extends MessageComponent> implements Se
 			}
 		}
 		return components;
+	}
+
+	/**
+	 * Generates a MessageComponent list from a given JSON string.
+	 *
+	 * @param jsonString The JSON string representing the components.
+	 * @return A list of MessageComponent objects. An empty list if there are no components in the given {@link JsonArray}.
+	 */
+	public static List<MessageComponent> fromJson(String jsonString)
+	{
+		return MESSAGE_COMPONENT_INSTANCE.fromJsonWorker(jsonString);
+	}
+
+	/**
+	 * Generates a MessageComponent list from a given {@link JsonArray} object.
+	 *
+	 * @param componentArray The {@link JsonArray} containing all the components, from the deserializer.
+	 * @return A list of MessageComponent objects. An empty list if there are no components in the given {@link JsonArray}.
+	 */
+	public static List<MessageComponent> fromJsonArray(JsonArray componentArray)
+	{
+		return MESSAGE_COMPONENT_INSTANCE.fromJsonArrayWorker(componentArray);
 	}
 	//endregion
 }

@@ -19,7 +19,6 @@ package at.pcgamingfreaks.Message;
 
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
-import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.StringUtils;
 
 import org.intellij.lang.annotations.Language;
@@ -32,28 +31,23 @@ import lombok.Setter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_SENDER, MESSAGE_COMPONENT extends MessageComponent<?>> implements IMessage<PLAYER, COMMAND_SENDER>
+public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SENDER> implements IMessage<PLAYER, COMMAND_SENDER>
 {
-	private static Class<? extends MessageComponent<?>> MESSAGE_COMPONENT_CLASS;
-	private static Method METHOD_MESSAGE_COMPONENT_FROM_JSON = null;
 	private static Constructor<? extends MessageBuilder> MESSAGE_BUILDER_CONSTRUCTOR;
 
-	protected static void setMessageComponentClass(Class<? extends MessageComponent<?>> messageComponentClass, Constructor<? extends MessageBuilder> messageBuilderConstructor)
+	protected static void setMessageComponentClass(Constructor<? extends MessageBuilder> messageBuilderConstructor)
 	{
-		MESSAGE_COMPONENT_CLASS = messageComponentClass;
-		METHOD_MESSAGE_COMPONENT_FROM_JSON = Reflection.getMethod(messageComponentClass, "fromJson", String.class);
 		MESSAGE_BUILDER_CONSTRUCTOR = messageBuilderConstructor;
 	}
 
 	//region Variables
 	@Setter @Getter protected IMetadata optionalParameters = null;
 	@Getter protected String json, fallback;
-	protected List<MESSAGE_COMPONENT> messageComponents = null;
+	protected List<MessageComponent> messageComponents = null;
 	@Getter protected boolean placeholderApiEnabled = false;
 	@Getter private boolean legacy = false;
 	private boolean escaped; // % -> %%
@@ -65,14 +59,13 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 		String errorMessage = null;
 		try
 		{
-			//noinspection unchecked
-			messageComponents = (List<MESSAGE_COMPONENT>) METHOD_MESSAGE_COMPONENT_FROM_JSON.invoke(null, message);
+			messageComponents = MessageComponent.fromJson(message);
 		}
 		catch(Exception e) { errorMessage = StringUtils.getErrorMessage(e); } // If there was an exception it's very likely that the given message isn't a JSON
 		if(messageComponents != null) // The json has been deserialized successful
 		{
-			json = message; // The given message string was a valid JSON so we are free to send it to the clients
-			fallback = getClassicMessage(); // We need a fallback for the console an everything else that isn't a player
+			json = message; // The given message string was a valid JSON, so we are free to send it to the clients
+			fallback = getClassicMessage(); // We need a fallback for the console and everything else that isn't a player
 		}
 		else
 		{ // The json has not been deserialized successful, probably a legacy message
@@ -93,7 +86,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 			legacy = true;
 			try
 			{
-				MessageBuilder<?,MESSAGE_COMPONENT,?> builder = MESSAGE_BUILDER_CONSTRUCTOR.newInstance();
+				MessageBuilder<?,?> builder = MESSAGE_BUILDER_CONSTRUCTOR.newInstance();
 				builder.appendLegacy(message);
 				json = builder.getJson();
 				messageComponents = builder.getJsonMessageAsList();
@@ -108,11 +101,11 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 		}
 	}
 
-	protected Message(final @NotNull Collection<? extends MESSAGE_COMPONENT> message)
+	protected Message(final @NotNull Collection<? extends MessageComponent> message)
 	{
 		messageComponents = new ArrayList<>(message); // Lets save our deserialized JSON into an array (maybe we will need it at a later point, you never know)
 		fallback = getClassicMessage(); // We need a fallback for the console and everything else that isn't a player
-		json = MessageComponent.GSON.toJson(message); // We need a JSON string to send to the player, so lets generate one from the component list
+		json = MessageComponent.GSON.toJson(message); // We need a JSON string to send to the player, so let's generate one from the component list
 	}
 	//endregion
 
@@ -136,10 +129,9 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 	 *
 	 * @return The array of {@link MessageComponent}'s representing the message.
 	 */
-	public @NotNull MESSAGE_COMPONENT[] getMessageComponents()
+	public @NotNull MessageComponent[] getMessageComponents()
 	{
-		//noinspection unchecked
-		return messageComponents.toArray((MESSAGE_COMPONENT[]) Array.newInstance(MESSAGE_COMPONENT_CLASS, 0));
+		return messageComponents.toArray((MessageComponent[])Array.newInstance(MessageComponent.class, 0));
 	}
 
 	/**
@@ -157,7 +149,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 	public boolean equals(Object otherObject)
 	{
 		//noinspection NonFinalFieldReferenceInEquals
-		return this == otherObject || (otherObject instanceof Message<?,?,?,?> && json.equals(((Message<?,?,?,?>) otherObject).json));
+		return this == otherObject || (otherObject instanceof Message<?,?,?> && json.equals(((Message<?,?,?>) otherObject).json));
 	}
 
 	@Override
@@ -169,12 +161,13 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 	/**
 	 * Replaces strings within the JSON and the classic message of this message.
 	 * This can be used to replace placeholders with static texts or with whitespaces for string format.
-	 * The function is used the same way like String.replaceAll.
+	 * The function is used the same way as String.replaceAll.
 	 *
 	 * @param regex       The regular expression to which the strings are to be matched.
 	 * @param replacement The string which would replace the found expression.
 	 * @return            This message instance (for chaining).
 	 */
+	@Override
 	public @NotNull MESSAGE replaceAll(@NotNull @Language("RegExp") String regex, @NotNull String replacement)
 	{
 		json = json.replaceAll(regex, replacement);
@@ -192,7 +185,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 		}
 	}
 
-	protected Object[] quoteArgs(final Object[] args)
+	protected void quoteArgs(final Object[] args)
 	{
 		for(int i = 0; i < args.length; i++)
 		{
@@ -201,7 +194,6 @@ public abstract class Message<MESSAGE extends Message<?,?,?,?>, PLAYER, COMMAND_
 				args[i] = StringUtils.escapeJsonString((String) args[i]);
 			}
 		}
-		return args;
 	}
 
 	/**

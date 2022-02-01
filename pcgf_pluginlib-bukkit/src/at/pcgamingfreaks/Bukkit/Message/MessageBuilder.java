@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Bukkit.Message;
 
+import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageFormat;
 import at.pcgamingfreaks.Reflection;
@@ -32,16 +33,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, MessageComponent, Message>
+public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, Message>
 {
 	static
 	{
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "NEW_LINE_HELPER", new MessageComponent("\n"));
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "EMPTY_COMPONENT_CONSTRUCTOR", Reflection.getConstructor(MessageComponent.class));
 		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "MESSAGE_CONSTRUCTOR", Reflection.getConstructor(Message.class, Collection.class));
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "INIT_COMPONENT_CONSTRUCTOR", Reflection.getConstructor(MessageComponent.class, String.class, MessageColor.class, MessageFormat[].class));
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "INIT_COMPONENT_CONSTRUCTOR_TEXT_AND_FORMAT", Reflection.getConstructor(MessageComponent.class, String.class, MessageFormat[].class));
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "COMPONENT_CLASS", MessageComponent.class);
 	}
 
 	//region Constructors
@@ -68,7 +64,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 *
 	 * @param initCollection The {@link Collection} of {@link MessageComponent} that should be used to initiate the MessageBuilder.
 	 */
-	public MessageBuilder(Collection<MessageComponent> initCollection)
+	public MessageBuilder(Collection<? extends MessageComponent> initCollection)
 	{
 		super(initCollection);
 	}

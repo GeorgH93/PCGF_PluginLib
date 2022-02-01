@@ -25,21 +25,19 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 @SuppressWarnings({ "unchecked", "UnusedReturnValue" })
-public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COMPONENT extends MessageComponent, MESSAGE extends Message>
+public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE extends Message>
 {
-	private final List<COMPONENT> messageList = new ArrayList<>();
-	private COMPONENT current;
-	private static Constructor EMPTY_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR = null, INIT_COMPONENT_CONSTRUCTOR_TEXT_AND_FORMAT = null, MESSAGE_CONSTRUCTOR = null;
-	@SuppressWarnings("unused")
-	private static Class<? extends MessageComponent> COMPONENT_CLASS;
-	private static MessageComponent NEW_LINE_HELPER = null;
+	private final List<MessageComponent> messageList = new ArrayList<>();
+	private static final MessageComponent NEW_LINE_HELPER = MessageComponent.makeNewLineComponent();
+	private static Constructor MESSAGE_CONSTRUCTOR = null;
+	private MessageComponent current;
 
 	/**
 	 * Creates a new MessageBuilder with a given {@link MessageComponent}.
 	 *
 	 * @param initComponent The {@link MessageComponent} that should be on the first position of the message.
 	 */
-	public MessageBuilder(COMPONENT initComponent)
+	public MessageBuilder(MessageComponent initComponent)
 	{
 		current = initComponent;
 		if(initComponent != null) messageList.add(initComponent);
@@ -50,7 +48,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 *
 	 * @param initCollection The {@link Collection} of {@link MessageComponent} that should be used to initiate the MessageBuilder.
 	 */
-	public MessageBuilder(Collection<COMPONENT> initCollection)
+	public MessageBuilder(Collection<? extends MessageComponent> initCollection)
 	{
 		append(initCollection);
 	}
@@ -63,7 +61,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 */
 	public MESSAGE_BUILDER appendNewLine()
 	{
-		return append((COMPONENT) NEW_LINE_HELPER);
+		return append(NEW_LINE_HELPER);
 	}
 
 	/**
@@ -75,7 +73,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	{
 		try
 		{
-			return append((COMPONENT) EMPTY_COMPONENT_CONSTRUCTOR.newInstance());
+			return append(new MessageComponent());
 		}
 		catch(Exception e)
 		{
@@ -94,7 +92,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	{
 		try
 		{
-			return append((COMPONENT) INIT_COMPONENT_CONSTRUCTOR_TEXT_AND_FORMAT.newInstance(text, formats));
+			return append(new MessageComponent(text, formats));
 		}
 		catch(Exception e)
 		{
@@ -115,7 +113,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	{
 		try
 		{
-			return append((COMPONENT) INIT_COMPONENT_CONSTRUCTOR.newInstance(text, color, formats));
+			return append(new MessageComponent(text, color, formats));
 		}
 		catch(Exception e)
 		{
@@ -130,7 +128,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 * @param components The array of {@link MessageComponent}'s that should be added to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
-	public MESSAGE_BUILDER append(COMPONENT... components)
+	public MESSAGE_BUILDER append(MessageComponent... components)
 	{
 		if(components != null && components.length > 0)
 		{
@@ -146,7 +144,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 * @param components The collection of {@link MessageComponent}'s that should be added to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
-	public MESSAGE_BUILDER append(Collection<COMPONENT> components)
+	public MESSAGE_BUILDER append(Collection<? extends MessageComponent> components)
 	{
 		messageList.addAll(components);
 		current = messageList.get(messageList.size() - 1);
@@ -173,7 +171,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	}
 	//endregion
 
-	protected COMPONENT getCurrentComponent()
+	protected MessageComponent getCurrentComponent()
 	{
 		return current;
 	}
@@ -193,7 +191,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 *
 	 * @return The iterator of the builder.
 	 */
-	public Iterator<COMPONENT> iterator()
+	public Iterator<MessageComponent> iterator()
 	{
 		return messageList.iterator();
 	}
@@ -411,7 +409,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 * @param value  The value the client should use for the action.
 	 * @return The message builder instance (for chaining).
 	 */
-	public MESSAGE_BUILDER onHover(MessageHoverEvent.HoverEventAction action, Collection<? extends COMPONENT> value)
+	public MESSAGE_BUILDER onHover(MessageHoverEvent.HoverEventAction action, Collection<? extends MessageComponent> value)
 	{
 		getCurrentComponent().onHover(action, value);
 		return (MESSAGE_BUILDER) this;
@@ -471,7 +469,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 * @param text The formatted text which will be displayed to the client upon hovering.
 	 * @return The message builder instance (for chaining).
 	 */
-	public MESSAGE_BUILDER formattedTooltip(COMPONENT... text) throws IllegalArgumentException
+	public MESSAGE_BUILDER formattedTooltip(MessageComponent... text) throws IllegalArgumentException
 	{
 		getCurrentComponent().formattedTooltip(text);
 		return (MESSAGE_BUILDER) this;
@@ -495,7 +493,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 * @param extras The extras to be added to the current component.
 	 * @return The message builder instance (for chaining).
 	 */
-	public MESSAGE_BUILDER extra(COMPONENT... extras)
+	public MESSAGE_BUILDER extra(MessageComponent... extras)
 	{
 		getCurrentComponent().extra(extras);
 		return (MESSAGE_BUILDER) this;
@@ -526,7 +524,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 *
 	 * @return The list of {@link MessageComponent}'s.
 	 */
-	public List<COMPONENT> getJsonMessageAsList()
+	public List<MessageComponent> getJsonMessageAsList()
 	{
 		return new ArrayList<>(messageList);
 	}
@@ -536,9 +534,9 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 *
 	 * @return The array of {@link MessageComponent}'s.
 	 */
-	public COMPONENT[] getJsonMessage()
+	public MessageComponent[] getJsonMessage()
 	{
-		COMPONENT[] array = (COMPONENT[]) Array.newInstance(COMPONENT_CLASS, messageList.size());
+		MessageComponent[] array = (MessageComponent[]) Array.newInstance(MessageComponent.class, messageList.size());
 		return messageList.toArray(array);
 	}
 
@@ -549,7 +547,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, COM
 	 */
 	public String getClassicMessage()
 	{
-		return COMPONENT.getClassicMessage(messageList);
+		return MessageComponent.getClassicMessage(messageList);
 	}
 
 	/**

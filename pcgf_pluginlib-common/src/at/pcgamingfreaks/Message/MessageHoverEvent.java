@@ -147,7 +147,7 @@ public class MessageHoverEvent
 	 *
 	 * @param value The new value used for the action of the event.
 	 */
-	public void setValue(final @NotNull Message<?,?,?,?> value)
+	public void setValue(final @NotNull Message<?,?,?> value)
 	{
 		setValue(value.getMessageComponents());
 	}
