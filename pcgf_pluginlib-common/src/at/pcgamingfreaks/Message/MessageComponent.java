@@ -899,6 +899,13 @@ public class MessageComponent implements Serializable
 	}
 	//endregion
 
+	public boolean isEmpty()
+	{
+		return  (text == null || text.isEmpty()) && (extra == null || extra.isEmpty()) && color == null && (font == null || font.isEmpty()) && (insertion == null || insertion.isEmpty()) &&
+				!bold && !italic && !underlined && !strikethrough && !obfuscated &&
+				(with == null || with.isEmpty()) && score == null && translate == null && selector == null;
+	}
+
 	//region Deserializer and Deserializer Functions
 	//region deserializer variables
 	protected transient static final Gson GSON = new GsonBuilder().registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).disableHtmlEscaping().create();
