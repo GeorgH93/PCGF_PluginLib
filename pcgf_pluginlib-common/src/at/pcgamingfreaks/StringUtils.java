@@ -162,7 +162,7 @@ public class StringUtils
 	/**
 	 * Limits the length of a given string to a given amount of characters.
 	 *
-	 * @param text      The text that should be limited in it's length.
+	 * @param text      The text that should be limited in its length.
 	 * @param maxLength The max amount of characters the text should be limited to.
 	 * @return The text in it's limited length.
 	 */
@@ -215,7 +215,7 @@ public class StringUtils
 	}
 
 	/**
-	 * Converts a byte count into an human readable string (e.g.: 1.24 MiB).
+	 * Converts a byte count into a human-readable string (e.g.: 1.24 MiB).
 	 *
 	 * @param bytes The size in bytes
 	 * @return The formatted string.
@@ -226,7 +226,7 @@ public class StringUtils
 	}
 
 	/**
-	 * Converts a byte count into an human readable string (e.g.: 1.24 MiB).
+	 * Converts a byte count into a human-readable string (e.g.: 1.24 MiB).
 	 *
 	 * @param locale The locale to be used for number formatting
 	 * @param bytes The size in bytes
