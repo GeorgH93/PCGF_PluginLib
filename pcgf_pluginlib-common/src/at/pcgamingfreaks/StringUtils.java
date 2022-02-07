@@ -281,6 +281,42 @@ public class StringUtils
 		return strings.stream().filter(s -> s.toLowerCase(Locale.ENGLISH).startsWith(prefix.toLowerCase(Locale.ENGLISH))).collect(Collectors.toList());
 	}
 
+	/**
+	 * Finds the index of a string in a string array.
+	 * @param strings The array of strings that should be searched.
+	 * @param value The value that should be searched for.
+	 * @return The index of value in the strings array. -1 if value is not in the array.
+	 */
+	public static int indexOf(final @NotNull String[] strings, final @NotNull String value)
+	{
+		for(int i = 0; i < strings.length; i++)
+		{
+			if(strings[i].equals(value))
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * Finds the index of a string in a string array, ignoring case considerations.
+	 * @param strings The array of strings that should be searched.
+	 * @param value The value that should be searched for.
+	 * @return The index of value in the strings array. -1 if value is not in the array.
+	 */
+	public static int indexOfIgnoreCase(final @NotNull String[] strings, final @NotNull String value)
+	{
+		for(int i = 0; i < strings.length; i++)
+		{
+			if(strings[i].equalsIgnoreCase(value))
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	//region Enabled / Disabled messages
 	private static final String ENABLED_MESSAGE = ConsoleColor.GREEN + " %s has been enabled! " + ConsoleColor.YELLOW + " :) " + ConsoleColor.RESET;
 	private static final String DISABLED_MESSAGE = ConsoleColor.RED + " %s has been disabled. " + ConsoleColor.YELLOW + " :( " + ConsoleColor.RESET;
