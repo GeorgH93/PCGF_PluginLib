@@ -132,6 +132,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MES
 	{
 		if(components != null && components.length > 0)
 		{
+			if(messageList.size() > 1 && current.isEmpty()) messageList.remove(messageList.size() - 1);
 			current = components[components.length - 1];
 			Collections.addAll(messageList, components);
 		}
