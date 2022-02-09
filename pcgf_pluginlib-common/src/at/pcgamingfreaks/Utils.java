@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -347,5 +348,33 @@ public class Utils
 				logger.info(valueName + " is not a valid option for " + clazz.getSimpleName());
 		}
 		return (v == null) ? defaultValue : v;
+	}
+
+	/**
+	 * Inserts a element at a certain position in an array list.
+	 * If the array list does not contain enough elements new elements with null value will be added.
+	 * @param list The list to which the element should be added.
+	 * @param element The element that should be added.
+	 * @param index The index at which the element should be added.
+	 * @param <T> The type of the list and element.
+	 */
+	public static <T> void insertAt(ArrayList<T> list, T element, int index)
+	{
+		if(index < list.size())
+		{
+			list.set(index, element);
+		}
+		else if(index == list.size())
+		{
+			list.add(element);
+		}
+		else
+		{
+			while(index > list.size())
+			{
+				list.add(null);
+			}
+			list.add(element);
+		}
 	}
 }
