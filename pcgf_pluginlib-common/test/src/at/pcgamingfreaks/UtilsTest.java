@@ -26,6 +26,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
@@ -124,5 +125,23 @@ public class UtilsTest
 		assertEquals(2.0f, Utils.tryParse("1.0a", 2.0f), 0);
 		assertEquals(1.0, Utils.tryParse("1.0", 2.0), 0);
 		assertEquals(2.0, Utils.tryParse("1.0a", 2.0), 0);
+	}
+
+	@Test
+	public void testInsertAt()
+	{
+		ArrayList<String> list = new ArrayList<>();
+
+		Utils.insertAt(list, "test", 3);
+		assertArrayEquals(new String[]{null, null, null, "test"}, list.toArray());
+
+		Utils.insertAt(list, "t", 1);
+		assertArrayEquals(new String[]{null, "t", null, "test"}, list.toArray());
+
+		Utils.insertAt(list, "tt", 1);
+		assertArrayEquals(new String[]{null, "tt", null, "test"}, list.toArray());
+
+		Utils.insertAt(list, "4", 4);
+		assertArrayEquals(new String[]{null, "tt", null, "test", "4"}, list.toArray());
 	}
 }
