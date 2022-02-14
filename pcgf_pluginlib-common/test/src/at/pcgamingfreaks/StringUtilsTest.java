@@ -244,4 +244,28 @@ public class StringUtilsTest
 		assertEquals("test 1", StringUtils.arrayToString(new Object[] { "test", 1 }));
 		assertEquals("", StringUtils.arrayToString(new Object[0]));
 	}
+
+	@Test
+	public void testIndexOf()
+	{
+		String[] testData = new String[] { "test1", "Test2", "test3 test3"};
+		assertEquals(-1, StringUtils.indexOf(testData, "test99"));
+		assertEquals(0, StringUtils.indexOf(testData, "test1"));
+		assertEquals(-1, StringUtils.indexOf(testData, "test2"));
+		assertEquals(1, StringUtils.indexOf(testData, "Test2"));
+		assertEquals(-1, StringUtils.indexOf(testData, "test3"));
+		assertEquals(2, StringUtils.indexOf(testData, "test3 test3"));
+	}
+
+	@Test
+	public void testIndexOfIgnoreCase()
+	{
+		String[] testData = new String[] { "test1", "Test2", "test3 test3"};
+		assertEquals(-1, StringUtils.indexOfIgnoreCase(testData, "test99"));
+		assertEquals(0, StringUtils.indexOfIgnoreCase(testData, "test1"));
+		assertEquals(1, StringUtils.indexOfIgnoreCase(testData, "test2"));
+		assertEquals(1, StringUtils.indexOfIgnoreCase(testData, "Test2"));
+		assertEquals(-1, StringUtils.indexOfIgnoreCase(testData, "test3"));
+		assertEquals(2, StringUtils.indexOfIgnoreCase(testData, "test3 test3"));
+	}
 }
