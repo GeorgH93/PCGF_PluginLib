@@ -268,4 +268,13 @@ public class StringUtilsTest
 		assertEquals(-1, StringUtils.indexOfIgnoreCase(testData, "test3"));
 		assertEquals(2, StringUtils.indexOfIgnoreCase(testData, "test3 test3"));
 	}
+
+	@Test
+	public void testIndexOfAllMatching()
+	{
+		String[] testData = new String[] { "test1", "Test2", "test3 test3"};
+		assertEquals(new Integer[]{0}, StringUtils.indexOfAllMatching(testData, "test1").toArray());
+		assertEquals(new Integer[]{0}, StringUtils.indexOfAllMatching(testData, "test1?").toArray());
+		assertEquals(new Integer[]{0, 1}, StringUtils.indexOfAllMatching(testData, "[tT]est[\\d]").toArray());
+	}
 }

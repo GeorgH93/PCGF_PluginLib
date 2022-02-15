@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks;
 
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -315,6 +316,27 @@ public class StringUtils
 			}
 		}
 		return -1;
+	}
+
+	/**
+	 * Finds the index of a string in a string array.
+	 * @param strings The array of strings that should be searched.
+	 * @param searchRegex The regex that should be used to find all matching entries.
+	 * @return The index of value in the strings array. -1 if value is not in the array.
+	 */
+	public static Collection<Integer> indexOfAllMatching(final @NotNull String[] strings, final @NotNull @Language("RegExp") String searchRegex)
+	{
+		Pattern pattern = Pattern.compile(searchRegex);
+		List<Integer> ids = new ArrayList<>();
+		for(int i = 0; i < strings.length; i++)
+		{
+			Matcher matcher = pattern.matcher(strings[i]);
+			if(matcher.matches())
+			{
+				ids.add(i);
+			}
+		}
+		return ids;
 	}
 
 	//region Enabled / Disabled messages
