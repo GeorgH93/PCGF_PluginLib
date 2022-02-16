@@ -59,7 +59,7 @@ public class StringPlaceholderEngine
 		this.components = components.toArray(new String[0]);
 	}
 
-	public void registerPlaceholder(final @NotNull @Language("RegExp") String placeholder, final int placeholderIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)
+	public void registerPlaceholder(final @NotNull String placeholder, final int placeholderIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)
 	{
 		int placeholderIndexInMap = placeholderIndex | Integer.MIN_VALUE;
 		int id = StringUtils.indexOf(components, placeholder);
@@ -67,6 +67,25 @@ public class StringPlaceholderEngine
 		for(int i = 0; i < componentsMap.length; i++)
 		{
 			if(componentsMap[i] == id)
+			{
+				componentsMap[i] = placeholderIndexInMap;
+				contains = true;
+			}
+		}
+		if(contains)
+		{
+			Utils.insertAt(placeholderProcessors, placeholderProcessor, placeholderIndex);
+		}
+	}
+
+	public void registerPlaceholderRegex(final @NotNull @Language("RegExp") String placeholderRegex, final int placeholderIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)
+	{
+		int placeholderIndexInMap = placeholderIndex | Integer.MIN_VALUE;
+		Collection<Integer> ids = StringUtils.indexOfAllMatching(components, placeholderRegex);
+		boolean contains = false;
+		for(int i = 0; i < componentsMap.length; i++)
+		{
+			if(ids.contains(componentsMap[i]))
 			{
 				componentsMap[i] = placeholderIndexInMap;
 				contains = true;
