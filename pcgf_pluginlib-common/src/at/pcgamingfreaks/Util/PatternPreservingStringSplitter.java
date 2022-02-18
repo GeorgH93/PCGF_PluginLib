@@ -20,13 +20,15 @@ package at.pcgamingfreaks.Util;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PatternPreservingStringSplitter
 {
-	private final Pattern placeholderPattern;
+	@Getter private final Pattern placeholderPattern;
 
 	public PatternPreservingStringSplitter(final @NotNull @Language("RegExp") String pattern)
 	{

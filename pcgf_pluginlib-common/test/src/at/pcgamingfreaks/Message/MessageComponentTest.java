@@ -220,4 +220,17 @@ public class MessageComponentTest
 		//noinspection SpellCheckingInspection
 		assertEquals("The message text should match", "St§rring §rfrom JSON worker§r", message.getClassicMessage());
 	}
+
+	@Test
+	public void testSplit()
+	{
+		MessageComponent messageComponent = new MessageComponent("test {Placeholder} test2.", MessageColor.RED);
+		assertEquals("{\"text\":\"test \",\"color\":\"red\",\"extra\":[{\"text\":\"{Placeholder}\"},{\"text\":\" test2.\"}]}", messageComponent.split("\\{Placeholder}").toString());
+
+		messageComponent = new MessageComponent("{Placeholder} test2.", MessageColor.RED);
+		assertEquals("{\"color\":\"red\",\"extra\":[{\"text\":\"{Placeholder}\"},{\"text\":\" test2.\"}]}", messageComponent.split("\\{Placeholder}").toString());
+
+		messageComponent = new MessageComponent("test {Placeholder} test2.", MessageColor.BLUE).addExtra(new MessageComponent("Some {Placeholder} {Placeholder2} magic.", MessageColor.GRAY));
+		assertEquals("{\"text\":\"test \",\"color\":\"blue\",\"extra\":[{\"text\":\"{Placeholder}\"},{\"text\":\" test2.\"},{\"text\":\"Some \",\"color\":\"gray\",\"extra\":[{\"text\":\"{Placeholder}\"},{\"text\":\" {Placeholder2} magic.\"}]}]}", messageComponent.split("\\{Placeholder}").toString());
+	}
 }

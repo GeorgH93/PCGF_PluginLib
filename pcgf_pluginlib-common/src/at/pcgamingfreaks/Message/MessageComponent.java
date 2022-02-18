@@ -17,8 +17,12 @@
 
 package at.pcgamingfreaks.Message;
 
+import at.pcgamingfreaks.Util.PatternPreservingStringSplitter;
+
 import com.google.gson.*;
 
+import org.intellij.lang.annotations.Language;
+import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -904,6 +908,40 @@ public class MessageComponent implements Serializable
 		return  (text == null || text.isEmpty()) && (extra == null || extra.isEmpty()) && color == null && (font == null || font.isEmpty()) && (insertion == null || insertion.isEmpty()) &&
 				!bold && !italic && !underlined && !strikethrough && !obfuscated &&
 				(with == null || with.isEmpty()) && score == null && translate == null && selector == null;
+	}
+
+	public MessageComponent split(final @NotNull @Language("RegExp") String pattern)
+	{
+		return split(new PatternPreservingStringSplitter(pattern));
+	}
+
+	public MessageComponent split(final @NotNull PatternPreservingStringSplitter splitter)
+	{
+		if(extra == null) extra = new ArrayList<>();
+		for(MessageComponent component : extra)
+		{
+			component.split(splitter);
+		}
+		List<String> components = splitter.split(text);
+		if(components.size() > 0)
+		{
+			if(splitter.getPlaceholderPattern().matcher(components.get(0)).matches())
+			{
+				text = null;
+			}
+			else
+			{
+				text = components.get(0);
+				components.remove(0);
+			}
+			List<MessageComponent> newMessageComponents = new ArrayList<>();
+			for(String component : components)
+			{
+				newMessageComponents.add(new MessageComponent(component));
+			}
+			extra.addAll(0, newMessageComponents);
+		}
+		return this;
 	}
 
 	//region Deserializer and Deserializer Functions
