@@ -558,9 +558,7 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MES
 	 */
 	public @NotNull String getJson()
 	{
-		String json = MessageComponent.GSON.toJson(getJsonMessage());
-		if(json.startsWith("[{},")) json = "[\"\"," + json.substring(4);
-		return json;
+		return MessageComponent.toJSON(getJsonMessage());
 	}
 	//endregion
 

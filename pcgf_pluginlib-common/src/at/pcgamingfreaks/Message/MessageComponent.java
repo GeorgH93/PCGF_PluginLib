@@ -951,6 +951,13 @@ public class MessageComponent implements Serializable
 	protected transient static final MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 	//endregion
 
+	public static String toJSON(MessageComponent... components)
+	{
+		String json = GSON.toJson(components);
+		if(json.startsWith("[{},")) json = "[\"\"," + json.substring(4);
+		return json;
+	}
+
 	/**
 	 * Generates a MessageComponent list from a given JSON string.
 	 *
