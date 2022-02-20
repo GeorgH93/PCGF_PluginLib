@@ -182,7 +182,7 @@ public class StringUtils
 	 */
 	public static @NotNull String escapeJsonString(final @NotNull String string)
 	{
-		return string.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
+		return string.replace("\\", "\\\\").replace("\"", "\\\"").replace("\t", "\\t").replace("\n", "\\n").replace("\b", "\\b").replace("\f", "\\f");
 	}
 
 	/**
