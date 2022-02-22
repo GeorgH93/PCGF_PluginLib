@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -549,6 +549,20 @@ public class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE exte
 	{
 		MessageComponent[] array = (MessageComponent[]) Array.newInstance(MessageComponent.class, messageList.size());
 		return messageList.toArray(array);
+	}
+
+	public @NotNull MessageComponent getAsComponent()
+	{
+		if(messageList.size() == 1)
+		{
+			return messageList.get(0);
+		}
+		MessageComponent component = new MessageComponent();
+		if(messageList.size() > 1)
+		{
+			component.extra = getJsonMessageAsList();
+		}
+		return component;
 	}
 
 	/**
