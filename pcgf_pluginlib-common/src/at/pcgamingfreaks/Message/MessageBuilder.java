@@ -25,7 +25,7 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 @SuppressWarnings({ "unchecked", "UnusedReturnValue" })
-public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE extends Message>
+public class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE extends Message>
 {
 	private final List<MessageComponent> messageList = new ArrayList<>();
 	private static final MessageComponent NEW_LINE_HELPER = MessageComponent.makeNewLineComponent();
@@ -158,7 +158,17 @@ public abstract class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MES
 	 * @param json The JSON string that should be deserialized in oder to add it to the builder.
 	 * @return The message builder instance (for chaining).
 	 */
-	public abstract MESSAGE_BUILDER appendJson(String json);
+	public MESSAGE_BUILDER appendJson(String json)
+	{
+		try
+		{
+			return append(MessageComponent.fromJson(json));
+		}
+		catch(Exception ignored)
+		{
+			return append(json);
+		}
+	}
 
 	/**
 	 * Adds a one or more {@link MessageComponent} to the builder, the text and formatting is extracted from the given legacy message.

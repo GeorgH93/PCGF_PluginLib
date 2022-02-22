@@ -55,10 +55,4 @@ public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestM
 		messageComponent.addExtra(MessageComponent.makeNewLineComponent());
 		return this;
 	}
-
-	@Override
-	public TestMessageBuilder appendJson(String json)
-	{
-		return this;
-	}
 }

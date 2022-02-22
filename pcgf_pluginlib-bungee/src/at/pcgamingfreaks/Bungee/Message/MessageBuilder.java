@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 
 package at.pcgamingfreaks.Bungee.Message;
 
-import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.MessageFormat;
 import at.pcgamingfreaks.Reflection;
 
@@ -115,25 +115,6 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	}
 
 	//region Append functions
-	/**
-	 * Adds a new {@link MessageComponent} to the builder, deserialized from a JSON string.
-	 *
-	 * @param json The JSON string that should be deserialized in oder to add it to the builder.
-	 * @return The message builder instance (for chaining).
-	 */
-	@Override
-	public MessageBuilder appendJson(String json)
-	{
-		try
-		{
-			return append(MessageComponent.fromJson(json));
-		}
-		catch(Exception ignored)
-		{
-			return append(json);
-		}
-	}
-
 	/**
 	 * Adds a new {@link MessageComponent} to the builder, generated from a text and optional style data.
 	 *
