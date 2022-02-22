@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ import at.pcgamingfreaks.Util.PatternPreservingStringSplitter;
 import com.google.gson.*;
 
 import org.intellij.lang.annotations.Language;
-import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -917,17 +916,19 @@ public class MessageComponent implements Serializable
 
 	public MessageComponent split(final @NotNull PatternPreservingStringSplitter splitter)
 	{
-		if(extra == null) extra = new ArrayList<>();
-		for(MessageComponent component : extra)
+		if(extra != null)
 		{
-			component.split(splitter);
+			for(MessageComponent component : extra)
+			{
+				component.split(splitter);
+			}
 		}
-		List<String> components = splitter.split(text);
+		List<String> components = (text != null && !text.isEmpty()) ? splitter.split(text) : new ArrayList<>(0);
 		if(components.size() > 0)
 		{
 			if(splitter.getPlaceholderPattern().matcher(components.get(0)).matches())
 			{
-				text = null;
+				text = "";
 			}
 			else
 			{
@@ -937,9 +938,17 @@ public class MessageComponent implements Serializable
 			List<MessageComponent> newMessageComponents = new ArrayList<>();
 			for(String component : components)
 			{
+				if(component.isEmpty()) continue;
 				newMessageComponents.add(new MessageComponent(component));
 			}
-			extra.addAll(0, newMessageComponents);
+			if(extra != null)
+			{
+				extra.addAll(0, newMessageComponents);
+			}
+			else
+			{
+				extra = newMessageComponents;
+			}
 		}
 		return this;
 	}
