@@ -288,7 +288,7 @@ public class Language extends YamlFileManager
 		return MessageColor.translateAlternateColorAndFormatCodes(string);
 	}
 
-	protected @Nullable <T extends Message> T getMessage(boolean escapeStringFormatCharacters, @NotNull String path)
+	protected @Nullable <T extends Message> T getMessage(@NotNull String path)
 	{
 		if(messageClasses == null)
 		{
@@ -306,7 +306,6 @@ public class Language extends YamlFileManager
 				messageClasses.setSendMethod.invoke(msg, Enum.valueOf(messageClasses.enumType, "DISABLED"));
 				return msg;
 			}
-			if(escapeStringFormatCharacters) msg.escapeStringFormatCharacters();
 			final String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
 			if(yaml.isSet(pathSendMethod))
 			{
