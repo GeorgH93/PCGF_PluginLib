@@ -18,10 +18,7 @@
 package at.pcgamingfreaks.Config;
 
 import at.pcgamingfreaks.ConsoleColor;
-import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.Message.MessageColor;
-import at.pcgamingfreaks.Message.Sender.IMetadata;
-import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.Utils;
 import at.pcgamingfreaks.Version;
@@ -35,17 +32,14 @@ import org.jetbrains.annotations.Nullable;
 import lombok.Getter;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.logging.Logger;
 
 public class Language extends YamlFileManager
 {
+	protected static final String KEY_LANGUAGE = "Language.", KEY_ADDITION_SEND_METHOD = "_SendMethod", KEY_ADDITION_PARAMETERS = "_Parameters", KEY_ADDITION_PAPI = "_PAPI";
 	private static final String MESSAGE_NOT_FOUND = MessageColor.RED + "Message not found!";
-	private static final String KEY_LANGUAGE = "Language.", KEY_ADDITION_SEND_METHOD = "_SendMethod", KEY_ADDITION_PARAMETERS = "_Parameters", KEY_ADDITION_PAPI = "_PAPI";
-	protected static MessageClassesReflectionDataHolder messageClasses;
 
 	private final Object plugin;
 	private final String prefix;
@@ -103,11 +97,11 @@ public class Language extends YamlFileManager
 	 */
 	public @NotNull String get(@NotNull String path)
 	{
-		String msg = yaml.getString(KEY_LANGUAGE + path, MESSAGE_NOT_FOUND);
-		//noinspection StringEquality
-		if(msg == MESSAGE_NOT_FOUND) // == is correct! We want to check if the string is the given fallback string object and not if it is the same text. If someone put the fallback text in the language file no warning should be shown.
+		String msg = yaml.getString(KEY_LANGUAGE + path, null);
+		if(msg == null)
 		{
 			logger.warning("No translation for key: " + path);
+			return MESSAGE_NOT_FOUND;
 		}
 		return msg;
 	}
@@ -280,75 +274,7 @@ public class Language extends YamlFileManager
 	 */
 	public @NotNull String getTranslated(final @NotNull String path)
 	{
-		return translateColorCodes(get(path));
-	}
-
-	public @NotNull String translateColorCodes(final @NotNull String string)
-	{
-		return MessageColor.translateAlternateColorAndFormatCodes(string);
-	}
-
-	protected @Nullable <T extends Message> T getMessage(@NotNull String path)
-	{
-		if(messageClasses == null)
-		{
-			logger.warning(ConsoleColor.RED + "Message reflection data object not set!" + ConsoleColor.RESET);
-			return null;
-		}
-		T msg = null;
-		try
-		{
-			final String msgString = getTranslated(path);
-			//noinspection unchecked
-			msg = (T) messageClasses.messageConstructor.newInstance(msgString);
-			if(msgString.isEmpty())
-			{
-				messageClasses.setSendMethod.invoke(msg, Enum.valueOf(messageClasses.enumType, "DISABLED"));
-				return msg;
-			}
-			final String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
-			if(yaml.isSet(pathSendMethod))
-			{
-				final String sendMethodName = yaml.getString(pathSendMethod, "CHAT").toUpperCase(Locale.ROOT);
-				Object sendMethod = null;
-				try
-				{
-					//noinspection unchecked
-					sendMethod = Enum.valueOf(messageClasses.enumType, sendMethodName);
-				}
-				catch(IllegalArgumentException ignored)
-				{
-					logger.warning(ConsoleColor.RED + "Unknown send method '" + sendMethodName + "' for message " + KEY_LANGUAGE + path + ConsoleColor.RESET);
-				}
-				if(sendMethod instanceof ISendMethod)
-				{
-					messageClasses.setSendMethod.invoke(msg, sendMethod);
-					if(yaml.isSet(pathParameter))
-					{
-						IMetadata meta = ((ISendMethod) sendMethod).parseMetadata(yaml.getString(pathParameter));
-						if(meta != null) msg.setOptionalParameters(meta);
-					}
-				}
-			}
-			if(yaml.getBoolean(KEY_LANGUAGE + path + KEY_ADDITION_PAPI, false))
-			{
-				try
-				{
-					msg.setPlaceholderApiEnabled(true);
-				}
-				catch(UnsupportedOperationException e)
-				{
-					logger.warning(ConsoleColor.RED + e.getMessage() + ConsoleColor.RESET);
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			if(msg == null) logger.warning(ConsoleColor.RED + "Failed to load message: " + KEY_LANGUAGE + path + " " + ConsoleColor.RESET);
-			else logger.warning(ConsoleColor.RED + "Failed generate metadata for: " + KEY_LANGUAGE + path + " " + ConsoleColor.RESET);
-			e.printStackTrace();
-		}
-		return msg;
+		return MessageColor.translateAlternateColorAndFormatCodes(get(path));
 	}
 
 	//region language file property getters
@@ -371,26 +297,6 @@ public class Language extends YamlFileManager
 		String author = getAuthor().equals("Unknown") ? "" : "  Author: " + getAuthor();
 		logger.info(ConsoleColor.GREEN + getFileDescriptionCapitalized() + " file successfully loaded. Language: " + getLanguage() + author + ConsoleColor.RESET);
 	}
-
-
-	//region helper class
-	/**
-	 * Ignore this class, it's just a helper class for some internal stuff
-	 */
-	protected static class MessageClassesReflectionDataHolder
-	{
-		public MessageClassesReflectionDataHolder(Constructor<?> messageConstructor, Method setSendMethod, Class<? extends ISendMethod> enumType)
-		{
-			this.enumType = enumType;
-			this.setSendMethod = setSendMethod;
-			this.messageConstructor = messageConstructor;
-		}
-
-		public Class enumType;
-		public Method setSendMethod;
-		public Constructor<?> messageConstructor;
-	}
-	//endregion
 
 	public static class LanguageNotInitializedException extends RuntimeException
 	{

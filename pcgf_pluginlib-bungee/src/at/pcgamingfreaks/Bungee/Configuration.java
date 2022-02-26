@@ -18,7 +18,6 @@
 package at.pcgamingfreaks.Bungee;
 
 import at.pcgamingfreaks.Config.ILanguageConfiguration;
-import at.pcgamingfreaks.Config.YamlFileUpdateMethod;
 import at.pcgamingfreaks.LanguageConfiguration;
 import at.pcgamingfreaks.Version;
 
@@ -30,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * This class has been deprecated! Do not use it for new plugins!
- * @deprecated Implement {@link at.pcgamingfreaks.Plugin.IPlugin} in your plugin and use the {@link at.pcgamingfreaks.Configuration} class instead!
+ * @deprecated Implement {@link at.pcgamingfreaks.Plugin.IPlugin} in your plugin and use the {@link at.pcgamingfreaks.Config.Configuration} class instead!
  */
 @Deprecated
 @ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")

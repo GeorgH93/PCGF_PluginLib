@@ -29,6 +29,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
+/**
+ * This class has been deprecated! Do not use it for new plugins!
+ * @deprecated Implement {@link at.pcgamingfreaks.Plugin.IPlugin} in your plugin and use the {@link at.pcgamingfreaks.Config.Language} or {@link at.pcgamingfreaks.Bukkit.Config.Language} class instead!
+ */
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 public class Language extends at.pcgamingfreaks.Language
 {
 	protected final JavaPlugin plugin;
@@ -42,8 +48,6 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param plugin  The instance of the plugin
 	 * @param version The current version of the language file
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull JavaPlugin plugin, int version)
 	{
 		this(plugin, version, 0);
@@ -55,8 +59,6 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param path    The sub-folder for the language file
 	 * @param prefix  The prefix for the language file
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull JavaPlugin plugin, int version, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, 0, path, prefix, prefix);
@@ -67,8 +69,6 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param version          The current version of the language file
 	 * @param upgradeThreshold Versions below this will be upgraded (settings copied into a new language file) instead of updated
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold)
 	{
 		this(plugin, version, upgradeThreshold, File.separator + "lang", "");
@@ -81,8 +81,6 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param path             The sub-folder for the language file
 	 * @param prefix           The prefix for the language file
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix)
 	{
 		this(plugin, version, upgradeThreshold, path, prefix, prefix);
@@ -96,8 +94,6 @@ public class Language extends at.pcgamingfreaks.Language
 	 * @param prefix           The prefix for the language file
 	 * @param inJarPrefix      The prefix for the language file within the jar (e.g.: bukkit_)
 	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	public Language(@NotNull JavaPlugin plugin, int version, int upgradeThreshold, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		super(plugin.getLogger(), plugin.getDataFolder(), version, upgradeThreshold, path, prefix, inJarPrefix);
