@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,10 +18,12 @@
 package at.pcgamingfreaks.Message;
 
 import at.pcgamingfreaks.ConsoleColor;
+import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.StringUtils;
 
 import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,7 +52,9 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 	protected List<MessageComponent> messageComponents = null;
 	@Getter protected boolean placeholderApiEnabled = false;
 	@Getter private boolean legacy = false;
-	private boolean escaped; // % -> %%
+	private boolean useStringFormat; // % -> %%
+
+	private PlaceholderHandler placeholderHandler = null;
 	//endregion
 
 	//region Constructors
@@ -176,14 +180,121 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 		return (MESSAGE) this;
 	}
 
+	@Override
+	public @NotNull MESSAGE placeholder(@NotNull String placeholder)
+	{
+		return registerPlaceholder(placeholder, null);
+	}
+
+	@Override
+	public @NotNull MESSAGE placeholder(@NotNull String placeholder, IPlaceholderProcessor placeholderProcessor)
+	{
+		return registerPlaceholder(placeholder, placeholderProcessor);
+	}
+
+	@Override
+	public @NotNull MESSAGE registerPlaceholder(@NotNull String placeholder, IPlaceholderProcessor placeholderProcessor)
+	{
+		return registerPlaceholder(placeholder, placeholderProcessor, placeholderHandler == null ? 0 : placeholderHandler.getNextParameterIndex());
+	}
+
+	@Override
+	public @NotNull MESSAGE registerPlaceholder(@NotNull String placeholder, IPlaceholderProcessor placeholderProcessor, int parameterIndex)
+	{
+		if(useStringFormat) disableStringFormat();
+		if(!(placeholder.startsWith("{") && placeholder.endsWith("}")))
+		{ // All placeholders should be between {}
+			placeholder = "{" + placeholder + "}";
+		}
+		if(placeholderHandler == null) placeholderHandler = new PlaceholderHandler(this);
+		placeholderHandler.registerPlaceholder(placeholder, parameterIndex, placeholderProcessor);
+		//noinspection unchecked
+		return (MESSAGE) this;
+	}
+
+	/*@Override @SafeVarargs
+	public final @NotNull MESSAGE registerPlaceholders(Pair<String, IPlaceholderProcessor>... placeholders)
+	{
+		for(Pair<String, IPlaceholderProcessor> placeholder : placeholders)
+		{
+			registerPlaceholder(placeholder.getKey(), placeholder.getValue());
+		}
+		//noinspection unchecked
+		return (MESSAGE) this;
+	}*/
+
+	@Override
+	public @NotNull MESSAGE placeholderRegex(@NotNull @Language("RegExp") String placeholder)
+	{
+		return registerPlaceholderRegex(placeholder, null);
+	}
+
+	@Override
+	public @NotNull MESSAGE placeholderRegex(@NotNull @Language("RegExp") String placeholder, IPlaceholderProcessor placeholderProcessor)
+	{
+		return registerPlaceholderRegex(placeholder, placeholderProcessor);
+	}
+
+	@Override
+	public @NotNull MESSAGE registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, IPlaceholderProcessor placeholderProcessor)
+	{
+		return registerPlaceholderRegex(placeholder, placeholderProcessor, placeholderHandler == null ? 0 : placeholderHandler.getNextParameterIndex());
+	}
+
+	@Override
+	public @NotNull MESSAGE registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, IPlaceholderProcessor placeholderProcessor, int parameterIndex)
+	{
+		if(useStringFormat) disableStringFormat();
+		if(!(placeholder.startsWith("\\{") && placeholder.endsWith("}")))
+		{ // All placeholders should be between {}
+			placeholder = "\\{" + placeholder + "}";
+		}
+		if(placeholderHandler == null) placeholderHandler = new PlaceholderHandler(this);
+		placeholderHandler.registerPlaceholderRegex(placeholder, parameterIndex, placeholderProcessor);
+		//noinspection unchecked
+		return (MESSAGE) this;
+	}
+
+	/*@Override @SafeVarargs
+	public final @NotNull MESSAGE registerPlaceholdersRegex(Pair<String, IPlaceholderProcessor>... placeholders)
+	{
+		for(Pair<String, IPlaceholderProcessor> placeholder : placeholders)
+		{
+			registerPlaceholderRegex(placeholder.getKey(), placeholder.getValue());
+		}
+		//noinspection unchecked
+		return (MESSAGE) this;
+	}*/
+
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public void escapeStringFormatCharacters()
 	{
-		if (!escaped)
+		enableStringFormat();
+	}
+
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
+	public void enableStringFormat()
+	{
+		if (!useStringFormat)
 		{
 			replaceAll("%", "%%");
-			escaped = true;
+			useStringFormat = true;
 		}
 	}
+
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
+	public void disableStringFormat()
+	{
+		if(useStringFormat)
+		{
+			useStringFormat = false;
+			replaceAll("%%", "%");
+		}
+	}
+
 
 	protected void quoteArgs(final Object[] args)
 	{
@@ -205,12 +316,22 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 	 */
 	public @NotNull String prepareMessage(final boolean useJson, final @Nullable Object... args)
 	{
-		final String msg = useJson ? json : fallback;
-		if(args != null && args.length > 0)
+		if(placeholderHandler != null)
 		{
-			if(useJson) quoteArgs(args);
-			return String.format(msg, args);  // %% will be converted to % automatically
+			if(useJson)
+				return placeholderHandler.format(args);
+			else
+				return placeholderHandler.formatLegacy(args);
 		}
-		return escaped ? msg.replaceAll("%%", "%") : msg; // manually convert %% to %
+		else
+		{
+			final String msg = useJson ? json : fallback;
+			if(args != null && args.length > 0)
+			{
+				if(useJson) quoteArgs(args);
+				return String.format(msg, args);  // %% will be converted to % automatically
+			}
+			return useStringFormat ? msg.replaceAll("%%", "%") : msg; // manually convert %% to %
+		}
 	}
 }
