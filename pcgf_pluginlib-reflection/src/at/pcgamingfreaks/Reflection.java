@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -281,6 +281,26 @@ public class Reflection
 		{
 			e.printStackTrace();
 		}
+		return method;
+	}
+
+	/**
+	 * Gets a method reference from a class. Does not print an exception if there is an exception.
+	 *
+	 * @param clazz The class containing the method.
+	 * @param name The name of the method.
+	 * @param args The types of the parameters of the method.
+	 * @return The method reference. Null if it was not found.
+	 */
+	public static @Nullable Method getMethodSilent(final @NotNull Class<?> clazz, final @NotNull String name, final @Nullable Class<?>... args)
+	{
+		Method method = null;
+		try
+		{
+			method = clazz.getDeclaredMethod(name, args);
+			method.setAccessible(true);
+		}
+		catch(Exception ignored) {}
 		return method;
 	}
 
