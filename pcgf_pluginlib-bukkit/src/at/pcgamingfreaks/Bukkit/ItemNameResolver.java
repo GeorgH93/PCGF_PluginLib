@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,25 +17,51 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import at.pcgamingfreaks.Config.ILanguageConfiguration;
+import at.pcgamingfreaks.Config.Language;
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Plugin.IPlugin;
+import at.pcgamingfreaks.Version;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * This class allows to translate minecraft items names.
+ * This class allows translating minecraft items names.
  */
 public class ItemNameResolver
 {
 	private final Map<Material, Map<Short, String>> names = new HashMap<>();
 
-	public void load(@NotNull Language language, @NotNull Logger logger)
+	public void load(final @NotNull IPlugin plugin, final @NotNull ILanguageConfiguration configuration)
+	{
+		if(MCVersion.isOlderThan(MCVersion.MC_1_13))
+		{
+			Language itemNameLanguage = new Language(plugin, new Version(1), File.separator + "lang", "items_", "legacy_items_");
+			itemNameLanguage.setFileDescription("item name language");
+			itemNameLanguage.load(configuration);
+			loadLegacy(itemNameLanguage, plugin.getLogger());
+		}
+		else
+		{
+			Language itemNameLanguage = new Language(plugin, new Version(2), File.separator + "lang", "items_");
+			itemNameLanguage.setFileDescription("item name language");
+			itemNameLanguage.load(configuration);
+			load(itemNameLanguage, plugin.getLogger());
+		}
+	}
+
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
+	public void load(@NotNull at.pcgamingfreaks.Bukkit.Language language, @NotNull Logger logger)
 	{
 		if(!language.isLoaded()) return;
 		logger.info("Loading item translations ...");
@@ -58,7 +84,69 @@ public class ItemNameResolver
 		logger.info("Finished loading item translations for " + translationCount + " items.");
 	}
 
-	public void loadLegacy(@NotNull Language language, @NotNull Logger logger)
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
+	public void loadLegacy(@NotNull at.pcgamingfreaks.Bukkit.Language language, @NotNull Logger logger)
+	{
+		if(!language.isLoaded()) return;
+		logger.info("Loading item translations ...");
+		int translationCount = 0;
+		//noinspection ConstantConditions
+		for(String key : language.getLang().getKeys(true))
+		{
+			String material = key, suffix = "";
+			short dataValue = -1;
+			if(key.contains(".") || key.contains(":"))
+			{
+				String[] components = key.split("[.:]");
+				material = components[0];
+				if(components[1].equals("appendDefault")) continue;
+				try
+				{
+					dataValue = Short.parseShort(components[1]);
+				}
+				catch(NumberFormatException ignored) {}
+				if(language.getLang().getBoolean(material + ".appendDefault", false))
+				{
+					suffix = language.getRaw(material, language.getRaw(material + ".default", ""));
+				}
+			}
+			Material mat = Material.matchMaterial(material);
+			if(mat == null) continue;
+			if(!names.containsKey(mat))
+			{
+				names.put(mat, new HashMap<>());
+			}
+			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
+			translationCount++;
+		}
+		logger.info("Finished loading item translations for " + translationCount + " items.");
+	}
+
+	private void load(Language language, @NotNull Logger logger)
+	{
+		if(!language.isLoaded()) return;
+		logger.info("Loading item translations ...");
+		int translationCount = 0;
+		//noinspection ConstantConditions
+		for(String key : language.getLang().getKeys(true))
+		{
+			if(!key.startsWith("Items")) continue;
+			String material = key.substring(6), suffix = "";
+			short dataValue = -1;
+			Material mat = Material.matchMaterial(material);
+			if(mat == null) continue;
+			if(!names.containsKey(mat))
+			{
+				names.put(mat, new HashMap<>());
+			}
+			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
+			translationCount++;
+		}
+		logger.info("Finished loading item translations for " + translationCount + " items.");
+	}
+
+	private void loadLegacy(Language language, @NotNull Logger logger)
 	{
 		if(!language.isLoaded()) return;
 		logger.info("Loading item translations ...");

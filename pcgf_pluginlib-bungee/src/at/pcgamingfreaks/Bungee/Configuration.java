@@ -38,7 +38,6 @@ public class Configuration extends at.pcgamingfreaks.Configuration implements La
 	protected static final String DEFAULT_BUNGEE_CORD_PREFIX = "bungee_";
 	protected final Plugin plugin;
 
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.36")
 	@Deprecated protected String languageKey = "Language", languageUpdateKey = "LanguageUpdateMode"; // Allow to change the keys for the language and the language update mode setting
 
 	public @NotNull String getLanguageKey()

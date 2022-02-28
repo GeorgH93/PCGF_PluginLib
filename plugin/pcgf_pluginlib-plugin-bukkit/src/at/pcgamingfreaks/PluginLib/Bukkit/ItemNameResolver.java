@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
 package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.Language;
-import at.pcgamingfreaks.Bukkit.MCVersion;
-import at.pcgamingfreaks.Version;
+import at.pcgamingfreaks.Config.ILanguageConfiguration;
+import at.pcgamingfreaks.Plugin.IPlugin;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 /**
@@ -45,32 +45,29 @@ public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameRes
 	 */
 	ItemNameResolver(@NotNull PluginLib plugin)
 	{
-		if(MCVersion.isOlderThan(MCVersion.MC_1_13))
-		{
-			Language itemNameLanguage = new Language(plugin, new Version(1), new Version(1), File.separator + "lang", "items_", "legacy_items_");
-			itemNameLanguage.setFileDescription("item name language");
-			itemNameLanguage.load(plugin.getConfiguration());
-			super.loadLegacy(itemNameLanguage, plugin.getLogger());
-		}
-		else
-		{
-			Language itemNameLanguage = new Language(plugin, new Version(2), File.separator + "lang", "items_");
-			itemNameLanguage.setFileDescription("item name language");
-			itemNameLanguage.load(plugin.getConfiguration());
-			super.load(itemNameLanguage, plugin.getLogger());
-		}
+		super.load(plugin, plugin.getConfiguration());
 		ItemNameResolver.instance = this;
 	}
 
 	@Override
-	public void load(@NotNull Language language, @NotNull Logger logger)
+	public void load(@NotNull IPlugin plugin, @NotNull ILanguageConfiguration configuration)
 	{
-		// Prevents other plugins from loading item names in the shared ItemNameResolver
+		// Prevent other plugins from loading item names into the shared ItemNameResolver
 	}
 
 	@Override
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
+	public void load(@NotNull Language language, @NotNull Logger logger)
+	{
+		// Prevent other plugins from loading item names into the shared ItemNameResolver
+	}
+
+	@Override
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public void loadLegacy(@NotNull Language language, @NotNull Logger logger)
 	{
-		// Prevents other plugins from loading item names in the shared ItemNameResolver
+		// Prevent other plugins from loading item names into the shared ItemNameResolver
 	}
 }
