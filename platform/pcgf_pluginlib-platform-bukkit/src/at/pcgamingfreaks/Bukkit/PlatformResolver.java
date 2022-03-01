@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -63,13 +63,19 @@ public class PlatformResolver
 			return null;
 		}
 		//endregion
-
-		String nmsServerVersion = Bukkit.getServer().getClass().getName().split("\\.")[3].substring(1);
-		//TODO detect glowstone
-		Class<?> tmp = getClass(className + "_" + nmsServerVersion);
-		if(tmp == null)
+		Class<?> tmp;
+		if(getClass("net.glowstone.GlowServer") != null)
 		{
-			tmp = getClass(className + "_Reflection");
+			tmp = getClass(className + "_Glowstone");
+		}
+		else
+		{
+			String nmsServerVersion = Bukkit.getServer().getClass().getName().split("\\.")[3].substring(1);
+			tmp = getClass(className + "_" + nmsServerVersion);
+			if(tmp == null)
+			{
+				tmp = getClass(className + "_Reflection");
+			}
 		}
 		if(tmp == null) throw new ClassNotFoundException("Could not find a platform implementation for " + clazz.getName());
 		if(tmp.isInterface()) throw new IllegalStateException("Found platform class '" + tmp.getName() + "' is an interface!");
