@@ -19,12 +19,12 @@ package at.pcgamingfreaks.PluginLib.Bukkit;
 
 import at.pcgamingfreaks.Bukkit.GUI.GuiListener;
 import at.pcgamingfreaks.Bukkit.ItemNameResolver;
-import at.pcgamingfreaks.Bukkit.Language;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.ManagedUpdater;
 import at.pcgamingfreaks.Bukkit.Message.Message;
 import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
+import at.pcgamingfreaks.Config.Language;
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
 import at.pcgamingfreaks.Plugin.IPlugin;
@@ -88,7 +88,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary, IPlugi
 
 		itemNameResolver = new at.pcgamingfreaks.PluginLib.Bukkit.ItemNameResolver(this);
 
-		Language commonLanguage = new Language(this, 2, 2, File.separator + "lang", "common_");
+		Language commonLanguage = new Language(this, new Version(2), File.separator + "lang", "common_");
 		commonLanguage.load(config);
 		if(commonLanguage.isLoaded())
 		{

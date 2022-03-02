@@ -17,35 +17,18 @@
 
 package at.pcgamingfreaks.PluginLib;
 
-import at.pcgamingfreaks.Config.ILanguageConfiguration;
 import at.pcgamingfreaks.Config.Configuration;
+import at.pcgamingfreaks.Config.ILanguageConfiguration;
 import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.Updater.IUpdateConfiguration;
 import at.pcgamingfreaks.Version;
-import at.pcgamingfreaks.YamlFileUpdateMethod;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Locale;
 
 public final class Config extends Configuration implements IUpdateConfiguration, ILanguageConfiguration
 {
 	public Config(final @NotNull IPlugin plugin, final Version version)
 	{
 		super(plugin, version);
-	}
-
-	public YamlFileUpdateMethod getItemLangUpdateMode()
-	{
-		String mode = yaml.getString("Language.ItemUpdateMode", "overwrite");
-		try
-		{
-			return YamlFileUpdateMethod.valueOf(mode.toUpperCase(Locale.ROOT));
-		}
-		catch(IllegalArgumentException ignored)
-		{
-			logger.warning("Failed to read \"Language.ItemUpdateMode\" config option (Invalid value: " + mode + "). Using default value (\"overwrite\").");
-		}
-		return YamlFileUpdateMethod.UPDATE;
 	}
 }

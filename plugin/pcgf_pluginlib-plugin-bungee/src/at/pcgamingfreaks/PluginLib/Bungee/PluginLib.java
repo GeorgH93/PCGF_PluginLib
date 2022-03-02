@@ -20,12 +20,16 @@ package at.pcgamingfreaks.PluginLib.Bungee;
 import at.pcgamingfreaks.Bungee.ManagedUpdater;
 import at.pcgamingfreaks.Calendar.BasicTimeSpanFormat;
 import at.pcgamingfreaks.Calendar.TimeSpan;
-import at.pcgamingfreaks.*;
+import at.pcgamingfreaks.Config.Language;
+import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
 import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.PluginLib.Config;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
+import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Version;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -65,7 +69,7 @@ public final class PluginLib extends Plugin implements PluginLibrary, IPlugin
 		this.databaseConnectionPool = DatabaseConnectionPoolBase.startPool(this.config, this.getLogger(), this.getDataFolder());
 
 
-		Language commonLanguage = new at.pcgamingfreaks.Bungee.Language(this, 2, File.separator + "lang", "common_");
+		Language commonLanguage = new Language(this, new Version(2), File.separator + "lang", "common_");
 		commonLanguage.load(config.getLanguage(), config.getLanguageUpdateMode());
 		if(commonLanguage.isLoaded())
 		{
