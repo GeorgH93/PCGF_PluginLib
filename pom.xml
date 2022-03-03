@@ -279,6 +279,7 @@
 		<module>plugin/pcgf_pluginlib-plugin</module>
 		<module>plugin/PluginLib</module>
 		<module>other/IMessage</module>
+		<module>test_helper/pcgf_pluginlib-bukkit</module>
 	</modules>
 
 	<profiles>

@@ -72,9 +72,9 @@ The library can be added in two ways to your plugin.
 #### Dependency:
 ```xml
 <dependency>
- 	<groupId>at.pcgamingfreaks</groupId>
+ 	<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
  	<artifactId>PluginLib</artifactId>
- 	<version>1.0.30-SNAPSHOT</version><!-- Check version shield for newest version -->
+ 	<version>1.0.36-SNAPSHOT</version><!-- Check version shield for newest version -->
 </dependency>
 ```
 
