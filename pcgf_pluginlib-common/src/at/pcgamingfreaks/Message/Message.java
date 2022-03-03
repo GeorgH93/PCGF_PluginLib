@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SENDER> implements IMessage<PLAYER, COMMAND_SENDER>
+public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SENDER> implements IMessage<PLAYER, COMMAND_SENDER>, IPlaceholderable
 {
 	private static Constructor<? extends MessageBuilder> MESSAGE_BUILDER_CONSTRUCTOR;
 

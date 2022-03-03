@@ -37,94 +37,11 @@ public interface IMessage<PLAYER, COMMAND_SENDER>
 	 * @param replacement The string which would replace the found expression.
 	 * @return            This message instance (for chaining).
 	 *
-	 * @deprecated Use placeholders instead. {@link IMessage#registerPlaceholder(String, IPlaceholderProcessor, int)}.
+	 * @deprecated Use placeholders instead. {@link IPlaceholderable#registerPlaceholder(String, IPlaceholderProcessor, int)}.
 	 */
 	@Deprecated
 	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	@NotNull IMessage replaceAll(@NotNull @Language("RegExp") String regex, @NotNull String replacement);
-
-	/**
-	 * Registers a placeholder to be used with the message.
-	 * A placeholder has to always match the <pre>{[a-zA-Z0-9_-]+}</pre> pattern.
-	 * It will use the default .toString() as the placeholder processor.
-	 *
-	 * @param placeholder          The placeholder that should be registered. If the value is not surrounded by {}, they will be added automatically.
-	 * @return                     This message instance (for chaining).
-	 */
-	@NotNull IMessage placeholder(@NotNull String placeholder);
-
-	/**
-	 * Registers a placeholder to be used with the message.
-	 *
-	 * @param placeholder          The placeholder that should be registered. If the value is not surrounded by {}, they will be added automatically.
-	 * @param placeholderProcessor The placeholder processor that should be used for this placeholder.
-	 * @return                     This message instance (for chaining).
-	 */
-	@NotNull IMessage placeholder(@NotNull String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor);
-
-	/**
-	 * Registers a placeholder to be used with the message.
-	 *
-	 * @param placeholder          The placeholder that should be registered. If the value is not surrounded by {}, they will be added automatically.
-	 * @param placeholderProcessor The placeholder processor that should be used for this placeholder.
-	 * @return                     This message instance (for chaining).
-	 */
-	@NotNull IMessage registerPlaceholder(@NotNull String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor);
-
-	/**
-	 * Registers a placeholder to be used with the message.
-	 *
-	 * @param placeholder          The placeholder that should be registered. If the value is not surrounded by {}, they will be added automatically.
-	 * @param placeholderProcessor The placeholder processor that should be used for this placeholder.
-	 * @param parameterIndex       The parameter index which will be used as a data source for this placeholder (this is the element index of the args parameter in the send/broadcast methods).
-	 * @return                     This message instance (for chaining).
-	 */
-	@NotNull IMessage registerPlaceholder(@NotNull String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor, int parameterIndex);
-
-	//@NotNull IMessage registerPlaceholders(Pair<String, IPlaceholderProcessor>... placeholders);
-
-	/**
-	 * Registers a placeholder to be used with the message.
-	 * It will use the default .toString() as the placeholder processor.
-	 * A placeholder has to always match the <pre>{[a-zA-Z0-9_-]+}</pre> pattern.
-	 *
-	 * @param placeholder          A regex pattern for the placeholder to be registered. Please only enter the pattern for the part between the {}.
-	 * @return                     This message instance (for chaining).
-	 */
-	@NotNull IMessage placeholderRegex(@NotNull @Language("RegExp") String placeholder);
-
-	/**
-	 * Registers a placeholder to be used with the message.
-	 * A placeholder has to always match the <pre>{[a-zA-Z0-9_-]+}</pre> pattern.
-	 *
-	 * @param placeholder          A regex pattern for the placeholder to be registered. Please only enter the pattern for the part between the {}.
-	 * @param placeholderProcessor The placeholder processor that should be used for this placeholder.
-	 * @return                     This message instance (for chaining).
-	 */
-	@NotNull IMessage placeholderRegex(@NotNull @Language("RegExp") String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor);
-
-	/**
-	 * Registers a placeholder to be used with the message.
-	 * A placeholder has to always match the <pre>{[a-zA-Z0-9_-]+}</pre> pattern.
-	 *
-	 * @param placeholder          A regex pattern for the placeholder to be registered. Please only enter the pattern for the part between the {}.
-	 * @param placeholderProcessor The placeholder processor that should be used for this placeholder.
-	 * @return                     This message instance (for chaining).
-	 */
-	@NotNull IMessage registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor);
-
-	/**
-	 * Registers a placeholder to be used with the message.
-	 * A placeholder has to always match the <pre>{[a-zA-Z0-9_-]+}</pre> pattern.
-	 *
-	 * @param placeholder          A regex pattern for the placeholder to be registered. Please only enter the pattern for the part between the {}.
-	 * @param placeholderProcessor The placeholder processor that should be used for this placeholder.
-	 * @param parameterIndex       The parameter index which will be used as a data source for this placeholder (this is the element index of the args parameter in the send/broadcast methods).
-	 * @return                     This message instance (for chaining).
-	 */
-	@NotNull IMessage registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor, int parameterIndex);
-
-	//@NotNull IMessage registerPlaceholdersRegex(Pair<String, IPlaceholderProcessor>... placeholders);
+	@NotNull IPlaceholderable replaceAll(@NotNull @Language("RegExp") String regex, @NotNull String replacement);
 
 	//region Send methods
 	/**
