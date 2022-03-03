@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,14 +17,11 @@
 
 package at.pcgamingfreaks;
 
-import at.pcgamingfreaks.TestClasses.TestUtils;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -62,7 +59,7 @@ public class UUIDConverterTest
 	private static ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 	@BeforeClass
-	public static void prepareTestData() throws NoSuchFieldException
+	public static void prepareTestData()
 	{
 		//noinspection SpellCheckingInspection
 		try(FileWriter fileWriter = new FileWriter("usercache.json"))
@@ -81,9 +78,7 @@ public class UUIDConverterTest
 		System.out.println(outputStream.toString());
 		assertNotEquals("UUIDConverter should initialize with some messages", 0, outputStream.toString().split("\n").length);
 		assertTrue("UUIDConverter should throw an error", errorStream.size() > 0);
-		//noinspection SpellCheckingInspection
 		assertEquals("UUIDConverter should contain file data", UUIDConverter.getUUIDFromName("VoidCrafterHD", true, true), "4ad6ef2a-7473-46bc-b15d-ec2ee61bc1b6");
-		TestUtils.initReflection();
 	}
 
 	@Before
@@ -275,11 +270,6 @@ public class UUIDConverterTest
 		PowerMockito.doReturn(429).doThrow(new IOException()).when(mockedHttpURLConnection).getResponseCode();
 		PowerMockito.doThrow(new IOException()).when(mockedHttpURLConnection).getOutputStream();
 		PowerMockito.doReturn(mockedHttpURLConnection).when(mockedURL).openConnection();
-		Field queryRetryTime = TestUtils.setAccessible(UUIDConverter.class, null, "MOJANG_QUERY_RETRY_TIME", 10);
-		UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
-		TestUtils.setUnaccessible(queryRetryTime, null, true);
-		assertTrue("A message should be written to System.out when an error occurs", outputStream.size() > 0);
-		uuidCache.setAccessible(false);
 	}
 
 	@Test
