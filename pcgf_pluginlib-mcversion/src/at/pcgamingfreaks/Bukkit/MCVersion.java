@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -111,6 +111,8 @@ public enum MCVersion
 	MC_1_18(121, 757, "1_18", "1.18"),
 	MC_1_18_1(121, 757, "1_18", "1.18.1"),
 	MC_NMS_1_18_R1(121, 757, "1_18", "1.18_NMS_R1", MC_1_18),
+	MC_1_18_2(121, 758, "1_18", "1.18.2"),
+	MC_NMS_1_18_R2(121, 758, "1_18", "1.18_NMS_R2", MC_1_18),
 	MC_1_19(131, Integer.MAX_VALUE, "1_19", "1.19"),
 	MC_NMS_1_19_R1(131, Integer.MAX_VALUE, "1_19", "1.19_NMS_R1", MC_1_19);
 
