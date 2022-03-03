@@ -32,8 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-bukkit</artifactId>
-			<type>test-jar</type>
+			<artifactId>pcgf_pluginlib-test_helper-bukkit</artifactId>
 			<version>${revision}</version>
 			<scope>test</scope>
 		</dependency>
