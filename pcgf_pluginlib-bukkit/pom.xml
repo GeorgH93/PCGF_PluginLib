@@ -28,13 +28,6 @@
 		</dependency>
 		<dependency>
 			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-common</artifactId>
-			<version>${revision}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
 			<artifactId>pcgf_pluginlib-mcversion</artifactId>
 			<version>${revision}</version>
 		</dependency>
