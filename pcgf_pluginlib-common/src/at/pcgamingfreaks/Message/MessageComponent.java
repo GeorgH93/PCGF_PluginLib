@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import lombok.Getter;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -924,7 +925,7 @@ public class MessageComponent implements Serializable
 			}
 		}
 		List<String> components = (text != null && !text.isEmpty()) ? splitter.split(text) : new ArrayList<>(0);
-		if(components.size() > 0)
+		if(components.size() > 1)
 		{
 			if(splitter.getPlaceholderPattern().matcher(components.get(0)).matches())
 			{
@@ -941,13 +942,16 @@ public class MessageComponent implements Serializable
 				if(component.isEmpty()) continue;
 				newMessageComponents.add(new MessageComponent(component));
 			}
-			if(extra != null)
+			if(!newMessageComponents.isEmpty())
 			{
-				extra.addAll(0, newMessageComponents);
-			}
-			else
-			{
-				extra = newMessageComponents;
+				if(extra != null)
+				{
+					extra.addAll(0, newMessageComponents);
+				}
+				else
+				{
+					extra = newMessageComponents;
+				}
 			}
 		}
 		return this;
@@ -955,7 +959,7 @@ public class MessageComponent implements Serializable
 
 	//region Deserializer and Deserializer Functions
 	//region deserializer variables
-	protected transient static final Gson GSON = new GsonBuilder().registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).disableHtmlEscaping().create();
+	protected transient static final Gson GSON = new GsonBuilder().registerTypeHierarchyAdapter(List.class, new ListAdapter()).registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).disableHtmlEscaping().create();
 	protected transient static final JsonParser JSON_PARSER = new JsonParser();
 	protected transient static final MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 	//endregion
@@ -1036,4 +1040,20 @@ public class MessageComponent implements Serializable
 		return MESSAGE_COMPONENT_INSTANCE.fromJsonArrayWorker(componentArray);
 	}
 	//endregion
+
+	private static class ListAdapter implements JsonSerializer<List<?>> {
+
+		@Override
+		public JsonElement serialize(List<?> src, Type typeOfSrc, JsonSerializationContext context)
+		{
+			if(src == null || src.isEmpty()) return null;
+			JsonArray array = new JsonArray();
+			for(Object child : src)
+			{
+				JsonElement element = context.serialize(child);
+				array.add(element);
+			}
+			return array;
+		}
+	}
 }
