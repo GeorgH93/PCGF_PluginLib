@@ -46,7 +46,7 @@ class PlaceholderHandler
 
 	public void registerPlaceholder(@NotNull String placeholder, int parameterIndex, IPlaceholderProcessor placeholderProcessor)
 	{
-		if(parameterIndex < 1) throw new IllegalArgumentException("Placeholder parameter index must be a positive number!");
+		if(parameterIndex < 0) throw new IllegalArgumentException("Placeholder parameter index must be a positive number!");
 		legacyPlaceholderEngine.registerPlaceholder(placeholder, parameterIndex, placeholderProcessor);
 		messageComponentPlaceholderEngine.registerPlaceholder(placeholder, parameterIndex, placeholderProcessor);
 		nextParameterIndex = Math.max(nextParameterIndex, parameterIndex + 1);
