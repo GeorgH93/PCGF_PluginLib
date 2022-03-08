@@ -20,7 +20,7 @@ and provides cross version support for a lot of Minecraft features
 ## Features:
 ### Bukkit + BungeeCord:
 * Config/Language file handler
-    * File upgrade support (copy old values in new file)
+    * File upgrade support (copy old values into a new file)
     * Comment support
 * UUID converter
   * Supports Name -> UUID, UUID -> Name or UUID -> Name changes
@@ -60,7 +60,7 @@ The library can be added in two ways to your plugin.
 1. Requiring it to be installed as a plugin (will be published on dev.bukkit.org and spigotmc.org soon)
 2. Shading it into your plugin (requires more RAM and some features will not work)
 
-### Adding the library as a dependency with maven:
+### Adding the library as a dependency with Maven:
 #### Repository:
 ```xml
 <repository>
