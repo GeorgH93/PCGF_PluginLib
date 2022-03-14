@@ -66,7 +66,7 @@ public class Language extends YamlFileManager
 	 */
 	public Language(@NotNull IPlugin plugin, Version version, @Nullable String path, @NotNull String prefix)
 	{
-		this(plugin, version, path, prefix, "");
+		this(plugin, version, path, prefix, prefix);
 	}
 
 	/**
