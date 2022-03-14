@@ -557,7 +557,7 @@ public class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE exte
 		{
 			return messageList.get(0);
 		}
-		MessageComponent component = new MessageComponent();
+		MessageComponent component = new MessageComponent("");
 		if(messageList.size() > 1)
 		{
 			component.extra = getJsonMessageAsList();
