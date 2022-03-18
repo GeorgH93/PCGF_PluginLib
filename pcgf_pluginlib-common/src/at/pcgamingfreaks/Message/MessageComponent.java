@@ -960,7 +960,6 @@ public class MessageComponent implements Serializable
 	//region Deserializer and Deserializer Functions
 	//region deserializer variables
 	protected transient static final Gson GSON = new GsonBuilder().registerTypeHierarchyAdapter(List.class, new ListAdapter()).registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).disableHtmlEscaping().create();
-	protected transient static final JsonParser JSON_PARSER = new JsonParser();
 	protected transient static final MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 	//endregion
 
@@ -979,7 +978,7 @@ public class MessageComponent implements Serializable
 	 */
 	protected List<MessageComponent> fromJsonWorker(String jsonString)
 	{
-		return fromJsonArrayWorker(JSON_PARSER.parse(jsonString).getAsJsonArray());
+		return fromJsonArrayWorker(JsonParser.parseString(jsonString).getAsJsonArray());
 	}
 
 	/**
