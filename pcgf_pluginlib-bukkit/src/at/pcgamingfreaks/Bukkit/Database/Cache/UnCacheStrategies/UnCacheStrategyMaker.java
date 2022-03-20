@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,15 +17,18 @@
 
 package at.pcgamingfreaks.Bukkit.Database.Cache.UnCacheStrategies;
 
+import at.pcgamingfreaks.Database.Cache.BaseUnCacheStrategy;
 import at.pcgamingfreaks.Database.Cache.IPlayerCache;
 import at.pcgamingfreaks.Database.Cache.IUnCacheStrategyConfig;
-import at.pcgamingfreaks.Database.Cache.BaseUnCacheStrategy;
 
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 public class UnCacheStrategyMaker
 {
+	private UnCacheStrategyMaker()
+	{}
+
 	/**
 	 * Makes a BungeeCord uncache strategy using the provided settings.
 	 *
