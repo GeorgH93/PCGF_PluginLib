@@ -31,6 +31,9 @@ import org.bukkit.inventory.ItemStack;
 
 public final class MessageTooltipFactory
 {
+	private MessageTooltipFactory()
+	{}
+
 	private static final IStatisticResolver STATISTIC_RESOLVER = PlatformResolver.createPlatformInstance(IStatisticResolver.class);
 
 	/**
@@ -41,12 +44,15 @@ public final class MessageTooltipFactory
 	 * @param achievement The achievement to display.
 	 * @exception IllegalStateException If the minecraft version is incompatible with achievements.
 	 */
+	@SuppressWarnings("deprecation")
 	public static void achievementTooltip(at.pcgamingfreaks.Message.MessageComponent messageComponent, Object achievement)
 	{
 		if(MCVersion.isOlderThan(MCVersion.MC_1_12))
 		{
-			assert achievement instanceof Achievement;
-			messageComponent.onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, STATISTIC_RESOLVER.getAchievementName((Achievement) achievement));
+			if(achievement instanceof Achievement)
+			{
+				messageComponent.onHover(MessageHoverEvent.HoverEventAction.SHOW_ACHIEVEMENT, STATISTIC_RESOLVER.getAchievementName((Achievement) achievement));
+			}
 		}
 		else
 		{
