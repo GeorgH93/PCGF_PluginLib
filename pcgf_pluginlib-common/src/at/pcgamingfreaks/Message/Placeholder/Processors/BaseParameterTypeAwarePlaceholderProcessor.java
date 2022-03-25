@@ -17,5 +17,30 @@
 
 package at.pcgamingfreaks.Message.Placeholder.Processors;
 
-public final class ParameterTypeAwarePlaceholderProcessor extends BaseParameterTypeAwarePlaceholderProcessor<IPlaceholderProcessor>
-{}
+import java.util.HashMap;
+import java.util.Map;
+
+abstract class BaseParameterTypeAwarePlaceholderProcessor<T extends IPlaceholderProcessor> implements IPlaceholderProcessor
+{
+	protected final Map<Class<?>, T> typeMap = new HashMap<>();
+
+	public BaseParameterTypeAwarePlaceholderProcessor()
+	{}
+
+	public void add(Class<?> type, T processor)
+	{
+		typeMap.put(type, processor);
+	}
+
+	@Override
+	public String process(Object parameter)
+	{
+		if(parameter == null) return "null";
+		IPlaceholderProcessor processor = typeMap.get(parameter.getClass());
+		if(processor != null)
+		{
+			return processor.process(parameter);
+		}
+		return parameter.toString();
+	}
+}

@@ -22,30 +22,12 @@ import at.pcgamingfreaks.Message.MessageComponent;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ParameterTypeAwareFormattedPlaceholderProcessor implements IFormattedPlaceholderProcessor
+public final class ParameterTypeAwareFormattedPlaceholderProcessor extends BaseParameterTypeAwarePlaceholderProcessor<IFormattedPlaceholderProcessor> implements IFormattedPlaceholderProcessor
 {
 	private static final MessageComponent NULL_COMPONENT = new MessageComponent("null");
-	private final Map<Class<?>, IFormattedPlaceholderProcessor> typeMap = new HashMap<>();
 
 	public ParameterTypeAwareFormattedPlaceholderProcessor()
 	{}
-
-	public void add(Class<?> type, IFormattedPlaceholderProcessor processor)
-	{
-		typeMap.put(type, processor);
-	}
-
-	@Override
-	public String process(Object parameter)
-	{
-		if(parameter == null) return "null";
-		IPlaceholderProcessor processor = typeMap.get(parameter.getClass());
-		if(processor != null)
-		{
-			return processor.process(parameter);
-		}
-		return parameter.toString();
-	}
 
 	@Override
 	public MessageComponent processFormatted(Object parameter)
