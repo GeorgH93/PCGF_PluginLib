@@ -77,20 +77,9 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 	 * @param plugin The plugin for which the updater should be initialized.
 	 * @param announceDownloadProgress If set to true the download progress will be logged in the console.
 	 * @param downloadDependencies If set to true dependencies will be downloaded (if provided from the update provider).
-	 * @param updateProvider The update provider that should be used.
-	 */
-	public Updater(JavaPlugin plugin, boolean announceDownloadProgress, boolean downloadDependencies, UpdateProvider updateProvider)
-	{
-		this(plugin, Utils.getPluginJarFile(plugin), announceDownloadProgress, downloadDependencies, updateProvider);
-	}
-
-	/**
-	 * @param plugin The plugin for which the updater should be initialized.
-	 * @param announceDownloadProgress If set to true the download progress will be logged in the console.
-	 * @param downloadDependencies If set to true dependencies will be downloaded (if provided from the update provider).
 	 * @param updateProviders The update providers that should be used.
 	 */
-	public Updater(JavaPlugin plugin, boolean announceDownloadProgress, boolean downloadDependencies, UpdateProvider[] updateProviders)
+	public Updater(JavaPlugin plugin, boolean announceDownloadProgress, boolean downloadDependencies, UpdateProvider... updateProviders)
 	{
 		super(plugin.getDataFolder().getParentFile(), Bukkit.getUpdateFolderFile(), announceDownloadProgress, downloadDependencies, plugin.getLogger(), updateProviders, plugin.getDescription().getVersion(), Utils.getPluginJarFile(plugin).getName());
 		this.plugin = plugin;
