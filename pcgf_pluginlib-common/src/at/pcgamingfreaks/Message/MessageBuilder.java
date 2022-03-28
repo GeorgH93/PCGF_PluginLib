@@ -33,6 +33,14 @@ public class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE exte
 	private MessageComponent current;
 
 	/**
+	 * Creates a new MessageBuilder with an empty {@link MessageComponent}.
+	 */
+	public MessageBuilder()
+	{
+		this(new MessageComponent());
+	}
+
+	/**
 	 * Creates a new MessageBuilder with a given {@link MessageComponent}.
 	 *
 	 * @param initComponent The {@link MessageComponent} that should be on the first position of the message.
@@ -51,6 +59,28 @@ public class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE exte
 	public MessageBuilder(Collection<? extends MessageComponent> initCollection)
 	{
 		append(initCollection);
+	}
+
+	/**
+	 * Creates a new MessageBuilder from a given text and format information.
+	 *
+	 * @param text    The text that should be used to initialize the first {@link MessageComponent} of the message.
+	 */
+	public MessageBuilder(String text)
+	{
+		this(new MessageComponent(text));
+	}
+
+	/**
+	 * Creates a new MessageBuilder from a given text and format information.
+	 *
+	 * @param text    The text that should be used to initialize the first {@link MessageComponent} of the message.
+	 * @param color   The color that should be used to initialize the first {@link MessageComponent} of the message.
+	 * @param formats The style that should be used to initialize the first {@link MessageComponent} of the message.
+	 */
+	public MessageBuilder(String text, MessageColor color, MessageFormat... formats)
+	{
+		this(new MessageComponent(text, color, formats));
 	}
 
 	//region Append functions
