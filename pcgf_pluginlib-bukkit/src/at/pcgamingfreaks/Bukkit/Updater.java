@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -43,6 +44,7 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 	 * @deprecated There now is a version that no longer needs the file parameter.
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public Updater(JavaPlugin plugin, File file, boolean announceDownloadProgress, UpdateProvider updateProvider)
 	{
 		this(plugin, file, announceDownloadProgress, false, updateProvider);
@@ -57,6 +59,7 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 	 * @deprecated There now is a version that no longer needs the file parameter.
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public Updater(JavaPlugin plugin, File file, boolean announceDownloadProgress, boolean downloadDependencies, UpdateProvider updateProvider)
 	{
 		super(plugin.getDataFolder().getParentFile(), Bukkit.getUpdateFolderFile(), announceDownloadProgress, downloadDependencies, plugin.getLogger(), updateProvider, plugin.getDescription().getVersion(), file.getName());
