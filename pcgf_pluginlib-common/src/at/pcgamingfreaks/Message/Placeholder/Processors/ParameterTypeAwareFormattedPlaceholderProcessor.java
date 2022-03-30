@@ -19,8 +19,7 @@ package at.pcgamingfreaks.Message.Placeholder.Processors;
 
 import at.pcgamingfreaks.Message.MessageComponent;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public final class ParameterTypeAwareFormattedPlaceholderProcessor extends BaseParameterTypeAwarePlaceholderProcessor<IFormattedPlaceholderProcessor> implements IFormattedPlaceholderProcessor
 {
@@ -30,7 +29,7 @@ public final class ParameterTypeAwareFormattedPlaceholderProcessor extends BaseP
 	{}
 
 	@Override
-	public MessageComponent processFormatted(Object parameter)
+	public @NotNull MessageComponent processFormatted(Object parameter)
 	{
 		if(parameter == null) return NULL_COMPONENT;
 		IFormattedPlaceholderProcessor processor = typeMap.get(parameter.getClass());

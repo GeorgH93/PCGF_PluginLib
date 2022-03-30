@@ -37,7 +37,7 @@ public class FloatPlaceholderProcessor implements IPlaceholderProcessor
 	}
 
 	@Override
-	public String process(Object parameter)
+	public @NotNull String process(Object parameter)
 	{
 		return decimalFormat.format(parameter);
 	}

@@ -20,6 +20,8 @@ package at.pcgamingfreaks.Message.Placeholder;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IFormattedPlaceholderProcessor;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 
+import org.jetbrains.annotations.NotNull;
+
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -28,7 +30,7 @@ class MessageComponentToStringPlaceholderProcessor implements IPlaceholderProces
 	private IFormattedPlaceholderProcessor formattedPlaceholderProcessor;
 
 	@Override
-	public String process(Object parameter)
+	public @NotNull String process(Object parameter)
 	{
 		return formattedPlaceholderProcessor.processFormatted(parameter).toString();
 	}

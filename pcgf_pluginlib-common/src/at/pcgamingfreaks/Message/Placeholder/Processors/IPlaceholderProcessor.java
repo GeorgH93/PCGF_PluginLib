@@ -17,7 +17,9 @@
 
 package at.pcgamingfreaks.Message.Placeholder.Processors;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface IPlaceholderProcessor
 {
-	String process(Object parameter);
+	@NotNull String process(Object parameter);
 }

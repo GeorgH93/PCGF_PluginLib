@@ -19,7 +19,9 @@ package at.pcgamingfreaks.Message.Placeholder.Processors;
 
 import at.pcgamingfreaks.Message.MessageComponent;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface IFormattedPlaceholderProcessor extends IPlaceholderProcessor
 {
-	MessageComponent processFormatted(Object parameter);
+	@NotNull MessageComponent processFormatted(Object parameter);
 }

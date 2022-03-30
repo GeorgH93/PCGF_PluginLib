@@ -20,6 +20,8 @@ package at.pcgamingfreaks.Message.Placeholder;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 import at.pcgamingfreaks.StringUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -28,7 +30,7 @@ public class StringPlaceholderJsonEscapeProcessor implements IPlaceholderProcess
 	private IPlaceholderProcessor placeholderProcessor;
 
 	@Override
-	public String process(Object parameter)
+	public @NotNull String process(Object parameter)
 	{
 		String value;
 		if(placeholderProcessor == null)
