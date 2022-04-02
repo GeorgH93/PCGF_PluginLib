@@ -22,8 +22,10 @@ import at.pcgamingfreaks.Message.MessageComponent;
 
 import org.jetbrains.annotations.NotNull;
 
-public class FormattedStringPlaceholderProcessor implements IFormattedPlaceholderProcessor
+public final class FormattedStringPlaceholderProcessor implements IFormattedPlaceholderProcessor
 {
+	public FormattedStringPlaceholderProcessor INSTANCE = new FormattedStringPlaceholderProcessor();
+
 	@Override
 	public @NotNull MessageComponent processFormatted(Object parameter)
 	{

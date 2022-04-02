@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PassthroughMessageComponentPlaceholderProcessor implements IFormattedPlaceholderProcessor
 {
+	public static final PassthroughMessageComponentPlaceholderProcessor INSTANCE = new PassthroughMessageComponentPlaceholderProcessor();
+
 	@Override
 	public @NotNull MessageComponent processFormatted(Object parameter)
 	{
