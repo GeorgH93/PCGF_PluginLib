@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class FormattedStringPlaceholderProcessor implements IFormattedPlaceholderProcessor
 {
-	public FormattedStringPlaceholderProcessor INSTANCE = new FormattedStringPlaceholderProcessor();
+	public static final FormattedStringPlaceholderProcessor INSTANCE = new FormattedStringPlaceholderProcessor();
 
 	@Override
 	public @NotNull MessageComponent processFormatted(Object parameter)
