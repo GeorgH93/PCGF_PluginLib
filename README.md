@@ -89,7 +89,7 @@ The recommended shading settings:
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-shade-plugin</artifactId>
-    <version>3.2.4</version>
+    <version>3.3.0</version>
     <executions>
         <execution>
             <phase>package</phase>
