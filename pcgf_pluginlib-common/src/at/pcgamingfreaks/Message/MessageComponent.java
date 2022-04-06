@@ -906,7 +906,7 @@ public class MessageComponent implements Serializable
 	public boolean isEmpty()
 	{
 		return  (text == null || text.isEmpty()) && (extra == null || extra.isEmpty()) && color == null && (font == null || font.isEmpty()) && (insertion == null || insertion.isEmpty()) &&
-				!bold && !italic && !underlined && !strikethrough && !obfuscated &&
+				!isBold() && !isItalic() && !isUnderlined() && !isStrikethrough() && !isObfuscated() &&
 				(with == null || with.isEmpty()) && score == null && translate == null && selector == null;
 	}
 
