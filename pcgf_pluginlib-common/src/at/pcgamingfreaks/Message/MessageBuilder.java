@@ -587,10 +587,15 @@ public class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE exte
 		{
 			return messageList.get(0);
 		}
+		else if(messageList.size() == 2 && messageList.get(0).isEmpty())
+		{
+			return messageList.get(1);
+		}
 		MessageComponent component = new MessageComponent("");
 		if(messageList.size() > 1)
 		{
 			component.extra = getJsonMessageAsList();
+			component.extra.removeIf(messageComponent -> messageComponent == null || messageComponent.isEmpty());
 		}
 		return component;
 	}
