@@ -26,7 +26,7 @@ abstract class BaseParameterTypeAwarePlaceholderProcessor<T extends IPlaceholder
 {
 	protected final Map<Class<?>, T> typeMap = new HashMap<>();
 
-	public BaseParameterTypeAwarePlaceholderProcessor()
+	protected BaseParameterTypeAwarePlaceholderProcessor()
 	{}
 
 	public void add(Class<?> type, T processor)
