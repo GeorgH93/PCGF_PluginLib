@@ -77,6 +77,7 @@ public class Language extends LanguageWithMessageGetter
 	}
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public @NotNull Message getMessage(@NotNull String path)
 	{
 		return super.getMessage(path);

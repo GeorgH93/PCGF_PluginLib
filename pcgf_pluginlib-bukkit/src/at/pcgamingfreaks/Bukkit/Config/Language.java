@@ -67,6 +67,7 @@ public class Language extends LanguageWithMessageGetter
 	}
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public @NotNull Message getMessage(@NotNull String path)
 	{
 		// Only returns null when the messageClasses variable is not set correctly. It is set in this class so this will not return null.
