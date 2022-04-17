@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -54,13 +54,13 @@ public class MultiPageGui implements IGui
 	}
 
 	@Override
-	public void onClick(final @NotNull InventoryClickEvent event) {}
+	public void onClick(final @NotNull InventoryClickEvent event) { /* Can be overwritten for custom logic */ }
 
 	@Override
-	public void onOpen(final @NotNull Player player) {}
+	public void onOpen(final @NotNull Player player) { /* Can be overwritten for custom logic */ }
 
 	@Override
-	public void onClose(final @NotNull Player player) {}
+	public void onClose(final @NotNull Player player) { /* Can be overwritten for custom logic */ }
 
 	@Override
 	public @NotNull Inventory getInventory()
