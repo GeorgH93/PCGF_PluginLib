@@ -120,7 +120,7 @@ public enum MCVersion
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new HashMap<>();
 	private static final Map<Integer, MCVersion> PROTOCOL_VERSION_MAP = new HashMap<>();
 
-	private static final Pattern VERSION_PATTERN = Pattern.compile("\\(MC: (?<version>\\d.\\d+(.\\d+)?)\\)");
+	private static final Pattern VERSION_PATTERN = Pattern.compile("\\(MC: (?<version>\\d(.\\d{1,5}){1,2})\\)");
 
 	/**
 	 * The current version of the minecraft server.
