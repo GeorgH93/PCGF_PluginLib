@@ -137,7 +137,7 @@ public class ServerType
 		paperCompatible = paperComp;
 		glowstoneCompatible = glowComp;
 		server = bukkitComp;
-		proxy = bukkitComp | velocityComp;
+		proxy = bungeeComp || velocityComp;
 		bungeeCordCompatible = bungeeComp;
 		waterfallCompatible = waterfallComp;
 		velocityCompatible = velocityComp;
