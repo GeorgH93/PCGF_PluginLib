@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -29,13 +29,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Represents a {@link Command} belonging to a plugin.
  * It can be created, registered and unregistered at any point, and must not be defined upfront in the plugin.yml file.
  *
- * It doesn't extends {@link PluginCommand} cause it's a final class. However it implements all the functions from it.
+ * It doesn't extend {@link PluginCommand} because it's a final class. However, it implements all the functions from it.
  */
 public class RegisterablePluginCommand extends Command implements PluginIdentifiableCommand
 {
@@ -96,8 +100,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 		}
 		catch(Exception e)
 		{
-			owningPlugin.getLogger().warning("Failed registering command!");
-			e.printStackTrace();
+			owningPlugin.getLogger().log(Level.WARNING, "Failed registering command!", e);
 		}
 	}
 
@@ -121,8 +124,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 		}
 		catch (Exception e)
 		{
-			owningPlugin.getLogger().warning("Failed unregistering command!");
-			e.printStackTrace();
+			owningPlugin.getLogger().log(Level.WARNING, "Failed unregistering command!", e);
 		}
 	}
 
@@ -158,8 +160,7 @@ public class RegisterablePluginCommand extends Command implements PluginIdentifi
 			{
 				String cmd = commandLabel + ' ' + StringUtils.arrayToString(args);
 				sender.sendMessage("Unhandled exception executing command '" + cmd + "': " + StringUtils.getErrorMessage(e));
-				owningPlugin.getLogger().warning("Unhandled exception executing command '" + cmd + "' in plugin " + owningPlugin.getDescription().getFullName());
-				e.printStackTrace();
+				owningPlugin.getLogger().log(Level.WARNING, "Unhandled exception executing command '" + cmd + "' in plugin " + owningPlugin.getDescription().getFullName(), e);
 			}
 			if(!success && usageMessage.length() > 0)
 			{

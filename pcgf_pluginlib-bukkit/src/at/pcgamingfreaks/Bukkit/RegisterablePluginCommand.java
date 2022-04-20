@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,11 +28,12 @@ import org.jetbrains.annotations.Nullable;
  * Represents a {@link Command} belonging to a plugin.
  * It can be created, registered and unregistered at any point, and must not be defined upfront in the plugin.yml file.
  *
- * It doesn't extends {@link PluginCommand} cause it's a final class. However it implements all the functions from it.
+ * It doesn't extend {@link PluginCommand} because it's a final class. However, it implements all the functions from it.
  *
  * @deprecated Moved to {@link at.pcgamingfreaks.Bukkit.Command.RegisterablePluginCommand}!
  */
 @Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 public class RegisterablePluginCommand extends at.pcgamingfreaks.Bukkit.Command.RegisterablePluginCommand
 {
 	/**
