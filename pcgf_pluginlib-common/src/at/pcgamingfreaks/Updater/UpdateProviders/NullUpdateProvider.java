@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,12 +24,14 @@ import at.pcgamingfreaks.Version;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class NullUpdateProvider implements UpdateProvider
 {
+	@Override
+	public void setUserAgent(final @NotNull String agent) { /* This provider does nothing and therefor does not need a user agent for web requests */ }
+
 	@Override
 	public @NotNull String getName()
 	{
@@ -151,7 +153,7 @@ public class NullUpdateProvider implements UpdateProvider
 	}
 
 	@Override
-	public HttpURLConnection connect(URL url) throws IOException
+	public HttpURLConnection connect(URL url)
 	{
 		return null;
 	}

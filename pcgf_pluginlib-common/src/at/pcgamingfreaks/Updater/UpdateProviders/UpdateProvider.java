@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -34,12 +34,18 @@ import java.net.URL;
 public interface UpdateProvider
 {
 	/**
+	 * Sets the user agent that should be used when sending web requests.
+	 * @param userAgent The user agent that should be used when sending web requests.
+	 */
+	void setUserAgent(final @NotNull String userAgent);
+
+	/**
 	 * @return The name of the update provider.
 	 */
 	@NotNull String getName();
 
 	/**
-	 * Make a connection to the provider an requests the file's details.
+	 * Make a connection to the provider a requests the file's details.
 	 *
 	 * @return The update result from the query.
 	 */

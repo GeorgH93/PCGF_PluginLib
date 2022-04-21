@@ -132,7 +132,7 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 				}
 				if(updateProvider != null)
 				{
-					if(updateProvider instanceof BaseOnlineProvider) ((BaseOnlineProvider) updateProvider).setUserAgent(pluginName + " Updater (PCGF MC-Plugin-Updater)");
+					updateProvider.setUserAgent(pluginName + " Updater (PCGF MC-Plugin-Updater)");
 					providerMap.put(provider, updateProvider);
 				}
 			}
