@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -128,6 +128,7 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 					case "Simple":
 						final String url = config.getString(key + ".URL"), fileName = config.getString(key + ".Filename", "file.jar");
 						updateProvider = new AlwaysUpdateProvider(url, fileName, ReleaseType.valueOf(config.getString(key + ".ReleaseType")));
+						break;
 					default: logger.warning("Unknown updater type: " + type);
 				}
 				if(updateProvider != null)
