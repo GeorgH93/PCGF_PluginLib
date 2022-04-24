@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import lombok.Setter;
 
 public class MultiPageGuiPage extends SimpleGui
 {
-	@Getter @Setter private @NotNull MultiPageGui owner;
+	@Getter @Setter private MultiPageGui owner = null;
 
 	public MultiPageGuiPage(final @NotNull Message title, final int rows, final Object... args)
 	{
