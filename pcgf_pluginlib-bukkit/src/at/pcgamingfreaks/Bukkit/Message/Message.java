@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -244,7 +244,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	@Override
 	public void send(@NotNull Collection<? extends Player> targets, @Nullable Object... args)
 	{
-		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
+		if(getSendMethod() == SendMethod.DISABLED || targets.isEmpty()) return;
 		Validate.notNull(targets, "The targets that should receive the message should not be null!");
 		if(getSendMethod() == SendMethod.CHAT_CLASSIC)
 		{
@@ -333,7 +333,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	public void send(@NotNull Collection<? extends Player> targets, OfflinePlayer playerForPAPI, @Nullable Object... args)
 	{
 		Validate.notNull(targets, "The targets that should receive the message should not be null!");
-		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
+		if(getSendMethod() == SendMethod.DISABLED || targets.isEmpty()) return;
 		if(getSendMethod() == SendMethod.CHAT_CLASSIC)
 		{
 			String msg = prepareMessage(false, args);

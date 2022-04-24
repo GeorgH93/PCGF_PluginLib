@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,10 +17,10 @@
 
 package at.pcgamingfreaks.Bungee.Message;
 
-import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Bungee.Message.Sender.BossBarMetadata;
 import at.pcgamingfreaks.Bungee.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Bungee.Message.Sender.TitleMetadata;
+import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
 
 import net.md_5.bungee.api.CommandSender;
@@ -205,7 +205,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	@Override
 	public void send(final @NotNull Collection<? extends ProxiedPlayer> targets, final @Nullable Object... args)
 	{
-		if(getSendMethod() == SendMethod.DISABLED || targets.size() == 0) return;
+		if(getSendMethod() == SendMethod.DISABLED || targets.isEmpty()) return;
 		sendMethod.getSender().send(targets, prepareMessage(true, args), optionalParameters);
 	}
 
