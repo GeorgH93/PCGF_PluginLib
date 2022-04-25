@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -59,19 +60,24 @@ public class ItemFilter
 		if(filteredMaterials.contains(new MinecraftMaterial(item))) return !whitelistMode;
 		if(item.hasItemMeta())
 		{
-			ItemMeta meta = item.getItemMeta();
-			if(meta.hasDisplayName() && filteredNames.contains(meta.getDisplayName())) return !whitelistMode;
-			if(meta.hasLore() && !filteredLore.isEmpty())
+			return isItemMetaBlocked(item.getItemMeta());
+		}
+		return whitelistMode;
+	}
+
+	private boolean isItemMetaBlocked(final @NotNull ItemMeta meta)
+	{
+		if(meta.hasDisplayName() && filteredNames.contains(meta.getDisplayName())) return !whitelistMode;
+		if(meta.hasLore() && !filteredLore.isEmpty())
+		{
+			StringBuilder loreBuilder = new StringBuilder();
+			for(String loreLine : meta.getLore())
 			{
-				StringBuilder loreBuilder = new StringBuilder();
-				for(String loreLine : meta.getLore())
-				{
-					if(filteredLore.contains(loreLine)) return !whitelistMode;
-					if(loreBuilder.length() > 0) loreBuilder.append("\n");
-					loreBuilder.append(loreLine);
-				}
-				if(filteredLore.contains(loreBuilder.toString())) return !whitelistMode;
+				if(filteredLore.contains(loreLine)) return !whitelistMode;
+				if(loreBuilder.length() > 0) loreBuilder.append("\n");
+				loreBuilder.append(loreLine);
 			}
+			if(filteredLore.contains(loreBuilder.toString())) return !whitelistMode;
 		}
 		return whitelistMode;
 	}
