@@ -39,6 +39,7 @@ import java.util.logging.Logger;
  */
 public class ItemNameResolver
 {
+	private static final String LOADING_MESSAGE = "Loading item translations ...";
 	private final Map<Material, Map<Short, String>> names = new HashMap<>();
 
 	public void load(final @NotNull IPlugin plugin, final @NotNull ILanguageConfiguration configuration)
@@ -59,12 +60,17 @@ public class ItemNameResolver
 		}
 	}
 
+	/**
+	 * @param language The language file to be used
+	 * @param logger The logger to be used
+	 * @deprecated Use {@link ItemNameResolver#load(IPlugin, ILanguageConfiguration)} instead
+	 */
 	@Deprecated
 	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public void load(@NotNull at.pcgamingfreaks.Bukkit.Language language, @NotNull Logger logger)
 	{
 		if(!language.isLoaded()) return;
-		logger.info("Loading item translations ...");
+		logger.info(LOADING_MESSAGE);
 		int translationCount = 0;
 		//noinspection ConstantConditions
 		for(String key : language.getLang().getKeys(true))
@@ -74,22 +80,24 @@ public class ItemNameResolver
 			short dataValue = -1;
 			Material mat = Material.matchMaterial(material);
 			if(mat == null) continue;
-			if(!names.containsKey(mat))
-			{
-				names.put(mat, new HashMap<>());
-			}
+			names.computeIfAbsent(mat, k -> new HashMap<>());
 			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
 			translationCount++;
 		}
 		logger.info("Finished loading item translations for " + translationCount + " items.");
 	}
 
+	/**
+	 * @param language The language file to be used
+	 * @param logger The logger to be used
+	 * @deprecated Use {@link ItemNameResolver#load(IPlugin, ILanguageConfiguration)} instead
+	 */
 	@Deprecated
 	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public void loadLegacy(@NotNull at.pcgamingfreaks.Bukkit.Language language, @NotNull Logger logger)
 	{
 		if(!language.isLoaded()) return;
-		logger.info("Loading item translations ...");
+		logger.info(LOADING_MESSAGE);
 		int translationCount = 0;
 		//noinspection ConstantConditions
 		for(String key : language.getLang().getKeys(true))
@@ -126,7 +134,7 @@ public class ItemNameResolver
 	private void load(Language language, @NotNull Logger logger)
 	{
 		if(!language.isLoaded()) return;
-		logger.info("Loading item translations ...");
+		logger.info(LOADING_MESSAGE);
 		int translationCount = 0;
 		//noinspection ConstantConditions
 		for(String key : language.getLang().getKeys(true))
@@ -136,10 +144,7 @@ public class ItemNameResolver
 			short dataValue = -1;
 			Material mat = Material.matchMaterial(material);
 			if(mat == null) continue;
-			if(!names.containsKey(mat))
-			{
-				names.put(mat, new HashMap<>());
-			}
+			names.computeIfAbsent(mat, k -> new HashMap<>());
 			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
 			translationCount++;
 		}
@@ -149,7 +154,7 @@ public class ItemNameResolver
 	private void loadLegacy(Language language, @NotNull Logger logger)
 	{
 		if(!language.isLoaded()) return;
-		logger.info("Loading item translations ...");
+		logger.info(LOADING_MESSAGE);
 		int translationCount = 0;
 		//noinspection ConstantConditions
 		for(String key : language.getLang().getKeys(true))
@@ -173,10 +178,7 @@ public class ItemNameResolver
 			}
 			Material mat = Material.matchMaterial(material);
 			if(mat == null) continue;
-			if(!names.containsKey(mat))
-			{
-				names.put(mat, new HashMap<>());
-			}
+			names.computeIfAbsent(mat, k -> new HashMap<>());
 			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
 			translationCount++;
 		}
