@@ -28,6 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -99,6 +100,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @deprecated   Use {@link MessageBuilder#MessageBuilder(String, MessageColor, MessageFormat...)} instead.
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public MessageBuilder(String text, ChatColor[] styles)
 	{
 		this(new MessageComponent(text));
@@ -129,6 +131,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @deprecated Use {@link at.pcgamingfreaks.Message.MessageBuilder#append(String, MessageColor, MessageFormat...)} instead.
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public MessageBuilder append(String text, ChatColor[] styles)
 	{
 
@@ -213,6 +216,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @deprecated Use {@link at.pcgamingfreaks.Message.MessageBuilder#color(MessageColor)} instead!
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public MessageBuilder color(ChatColor color)
 	{
 		if(!color.isColor()) throw new IllegalArgumentException(color.name() + " is not a color!");
@@ -229,6 +233,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @deprecated Use {@link at.pcgamingfreaks.Message.MessageBuilder#format(MessageFormat...)} instead!
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public MessageBuilder format(ChatColor... formats) throws IllegalArgumentException
 	{
 		List<MessageFormat> formatsList = new ArrayList<>(formats.length);
@@ -249,6 +254,7 @@ public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuild
 	 * @deprecated Use {@link at.pcgamingfreaks.Message.MessageBuilder#format(MessageFormat...)} or {@link at.pcgamingfreaks.Message.MessageBuilder#color(MessageColor)} instead!
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
 	public MessageBuilder style(ChatColor... styles)
 	{
 		for(ChatColor style : styles)
