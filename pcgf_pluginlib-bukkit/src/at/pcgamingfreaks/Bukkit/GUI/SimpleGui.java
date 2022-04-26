@@ -42,15 +42,17 @@ public class SimpleGui implements IGui
 
 	public SimpleGui(Message title, int rows, Object... args)
 	{
-		assert rows > 0 && rows <= 7;
-		inventory = Bukkit.createInventory(this, rows * 9, title.getClassicMessage());
+		if (rows < 0 || rows > 6)
+		{
+			throw new IllegalArgumentException("Row count must be > 0 and < 7");
+		}
 		buttons = new GuiButton[9 * rows];
+		inventory = Bukkit.createInventory(this, buttons.length, title.getClassicMessage());
 		preparedTitle = InventoryUtils.prepareTitleForOpenInventoryWithCustomTitle(title, args);
 	}
 
 	public void setButton(final int slot, final @Nullable GuiButton button)
 	{
-		assert slot < buttons.length;
 		buttons[slot] = button;
 		inventory.setItem(slot, (button == null) ? null : button.getItem());
 	}
@@ -75,7 +77,6 @@ public class SimpleGui implements IGui
 
 	public GuiButton getButton(final int slot)
 	{
-		assert slot < buttons.length;
 		return buttons[slot];
 	}
 
@@ -100,8 +101,8 @@ public class SimpleGui implements IGui
 	}
 
 	@Override
-	public void onOpen(final @NotNull Player player) {}
+	public void onOpen(final @NotNull Player player) { /* Can be overwritten for custom logic */ }
 
 	@Override
-	public void onClose(final @NotNull Player player) {}
+	public void onClose(final @NotNull Player player) { /* Can be overwritten for custom logic */ }
 }
