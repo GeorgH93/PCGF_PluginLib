@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@ import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageFormat;
 
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
@@ -91,6 +93,7 @@ public final class MessageComponent extends at.pcgamingfreaks.Message.MessageCom
 	 * @return This message component instance.
 	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
 	 */
+	@Override
 	public MessageComponent setColor(MessageColor color) throws IllegalArgumentException
 	{
 		if(color != null && color.isRGB() && !MCVersion.supportsRgbColors()) color = color.getFallbackColor(); // Old MC versions do not support RGB colors, convert them to supported colors
