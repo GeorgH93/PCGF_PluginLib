@@ -23,8 +23,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
 
-import java.util.Objects;
-
 import static org.junit.Assert.*;
 
 @SuppressWarnings("EqualsBetweenInconvertibleTypes")
@@ -61,9 +59,9 @@ public class MinecraftMaterialTest
 		MinecraftMaterial material = new MinecraftMaterial(Material.STONE);
 		assertEquals("The material of the MinecraftMaterial should match", Material.STONE, material.getMaterial());
 		assertEquals("The object data of the MinecraftMaterial should not be set", -1, material.getDataValue());
-		assertTrue("The MinecraftMaterial should match with the given Material", material.equals(Material.STONE));
+		assertEquals("The MinecraftMaterial should match with the given Material", material, Material.STONE);
 		assertTrue("The MinecraftMaterial should match with the given Material", material.equals(Material.STONE, (short) -1));
-		assertFalse("The MinecraftMaterial should not match with the given Material", material.equals(Material.BED));
+		assertNotEquals("The MinecraftMaterial should not match with the given Material", material, Material.BED);
 		assertFalse("The MinecraftMaterial should not match with the given Material", material.equals(Material.STONE, (short) 10));
 	}
 
@@ -74,10 +72,10 @@ public class MinecraftMaterialTest
 		MinecraftMaterial material = new MinecraftMaterial(itemStack);
 		assertEquals("The material of the MinecraftMaterial should match", Material.WOOD, material.getMaterial());
 		assertEquals("The object data of the MinecraftMaterial should match the durability of the ItemStack", 0, itemStack.getDurability());
-		assertTrue("The MinecraftMaterial should match with the given ItemStack", material.equals(new ItemStack(Material.WOOD, 54)));
-		assertTrue("The MinecraftMaterial should match with the given ItemStack", Objects.equals(MinecraftMaterial.fromInput("120:-1"), new ItemStack(Material.ENDER_PORTAL_FRAME, 12)));
-		assertFalse("The MinecraftMaterial should not match with the given ItemStack", material.equals(new ItemStack(Material.ACACIA_DOOR, 12)));
-		assertFalse("The MinecraftMaterial should not match with the given ItemStack", Objects.equals(MinecraftMaterial.fromInput("120:10"), new ItemStack(Material.ENDER_PORTAL_FRAME, 12)));
+		assertEquals("The MinecraftMaterial should match with the given ItemStack", material, new ItemStack(Material.WOOD, 54));
+		assertEquals("The MinecraftMaterial should match with the given ItemStack", MinecraftMaterial.fromInput("120:-1"), new ItemStack(Material.ENDER_PORTAL_FRAME, 12));
+		assertNotEquals("The MinecraftMaterial should not match with the given ItemStack", material, new ItemStack(Material.ACACIA_DOOR, 12));
+		assertNotEquals("The MinecraftMaterial should not match with the given ItemStack", MinecraftMaterial.fromInput("120:10"), new ItemStack(Material.ENDER_PORTAL_FRAME, 12));
 	}
 
 	@Test
@@ -89,10 +87,10 @@ public class MinecraftMaterialTest
 		MinecraftMaterial material = new MinecraftMaterial(block);
 		assertEquals("The material of the MinecraftMaterial should match", block.getType(), material.getMaterial());
 		assertEquals("The object data of the MinecraftMaterial should match the block data", block.getData(), material.getDataValue());
-		assertTrue("The MinecraftMaterial should match with the given Block", material.equals(block));
-		assertTrue("The MinecraftMaterial should match with the given Block", Objects.equals(MinecraftMaterial.fromInput("1:-1"), block1));
-		assertFalse("The MinecraftMaterial should not match with the given Block", material.equals(block1));
-		assertFalse("The MinecraftMaterial should not match with the given Block", Objects.equals(MinecraftMaterial.fromInput("1:2"), block1));
+		assertEquals("The MinecraftMaterial should match with the given Block", material, block);
+		assertEquals("The MinecraftMaterial should match with the given Block", MinecraftMaterial.fromInput("1:-1"), block1);
+		assertNotEquals("The MinecraftMaterial should not match with the given Block", material, block1);
+		assertNotEquals("The MinecraftMaterial should not match with the given Block", MinecraftMaterial.fromInput("1:2"), block1);
 	}
 
 	@Test
