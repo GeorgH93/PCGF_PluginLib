@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,49 +44,58 @@ import java.util.regex.Pattern;
 @Deprecated
 public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 {
+	public static class CauldronReflectionException extends RuntimeException
+	{
+		CauldronReflectionException(final @NotNull String message)
+		{
+			super(message);
+		}
+	}
+
 	/**
 	 * Map of mc-dev simple class name to fully qualified Forge class name.
 	 */
-	private static Map<String, String> forgeClassMappings;
+	private static final Map<String, String> FORGE_CLASS_MAPPINGS;
 	/**
 	 * Map of Forge fully qualified class names to a map from mc-dev field names to Forge field names.
 	 */
-	private static Map<String, Map<String, String>> forgeFieldMappings;
+	private static final Map<String, Map<String, String>> FORGE_FIELD_MAPPINGS;
 
 	/**
 	 * Map of Forge fully qualified class names to a map from mc-dev method names to a map from method signatures to Forge method
 	 * names.
 	 */
-	private static Map<String, Map<String, Map<String, String>>> forgeMethodMappings;
-	private static Map<Class<?>, String> primitiveTypes;
+	private static final Map<String, Map<String, Map<String, String>>> FORGE_METHOD_MAPPINGS;
+	private static final Map<Class<?>, String> PRIMITIVE_TYPES;
 
 	static
 	{
 		if(!Bukkit.getServer().getName().toLowerCase(Locale.ROOT).contains("cauldron") && !Bukkit.getServer().getName().toLowerCase(Locale.ROOT).contains("uranium"))
 		{
-			throw new RuntimeException("Using Cauldron Reflections for non Cauldron / Uranium based server!");
+			throw new CauldronReflectionException("Using Cauldron Reflections for non Cauldron / Uranium based server!");
 		}
 
-		final String nameseg_class = "a-zA-Z0-9$_";
-		final String fqn_class = nameseg_class + "/";
 
-		primitiveTypes = ImmutableMap.<Class<?>, String>builder().put(boolean.class, "Z").put(byte.class, "B").put(char.class, "C").put(short.class, "S").put(int.class, "I").put(long.class, "J").put(float.class, "F").put(double.class, "D").put(void.class, "V").build();
+		PRIMITIVE_TYPES = ImmutableMap.<Class<?>, String>builder().put(boolean.class, "Z").put(byte.class, "B").put(char.class, "C").put(short.class, "S").put(int.class, "I").put(long.class, "J").put(float.class, "F").put(double.class, "D").put(void.class, "V").build();
 
 		// Initialize the maps by reading the srg file
-		forgeClassMappings = new HashMap<>();
-		forgeFieldMappings = new HashMap<>();
-		forgeMethodMappings = new HashMap<>();
+		FORGE_CLASS_MAPPINGS = new HashMap<>();
+		FORGE_FIELD_MAPPINGS = new HashMap<>();
+		FORGE_METHOD_MAPPINGS = new HashMap<>();
 		try(InputStream stream = Class.forName("net.minecraftforge.common.MinecraftForge").getClassLoader().getResourceAsStream("mappings/" + BUKKIT_VERSION + "/cb2numpkg.srg");
-		    BufferedReader reader = new BufferedReader(new InputStreamReader(stream)))
+		    BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(stream))))
 		{
+			final String namesegClass = "a-zA-Z0-9$_";
+			final String fqnClass = "[" + namesegClass + "/]";
+			final String namesegClassPattern = "/([" + namesegClass + "]+)";
 			// 1: cb-simpleName
 			// 2: forge-fullName (Needs dir2fqn())
-			Pattern classPattern = Pattern.compile("^CL: net/minecraft/server/([" + nameseg_class + "]+) ([" + fqn_class + "]+)$");
+			Pattern classPattern = Pattern.compile("^CL: net/minecraft/server" + namesegClassPattern + " (" + fqnClass + "+)$");
 			// 1: cb-simpleName
 			// 2: cb-fieldName
 			// 3: forge-fullName (Needs dir2fqn())
 			// 4: forge-fieldName
-			Pattern fieldPattern = Pattern.compile("^FD: net/minecraft/server/([" + nameseg_class + "]+)/([" + nameseg_class + "]+) ([" + fqn_class + "]+)/([" + nameseg_class + "]+)$");
+			Pattern fieldPattern = Pattern.compile("^FD: net/minecraft/server" + namesegClassPattern + "" + namesegClassPattern + " (" + fqnClass + "+)" + namesegClassPattern + "$");
 			// 1: cb-simpleName
 			// 2: cb-methodName
 			// 3: cb-signature-args
@@ -94,7 +104,7 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 			// 6: forge-methodName
 			// 7: forge-signature-args
 			// 8: forge-signature-ret
-			Pattern methodPattern = Pattern.compile("^MD: net/minecraft/server/([" + fqn_class + "]+)/([" + nameseg_class + "]+) \\(([;\\[" + fqn_class + "]*)\\)([;\\[" + fqn_class + "]+) " + "([" + fqn_class + "]+)/([" + nameseg_class + "]+) \\(([;\\[" + fqn_class + "]*)\\)([;\\[" + fqn_class + "]+)$");
+			Pattern methodPattern = Pattern.compile("^MD: net/minecraft/server/(" + fqnClass + "+)" + namesegClassPattern + " \\(([;\\" + fqnClass + "*)\\)([;\\" + fqnClass + "+) " + "(" + fqnClass + "+)" + namesegClassPattern + " \\(([;\\" + fqnClass + "*)\\)([;\\" + fqnClass + "+)$");
 
 			String line;
 			while((line = reader.readLine()) != null)
@@ -103,14 +113,14 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 				if(classMatcher.matches())
 				{
 					// by CB class name
-					forgeClassMappings.put(classMatcher.group(1), classMatcher.group(2).replaceAll("/", "."));
+					FORGE_CLASS_MAPPINGS.put(classMatcher.group(1), classMatcher.group(2).replace("/", "."));
 					continue;
 				}
 				Matcher fieldMatcher = fieldPattern.matcher(line);
 				if(fieldMatcher.matches())
 				{
 					// by CB class name
-					Map<String, String> innerMap = forgeFieldMappings.computeIfAbsent(fieldMatcher.group(3).replaceAll("/", "."), k -> new HashMap<>());
+					Map<String, String> innerMap = FORGE_FIELD_MAPPINGS.computeIfAbsent(fieldMatcher.group(3).replace("/", "."), k -> new HashMap<>());
 					// by CB field name to Forge field name
 					innerMap.put(fieldMatcher.group(2), fieldMatcher.group(4));
 					continue;
@@ -119,7 +129,7 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 				if(methodMatcher.matches())
 				{
 					// get by CB class name
-					Map<String, Map<String, String>> middleMap = forgeMethodMappings.computeIfAbsent(methodMatcher.group(5).replaceAll("/", "."), k -> new HashMap<>());
+					Map<String, Map<String, String>> middleMap = FORGE_METHOD_MAPPINGS.computeIfAbsent(methodMatcher.group(5).replace("/", "."), k -> new HashMap<>());
 					// get by CB method name
 					Map<String, String> innerMap = middleMap.computeIfAbsent(methodMatcher.group(2), k -> new HashMap<>());
 					// store the parameter strings
@@ -145,7 +155,7 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 	{
 		try
 		{
-			String forgeName = forgeClassMappings.get(className);
+			String forgeName = FORGE_CLASS_MAPPINGS.get(className);
 			if(forgeName != null)
 			{
 				try
@@ -158,7 +168,7 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 			}
 			else
 			{
-				throw new RuntimeException("Missing Forge mapping for " + className);
+				throw new CauldronReflectionException("Missing Forge mapping for " + className);
 			}
 		}
 		catch(Exception e)
@@ -188,7 +198,7 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 		if(clazz == null) return null;
 		try
 		{
-			Map<String, String> innerMap = forgeMethodMappings.get(clazz.getName()).get(methodName);
+			Map<String, String> innerMap = FORGE_METHOD_MAPPINGS.get(clazz.getName()).get(methodName);
 			StringBuilder sb = new StringBuilder();
 			for(Class<?> cl : args)
 			{
@@ -211,26 +221,13 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 		}
 		else if(param.isPrimitive())
 		{
-			return primitiveTypes.get(param);
+			return PRIMITIVE_TYPES.get(param);
 		}
 		else
 		{
-			return "L" + param.getName().replaceAll("\\.", "/") + ";";
+			return "L" + param.getName().replace(".", "/") + ";";
 		}
 	}
-
-	/*public static Method getMethod(Class<?> clazz, @NotNull String name, Class<?>... args)
-	{
-		for(Method m : clazz.getMethods())
-		{
-			if(m.getName().equals(name) && (args.length == 0 || classListEqual(args, m.getParameterTypes())))
-			{
-				m.setAccessible(true);
-				return m;
-			}
-		}
-		return null;
-	}*/
 
 	/**
 	 * Gets a field reference from a net.minecraft.server class.
@@ -252,11 +249,11 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 	 * @return The field reference. Null if it was not found.
 	 */
 	@Contract("null, _ -> null")
-	public static @Nullable Field getNMSField(@Nullable Class clazz, @NotNull String name)
+	public static @Nullable Field getNMSField(@Nullable Class<?> clazz, @NotNull String name)
 	{
 		try
 		{
-			return (clazz == null) ? null : clazz.getField(forgeFieldMappings.get(clazz.getName()).get(name));
+			return (clazz == null) ? null : clazz.getField(FORGE_FIELD_MAPPINGS.get(clazz.getName()).get(name));
 		}
 		catch(NoSuchFieldException ex)
 		{
@@ -268,7 +265,7 @@ public class NMSReflectionCauldron extends OBCReflection implements NmsReflector
 	public static @Nullable Enum<?> getNMSEnum(@NotNull String enumClassAndEnumName)
 	{
 		int i = enumClassAndEnumName.lastIndexOf('.');
-		if(i < 1) throw new RuntimeException("Invalid class + enum name");
+		if(i < 1) throw new IllegalArgumentException("Invalid class + enum name '" + enumClassAndEnumName + "'.");
 		return getNMSEnum(enumClassAndEnumName.substring(0, i), enumClassAndEnumName.substring(i + 1));
 	}
 
