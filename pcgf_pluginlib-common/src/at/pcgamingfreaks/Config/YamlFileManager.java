@@ -31,6 +31,7 @@ import lombok.Getter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -253,8 +254,7 @@ public class YamlFileManager
 		}
 		catch(Exception e)
 		{
-			logger.warning("Failed to load " + getFileDescription() + " file!");
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e, () -> "Failed to load " + getFileDescription() + " file!");
 		}
 	}
 
@@ -300,8 +300,7 @@ public class YamlFileManager
 		}
 		catch(Exception e)
 		{
-			logger.warning("Failed to update " + getFileDescription() + "!");
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e, () -> "Failed to update " + getFileDescription() + " file!");
 			yaml = null;
 		}
 	}
@@ -332,8 +331,7 @@ public class YamlFileManager
 		}
 		catch(Exception e)
 		{
-			logger.warning("Failed to upgrade " + getFileDescription() + " file.");
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e, () -> "Failed to upgrade " + getFileDescription() + " file!");
 			yaml = null;
 		}
 	}
