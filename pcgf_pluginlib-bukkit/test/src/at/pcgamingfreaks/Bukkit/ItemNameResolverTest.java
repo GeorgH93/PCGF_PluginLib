@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.junit.Test;
 
 import java.util.HashSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
@@ -50,6 +51,10 @@ public class ItemNameResolverTest
 			counts[0]++;
 			return null;
 		}).when(mockedLogger).info(anyString());
+		doAnswer(invocationOnMock -> {
+			counts[0]++;
+			return null;
+		}).when(mockedLogger).log(eq(Level.INFO), anyString(), any(Object.class));
 		Language mockedLanguage = mock(Language.class);
 		doReturn(false).when(mockedLanguage).isLoaded();
 		itemNameResolver.loadLegacy(mockedLanguage, mockedLogger);
