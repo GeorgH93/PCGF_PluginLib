@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Config.ILanguageConfiguration;
 import at.pcgamingfreaks.Config.Language;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Plugin.IPlugin;
+import at.pcgamingfreaks.Utils;
 import at.pcgamingfreaks.Version;
 
 import org.bukkit.Material;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -40,6 +42,7 @@ import java.util.logging.Logger;
 public class ItemNameResolver
 {
 	private static final String LOADING_MESSAGE = "Loading item translations ...";
+	private static final String FINISHED_LOADING_MESSAGE = "Finished loading item translations for {0} items.";
 	private final Map<Material, Map<Short, String>> names = new HashMap<>();
 
 	public void load(final @NotNull IPlugin plugin, final @NotNull ILanguageConfiguration configuration)
@@ -77,14 +80,13 @@ public class ItemNameResolver
 		{
 			if(!key.startsWith("Items")) continue;
 			String material = key.substring(6), suffix = "";
-			short dataValue = -1;
 			Material mat = Material.matchMaterial(material);
 			if(mat == null) continue;
 			names.computeIfAbsent(mat, k -> new HashMap<>());
-			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
+			names.get(mat).put((short) -1, language.getRaw(key, "") + suffix);
 			translationCount++;
 		}
-		logger.info("Finished loading item translations for " + translationCount + " items.");
+		logger.log(Level.INFO, FINISHED_LOADING_MESSAGE, translationCount);
 	}
 
 	/**
@@ -109,11 +111,7 @@ public class ItemNameResolver
 				String[] components = key.split("[.:]");
 				material = components[0];
 				if(components[1].equals("appendDefault")) continue;
-				try
-				{
-					dataValue = Short.parseShort(components[1]);
-				}
-				catch(NumberFormatException ignored) {}
+				dataValue = Utils.tryParse(components[1], (short) -1);
 				if(language.getLang().getBoolean(material + ".appendDefault", false))
 				{
 					suffix = language.getRaw(material, language.getRaw(material + ".default", ""));
@@ -121,14 +119,11 @@ public class ItemNameResolver
 			}
 			Material mat = Material.matchMaterial(material);
 			if(mat == null) continue;
-			if(!names.containsKey(mat))
-			{
-				names.put(mat, new HashMap<>());
-			}
+			names.computeIfAbsent(mat, k -> new HashMap<>());
 			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
 			translationCount++;
 		}
-		logger.info("Finished loading item translations for " + translationCount + " items.");
+		logger.log(Level.INFO, FINISHED_LOADING_MESSAGE, translationCount);
 	}
 
 	private void load(Language language, @NotNull Logger logger)
@@ -148,7 +143,7 @@ public class ItemNameResolver
 			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
 			translationCount++;
 		}
-		logger.info("Finished loading item translations for " + translationCount + " items.");
+		logger.log(Level.INFO, FINISHED_LOADING_MESSAGE, translationCount);
 	}
 
 	private void loadLegacy(Language language, @NotNull Logger logger)
@@ -166,11 +161,7 @@ public class ItemNameResolver
 				String[] components = key.split("[.:]");
 				material = components[0];
 				if(components[1].equals("appendDefault")) continue;
-				try
-				{
-					dataValue = Short.parseShort(components[1]);
-				}
-				catch(NumberFormatException ignored) {}
+				dataValue = Utils.tryParse(components[1], (short) -1);
 				if(language.getLang().getBoolean(material + ".appendDefault", false))
 				{
 					suffix = language.getRaw(material, language.getRaw(material + ".default", ""));
@@ -182,7 +173,7 @@ public class ItemNameResolver
 			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
 			translationCount++;
 		}
-		logger.info("Finished loading item translations for " + translationCount + " items.");
+		logger.log(Level.INFO, FINISHED_LOADING_MESSAGE, translationCount);
 	}
 
 	/**
