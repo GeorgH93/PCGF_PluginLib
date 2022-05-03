@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 import at.pcgamingfreaks.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import lombok.AllArgsConstructor;
 
@@ -30,7 +31,7 @@ public class StringPlaceholderJsonEscapeProcessor implements IPlaceholderProcess
 	private IPlaceholderProcessor placeholderProcessor;
 
 	@Override
-	public @NotNull String process(Object parameter)
+	public @NotNull String process(@Nullable Object parameter)
 	{
 		String value;
 		if(placeholderProcessor == null)

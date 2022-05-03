@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Message;
 
 import at.pcgamingfreaks.Message.Placeholder.MessageComponentPlaceholderEngine;
+import at.pcgamingfreaks.Message.Placeholder.Placeholder;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 import at.pcgamingfreaks.Message.Placeholder.StringPlaceholderEngine;
 
@@ -30,7 +31,7 @@ class PlaceholderHandler
 {
 	private final StringPlaceholderEngine legacyPlaceholderEngine;
 	private final MessageComponentPlaceholderEngine messageComponentPlaceholderEngine;
-	@Getter private int nextParameterIndex = 0;
+	private int nextParameterIndex = 0;
 	@Getter private boolean prepared = false;
 
 	public PlaceholderHandler(Message message)
@@ -39,12 +40,46 @@ class PlaceholderHandler
 		messageComponentPlaceholderEngine = new MessageComponentPlaceholderEngine(message);
 	}
 
-	public void registerPlaceholder(@NotNull String placeholder, IPlaceholderProcessor placeholderProcessor)
+	public void register(Placeholder... placeholders)
 	{
-		registerPlaceholder(placeholder, this.getNextParameterIndex(), placeholderProcessor);
+		int patchAutoIndex = -1, lastIndexRequested = -99, lastIndexUsed = Math.max(nextParameterIndex - 1, 0);
+		for(Placeholder placeholder : placeholders)
+		{
+			int parameterIndex = placeholder.getParameterIndex();
+			switch(parameterIndex)
+			{
+				case Placeholder.AUTO_INCREMENT_INDIVIDUALLY:
+					parameterIndex = nextParameterIndex;
+					break;
+				case Placeholder.AUTO_INCREMENT_GROUP:
+					if (lastIndexRequested != placeholder.getParameterIndex()) parameterIndex = nextParameterIndex;
+					else parameterIndex = lastIndexUsed;
+					break;
+				case Placeholder.AUTO_INCREMENT_PATCH:
+					if (patchAutoIndex == -1) patchAutoIndex = nextParameterIndex;
+					parameterIndex = patchAutoIndex;
+					break;
+				case Placeholder.USE_LAST:
+					parameterIndex = lastIndexUsed;
+					break;
+				case Placeholder.HIGHEST_USED:
+					parameterIndex = Math.max(nextParameterIndex - 1, 0);
+					break;
+			}
+			lastIndexRequested = placeholder.getParameterIndex();
+			lastIndexUsed = parameterIndex;
+			if(placeholder.isRegex())
+			{
+				registerPlaceholderRegex(placeholder.getName(), parameterIndex, placeholder.getProcessor());
+			}
+			else
+			{
+				registerPlaceholder(placeholder.getName(), parameterIndex, placeholder.getProcessor());
+			}
+		}
 	}
 
-	public void registerPlaceholder(@NotNull String placeholder, int parameterIndex, IPlaceholderProcessor placeholderProcessor)
+	private void registerPlaceholder(@NotNull String placeholder, int parameterIndex, IPlaceholderProcessor placeholderProcessor)
 	{
 		if(parameterIndex < 0) throw new IllegalArgumentException("Placeholder parameter index must be a positive number!");
 		legacyPlaceholderEngine.registerPlaceholder(placeholder, parameterIndex, placeholderProcessor);
@@ -52,12 +87,7 @@ class PlaceholderHandler
 		nextParameterIndex = Math.max(nextParameterIndex, parameterIndex + 1);
 	}
 
-	public void registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, IPlaceholderProcessor placeholderProcessor)
-	{
-		registerPlaceholderRegex(placeholder, this.getNextParameterIndex(), placeholderProcessor);
-	}
-
-	public void registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, int parameterIndex, IPlaceholderProcessor placeholderProcessor)
+	private void registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, int parameterIndex, IPlaceholderProcessor placeholderProcessor)
 	{
 		if(parameterIndex < 0) throw new IllegalArgumentException("Placeholder parameter index must be a positive number!");
 		legacyPlaceholderEngine.registerPlaceholderRegex(placeholder, parameterIndex, placeholderProcessor);

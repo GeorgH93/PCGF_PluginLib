@@ -22,6 +22,8 @@ import at.pcgamingfreaks.Message.MessageComponent;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public final class FormattedStringPlaceholderProcessor implements IFormattedPlaceholderProcessor
 {
 	public static final FormattedStringPlaceholderProcessor INSTANCE = new FormattedStringPlaceholderProcessor();
@@ -29,12 +31,12 @@ public final class FormattedStringPlaceholderProcessor implements IFormattedPlac
 	@Override
 	public @NotNull MessageComponent processFormatted(Object parameter)
 	{
-		return new MessageBuilder().appendLegacy(parameter.toString()).getAsComponent();
+		return new MessageBuilder().appendLegacy(Objects.toString(parameter)).getAsComponent();
 	}
 
 	@Override
 	public @NotNull String process(Object parameter)
 	{
-		return parameter.toString();
+		return Objects.toString(parameter);
 	}
 }

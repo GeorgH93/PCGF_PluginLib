@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Message;
 
 import at.pcgamingfreaks.ConsoleColor;
+import at.pcgamingfreaks.Message.Placeholder.Placeholder;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.StringUtils;
@@ -195,33 +196,41 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 	@Override
 	public @NotNull MESSAGE registerPlaceholder(@NotNull String placeholder, IPlaceholderProcessor placeholderProcessor)
 	{
-		return registerPlaceholder(placeholder, placeholderProcessor, placeholderHandler == null ? 0 : placeholderHandler.getNextParameterIndex());
+		return registerPlaceholders(new Placeholder(placeholder, placeholderProcessor));
 	}
 
 	@Override
 	public @NotNull MESSAGE registerPlaceholder(@NotNull String placeholder, IPlaceholderProcessor placeholderProcessor, int parameterIndex)
 	{
-		if(useStringFormat) disableStringFormat();
-		if(!(placeholder.startsWith("{") && placeholder.endsWith("}")))
-		{ // All placeholders should be between {}
-			placeholder = "{" + placeholder + "}";
-		}
-		if(placeholderHandler == null) placeholderHandler = new PlaceholderHandler(this);
-		placeholderHandler.registerPlaceholder(placeholder, parameterIndex, placeholderProcessor);
+		return registerPlaceholders(new Placeholder(placeholder, placeholderProcessor, parameterIndex));
+	}
+
+	@Override
+	public @NotNull MESSAGE placeholders(@NotNull Placeholder... placeholders)
+	{
+		return registerPlaceholders(placeholders);
+	}
+
+	@Override
+	public @NotNull MESSAGE registerPlaceholders(@NotNull Placeholder... placeholders)
+	{
+		if (useStringFormat) disableStringFormat();
+		if (placeholderHandler == null) placeholderHandler = new PlaceholderHandler(this);
+		placeholderHandler.register(placeholders);
 		//noinspection unchecked
 		return (MESSAGE) this;
 	}
 
-	/*@Override @SafeVarargs
-	public final @NotNull MESSAGE registerPlaceholders(Pair<String, IPlaceholderProcessor>... placeholders)
+	@Override
+	public @NotNull MESSAGE placeholders(final @NotNull String... placeholderNames)
 	{
-		for(Pair<String, IPlaceholderProcessor> placeholder : placeholders)
+		Placeholder[] placeholders = new Placeholder[placeholderNames.length];
+		for(int i = 0; i < placeholderNames.length; i++)
 		{
-			registerPlaceholder(placeholder.getKey(), placeholder.getValue());
+			placeholders[i] = new Placeholder(placeholderNames[i], null, Placeholder.AUTO_INCREMENT_INDIVIDUALLY);
 		}
-		//noinspection unchecked
-		return (MESSAGE) this;
-	}*/
+		return registerPlaceholders(placeholders);
+	}
 
 	@Override
 	public @NotNull MESSAGE placeholderRegex(@NotNull @Language("RegExp") String placeholder)
@@ -236,35 +245,16 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 	}
 
 	@Override
-	public @NotNull MESSAGE registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, IPlaceholderProcessor placeholderProcessor)
+	public @NotNull MESSAGE registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor)
 	{
-		return registerPlaceholderRegex(placeholder, placeholderProcessor, placeholderHandler == null ? 0 : placeholderHandler.getNextParameterIndex());
+		return registerPlaceholders(new Placeholder(placeholder, placeholderProcessor, true));
 	}
 
 	@Override
 	public @NotNull MESSAGE registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, IPlaceholderProcessor placeholderProcessor, int parameterIndex)
 	{
-		if(useStringFormat) disableStringFormat();
-		if(!(placeholder.startsWith("\\{") && placeholder.endsWith("}")))
-		{ // All placeholders should be between {}
-			placeholder = "\\{" + placeholder + "}";
-		}
-		if(placeholderHandler == null) placeholderHandler = new PlaceholderHandler(this);
-		placeholderHandler.registerPlaceholderRegex(placeholder, parameterIndex, placeholderProcessor);
-		//noinspection unchecked
-		return (MESSAGE) this;
+		return registerPlaceholders(new Placeholder(placeholder, placeholderProcessor, parameterIndex, true));
 	}
-
-	/*@Override @SafeVarargs
-	public final @NotNull MESSAGE registerPlaceholdersRegex(Pair<String, IPlaceholderProcessor>... placeholders)
-	{
-		for(Pair<String, IPlaceholderProcessor> placeholder : placeholders)
-		{
-			registerPlaceholderRegex(placeholder.getKey(), placeholder.getValue());
-		}
-		//noinspection unchecked
-		return (MESSAGE) this;
-	}*/
 
 	@Deprecated
 	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")

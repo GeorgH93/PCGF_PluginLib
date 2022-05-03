@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Message.Placeholder.Processors;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ abstract class BaseParameterTypeAwarePlaceholderProcessor<T extends IPlaceholder
 	}
 
 	@Override
-	public @NotNull String process(Object parameter)
+	public @NotNull String process(@Nullable Object parameter)
 	{
 		if(parameter == null) return "null";
 		IPlaceholderProcessor processor = typeMap.get(parameter.getClass());

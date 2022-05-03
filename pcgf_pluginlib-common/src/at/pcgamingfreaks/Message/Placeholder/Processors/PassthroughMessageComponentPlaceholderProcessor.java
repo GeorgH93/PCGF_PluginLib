@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Message.Placeholder.Processors;
 import at.pcgamingfreaks.Message.MessageComponent;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class PassthroughMessageComponentPlaceholderProcessor implements IFormattedPlaceholderProcessor
 {
@@ -36,7 +37,7 @@ public final class PassthroughMessageComponentPlaceholderProcessor implements IF
 	}
 
 	@Override
-	public @NotNull String process(Object parameter)
+	public @NotNull String process(@Nullable Object parameter)
 	{
 		if(parameter instanceof MessageComponent)
 		{

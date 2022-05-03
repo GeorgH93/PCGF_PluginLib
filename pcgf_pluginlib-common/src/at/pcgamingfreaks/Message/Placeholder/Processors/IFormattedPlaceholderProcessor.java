@@ -20,8 +20,9 @@ package at.pcgamingfreaks.Message.Placeholder.Processors;
 import at.pcgamingfreaks.Message.MessageComponent;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface IFormattedPlaceholderProcessor extends IPlaceholderProcessor
 {
-	@NotNull MessageComponent processFormatted(Object parameter);
+	@NotNull MessageComponent processFormatted(@Nullable Object parameter);
 }

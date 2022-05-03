@@ -20,21 +20,30 @@ package at.pcgamingfreaks.Message.Placeholder;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 import at.pcgamingfreaks.StringUtils;
 import at.pcgamingfreaks.Util.PatternPreservingStringSplitter;
-import at.pcgamingfreaks.Utils;
 
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import lombok.AllArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class StringPlaceholderEngine
 {
+	@AllArgsConstructor
+	static class Placeholder
+	{
+		int parameterIndex;
+		IPlaceholderProcessor processor;
+	}
+
 	private static final PatternPreservingStringSplitter STRING_SPLITTER = new PatternPreservingStringSplitter("(?<!\\\\)\\{[\\w-]+}");
 
 	private final String[] components;
 	private final int[] componentsMap;
-	private final ArrayList<IPlaceholderProcessor> placeholderProcessors = new ArrayList<>();
+	private final ArrayList<Placeholder> placeholderProcessors = new ArrayList<>();
 
 	public StringPlaceholderEngine(final @NotNull String input)
 	{
@@ -59,9 +68,9 @@ public class StringPlaceholderEngine
 		this.components = components.toArray(new String[0]);
 	}
 
-	public void registerPlaceholder(final @NotNull String placeholder, final int placeholderIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)
+	public void registerPlaceholder(final @NotNull String placeholder, final int parameterIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)
 	{
-		int placeholderIndexInMap = placeholderIndex | Integer.MIN_VALUE;
+		int placeholderIndexInMap = placeholderProcessors.size() | Integer.MIN_VALUE;
 		int id = StringUtils.indexOf(components, placeholder);
 		boolean contains = false;
 		for(int i = 0; i < componentsMap.length; i++)
@@ -74,13 +83,13 @@ public class StringPlaceholderEngine
 		}
 		if(contains)
 		{
-			Utils.insertAt(placeholderProcessors, placeholderProcessor, placeholderIndex);
+			placeholderProcessors.add(new Placeholder(parameterIndex, placeholderProcessor));
 		}
 	}
 
-	public void registerPlaceholderRegex(final @NotNull @Language("RegExp") String placeholderRegex, final int placeholderIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)
+	public void registerPlaceholderRegex(final @NotNull @Language("RegExp") String placeholderRegex, final int parameterIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)
 	{
-		int placeholderIndexInMap = placeholderIndex | Integer.MIN_VALUE;
+		int placeholderIndexInMap = placeholderProcessors.size() | Integer.MIN_VALUE;
 		Collection<Integer> ids = StringUtils.indexOfAllMatching(components, placeholderRegex);
 		boolean contains = false;
 		for(int i = 0; i < componentsMap.length; i++)
@@ -93,18 +102,19 @@ public class StringPlaceholderEngine
 		}
 		if(contains)
 		{
-			Utils.insertAt(placeholderProcessors, placeholderProcessor, placeholderIndex);
+			placeholderProcessors.add(new Placeholder(parameterIndex, placeholderProcessor));
 		}
 	}
 
 	public String processPlaceholders(Object... parameters)
 	{
-		Object[] resolvedPlaceholders = new Object[parameters.length];
+		Object[] resolvedPlaceholders = new Object[placeholderProcessors.size()];
 
-		for(int i = 0; i < parameters.length; i++)
+		for(int i = 0; i < placeholderProcessors.size(); i++)
 		{
-			IPlaceholderProcessor processor = (i < placeholderProcessors.size()) ? placeholderProcessors.get(i) : null;
-			resolvedPlaceholders[i] = (processor != null) ? processor.process(parameters[i]) : parameters[i];
+			Placeholder placeholder = placeholderProcessors.get(i);
+			Object parameter = placeholder.parameterIndex >= parameters.length ? null : parameters[placeholder.parameterIndex];
+			resolvedPlaceholders[i] = placeholder.processor != null ? placeholder.processor.process(parameter) : parameter;
 		}
 
 		return buildOutputString(resolvedPlaceholders);

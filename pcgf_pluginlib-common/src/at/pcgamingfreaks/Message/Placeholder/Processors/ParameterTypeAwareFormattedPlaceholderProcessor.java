@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Message.Placeholder.Processors;
 import at.pcgamingfreaks.Message.MessageComponent;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class ParameterTypeAwareFormattedPlaceholderProcessor extends BaseParameterTypeAwarePlaceholderProcessor<IFormattedPlaceholderProcessor> implements IFormattedPlaceholderProcessor
 {
@@ -29,7 +30,7 @@ public final class ParameterTypeAwareFormattedPlaceholderProcessor extends BaseP
 	{}
 
 	@Override
-	public @NotNull MessageComponent processFormatted(Object parameter)
+	public @NotNull MessageComponent processFormatted(@Nullable Object parameter)
 	{
 		if(parameter == null) return NULL_COMPONENT;
 		IFormattedPlaceholderProcessor processor = typeMap.get(parameter.getClass());

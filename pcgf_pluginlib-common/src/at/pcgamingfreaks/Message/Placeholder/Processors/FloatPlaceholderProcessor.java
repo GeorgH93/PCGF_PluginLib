@@ -18,10 +18,11 @@
 package at.pcgamingfreaks.Message.Placeholder.Processors;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 
-public class FloatPlaceholderProcessor implements IPlaceholderProcessor
+public final class FloatPlaceholderProcessor implements IPlaceholderProcessor
 {
 	private final DecimalFormat decimalFormat;
 
@@ -37,8 +38,9 @@ public class FloatPlaceholderProcessor implements IPlaceholderProcessor
 	}
 
 	@Override
-	public @NotNull String process(Object parameter)
+	public @NotNull String process(@Nullable Object parameter)
 	{
+		if (parameter == null) return "0";
 		return decimalFormat.format(parameter);
 	}
 }

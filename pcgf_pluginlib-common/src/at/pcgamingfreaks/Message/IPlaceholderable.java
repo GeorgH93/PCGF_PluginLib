@@ -17,6 +17,7 @@
 
 package at.pcgamingfreaks.Message;
 
+import at.pcgamingfreaks.Message.Placeholder.Placeholder;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 
 import org.intellij.lang.annotations.Language;
@@ -63,7 +64,23 @@ public interface IPlaceholderable
 	 */
 	@NotNull IPlaceholderable registerPlaceholder(@NotNull String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor, int parameterIndex);
 
-	//@NotNull IMessage registerPlaceholders(Pair<String, IPlaceholderProcessor>... placeholders);
+	/**
+	 * Registers multiple placeholder to the same parameter.
+	 *
+	 * @param placeholders The placeholders that should be registered.
+	 * @return             This message instance (for chaining).
+	 */
+	@NotNull IPlaceholderable placeholders(@NotNull Placeholder... placeholders);
+
+	@NotNull IPlaceholderable placeholders(final @NotNull String... placeholderNames);
+
+	/**
+	 * Registers multiple placeholder to the same parameter.
+	 *
+	 * @param placeholders The placeholders that should be registered.
+	 * @return             This message instance (for chaining).
+	 */
+	@NotNull IPlaceholderable registerPlaceholders(@NotNull Placeholder... placeholders);
 
 	/**
 	 * Registers a placeholder to be used with the message.
@@ -105,6 +122,4 @@ public interface IPlaceholderable
 	 * @return                     This message instance (for chaining).
 	 */
 	@NotNull IPlaceholderable registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor, int parameterIndex);
-
-	//@NotNull IMessage registerPlaceholdersRegex(Pair<String, IPlaceholderProcessor>... placeholders);
 }

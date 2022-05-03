@@ -38,6 +38,7 @@
 		<url>https://ci.pcgamingfreaks.at/job/PluginLib/</url>
 	</ciManagement>
 
+	<name>PCGF PluginLib - Parent</name>
 	<description>A library to reduce work and code on Bukkit or BungeeCord plugins.</description>
 	<url>${website}</url>
 	<inceptionYear>2015</inceptionYear>
