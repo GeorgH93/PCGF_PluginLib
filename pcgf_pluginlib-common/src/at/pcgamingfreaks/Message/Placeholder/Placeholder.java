@@ -63,6 +63,11 @@ public class Placeholder
 		this(name, null);
 	}
 
+	public Placeholder(final @NotNull String name, int parameterIndex)
+	{
+		this(name, null, parameterIndex);
+	}
+
 	public Placeholder(final @NotNull String name, final @Nullable IPlaceholderProcessor processor)
 	{
 		this(name, processor, AUTO_INCREMENT_PATCH);
