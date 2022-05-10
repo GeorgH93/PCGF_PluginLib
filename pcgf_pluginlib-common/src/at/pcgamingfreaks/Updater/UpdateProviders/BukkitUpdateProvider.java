@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -132,9 +131,9 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 		{
 			if(e.getMessage().contains("HTTP response code: 403"))
 			{
-				logger.severe(ConsoleColor.RED + "dev.bukkit.org rejected the provided API key!" + ConsoleColor.RESET);
-				logger.severe(ConsoleColor.RED + "Please double-check your configuration to ensure it is correct." + ConsoleColor.RESET);
-				logger.log(Level.SEVERE, null, e);
+				logger.warning(ConsoleColor.RED + "dev.bukkit.org rejected the provided API key!" + ConsoleColor.RESET);
+				logger.warning(ConsoleColor.RED + "If you have manually set an API key, please double-check your configuration to ensure it is correct." + ConsoleColor.RESET);
+				logger.warning(ConsoleColor.RED + "If not it's probably a temporary server issue and can be ignored." + ConsoleColor.RESET);
 				return UpdateResult.FAIL_API_KEY;
 			}
 			else
