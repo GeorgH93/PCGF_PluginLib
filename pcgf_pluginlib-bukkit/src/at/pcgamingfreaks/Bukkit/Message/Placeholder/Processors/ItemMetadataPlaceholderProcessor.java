@@ -18,27 +18,33 @@
 package at.pcgamingfreaks.Bukkit.Message.Placeholder.Processors;
 
 import at.pcgamingfreaks.Bukkit.Message.Placeholder.Processors.Wrappers.ItemStackWrapper;
+import at.pcgamingfreaks.Bukkit.Util.InventoryUtils;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class ItemAmountPlaceholderProcessor implements IPlaceholderProcessor
+import lombok.AllArgsConstructor;
+
+import java.util.logging.Logger;
+
+@AllArgsConstructor
+public final class ItemMetadataPlaceholderProcessor implements IPlaceholderProcessor
 {
-	public static final ItemAmountPlaceholderProcessor INSTANCE = new ItemAmountPlaceholderProcessor();
+	private final @NotNull Logger logger;
 
 	@Override
 	public @NotNull String process(@Nullable Object parameter)
 	{
 		if (parameter instanceof ItemStack)
 		{
-			return ((ItemStack) parameter).getAmount() + "";
+			return InventoryUtils.convertItemStackToJson((ItemStack) parameter, logger);
 		}
 		else if (parameter instanceof ItemStackWrapper)
 		{
-			return ((ItemStackWrapper) parameter).getAmount() + "";
+			return ((ItemStackWrapper) parameter).getItemMetadata();
 		}
-		return "0";
+		return "";
 	}
 }
