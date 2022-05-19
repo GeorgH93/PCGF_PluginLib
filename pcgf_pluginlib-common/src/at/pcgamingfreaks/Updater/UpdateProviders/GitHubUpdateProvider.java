@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This update provider allows to check github for new releases.
+ * This update provider allows to check GitHub for new releases.
  */
 @SuppressWarnings("RedundantThrows")
 public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
@@ -103,7 +103,7 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 				{
 					UpdateFile result = new UpdateFile();
 					result.setName(projectRepo);
-					JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
+					JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
 					JsonArray assets = object.getAsJsonArray("assets");
 					boolean foundDl = false;
 					for(int i = 0; i < assets.size(); i++)
@@ -168,12 +168,9 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 				while((line = reader.readLine()) != null)
 				{
 					Matcher matcher = IN_MD_5_SEARCH_PATTERN.matcher(line);
-					if(matcher.matches())
+					if(matcher.matches() && assetJarPattern.matcher(matcher.group("file")).matches())
 					{
-						if(assetJarPattern.matcher(matcher.group("file")).matches())
-						{
-							return matcher.group("hash");
-						}
+						return matcher.group("hash");
 					}
 				}
 			}
