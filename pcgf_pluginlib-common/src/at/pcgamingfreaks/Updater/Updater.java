@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -129,12 +129,6 @@ public abstract class Updater implements IUpdater
 	 */
 	protected abstract @NotNull String getAuthor();
 
-	/**
-	 * Waits for the async worker to finish.
-	 * We need to prevent the server from closing while we still work.
-	 */
-	public abstract void waitForAsyncOperation();
-
 	//region version checking logic
 	/**
 	 * Check to see if the program should continue by evaluating whether the plugin is already updated, or shouldn't be updated.
@@ -219,11 +213,11 @@ public abstract class Updater implements IUpdater
 			connection.disconnect();
 			if(hashGenerator != null)
 			{
-				String MD5Download = Utils.byteArrayToHex(hashGenerator.digest()).toLowerCase(Locale.ROOT), MD5Target = updateProvider.getLatestChecksum().toLowerCase(Locale.ROOT);
-				if(!MD5Download.equals(MD5Target))
+				String md5Download = Utils.byteArrayToHex(hashGenerator.digest()).toLowerCase(Locale.ROOT), md5Target = updateProvider.getLatestChecksum().toLowerCase(Locale.ROOT);
+				if(!md5Download.equals(md5Target))
 				{
 					logger.warning("The auto-updater was able to download the file, but the checksum did not match! Deleting file.");
-					logger.warning("Checksum expected: " + MD5Target + " Checksum download: " + MD5Download);
+					logger.warning("Checksum expected: " + md5Target + " Checksum download: " + md5Download);
 					result = UpdateResult.FAIL_DOWNLOAD;
 					if(!downloadFile.delete())
 					{
@@ -346,6 +340,20 @@ public abstract class Updater implements IUpdater
 		}
 	}
 
+	protected void downloadDependencies() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
+	{
+		boolean failedDependency = false;
+		for(UpdateProvider.UpdateFile update : updateProvider.getLatestDependencies())
+		{
+			download(update.getDownloadURL(), update.getFileName());
+			if (result != UpdateResult.SUCCESS)
+			{
+				failedDependency = true;
+			}
+		}
+		result = failedDependency ? UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED : UpdateResult.SUCCESS;
+	}
+
 	protected void doUpdate(final @Nullable UpdateResponseCallback responseCallback, final int updaterId)
 	{
 		updateProvider = updateProviders[updaterId];
@@ -359,26 +367,22 @@ public abstract class Updater implements IUpdater
 					download(updateProvider.getLatestFileURL(), (updateProvider.getLatestFileName().toLowerCase(Locale.ROOT).endsWith(".zip")) ? updateProvider.getLatestFileName() : targetFileName);
 					if(result == UpdateResult.SUCCESS && downloadDependencies && updateProvider.providesDependencies())
 					{
-						for(UpdateProvider.UpdateFile update : updateProvider.getLatestDependencies())
-						{
-							download(update.getDownloadURL(), update.getFileName());
-						}
-						result = (result == UpdateResult.SUCCESS) ? UpdateResult.SUCCESS : UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED;
+						downloadDependencies();
 					}
 				}
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Critical error while performing update", e);
 			}
 		}
 		if((result.name().startsWith("FAIL") || result == UpdateResult.UPDATE_AVAILABLE || (result == UpdateResult.NO_UPDATE && updaterId > 0)) && updaterId + 1 < updateProviders.length)
 		{
 			doUpdate(responseCallback, updaterId + 1);
 		}
-		else
+		else if(responseCallback != null)
 		{
-			if(responseCallback != null) runSync(() -> responseCallback.onDone(result));
+			runSync(() -> responseCallback.onDone(result));
 		}
 	}
 

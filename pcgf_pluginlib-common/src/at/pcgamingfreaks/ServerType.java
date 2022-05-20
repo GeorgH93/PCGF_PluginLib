@@ -37,7 +37,6 @@ public class ServerType
 		boolean bukkitComp = false, spigotComp = false, paperComp = false, glowComp = false, bungeeComp = false, waterfallComp = false, velocityComp = false;
 		boolean isBukkit = false, isSpigot = false, isPaper = false, isGlowstone = false, isBungee = false, isWaterfall = false, isVelocity = false;
 
-		ServerType type = null;
 		// Detecting current server type
 		Class<?> bukkitClass = Reflection.getClassSilent("org.bukkit.Bukkit");
 		if(bukkitClass != null)

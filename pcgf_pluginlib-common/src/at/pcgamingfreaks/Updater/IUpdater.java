@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,6 +26,11 @@ public interface IUpdater
 	default void update() { update(null); }
 	void update(final @Nullable UpdateResponseCallback response);
 	void update(final @NotNull UpdateMode updateMode, final @Nullable UpdateResponseCallback response);
+
+	/**
+	 * Waits for the async worker to finish.
+	 * We need to prevent the server from closing while we still work.
+	 */
 	void waitForAsyncOperation();
 	boolean isRunning();
 }
