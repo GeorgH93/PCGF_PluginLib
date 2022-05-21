@@ -59,7 +59,7 @@ public class GameModePlaceholderProcessor implements IPlaceholderProcessor
 	{
 		if (parameter instanceof GameMode)
 		{
-			gameModeTranslations.get(parameter);
+			return gameModeTranslations.get(parameter);
 		}
 		else if (parameter instanceof Collection)
 		{
