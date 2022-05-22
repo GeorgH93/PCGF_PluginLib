@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@ package at.pcgamingfreaks.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,14 +74,13 @@ public final class MinecraftMaterial
 		this(block.getType(), block.getData());
 	}
 
-	public boolean equals(final @Nullable Material material, final short dataValue)
+	public boolean is(final @Nullable Material material, final short dataValue)
 	{
 		return material == getMaterial() && dataValue == getDataValue();
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public boolean equals(final @Nullable Object object)
+	@Contract("null->false")
+	public boolean is(final @Nullable Object object)
 	{
 		if(object instanceof ItemStack)
 		{
@@ -98,6 +99,19 @@ public final class MinecraftMaterial
 			return ((MinecraftMaterial) object).getMaterial() == getMaterial() && (((MinecraftMaterial) object).getDataValue() == getDataValue() || getDataValue() == -1 || ((MinecraftMaterial) object).getDataValue() == -1);
 		}
 		return false;
+	}
+
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
+	public boolean equals(final @Nullable Material material, final short dataValue)
+	{
+		return is(material, dataValue);
+	}
+
+	@Override
+	public boolean equals(final @Nullable Object object)
+	{
+		return is(object);
 	}
 
 	@Override

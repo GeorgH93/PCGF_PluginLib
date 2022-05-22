@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-@SuppressWarnings("EqualsBetweenInconvertibleTypes")
 public class MinecraftMaterialTest
 {
 	@Test
@@ -48,9 +47,9 @@ public class MinecraftMaterialTest
 	public void testEquals()
 	{
 		MinecraftMaterial material = new MinecraftMaterial(Material.CAKE_BLOCK);
-		assertTrue("The material should match", material.equals(Material.CAKE_BLOCK, (short) -1));
-		assertFalse("The material should not match", material.equals(Material.CAKE_BLOCK, (short) 10));
-		assertFalse("The material should not match", material.equals(Material.STONE, (short) -1));
+		assertTrue("The material should match", material.is(Material.CAKE_BLOCK, (short) -1));
+		assertFalse("The material should not match", material.is(Material.CAKE_BLOCK, (short) 10));
+		assertFalse("The material should not match", material.is(Material.STONE, (short) -1));
 	}
 
 	@Test
@@ -59,10 +58,10 @@ public class MinecraftMaterialTest
 		MinecraftMaterial material = new MinecraftMaterial(Material.STONE);
 		assertEquals("The material of the MinecraftMaterial should match", Material.STONE, material.getMaterial());
 		assertEquals("The object data of the MinecraftMaterial should not be set", -1, material.getDataValue());
-		assertEquals("The MinecraftMaterial should match with the given Material", material, Material.STONE);
-		assertTrue("The MinecraftMaterial should match with the given Material", material.equals(Material.STONE, (short) -1));
-		assertNotEquals("The MinecraftMaterial should not match with the given Material", material, Material.BED);
-		assertFalse("The MinecraftMaterial should not match with the given Material", material.equals(Material.STONE, (short) 10));
+		assertTrue("The MinecraftMaterial should match with the given Material", material.is(Material.STONE));
+		assertTrue("The MinecraftMaterial should match with the given Material", material.is(Material.STONE, (short) -1));
+		assertFalse("The MinecraftMaterial should not match with the given Material", material.is(Material.BED));
+		assertFalse("The MinecraftMaterial should not match with the given Material", material.is(Material.STONE, (short) 10));
 	}
 
 	@Test
@@ -72,8 +71,8 @@ public class MinecraftMaterialTest
 		MinecraftMaterial material = new MinecraftMaterial(itemStack);
 		assertEquals("The material of the MinecraftMaterial should match", Material.WOOD, material.getMaterial());
 		assertEquals("The object data of the MinecraftMaterial should match the durability of the ItemStack", 0, itemStack.getDurability());
-		assertEquals("The MinecraftMaterial should match with the given ItemStack", material, new ItemStack(Material.WOOD, 54));
-		assertEquals("The MinecraftMaterial should match with the given ItemStack", MinecraftMaterial.fromInput("120:-1"), new ItemStack(Material.ENDER_PORTAL_FRAME, 12));
+		assertTrue("The MinecraftMaterial should match with the given ItemStack", material.is(new ItemStack(Material.WOOD, 54)));
+		assertTrue("The MinecraftMaterial should match with the given ItemStack", MinecraftMaterial.fromInput("120:-1").is(new ItemStack(Material.ENDER_PORTAL_FRAME, 12)));
 		assertNotEquals("The MinecraftMaterial should not match with the given ItemStack", material, new ItemStack(Material.ACACIA_DOOR, 12));
 		assertNotEquals("The MinecraftMaterial should not match with the given ItemStack", MinecraftMaterial.fromInput("120:10"), new ItemStack(Material.ENDER_PORTAL_FRAME, 12));
 	}
@@ -87,8 +86,8 @@ public class MinecraftMaterialTest
 		MinecraftMaterial material = new MinecraftMaterial(block);
 		assertEquals("The material of the MinecraftMaterial should match", block.getType(), material.getMaterial());
 		assertEquals("The object data of the MinecraftMaterial should match the block data", block.getData(), material.getDataValue());
-		assertEquals("The MinecraftMaterial should match with the given Block", material, block);
-		assertEquals("The MinecraftMaterial should match with the given Block", MinecraftMaterial.fromInput("1:-1"), block1);
+		assertTrue("The MinecraftMaterial should match with the given Block", material.is(block));
+		assertTrue("The MinecraftMaterial should match with the given Block", MinecraftMaterial.fromInput("1:-1").is(block1));
 		assertNotEquals("The MinecraftMaterial should not match with the given Block", material, block1);
 		assertNotEquals("The MinecraftMaterial should not match with the given Block", MinecraftMaterial.fromInput("1:2"), block1);
 	}
