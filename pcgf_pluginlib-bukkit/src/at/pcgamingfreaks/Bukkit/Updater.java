@@ -141,13 +141,12 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 				mcVersions[i] = MCVersion.getFromVersionName(versions[i]);
 			}
 			boolean supported = ArrayUtils.contains(mcVersions, MCVersion.CURRENT_VERSION.getMajorMinecraftVersion());
-			if(!supported) logger.info("Update found but it is not compatible with the used Minecraft version. Using: " + MCVersion.CURRENT_VERSION.getMajorMinecraftVersion().getName() + " Compatible: " + Arrays.toString(mcVersions));
+			if(!supported) logger.info("Update found, but it is not compatible with the used Minecraft version. Using: " + MCVersion.CURRENT_VERSION.getMajorMinecraftVersion().getName() + " Compatible: " + Arrays.toString(mcVersions));
 			return supported;
 		}
 		catch(Exception e)
 		{
-			logger.severe("Failed to check if Minecraft version is compatible with update!");
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Failed to check if Minecraft version is compatible with update!", e);
 		}
 		return true;
 	}
