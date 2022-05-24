@@ -41,6 +41,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.util.logging.Level;
 
 public final class PluginLib extends Plugin implements PluginLibrary, IPlugin
 {
@@ -81,7 +82,7 @@ public final class PluginLib extends Plugin implements PluginLibrary, IPlugin
 			}
 			catch(IllegalAccessException e)
 			{
-				e.printStackTrace();
+				this.getLogger().log(Level.SEVERE, "Failed to set unit names for time span.", e);
 			}
 		}
 
