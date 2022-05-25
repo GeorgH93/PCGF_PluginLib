@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -53,8 +53,7 @@ public class SpigotUpdateProviderTest
 
 	private SpigotUpdateProvider getProvider()
 	{
-		//noinspection ConstantConditions
-		return new SpigotUpdateProvider(PLUGIN_ID_EXT, null);
+		return new SpigotUpdateProvider(PLUGIN_ID_EXT, mock(Logger.class));
 	}
 
 	@Test
@@ -128,7 +127,6 @@ public class SpigotUpdateProviderTest
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
 	}
 
-	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Test
 	public void testLastResult() throws NoSuchFieldException, IllegalAccessException, RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -134,7 +135,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Failed to query spigot api for updates.", e);
 			return UpdateResult.FAIL_FILE_NOT_FOUND;
 		}
 		return UpdateResult.SUCCESS;

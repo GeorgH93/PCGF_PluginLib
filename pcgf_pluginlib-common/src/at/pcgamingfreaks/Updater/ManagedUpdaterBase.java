@@ -29,6 +29,7 @@ import lombok.Setter;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implements IUpdater
@@ -65,7 +66,7 @@ public abstract class ManagedUpdaterBase<UPDATER extends Updater, PLUGIN> implem
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Failed to read update.yml", e);
 			updateChannelMap = new HashMap<>();
 		}
 		this.defaultChannel = defaultChannel;

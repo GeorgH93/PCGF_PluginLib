@@ -32,6 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -119,8 +120,7 @@ public class BukkitUpdateProvider extends BaseOnlineProviderWithDownload
 					}
 					catch(MalformedURLException e)
 					{
-						logger.warning(ConsoleColor.RED + "Failed to interpret the download url \"" + devBukkitVersions[devBukkitVersions.length - 1].downloadUrl + "\"!" + ConsoleColor.RESET);
-						e.printStackTrace();
+						logger.log(Level.SEVERE, ConsoleColor.RED + "Failed to interpret the download url \"" + devBukkitVersions[devBukkitVersions.length - 1].downloadUrl + "\"!" + ConsoleColor.RESET, e);
 						return UpdateResult.FAIL_FILE_NOT_FOUND;
 					}
 				}

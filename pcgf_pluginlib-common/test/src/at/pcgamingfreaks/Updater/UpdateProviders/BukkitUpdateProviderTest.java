@@ -115,7 +115,8 @@ public class BukkitUpdateProviderTest
 		Arrays.fill((Object[]) devBukkitVersions, devBukkitVersion);
 		PowerMockito.doReturn(devBukkitVersions).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
-		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
+		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
+		assertEquals("The logger should be used as often as given", ++currentSevere, loggerCalls[1]);
 		Field downloadURLField = TestUtils.setAccessible(devBukkitVersionClass, devBukkitVersion, "downloadUrl", "https://dl.url.org/dl");
 		assertEquals("No valid version should be found", UpdateResult.FAIL_NO_VERSION_FOUND, bukkitUpdateProvider.query());
 		TestUtils.setUnaccessible(downloadURLField, devBukkitVersion, false);

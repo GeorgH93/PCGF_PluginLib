@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -75,7 +76,7 @@ public class AlwaysUpdateProvider extends BaseOnlineProvider
 		}
 		catch(MalformedURLException e)
 		{
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Invalid url " + url, e);
 		}
 		downloadUrl = dlURL;
 	}
