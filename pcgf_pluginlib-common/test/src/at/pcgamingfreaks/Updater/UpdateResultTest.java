@@ -26,15 +26,15 @@ public class UpdateResultTest
 	@Test
 	public void testUpdateResult()
 	{
-		assertEquals("The update result enum value should match", UpdateResult.valueOf("SUCCESS"), UpdateResult.SUCCESS);
-		assertEquals("The update result enum value should match", UpdateResult.valueOf("NO_UPDATE"), UpdateResult.NO_UPDATE);
-		assertEquals("The update result enum value should match", UpdateResult.valueOf("DISABLED"), UpdateResult.DISABLED);
-		assertEquals("The update result enum value should match", UpdateResult.valueOf("FAIL_DOWNLOAD"), UpdateResult.FAIL_DOWNLOAD);
-		assertEquals("The update result enum value should match", UpdateResult.valueOf("FAIL_SERVER_OFFLINE"), UpdateResult.FAIL_SERVER_OFFLINE);
-		assertEquals("The update result enum value should match", UpdateResult.valueOf("FAIL_NO_VERSION_FOUND"), UpdateResult.FAIL_NO_VERSION_FOUND);
-		assertEquals("The update result enum value should match", UpdateResult.valueOf("FAIL_FILE_NOT_FOUND"), UpdateResult.FAIL_FILE_NOT_FOUND);
-		assertEquals("The update result enum value should match", UpdateResult.valueOf("FAIL_API_KEY"), UpdateResult.FAIL_API_KEY);
-		assertEquals("The update result enum value should match", UpdateResult.valueOf("UPDATE_AVAILABLE"), UpdateResult.UPDATE_AVAILABLE);
-		assertEquals("The update result enum value should match", UpdateResult.valueOf("SUCCESS_DEPENDENCY_DOWNLOAD_FAILED"), UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED);
+		assertEquals("The update result enum value should match", UpdateResult.SUCCESS, UpdateResult.valueOf("SUCCESS"));
+		assertEquals("The update result enum value should match", UpdateResult.NO_UPDATE, UpdateResult.valueOf("NO_UPDATE"));
+		assertEquals("The update result enum value should match", UpdateResult.DISABLED, UpdateResult.valueOf("DISABLED"));
+		assertEquals("The update result enum value should match", UpdateResult.FAIL_DOWNLOAD, UpdateResult.valueOf("FAIL_DOWNLOAD"));
+		assertEquals("The update result enum value should match", UpdateResult.FAIL_SERVER_OFFLINE, UpdateResult.valueOf("FAIL_SERVER_OFFLINE"));
+		assertEquals("The update result enum value should match", UpdateResult.FAIL_NO_VERSION_FOUND, UpdateResult.valueOf("FAIL_NO_VERSION_FOUND"));
+		assertEquals("The update result enum value should match", UpdateResult.FAIL_FILE_NOT_FOUND, UpdateResult.valueOf("FAIL_FILE_NOT_FOUND"));
+		assertEquals("The update result enum value should match", UpdateResult.FAIL_API_KEY, UpdateResult.valueOf("FAIL_API_KEY"));
+		assertEquals("The update result enum value should match", UpdateResult.UPDATE_AVAILABLE, UpdateResult.valueOf("UPDATE_AVAILABLE"));
+		assertEquals("The update result enum value should match", UpdateResult.SUCCESS_DEPENDENCY_DOWNLOAD_FAILED, UpdateResult.valueOf("SUCCESS_DEPENDENCY_DOWNLOAD_FAILED"));
 	}
 }
