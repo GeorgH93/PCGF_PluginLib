@@ -21,7 +21,6 @@ import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonParser;
 
 import org.junit.Test;
@@ -31,7 +30,6 @@ import org.powermock.core.IndicateReloadClass;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -39,10 +37,9 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ URL.class, JenkinsUpdateProvider.class, JsonParser.class })
@@ -81,7 +78,8 @@ public class JenkinsUpdateProviderTest
 		}).when(mockedLogger).severe(anyString());
 		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
 		assertEquals("The invalid query should return a failure", UpdateResult.FAIL_FILE_NOT_FOUND, updater.query());
-		assertEquals("A warning should be shown", ++currentWarnings, counts[0]);
+		assertEquals("A warning should be shown", currentWarnings, counts[0]);
+		assertEquals("An error should be shown", ++currentSevere, counts[1]);
 		updater = new JenkinsUpdateProvider("ci.pcgamingfreaks.at", "PluginLib", "", mockedLogger);
 		assertEquals("The query should be successful", UpdateResult.SUCCESS, updater.query());
 		assertEquals("No warning should be shown", currentWarnings, counts[0]);
@@ -108,11 +106,6 @@ public class JenkinsUpdateProviderTest
 		updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger, "PLib");
 		updater.query();
 		assertNotNull("The updater object should not be null", updater);
-		JsonParser mockedParser = mock(JsonParser.class);
-		doThrow(new JsonIOException("")).when(mockedParser).parse(any(BufferedReader.class));
-		whenNew(JsonParser.class).withAnyArguments().thenReturn(mockedParser);
-		assertEquals("No version should be found", updater.query(), UpdateResult.FAIL_NO_VERSION_FOUND);
-		assertEquals("The number of warnings should match", ++currentWarnings, counts[0]);
 	}
 
 	@Test(expected = NotSuccessfullyQueriedException.class)
