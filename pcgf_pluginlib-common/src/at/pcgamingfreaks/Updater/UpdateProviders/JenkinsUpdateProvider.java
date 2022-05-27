@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -86,16 +86,16 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 			urlBuilder.append("&token=");
 			urlBuilder.append(token);
 		}
-		URL url = null;
+		URL tmpUrl = null;
 		try
 		{
-			url = new URL(urlBuilder.toString());
+			tmpUrl = new URL(urlBuilder.toString());
 		}
 		catch(MalformedURLException e)
 		{
-			logger.warning(ConsoleColor.RED + "Failed to build jenkins api url!\nHost:" + ConsoleColor.WHITE + ' ' + host + "    " + ConsoleColor.RED + "Job:" + ConsoleColor.WHITE + ' ' + job + '\n' + ConsoleColor.RED + "Build URL:" + ConsoleColor.WHITE + ' ' + urlBuilder.toString() + ' ' + ConsoleColor.RESET);
+			logger.severe(ConsoleColor.RED + "Failed to build jenkins api url!\nHost:" + ConsoleColor.WHITE + ' ' + host + "    " + ConsoleColor.RED + "Job:" + ConsoleColor.WHITE + ' ' + job + '\n' + ConsoleColor.RED + "Built URL:" + ConsoleColor.WHITE + ' ' + urlBuilder + ' ' + ConsoleColor.RESET);
 		}
-		this.url = url;
+		this.url = tmpUrl;
 		this.host = host;
 		this.token = token;
 		this.artifactSearchRegex = artifactSearchRegex;
@@ -105,6 +105,26 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 	public @NotNull String getName()
 	{
 		return "Jenkins";
+	}
+
+	private boolean filteredFile(String filename)
+	{
+		if(artifactSearchRegex != null)
+		{
+			return !filename.matches(artifactSearchRegex);
+		}
+		return StringUtils.containsIgnoreCase(filename, IGNORE_ARTIFACTS);
+	}
+
+	String readChangelog(JsonArray changeSetItems)
+	{
+		StringBuilder stringBuilder = new StringBuilder();
+		for(int i = 0; i < changeSetItems.size(); i++)
+		{
+			if(i > 0) stringBuilder.append("\n");
+			stringBuilder.append(changeSetItems.get(i).getAsJsonObject().getAsJsonPrimitive("comment").getAsString());
+		}
+		return stringBuilder.toString();
 	}
 
 	@Override
@@ -121,7 +141,7 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 				{
 					//TODO deserialize the response and add the reading for the version history
 					UpdateFile result = new UpdateFile();
-					JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
+					JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
 					JsonArray artifacts = object.getAsJsonArray("artifacts");
 					int artifactId = -1;
 					String filename = "", relativePath = "";
@@ -130,28 +150,16 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 						JsonObject artifact = artifacts.get(i).getAsJsonObject();
 						filename = artifact.getAsJsonPrimitive("fileName").getAsString();
 						relativePath = artifact.getAsJsonPrimitive("relativePath").getAsString();
-						if(artifactSearchRegex != null)
-						{
-							if(!filename.matches(artifactSearchRegex)) continue;
-						}
-						else if(StringUtils.containsIgnoreCase(filename, IGNORE_ARTIFACTS)) continue;
+						if(filteredFile(filename)) continue;
 						artifactId = i;
-						break; // There was a valid artifact found, no reason to check the others
+						break; // Found a valid artifact, no reason to check the others
 					}
 					if(artifactId < 0) return UpdateResult.FAIL_FILE_NOT_FOUND;
 					result.setFileName(filename);
 					result.setName(object.getAsJsonPrimitive("fullDisplayName").getAsString());
 					result.setDownloadURL(new URL(object.getAsJsonPrimitive("url").getAsString() + "artifact/" + relativePath));
 					result.setChecksum(object.getAsJsonArray("fingerprint").get(artifactId).getAsJsonObject().getAsJsonPrimitive("hash").getAsString());
-					//region read the changelog
-					JsonArray items = object.getAsJsonObject("changeSet").getAsJsonArray("items");
-					StringBuilder stringBuilder = new StringBuilder();
-					for(int i = 0; i < items.size(); i++)
-					{
-						if(i > 0) stringBuilder.append("\n");
-						stringBuilder.append(items.get(i).getAsJsonObject().getAsJsonPrimitive("comment").getAsString());
-					}
-					result.setChangelog(stringBuilder.toString());
+					result.setChangelog(readChangelog(object.getAsJsonObject("changeSet").getAsJsonArray("items")));
 					//endregion
 					Matcher matcher = VERSION_PATTERN.matcher(result.getFileName());
 					if(matcher.matches())
@@ -159,7 +167,6 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 						StringBuilder versionBuilder = new StringBuilder(matcher.group("VersionString"));
 						versionBuilder.append("-T");
 						Date buildTime = new Date(object.getAsJsonPrimitive("timestamp").getAsLong());
-						//noinspection SpellCheckingInspection
 						SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
 						format.setTimeZone(TimeZone.getTimeZone("UTC"));
 						versionBuilder.append(format.format(buildTime));
@@ -183,8 +190,8 @@ public class JenkinsUpdateProvider extends BaseOnlineProviderWithDownload
 			{
 				if(token == null)
 				{
-					logger.severe(ConsoleColor.RED + "The jenkins server requires an token for the given job!" + ConsoleColor.RESET);
-					logger.severe(ConsoleColor.RED + "Please please add a token to your configuration and try again." + ConsoleColor.RESET);
+					logger.severe(ConsoleColor.RED + "The jenkins server requires a token for the given job!" + ConsoleColor.RESET);
+					logger.severe(ConsoleColor.RED + "Please add a token to your configuration and try again." + ConsoleColor.RESET);
 				}
 				else
 				{
