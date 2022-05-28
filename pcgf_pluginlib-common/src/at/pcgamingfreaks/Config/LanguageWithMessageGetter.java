@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Locale;
+import java.util.logging.Level;
 
 /**
  * This class is not recommended being used directly! Use the Bukkit or Bungee specific Language classes instead!
@@ -126,9 +127,8 @@ public class LanguageWithMessageGetter extends Language
 		}
 		catch(Exception e)
 		{
-			if(msg == null) logger.warning(ConsoleColor.RED + "Failed to load message: " + KEY_LANGUAGE + path + " " + ConsoleColor.RESET);
-			else logger.warning(ConsoleColor.RED + "Failed generate metadata for: " + KEY_LANGUAGE + path + " " + ConsoleColor.RESET);
-			e.printStackTrace();
+			if(msg == null) logger.log(Level.SEVERE, e, () -> ConsoleColor.RED + "Failed to load message: " + KEY_LANGUAGE + path + " " + ConsoleColor.RESET);
+			else logger.log(Level.WARNING, e, () -> ConsoleColor.RED + "Failed generate metadata for: " + KEY_LANGUAGE + path + " " + ConsoleColor.RESET);
 		}
 		return msg;
 	}
