@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	private static final Method METHOD_CONTAINER_UPDATE_INVENTORY = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_17) ? NmsReflector.INSTANCE.getNmsMethod(CLASS_CONTAINER, "updateInventory") : null;
 
 	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NmsReflector.INSTANCE.getNmsClass("NBTTagCompound");
+	private static final Constructor<?> NBT_TAG_COMPOUND_CONSTRUCTOR = Reflection.getConstructor(NBT_TAG_COMPOUND_CLASS);
 	private static final Method AS_NMS_COPY_METHOD = OBCReflection.getOBCMethod("inventory.CraftItemStack", "asNMSCopy", ItemStack.class);
 	private static final Method SAVE_NMS_ITEM_STACK_METHOD = NmsReflector.INSTANCE.getNmsMethod("ItemStack", "save", NBT_TAG_COMPOUND_CLASS);
 
@@ -63,6 +64,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 
 	private static final EnumMap<InventoryType, Object> INVENTORY_TYPE_MAP = new EnumMap<>(InventoryType.class);
 	private static final Object[] INVENTORY_TYPE_CHEST = new Object[6];
+	private static final String SERIALISATION_FAILED_LOG_MESSAGE = "Failed to serialize item stack to JSON! Bukkit Version: " + Bukkit.getServer().getVersion();
 
 	static
 	{
@@ -104,11 +106,11 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	{
 		try
 		{
-			return SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CLASS.newInstance()).toString();
+			return SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CONSTRUCTOR.newInstance()).toString();
 		}
 		catch (Throwable t)
 		{
-			logger.log(Level.SEVERE, "Failed to serialize item stack to NMS item! Bukkit Version: " + Bukkit.getServer().getVersion() + "\n", t);
+			logger.log(Level.SEVERE, SERIALISATION_FAILED_LOG_MESSAGE, t);
 		}
 		return "";
 	}
