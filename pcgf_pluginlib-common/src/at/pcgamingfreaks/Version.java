@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ public class Version implements Comparable<Version>
 	private final String rawVersion;
 	@SuppressWarnings("FieldCanBeLocal")
 	private final String[] tags;
-	private final int[] version;
+	private final int[] versionComponents;
 	private final int hashCode;
 	private final long timestamp, buildNumber;
 	private final boolean preRelease;
@@ -90,10 +90,10 @@ public class Version implements Comparable<Version>
 		String[] comps = version.split(VERSION_SPLIT_REGEX);
 		List<String> tagsList = (!ignoreTags) ? getAll(this.tags, PRE_RELEASE_TAGS) : EMPTY_TAG_LIST;
 		boolean notAFinalVersion = !tagsList.isEmpty();
-		this.version = new int[notAFinalVersion ? comps.length + 1 : comps.length];
+		this.versionComponents = new int[notAFinalVersion ? comps.length + 1 : comps.length];
 		for(int i = 0; i < comps.length; i++)
 		{
-			this.version[i] = Integer.parseInt(comps[i]);
+			this.versionComponents[i] = Integer.parseInt(comps[i]);
 		}
 		if(notAFinalVersion)
 		{
@@ -112,14 +112,14 @@ public class Version implements Comparable<Version>
 				}
 				last = (last - PRE_RELEASE_TAG_VALUE_RESOLUTION.get(tag)) + preReleaseTagNumber;
 			}
-			this.version[this.version.length - 1] = last;
+			this.versionComponents[this.versionComponents.length - 1] = last;
 			if(last > 0)
 			{
-				for(int i = this.version.length - 2; i >= 0; i--)
+				for(int i = this.versionComponents.length - 2; i >= 0; i--)
 				{
-					if(this.version[i] > 0 || i == 0)
+					if(this.versionComponents[i] > 0 || i == 0)
 					{
-						this.version[i]--;
+						this.versionComponents[i]--;
 						break;
 					}
 				}
@@ -132,7 +132,7 @@ public class Version implements Comparable<Version>
 
 		timestamp = getBuildParameter(this.tags, "(t|ts|time(stamp)?)");
 		buildNumber = getBuildParameter(this.tags, "(b|build(number)?)");
-		this.hashCode = Arrays.hashCode(this.version);
+		this.hashCode = Arrays.hashCode(this.versionComponents);
 	}
 
 	private static Matcher validateInput(final String version)
@@ -182,31 +182,12 @@ public class Version implements Comparable<Version>
 		return VERSION_STING_FORMAT_PATTERN.matcher(version).matches();
 	}
 
-	/**
-	 * Compares two version with each other.
-	 *
-	 * @param otherVersion The version to compare with.
-	 * @return -1 this older than otherVersion, 0 equals, 1 this newer than otherVersion
-	 */
-	private byte compare(@NotNull Version otherVersion)
+	private byte compareLength(int c, @NotNull Version otherVersion)
 	{
-		int c = Math.min(this.version.length, otherVersion.version.length);
-		for(int i = 0; i < c; i++)
+		if(this.versionComponents.length != otherVersion.versionComponents.length)
 		{
-			if(otherVersion.version[i] > this.version[i])
-			{
-				return OLDER;
-			}
-			else if(otherVersion.version[i] < this.version[i])
-			{
-				return NEWER;
-			}
-		}
-		// If both version are the same for the length, the version that has more digits (>0) probably is the newer one.
-		if(this.version.length != otherVersion.version.length)
-		{
-			boolean otherLonger = otherVersion.version.length > this.version.length;
-			int[] longer = (otherLonger) ? otherVersion.version : this.version;
+			boolean otherLonger = otherVersion.versionComponents.length > this.versionComponents.length;
+			int[] longer = (otherLonger) ? otherVersion.versionComponents : this.versionComponents;
 			for(int i = c; i < longer.length; i++)
 			{
 				if(longer[i] > 0)
@@ -215,31 +196,69 @@ public class Version implements Comparable<Version>
 				}
 			}
 		}
-		// If both versions have the same length we still can compare the build timestamp (if available)
-		if(this.timestamp > 0 && otherVersion.timestamp > 0)
+		return SAME;
+	}
+
+	private byte compareTimeStamp(final long otherTimeStamp)
+	{
+		if(this.timestamp > 0 && otherTimeStamp > 0)
 		{
-			if(this.timestamp > otherVersion.timestamp)
+			if(this.timestamp > otherTimeStamp)
 			{
 				return NEWER;
 			}
-			else if(this.timestamp < otherVersion.timestamp)
-			{
-				return OLDER;
-			}
-		}
-		// If both versions still can't be distinguished we can use the build number (if available)
-		if(this.buildNumber > 0 && otherVersion.buildNumber > 0)
-		{
-			if(this.buildNumber > otherVersion.buildNumber)
-			{
-				return NEWER;
-			}
-			else if(this.buildNumber < otherVersion.buildNumber)
+			else if(this.timestamp < otherTimeStamp)
 			{
 				return OLDER;
 			}
 		}
 		return SAME;
+	}
+
+	private byte compareBuildNumber(final long otherBuildNumber)
+	{
+		if(this.buildNumber > 0 && otherBuildNumber > 0)
+		{
+			if(this.buildNumber > otherBuildNumber)
+			{
+				return NEWER;
+			}
+			else if(this.buildNumber < otherBuildNumber)
+			{
+				return OLDER;
+			}
+		}
+		return SAME;
+	}
+
+	/**
+	 * Compares two version with each other.
+	 *
+	 * @param otherVersion The version to compare with.
+	 * @return -1 this older than otherVersion, 0 equals, 1 this newer than otherVersion
+	 */
+	private byte compare(@NotNull Version otherVersion)
+	{
+		int c = Math.min(this.versionComponents.length, otherVersion.versionComponents.length);
+		for(int i = 0; i < c; i++)
+		{
+			if(otherVersion.versionComponents[i] > this.versionComponents[i])
+			{
+				return OLDER;
+			}
+			else if(otherVersion.versionComponents[i] < this.versionComponents[i])
+			{
+				return NEWER;
+			}
+		}
+		// If both version are the same for the length, the version that has more digits (>0) probably is the newer one.
+		final byte lengthResult = compareLength(c, otherVersion);
+		if (lengthResult != SAME) return lengthResult;
+		// If both versions have the same length we still can compare the build timestamp (if available)
+		final byte timeStampResult = compareTimeStamp(otherVersion.timestamp);
+		if (timeStampResult != SAME) return timeStampResult;
+		// If both versions still can't be distinguished we can use the build number (if available)
+		return compareBuildNumber(otherVersion.buildNumber);
 	}
 
 	/**
@@ -390,17 +409,17 @@ public class Version implements Comparable<Version>
 	//region Getters
 	public int getMajor()
 	{
-		return (version.length > 0) ? version[0] : 0;
+		return (versionComponents.length > 0) ? versionComponents[0] : 0;
 	}
 
 	public int getMinor()
 	{
-		return (version.length > 1) ? version[1] : 0;
+		return (versionComponents.length > 1) ? versionComponents[1] : 0;
 	}
 
 	public int getPatch()
 	{
-		return (version.length > 2) ? version[2] : 0;
+		return (versionComponents.length > 2) ? versionComponents[2] : 0;
 	}
 
 	public int toInt()
