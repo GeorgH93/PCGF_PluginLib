@@ -39,6 +39,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ JavaPlugin.class, NMSReflection.class })
 public class LegacyFormattedMessageTest
@@ -82,8 +84,8 @@ public class LegacyFormattedMessageTest
 	@AfterClass
 	public static void cleanupTestData()
 	{
-		//new File("enJson.yml").delete();
-		//new File("enLegacy.yml").delete();
+		new File("enJson.yml").delete();
+		new File("enLegacy.yml").delete();
 	}
 
 	@Test
@@ -107,7 +109,7 @@ public class LegacyFormattedMessageTest
 					System.out.println(msgJson.getJson());
 					System.out.println(msgLegacy.getJson());
 				}
-				//Assert.assertEquals(msgJson.getJson(), msgLegacy.getJson());
+				assertEquals(msgJson.getJson(), msgLegacy.getJson());
 			}
 		}
 	}
