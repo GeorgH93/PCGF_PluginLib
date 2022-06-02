@@ -43,6 +43,8 @@ import java.util.logging.Logger;
 @SuppressWarnings("RedundantThrows")
 public class SpigotUpdateProvider extends BaseOnlineProvider
 {
+	private static final String SPIGOT_API = "https://api.spiget.org/v2/resources/";
+
 	private final int projectID;
 	private final String filename;
 	private boolean downloadable = false;
@@ -86,7 +88,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 		try
 		{
 			UpdateFile result = new UpdateFile();
-			HttpURLConnection connection = connect(new URL("https://api.spiget.org/v2/resources/" + projectID));
+			HttpURLConnection connection = connect(new URL(SPIGOT_API + projectID));
 			if(connection == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 			JsonParser parser = new JsonParser();
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
@@ -95,7 +97,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 				downloadable = !resObject.get("external").getAsBoolean();
 				if(downloadable)
 				{
-					result.setDownloadURL(new URL("https://api.spiget.org/v2/resources/" + projectID + "/download"));
+					result.setDownloadURL(new URL(SPIGOT_API + projectID + "/download"));
 				}
 				else
 				{
@@ -123,7 +125,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 			}
 			connection.disconnect();
 			//region get version
-			connection = connect(new URL("https://api.spiget.org/v2/resources/" + projectID + "/versions/latest"));
+			connection = connect(new URL(SPIGOT_API + projectID + "/versions/latest"));
 			if(connection == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
 			{
