@@ -3,6 +3,7 @@
     <words>
       <w>clientbound</w>
       <w>hotbar</w>
+      <w>registerable</w>
     </words>
   </dictionary>
 </component>

@@ -28,7 +28,7 @@ import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class GameModePlaceholderProcessor implements IPlaceholderProcessor
+public final class GameModePlaceholderProcessor implements IPlaceholderProcessor
 {
 	private final @NotNull Map<GameMode, String> gameModeTranslations;
 
