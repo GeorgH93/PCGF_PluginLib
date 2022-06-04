@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -629,6 +629,14 @@ public class VersionTest
 		assertNotEquals("The hashcode should not match", version_1_0.hashCode(), version_1_2_snapshot.hashCode());
 		assertNotEquals("The hashcode should not match", version_1_0.hashCode(), version_1_2_snapshot_it.hashCode());
 		assertNotEquals("The hashcode should not match", version_1_0.hashCode(), version_v2_0.hashCode());
+	}
+
+	@Test
+	public void testUnimportantVersionParts()
+	{
+		assertEquals(new Version("1.0.0.3"), new Version("1.0.0.3.0"));
+		assertEquals(new Version("1.0.0.3"), new Version("1.0.0.3.0.0"));
+		assertEquals(new Version("1.0.0.3"), new Version("1.0.0.3.0.0.0"));
 	}
 
 	@Test

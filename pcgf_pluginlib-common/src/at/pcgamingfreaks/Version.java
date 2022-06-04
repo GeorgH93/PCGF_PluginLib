@@ -30,7 +30,7 @@ public class Version implements Comparable<Version>
 	public static final String VERSION_STING_FORMAT = "[vV]?(?<version>\\d+(\\.\\d+)*)(?<tags>(-[^-\\s]+)*)";
 	private static final List<String> EMPTY_TAG_LIST = new ArrayList<>(0);
 	private static final byte SAME = 0, OLDER = -1, NEWER = 1;
-	private static final String VERSION_SPLIT_REGEX = "\\.", TAG_SPLIT_REGEX = "-", UNIMPORTANT_VERSION_PARTS_REGEX = "(\\.0)*$", PRE_RELEASE_TAG_FORMAT = "(?<tag>\\w+)\\.?(?<number>\\d+)";
+	private static final String VERSION_SPLIT_REGEX = "\\.", TAG_SPLIT_REGEX = "-", UNIMPORTANT_VERSION_PARTS_REGEX = "(\\.0++)*+$", PRE_RELEASE_TAG_FORMAT = "(?<tag>\\w+)\\.?(?<number>\\d+)";
 	private static final Pattern PRE_RELEASE_TAG_FORMAT_PATTERN = Pattern.compile(PRE_RELEASE_TAG_FORMAT), VERSION_STING_FORMAT_PATTERN = Pattern.compile(VERSION_STING_FORMAT);
 	private static final String[] PRE_RELEASE_TAGS = new String[] { "alpha", "beta", "pre", "rc", "snapshot"};
 	private static final Map<String, Integer> PRE_RELEASE_TAG_VALUE_RESOLUTION = new ConcurrentHashMap<>();
