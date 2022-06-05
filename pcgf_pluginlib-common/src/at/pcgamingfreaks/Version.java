@@ -30,7 +30,7 @@ public class Version implements Comparable<Version>
 	public static final String VERSION_STING_FORMAT = "[vV]?(?<version>\\d+(\\.\\d+)*)(?<tags>(-[^-\\s]+)*)";
 	private static final List<String> EMPTY_TAG_LIST = new ArrayList<>(0);
 	private static final byte SAME = 0, OLDER = -1, NEWER = 1;
-	private static final String VERSION_SPLIT_REGEX = "\\.", TAG_SPLIT_REGEX = "-", UNIMPORTANT_VERSION_PARTS_REGEX = "(\\.0+)*+$", PRE_RELEASE_TAG_FORMAT = "(?<tag>\\w+)\\.?(?<number>\\d+)";
+	private static final String VERSION_SPLIT_REGEX = "\\.", TAG_SPLIT_REGEX = "-", PRE_RELEASE_TAG_FORMAT = "(?<tag>\\w+)\\.?(?<number>\\d+)";
 	private static final Pattern PRE_RELEASE_TAG_FORMAT_PATTERN = Pattern.compile(PRE_RELEASE_TAG_FORMAT), VERSION_STING_FORMAT_PATTERN = Pattern.compile(VERSION_STING_FORMAT);
 	private static final String[] PRE_RELEASE_TAGS = new String[] { "alpha", "beta", "pre", "rc", "snapshot"};
 	private static final Map<String, Integer> PRE_RELEASE_TAG_VALUE_RESOLUTION = new ConcurrentHashMap<>();
@@ -75,6 +75,57 @@ public class Version implements Comparable<Version>
 		this(version, false);
 	}
 
+	private static int[] getComponents(final @NotNull String version, boolean notFinalVersion)
+	{
+		String[] comps = version.split(VERSION_SPLIT_REGEX);
+		int size = comps.length;
+		for(int i = comps.length - 1; i >= 0; i--)
+		{
+			if (Integer.parseInt(comps[i]) != 0)
+			{
+				break;
+			}
+			size--;
+		}
+		if (size == 0) return new int[]{0};
+		int[] versionComponents = new int[size + (notFinalVersion ? 1 : 0)];
+		for (int i = 0; i < size; i++)
+		{
+			versionComponents[i] = Integer.parseInt(comps[i]);
+		}
+		return versionComponents;
+	}
+
+	private static void processPreReleaseData(int[] versionComponents, final @NotNull List<String> tagsList)
+	{
+		int last = 0;
+		for(String str : tagsList)
+		{
+			if(last == 0) last = Integer.MAX_VALUE;
+			int preReleaseTagNumber = 0;
+			String tag = str.toLowerCase(Locale.ENGLISH);
+			Matcher preMatcher = PRE_RELEASE_TAG_FORMAT_PATTERN.matcher(tag);
+			if(preMatcher.matches())
+			{
+				preReleaseTagNumber = Integer.parseInt(preMatcher.group("number"));
+				tag = preMatcher.group("tag");
+			}
+			last = (last - PRE_RELEASE_TAG_VALUE_RESOLUTION.get(tag)) + preReleaseTagNumber;
+		}
+		versionComponents[versionComponents.length - 1] = last;
+		if(last > 0)
+		{
+			for(int i = versionComponents.length - 2; i >= 0; i--)
+			{
+				if(versionComponents[i] > 0 || i == 0)
+				{
+					versionComponents[i]--;
+					break;
+				}
+			}
+		}
+	}
+
 	/**
 	 * @param rawVersion A string representing this version. Must be in the format: [vV]?\d+(\.\d+)*(-[^-\s]+)*
 	 * @param ignoreTags Ignores tags like -alpha for the version comparison.
@@ -84,46 +135,15 @@ public class Version implements Comparable<Version>
 	{
 		Matcher versionMatcher = validateInput(rawVersion);
 		this.rawVersion = (rawVersion.startsWith("v") || rawVersion.startsWith("V")) ? rawVersion.substring(1) : rawVersion;
-		final String version = versionMatcher.group("version").replaceAll(UNIMPORTANT_VERSION_PARTS_REGEX, "");
 		// Prepare data
 		this.tags = versionMatcher.group("tags").split(TAG_SPLIT_REGEX); // Split the tags
-		String[] comps = version.split(VERSION_SPLIT_REGEX);
 		List<String> tagsList = (!ignoreTags) ? getAll(this.tags, PRE_RELEASE_TAGS) : EMPTY_TAG_LIST;
 		boolean notAFinalVersion = !tagsList.isEmpty();
-		this.versionComponents = new int[notAFinalVersion ? comps.length + 1 : comps.length];
-		for(int i = 0; i < comps.length; i++)
-		{
-			this.versionComponents[i] = Integer.parseInt(comps[i]);
-		}
+		this.versionComponents = getComponents(versionMatcher.group("version"), notAFinalVersion);
 		if(notAFinalVersion)
 		{
 			this.preRelease = true;
-			int last = 0;
-			for(String str : tagsList)
-			{
-				if(last == 0) last = Integer.MAX_VALUE;
-				int preReleaseTagNumber = 0;
-				String tag = str.toLowerCase(Locale.ENGLISH);
-				Matcher preMatcher = PRE_RELEASE_TAG_FORMAT_PATTERN.matcher(tag);
-				if(preMatcher.matches())
-				{
-					preReleaseTagNumber = Integer.parseInt(preMatcher.group("number"));
-					tag = preMatcher.group("tag");
-				}
-				last = (last - PRE_RELEASE_TAG_VALUE_RESOLUTION.get(tag)) + preReleaseTagNumber;
-			}
-			this.versionComponents[this.versionComponents.length - 1] = last;
-			if(last > 0)
-			{
-				for(int i = this.versionComponents.length - 2; i >= 0; i--)
-				{
-					if(this.versionComponents[i] > 0 || i == 0)
-					{
-						this.versionComponents[i]--;
-						break;
-					}
-				}
-			}
+			processPreReleaseData(this.versionComponents, tagsList);
 		}
 		else
 		{
