@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -224,7 +224,7 @@ public abstract class SQLTableValidator
 					{
 						columnName = tempKeyMatcher.group(2) == null ? tempKeyMatcher.group(1) : tempKeyMatcher.group(2);
 					}
-					createKeyArray = tempKeyMatcher.group(3).replaceAll("`", "").split(",\\s*");
+					createKeyArray = tempKeyMatcher.group(3).replace("`", "").split(",\\s*");
 					currentTableColumnsIterator = currentTableColumns.iterator();
 					if(columnName == null)
 					{
@@ -237,7 +237,7 @@ public abstract class SQLTableValidator
 								currentMatcher = UNIQUE_INDEX_PATTERN.matcher(currentMatcher.group(5));
 								if(currentMatcher.find())
 								{
-									tempArray = currentMatcher.group(3).replaceAll("`", "").split(",\\s*");
+									tempArray = currentMatcher.group(3).replace("`", "").split(",\\s*");
 									if(createKeyArray.length != tempArray.length)
 									{
 										keyExists = false;
@@ -276,7 +276,7 @@ public abstract class SQLTableValidator
 									{
 										keyExists = true;
 										currentTableColumnsIterator.remove();
-										tempArray = currentMatcher.group(3).replaceAll("`", "").split(",\\s*");
+										tempArray = currentMatcher.group(3).replace("`", "").split(",\\s*");
 										if(createKeyArray.length != tempArray.length)
 										{
 											update = true;
@@ -317,8 +317,8 @@ public abstract class SQLTableValidator
 				{
 					columnName = tempKeyMatcher.group(2) == null ? tempKeyMatcher.group(1) : tempKeyMatcher.group(2);
 				}
-				createKeyArray = tempKeyMatcher.group(3).replaceAll("`", "").split(",\\s*");
-				tempArray = tempKeyMatcher.group(5).replaceAll("`", "").split(",\\s*");
+				createKeyArray = tempKeyMatcher.group(3).replace("`", "").split(",\\s*");
+				tempArray = tempKeyMatcher.group(5).replace("`", "").split(",\\s*");
 				if(createKeyArray.length != tempArray.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
 				currentTableColumnsIterator = currentTableColumns.iterator();
 				if(columnName == null)
@@ -332,8 +332,8 @@ public abstract class SQLTableValidator
 							currentMatcher = FOREIGN_KEY_PATTERN.matcher(currentMatcher.group(5));
 							if(currentMatcher.find())
 							{
-								currentReferenceColumns = currentMatcher.group(3).replaceAll("`", "").split(",\\s*");
-								currentTargetColumns = currentMatcher.group(5).replaceAll("`", "").split(",\\s*");
+								currentReferenceColumns = currentMatcher.group(3).replace("`", "").split(",\\s*");
+								currentTargetColumns = currentMatcher.group(5).replace("`", "").split(",\\s*");
 								if(currentReferenceColumns.length != currentTargetColumns.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
 								if(createKeyArray.length != currentReferenceColumns.length)
 								{
@@ -399,8 +399,8 @@ public abstract class SQLTableValidator
 								{
 									keyExists = true;
 									currentTableColumnsIterator.remove();
-									currentReferenceColumns = currentMatcher.group(3).replaceAll("`", "").split(",\\s*");
-									currentTargetColumns = currentMatcher.group(5).replaceAll("`", "").split(",\\s*");
+									currentReferenceColumns = currentMatcher.group(3).replace("`", "").split(",\\s*");
+									currentTargetColumns = currentMatcher.group(5).replace("`", "").split(",\\s*");
 									if(currentReferenceColumns.length != currentTargetColumns.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
 									if(createKeyArray.length != currentReferenceColumns.length)
 									{
@@ -464,7 +464,7 @@ public abstract class SQLTableValidator
 					{
 						currentTableColumnsIterator.remove();
 						keyExists = true;
-						String[] tempArray = tempKeyMatcher.group(5).replaceAll("`", "").split(",\\s*");
+						String[] tempArray = tempKeyMatcher.group(5).replace("`", "").split(",\\s*");
 						if(tempArray.length != createKeyArray.length)
 						{
 							update = true;
@@ -596,7 +596,7 @@ public abstract class SQLTableValidator
 
 	protected static String reformatTableDefinition(@Language("SQL") String query)
 	{
-		query = query.replaceAll("\r", "").replaceAll("\n", " ");
+		query = query.replace("\r", "").replace("\n", " ");
 		Matcher tempMatcher = QUERY_END.matcher(query);
 		if(!tempMatcher.find()) return null;
 		String temp = tempMatcher.group("engine");
