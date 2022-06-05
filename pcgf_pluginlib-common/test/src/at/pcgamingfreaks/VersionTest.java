@@ -637,6 +637,8 @@ public class VersionTest
 		assertEquals(new Version("1.0.0.3"), new Version("1.0.0.3.0"));
 		assertEquals(new Version("1.0.0.3"), new Version("1.0.0.3.0.0"));
 		assertEquals(new Version("1.0.0.3"), new Version("1.0.0.3.0.0.0"));
+		assertEquals(new Version("1.0.0.3"), new Version("1.0.0.3.0.00.0"));
+		assertEquals(new Version("1.0.0.3"), new Version("1.00.0.3"));
 	}
 
 	@Test
