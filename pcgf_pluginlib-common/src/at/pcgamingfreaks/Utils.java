@@ -124,7 +124,7 @@ public class Utils
 			File parentFile = targetFile.getParentFile();
 			if(!parentFile.exists() && !parentFile.mkdirs())
 			{
-				logger.log(Level.WARNING, "Failed creating directory's! Expected path: {0}", parentFile);
+				logger.log(Level.WARNING, "Failed creating directory''s! Expected path: {0}", parentFile);
 			}
 			if(!targetFile.createNewFile())
 			{
