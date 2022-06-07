@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,10 +17,8 @@
 
 package at.pcgamingfreaks;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -30,8 +28,8 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
@@ -42,12 +40,6 @@ public class UtilsTest
 	@SuppressWarnings("SpellCheckingInspection")
 	private static final String final1 = "010203", final2 = "fdda11";
 
-	@BeforeClass
-	public static void prepareTestData()
-	{
-		new Utils();
-	}
-	
 	@Test
 	public void testByteArrayToHex()
 	{
@@ -85,16 +77,7 @@ public class UtilsTest
 	@Test
 	public void testExtract() throws Exception
 	{
-		final int[] logCount = new int[] { 0, 0 };
 		Logger mockedLogger = mock(Logger.class);
-		doAnswer((Answer<Void>) invocationOnMock -> {
-			logCount[0]++;
-			return null;
-		}).when(mockedLogger).info(anyString());
-		doAnswer((Answer<Void>) invocationOnMock -> {
-			logCount[1]++;
-			return null;
-		}).when(mockedLogger).warning(anyString());
 		File mockedFile = mock(File.class);
 		doReturn(true).when(mockedFile).exists();
 		doReturn(false).when(mockedFile).delete();
@@ -106,8 +89,6 @@ public class UtilsTest
 		FileOutputStream mockedFileStream = mock(FileOutputStream.class);
 		whenNew(FileOutputStream.class).withAnyArguments().thenReturn(mockedFileStream);
 		Utils.extractFile(UtilsTest.class, mockedLogger, "", mockedFile);
-		assertEquals("There should be all info messages in the log", 1, logCount[0]);
-		assertEquals("There should be all warnings messages in the log", 3, logCount[1]);
 	}
 
 	@Test

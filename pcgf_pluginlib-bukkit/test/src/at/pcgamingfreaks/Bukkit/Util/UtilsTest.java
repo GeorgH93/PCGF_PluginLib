@@ -29,7 +29,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,12 +74,6 @@ public class UtilsTest
 		doReturn(locationPlayer2).when(PLAYER2).getLocation();
 		doReturn(locationPlayer3).when(PLAYER3).getLocation();
 		doReturn(locationPlayer3).when(PLAYER4).getLocation();
-	}
-
-	@Before
-	public void prepareTestObjects()
-	{
-		new Utils();
 	}
 
 	@Test

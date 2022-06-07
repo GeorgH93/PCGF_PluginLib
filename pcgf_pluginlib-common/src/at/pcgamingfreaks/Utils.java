@@ -26,12 +26,15 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class Utils
 {
+	protected Utils() { /* Prevent instance creation of this static helper class */ }
+
 	/**
 	 * Converts a byte array into a hex string.
 	 *
@@ -50,7 +53,7 @@ public class Utils
 	}
 
 	/**
-	 * Blocks the thread for a given time
+	 * Blocks the thread for a given time and restores teh interrupted state if an interrupt occurred
 	 *
 	 * @param pauseTime The time in seconds that the thread should be blocked
 	 */
@@ -62,7 +65,10 @@ public class Utils
 			{
 				Thread.sleep(pauseTime * 1000L);
 			}
-			catch(InterruptedException ignored) {}
+			catch(InterruptedException ignored)
+			{
+				Thread.currentThread().interrupt();
+			}
 		}
 	}
 
@@ -113,34 +119,34 @@ public class Utils
 		{
 			if(targetFile.exists() && !targetFile.delete())
 			{
-				logger.warning("Failed to delete old file (" + targetFile + ").");
+				logger.log(Level.WARNING, "Failed to delete old file ({0}).", targetFile);
 			}
 			File parentFile = targetFile.getParentFile();
 			if(!parentFile.exists() && !parentFile.mkdirs())
 			{
-				logger.warning("Failed creating directory's! Expected path: " + parentFile);
+				logger.log(Level.WARNING, "Failed creating directory's! Expected path: {0}", parentFile);
 			}
 			if(!targetFile.createNewFile())
 			{
-				logger.warning("Failed create new file (" + targetFile + ").");
+				logger.log(Level.WARNING, "Failed create new file ({0}).", targetFile);
 			}
 			if(!inJarPath.startsWith("/")) inJarPath = "/" + inJarPath;
 			try(InputStream is = pluginClass.getResourceAsStream(inJarPath); OutputStream os = new FileOutputStream(targetFile))
 			{
 				if(is == null)
 				{
-					logger.severe("Failed to extract \"" + inJarPath + "\" because it does not exist!");
+					logger.log(Level.SEVERE, "Failed to extract \"{0}\" because it does not exist!", inJarPath);
 					return false;
 				}
 				streamCopy(is, os);
 				os.flush();
 			}
-			logger.info("File \"" + inJarPath + "\" extracted successfully!");
+			logger.log(Level.INFO, "File \"{0}\" extracted successfully!", inJarPath);
 			return true;
 		}
 		catch (IOException | NullPointerException e)
 		{
-			logger.warning("Failed to extract file \"" + inJarPath + "\"! Reason: " + e.getMessage());
+			logger.severe("Failed to extract file \"" + inJarPath + "\"! Reason: " + e.getMessage());
 		}
 		return false;
 	}
@@ -279,6 +285,11 @@ public class Utils
 				if (name.startsWith(inJarPath))
 				{
 					File target = new File(targetDir, name.replace(inJarPath, ""));
+					if (!target.getCanonicalPath().startsWith(targetDir.getCanonicalPath()))
+					{
+						System.out.println("Skip file \"" + name + "\" in \"" + jar.getPath() + "\" because it is outside the target directory.");
+						continue;
+					}
 					if(target.exists())
 					{
 						if(!overwrite) continue;

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-public class Utils extends at.pcgamingfreaks.Utils
+public final class Utils extends at.pcgamingfreaks.Utils
 {
 	private static final IUtils INSTANCE = IUtils.INSTANCE;
 
@@ -54,6 +54,8 @@ public class Utils extends at.pcgamingfreaks.Utils
 			if(c.isColor() && c != ChatColor.RESET) CHAT_COLORS[i++] = c;
 		}
 	}
+
+	private Utils() { /* Prevent instance creation of this static helper class */ }
 
 	/**
 	 * Checks if per world plugins is installed. Used to check
