@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,7 +22,12 @@ import at.pcgamingfreaks.Bukkit.Util.IUtils;
 <#if mojangMapped>
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
+	<#if mcVersion < 100190000>
 import net.minecraft.network.protocol.game.ClientboundChatPacket;
+	<#else>
+//import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket; //TODO add support
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
+	</#if>
 <#else>
 	<#if mcVersion < 100170000>
 import net.minecraft.server.v${nmsVersion}.ChatMessageType;
@@ -50,7 +55,12 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 	public Object makeChatPacket(final @NotNull String json, final @NotNull UUID sender)
 	{
 		<#if mojangMapped>
+			<#if mcVersion < 100190000>
 		return new ClientboundChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), ChatType.CHAT, sender);
+			<#else>
+			//TODO support the new chat type
+		return new ClientboundSystemChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), 1);
+			</#if>
 		<#else>
 			<#if mcVersion < 100160000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.CHAT);
@@ -66,7 +76,11 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 	public Object makeChatPacketSystem(final @NotNull String json)
 	{
 		<#if mojangMapped>
+			<#if mcVersion < 100190000>
 		return new ClientboundChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), ChatType.SYSTEM, EMPTY_UUID);
+			<#else>
+		return new ClientboundSystemChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), 1);
+			</#if>
 		<#else>
 			<#if mcVersion < 100160000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.SYSTEM);
@@ -82,7 +96,11 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 	public Object makeChatPacketActionBar(final @NotNull String json)
 	{
 		<#if mojangMapped>
+			<#if mcVersion < 100190000>
 		return new ClientboundChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), ChatType.GAME_INFO, EMPTY_UUID);
+			<#else>
+		return new ClientboundSystemChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), 2);
+			</#if>
 		<#else>
 			<#if mcVersion < 100160000>
 		return new PacketPlayOutChat((IChatBaseComponent) IUtils.INSTANCE.jsonToIChatComponent(json), ChatMessageType.GAME_INFO);

@@ -35,7 +35,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.EnumMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,12 +45,13 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 {
 	private static final Class<?> CLASS_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Container");
 	private static final Class<?> CLASS_CONTAINERS = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Containers");
-	private static final Constructor<?> CONSTRUCTOR_CHAT_MESSAGE = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("ChatMessage"), String.class, Object[].class);
+	private static final Constructor<?> CONSTRUCTOR_CHAT_MESSAGE = (MCVersion.isOlderThan(MCVersion.MC_1_14) || MCVersion.isNewerOrEqualThan(MCVersion.MC_1_19)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("ChatMessage"), String.class, Object[].class);
 	private static final Constructor<?> CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutOpenWindow"), int.class, CLASS_CONTAINERS, NmsReflector.INSTANCE.getNmsClass("IChatBaseComponent"));
 	private static final Field FIELD_ACTIVE_CONTAINER = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : (MCVersion.isOlderThan(MCVersion.MC_1_17)) ? Reflection.getFieldIncludeParents(ENTITY_PLAYER, "activeContainer") : NmsReflector.INSTANCE.getNmsField("EntityHuman", "activeContainer");
 	private static final Field FIELD_CONTAINER_WINDOW_ID = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINER, "windowId");
 	private static final Method METHOD_ENTITY_PLAYER_UPDATE_INVENTORY = (MCVersion.isOlderThan(MCVersion.MC_1_14) || MCVersion.isNewerOrEqualThan(MCVersion.MC_1_17)) ? null : NmsReflector.INSTANCE.getNmsMethod(ENTITY_PLAYER, "updateInventory", CLASS_CONTAINER);
 	private static final Method METHOD_CONTAINER_UPDATE_INVENTORY = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_17) ? NmsReflector.INSTANCE.getNmsMethod(CLASS_CONTAINER, "updateInventory") : null;
+	private static final Method METHOD_COMPONENT_LITERAL = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_19) ? NmsReflector.INSTANCE.getNmsMethod("IChatBaseComponent", "literal", String.class) : null;
 
 	private static final Class<?> NBT_TAG_COMPOUND_CLASS = NmsReflector.INSTANCE.getNmsClass("NBTTagCompound");
 	private static final Constructor<?> NBT_TAG_COMPOUND_CONSTRUCTOR = Reflection.getConstructor(NBT_TAG_COMPOUND_CLASS);
@@ -61,45 +61,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	private static final Method METHOD_GET_INVENTORY = OBCReflection.getOBCMethod("inventory.CraftInventory", "getInventory");
 	private static final Method METHOD_CRAFT_CHAT_MESSAGE_FROM_STRING = MCVersion.isAny(MCVersion.MC_1_13) ? OBCReflection.getOBCMethod("util.CraftChatMessage", "wrapOrNull", String.class) : null;
 	private static final Field FIELD_TITLE = OBCReflection.getOBCField("inventory.CraftInventoryCustom$MinecraftInventory", "title");
-
-	private static final EnumMap<InventoryType, Object> INVENTORY_TYPE_MAP = new EnumMap<>(InventoryType.class);
-	private static final Object[] INVENTORY_TYPE_CHEST = new Object[6];
 	private static final String SERIALISATION_FAILED_LOG_MESSAGE = "Failed to serialize item stack to JSON! Bukkit Version: " + Bukkit.getServer().getVersion();
-
-	static
-	{
-		if(CLASS_CONTAINERS != null)
-		{
-			for(InventoryType inventoryType : InventoryType.values())
-			{
-				String type = inventoryType.name();
-				if(inventoryType == InventoryType.CHEST || inventoryType == InventoryType.PLAYER || inventoryType == InventoryType.CREATIVE) continue;
-				else if(inventoryType == InventoryType.DISPENSER || inventoryType == InventoryType.DROPPER) type = "GENERIC_3X3";
-				else if(inventoryType == InventoryType.BREWING) type = "BREWING_STAND";
-				else if(inventoryType == InventoryType.WORKBENCH) type = "CRAFTING";
-				else if(inventoryType == InventoryType.ENDER_CHEST) type = "GENERIC_9X3";
-				else if(inventoryType == InventoryType.ENCHANTING) type = "ENCHANTMENT";
-				else if(type.equals("BARREL")) type = "GENERIC_9X3";
-				else if(type.equals("CARTOGRAPHY") && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_15_R1)) type = "CARTOGRAPHY_TABLE";
-				else if(type.equals("COMPOSTER")) continue;
-				try
-				{
-					Field field = NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINERS, type);
-					if(field == null) continue;
-					INVENTORY_TYPE_MAP.put(inventoryType, field.get(null));
-				}
-				catch(IllegalAccessException ignored) {}
-			}
-			for(int i = 0; i < 6; i++)
-			{
-				try
-				{
-					INVENTORY_TYPE_CHEST[i] = NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINERS, "GENERIC_9X" + (i + 1)).get(null);
-				}
-				catch(IllegalAccessException | NullPointerException ignored) {}
-			}
-		}
-	}
 
 	@Override
 	public String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
@@ -115,24 +77,19 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 		return "";
 	}
 
-	protected static Object getInvContainersObject(final @NotNull Inventory inv)
-	{
-		if(inv.getType() == InventoryType.CHEST)
-		{
-			return INVENTORY_TYPE_CHEST[Math.min(6, inv.getSize() / 9) - 1];
-		}
-		else
-		{
-			return INVENTORY_TYPE_MAP.get(inv.getType());
-		}
-	}
-
 	@Override
 	public Object prepareTitleForUpdateInventoryTitle(final @NotNull String title)
 	{
 		try
 		{
-			return CONSTRUCTOR_CHAT_MESSAGE.newInstance(title, new Object[0]);
+			if (CONSTRUCTOR_CHAT_MESSAGE != null)
+			{
+				return CONSTRUCTOR_CHAT_MESSAGE.newInstance(title, new Object[0]);
+			}
+			else
+			{
+				METHOD_COMPONENT_LITERAL.invoke(null, title);
+			}
 		}
 		catch(Exception e)
 		{
@@ -161,7 +118,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 			if(entityPlayer == null || entityPlayer.getClass() != ENTITY_PLAYER) return; // Not a real player
 			Object activeContainer = FIELD_ACTIVE_CONTAINER.get(entityPlayer);
 			Object windowId = FIELD_CONTAINER_WINDOW_ID.get(activeContainer);
-			Object packet = CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW.newInstance(windowId, getInvContainersObject(topInv), title);
+			Object packet = CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW.newInstance(windowId, InventoryTypeMapper_Reflection.getInvContainersObject(topInv), title);
 			SEND_PACKET.invoke(PLAYER_CONNECTION.get(entityPlayer), packet);
 			if(METHOD_ENTITY_PLAYER_UPDATE_INVENTORY != null)
 				METHOD_ENTITY_PLAYER_UPDATE_INVENTORY.invoke(entityPlayer, activeContainer);

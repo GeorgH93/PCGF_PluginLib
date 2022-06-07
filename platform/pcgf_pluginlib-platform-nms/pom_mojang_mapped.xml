@@ -59,5 +59,6 @@
 		<module>pcgf_pluginlib-platform-nms_mm-1_17_R1</module>
 		<module>pcgf_pluginlib-platform-nms_mm-1_18_R1</module>
 		<module>pcgf_pluginlib-platform-nms_mm-1_18_R2</module>
+		<module>pcgf_pluginlib-platform-nms_mm-1_19_R1</module>
 	</modules>
 </project>

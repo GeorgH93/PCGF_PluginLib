@@ -113,8 +113,11 @@ public enum MCVersion
 	MC_NMS_1_18_R1(121, 757, "1_18", "1.18_NMS_R1", MC_1_18),
 	MC_1_18_2(122, 758, "1_18", "1.18.2"),
 	MC_NMS_1_18_R2(122, 758, "1_18", "1.18_NMS_R2", MC_1_18),
-	MC_1_19(131, Integer.MAX_VALUE, "1_19", "1.19"),
-	MC_NMS_1_19_R1(131, Integer.MAX_VALUE, "1_19", "1.19_NMS_R1", MC_1_19);
+	MC_1_19(131, 759, "1_19", "1.19"),
+	MC_NMS_1_19_R1(131, 759, "1_19", "1.19_NMS_R1", MC_1_19),
+	MC_NMS_1_19_R2(132, 760, "1_19", "1.19_NMS_R2", MC_1_19),
+	MC_1_20(141, Integer.MAX_VALUE, "1_20", "1.20"),
+	MC_NMS_1_20_R1(141, Integer.MAX_VALUE, "1_20", "1.20_NMS_R1", MC_1_20);
 
 	private static final Map<String, MCVersion> VERSION_MAP = new HashMap<>();
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new HashMap<>();

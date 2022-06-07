@@ -19,7 +19,11 @@ package at.pcgamingfreaks.Bukkit.Util;
 
 <#if mojangMapped>
 import net.minecraft.nbt.CompoundTag;
+	<#if mcVersion < 100190000>
 import net.minecraft.network.chat.TranslatableComponent;
+	<#else>
+import net.minecraft.network.chat.Component;
+	</#if>
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,7 +64,7 @@ import java.util.logging.Logger;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public final class InventoryUtils_${nmsVersion} extends InventoryUtils_Reflection
+public final class InventoryUtils_${nmsVersion} implements IInventoryUtils
 {
 	@Override
 	public String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
@@ -72,7 +76,11 @@ public final class InventoryUtils_${nmsVersion} extends InventoryUtils_Reflectio
 	public Object prepareTitleForUpdateInventoryTitle(final @NotNull String title)
 	{
 		<#if mojangMapped>
+			<#if mcVersion < 100190000>
 		return new TranslatableComponent(title);
+			<#else>
+		return Component.literal(title);
+			</#if>
 		<#else>
 			<#if 100140000 <= mcVersion>
 		return new ChatMessage(title);
@@ -100,12 +108,12 @@ public final class InventoryUtils_${nmsVersion} extends InventoryUtils_Reflectio
 
 			<#if mojangMapped>
 		ServerPlayer entityPlayer = ((CraftPlayer)player).getHandle();
-		ClientboundOpenScreenPacket packet = new ClientboundOpenScreenPacket(entityPlayer.containerMenu.containerId, (MenuType<?>) getInvContainersObject(topInv), (Component) newTitle);
+		ClientboundOpenScreenPacket packet = new ClientboundOpenScreenPacket(entityPlayer.containerMenu.containerId, (MenuType<?>) InventoryTypeMapper_Reflection.getInvContainersObject(topInv), (Component) newTitle);
 		entityPlayer.connection.send(packet);
 		entityPlayer.containerMenu.sendAllDataToRemote();
 			<#else>
 		EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
-		PacketPlayOutOpenWindow packet = new PacketPlayOutOpenWindow(entityPlayer.<#if mcVersion < 100170000>activeContainer.windowId<#else>bV.j</#if>, (Containers) getInvContainersObject(topInv), (IChatBaseComponent) newTitle);
+		PacketPlayOutOpenWindow packet = new PacketPlayOutOpenWindow(entityPlayer.<#if mcVersion < 100170000>activeContainer.windowId<#else>bV.j</#if>, (Containers) InventoryTypeMapper_Reflection.getInvContainersObject(topInv), (IChatBaseComponent) newTitle);
 		entityPlayer.<#if mcVersion < 100170000>playerConnection<#else>b</#if>.sendPacket(packet);
 				<#if mcVersion < 100170000>
 		entityPlayer.updateInventory(entityPlayer.activeContainer);
@@ -154,5 +162,28 @@ public final class InventoryUtils_${nmsVersion} extends InventoryUtils_Reflectio
 		<#else>
 		setInventoryTitlePrepared(inventory, currentTitle);
 		</#if>
+	}
+
+	@Override
+	public Object getInventoryTitle(final @NotNull Inventory inventory)
+	{
+		return null;
+	}
+
+	@Override
+	public void setInventoryTitle(final @NotNull Inventory inventory, final @NotNull String newTitle)
+	{
+	}
+
+	@Override
+	public Object prepareTitleForSetInventoryTitle(@NotNull String title)
+	{
+		return null;
+	}
+
+
+	@Override
+	public void setInventoryTitlePrepared(final @NotNull Inventory inventory, final @NotNull Object newTitle)
+	{
 	}
 }
