@@ -32,7 +32,7 @@ public class ItemStackWrapper
 	@Getter private final @NotNull ItemStack itemStack;
 	private final @NotNull Logger logger;
 	private final @NotNull ItemNameResolver itemNameResolver;
-	private String cachedName = null, cachedMetadata = null;
+	private String cachedName = null, cachedDisplayName = null, cachedMetadata = null;
 
 	public ItemStackWrapper(final @NotNull ItemStack itemStack, final @NotNull Logger logger, final @NotNull ItemNameResolver resolver)
 	{
@@ -45,9 +45,18 @@ public class ItemStackWrapper
 	{
 		if (cachedName == null)
 		{
-			cachedName = itemNameResolver.getDisplayName(itemStack);
+			cachedName = itemNameResolver.getName(itemStack);
 		}
 		return cachedName;
+	}
+
+	public String getItemDisplayName()
+	{
+		if (cachedDisplayName == null)
+		{
+			cachedDisplayName = itemNameResolver.getDisplayName(itemStack);
+		}
+		return cachedDisplayName;
 	}
 
 	public String getItemMetadata()
