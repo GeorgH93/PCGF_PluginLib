@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -255,7 +255,7 @@ public class InventoryUtils
 	 * Prepares a title to be used with the {@link InventoryUtils#openInventoryWithCustomTitlePrepared(Player, Inventory, Object)} method.
 	 *
 	 * @param title The title that should be prepared.
-	 * @param args The values that should be used to fill the placeholders of the title.
+	 * @param args The values that should be used to fill the placeholders with the title.
 	 * @return The prepared title.
 	 */
 	public static Object prepareTitleForOpenInventoryWithCustomTitle(final @NotNull Message title, final Object... args)
@@ -285,4 +285,6 @@ public class InventoryUtils
 	{
 		INSTANCE.setInventoryTitle(inventory, newTitle);
 	}
+
+	private InventoryUtils() {}
 }

@@ -79,4 +79,6 @@ final class InventoryTypeMapper_Reflection
 			return INVENTORY_TYPE_MAP.get(inv.getType());
 		}
 	}
+
+	private InventoryTypeMapper_Reflection() {}
 }
