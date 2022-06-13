@@ -118,7 +118,7 @@ public class Updater extends at.pcgamingfreaks.Updater.Updater
 			}
 			catch (InterruptedException e)
 			{
-				plugin.getLogger().log(Level.SEVERE, null, e);
+				Thread.currentThread().interrupt();
 			}
 		}
 	}
