@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.protocol.DefinedPacket;
+import net.md_5.bungee.protocol.ProtocolConstants;
 import net.md_5.bungee.protocol.packet.Chat;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,16 +33,35 @@ final class ChatSender implements ISender
 	@Override
 	public void send(final @NotNull ProxiedPlayer player, final @NotNull String json)
 	{
-		player.unsafe().sendPacket(new Chat(json, CHAT_ACTION));
+		if (player.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_19)
+		{
+			player.unsafe().sendPacket(new net.md_5.bungee.protocol.packet.SystemChat(json, 1));
+		}
+		else
+		{
+			player.unsafe().sendPacket(new Chat(json, CHAT_ACTION));
+		}
 	}
 
 	@Override
 	public void send(final @NotNull Collection<? extends ProxiedPlayer> players, final @NotNull String json)
 	{
-		Chat chatPacket = new Chat(json, CHAT_ACTION);
+		DefinedPacket legacyChatPacket = new Chat(json, CHAT_ACTION);
+		DefinedPacket newChatPacket = null;
 		for(ProxiedPlayer player : players)
 		{
-			player.unsafe().sendPacket(chatPacket);
+			if (player.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_19)
+			{
+				if (newChatPacket == null)
+				{
+					newChatPacket = new net.md_5.bungee.protocol.packet.SystemChat(json, 1);
+				}
+				player.unsafe().sendPacket(newChatPacket);
+			}
+			else
+			{
+				player.unsafe().sendPacket(legacyChatPacket);
+			}
 		}
 	}
 }
