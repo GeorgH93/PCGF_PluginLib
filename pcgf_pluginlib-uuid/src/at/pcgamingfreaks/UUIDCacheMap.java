@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2019 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ class UUIDCacheMap extends ConcurrentHashMap<String, String>
 	@Override
 	public String put(@NotNull String key, @NotNull String value)
 	{
-		return super.put(key.toLowerCase(Locale.ROOT), value.replaceAll("-", "").toLowerCase(Locale.ROOT));
+		return super.put(key.toLowerCase(Locale.ROOT), value.replace("-", "").toLowerCase(Locale.ROOT));
 	}
 
 	@Override
@@ -47,7 +47,7 @@ class UUIDCacheMap extends ConcurrentHashMap<String, String>
 	@Override
 	public boolean contains(@NotNull Object value)
 	{
-		return value instanceof String && super.contains(((String) value).replaceAll("-", "").toLowerCase(Locale.ROOT));
+		return value instanceof String && super.contains(((String) value).replace("-", "").toLowerCase(Locale.ROOT));
 	}
 
 	@Override
