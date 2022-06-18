@@ -14,12 +14,6 @@
 	<url>${website}</url>
 
 	<dependencies>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-common</artifactId>
-			<version>${revision}</version>
-			<scope>test</scope>
-		</dependency>
 		<!-- The YAML-Parser, it doesn't lose the comments in the yml file when they gets changed and saved -->
 		<dependency>
 			<groupId>at.pcgamingfreaks</groupId>

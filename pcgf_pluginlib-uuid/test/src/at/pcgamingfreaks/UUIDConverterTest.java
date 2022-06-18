@@ -180,9 +180,10 @@ public class UUIDConverterTest
 
 	@Test
 	@SuppressWarnings("SpellCheckingInspection")
-	public void testGetUUIDsWithCleanCache() throws IllegalAccessException
+	public void testGetUUIDsWithCleanCache() throws IllegalAccessException, NoSuchFieldException
 	{
-		Field cacheField = Reflection.getField(UUIDConverter.class, "UUID_CACHE");
+		Field cacheField = UUIDConverter.class.getDeclaredField("UUID_CACHE");
+		cacheField.setAccessible(true);
 		UUIDCacheMap oldCache = new UUIDCacheMap();
 		oldCache.putAll((UUIDCacheMap) cacheField.get(null));
 		((UUIDCacheMap)cacheField.get(null)).clear();
