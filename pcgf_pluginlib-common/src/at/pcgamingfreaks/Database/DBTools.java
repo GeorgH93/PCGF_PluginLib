@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -144,5 +144,12 @@ public class DBTools
 		{
 			preparedStatement.setObject(i + 1, args[i]);
 		}
+	}
+
+	public static void validateUUIDs(final @NotNull Logger logger, final @NotNull Connection connection,
+	                                 final @NotNull String tableName, final @NotNull String nameColumnName, final @NotNull String uuidColumnName, final @NotNull String idColumnName,
+	                                 boolean useUuidSeparators, boolean useOnlineUUIDs) throws SQLException
+	{
+		new UUIDValidator(logger, connection, tableName, nameColumnName, uuidColumnName, idColumnName, useUuidSeparators, useOnlineUUIDs).validateUUIDs();
 	}
 }
