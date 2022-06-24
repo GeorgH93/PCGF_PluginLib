@@ -26,6 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DBTools
@@ -127,6 +128,27 @@ public class DBTools
 		{
 			System.out.println("\nQuery: " + query + "\n" + "Data: " + Arrays.toString(args));
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Creates an {@link PreparedStatement} form the {@link Connection}, fills it with the data given and executes it.
+	 * This method is not async! And the connection is not closed after it is done!
+	 *
+	 * @param connection The connection used for the query.
+	 * @param logger The logger to be used to log errors.
+	 * @param query The query to execute.
+	 * @param args The arguments used for the query.
+	 */
+	public static void runStatementWithoutException(final @NotNull Connection connection, final @NotNull Logger logger, final @NotNull @Language("SQL") String query, final @Nullable Object... args)
+	{
+		try
+		{
+			runStatement(connection, query, args);
+		}
+		catch(SQLException e)
+		{
+			logger.log(Level.SEVERE, e, () -> "Query: " + query + "\n" + "Data: " + Arrays.toString(args));
 		}
 	}
 
