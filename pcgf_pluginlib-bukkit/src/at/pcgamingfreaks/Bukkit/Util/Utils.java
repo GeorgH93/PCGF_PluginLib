@@ -164,7 +164,7 @@ public final class Utils extends at.pcgamingfreaks.Utils
 	//region Location stuff
 	/**
 	 * Calculates the distance between two players
-	 * Unlike Bukkit's built in function this will not cause an exception if the players aren't in the same world but return {@link Double#POSITIVE_INFINITY}
+	 * Unlike Bukkit's built-in function this will not cause an exception if the players aren't in the same world but return {@link Double#POSITIVE_INFINITY}
 	 *
 	 * @param player1 The first player
 	 * @param player2 The second player
@@ -185,7 +185,7 @@ public final class Utils extends at.pcgamingfreaks.Utils
 
 	/**
 	 * Calculates the squared distance between two players
-	 * Unlike Bukkit's built in function this will not cause an exception if the players aren't in the same world but return {@link Double#POSITIVE_INFINITY}
+	 * Unlike Bukkit's built-in function this will not cause an exception if the players aren't in the same world but return {@link Double#POSITIVE_INFINITY}
 	 *
 	 * @param player1 The first player
 	 * @param player2 The second player
@@ -281,8 +281,7 @@ public final class Utils extends at.pcgamingfreaks.Utils
 			Method getConfigMethod = spigotServer.getClass().getMethod("getConfig");
 			getConfigMethod.setAccessible(true);
 			YamlConfiguration spigotConfig = (YamlConfiguration) getConfigMethod.invoke(spigotServer);
-			boolean bungee = spigotConfig.getBoolean("settings.bungeecord");
-			return bungee;
+			return spigotConfig.getBoolean("settings.bungeecord");
 		}
 		catch(Exception ignored) {}
 		return false;
