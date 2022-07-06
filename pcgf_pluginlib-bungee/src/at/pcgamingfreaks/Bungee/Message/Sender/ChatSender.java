@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
+import at.pcgamingfreaks.Reflection;
+
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
@@ -24,18 +26,34 @@ import net.md_5.bungee.protocol.packet.Chat;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 final class ChatSender implements ISender
 {
+	private static final Constructor<? extends DefinedPacket> SYSTEM_CHAT_CONSTRUCTOR;
 	private static final byte CHAT_ACTION = 0;
+
+	static
+	{
+		Class<?> systemChatClass = Reflection.getClassSilent("net.md_5.bungee.protocol.packet.SystemChat");
+		if (systemChatClass != null)
+		{
+			SYSTEM_CHAT_CONSTRUCTOR = (Constructor<? extends DefinedPacket>) Reflection.getConstructor(systemChatClass, String.class, int.class);
+		}
+		else
+		{
+			SYSTEM_CHAT_CONSTRUCTOR = null;
+		}
+	}
 
 	@Override
 	public void send(final @NotNull ProxiedPlayer player, final @NotNull String json)
 	{
 		if (player.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_19)
 		{
-			player.unsafe().sendPacket(new net.md_5.bungee.protocol.packet.SystemChat(json, 1));
+			player.unsafe().sendPacket(createSystemChatPacket(json));
 		}
 		else
 		{
@@ -54,7 +72,7 @@ final class ChatSender implements ISender
 			{
 				if (newChatPacket == null)
 				{
-					newChatPacket = new net.md_5.bungee.protocol.packet.SystemChat(json, 1);
+					newChatPacket = createSystemChatPacket(json);
 				}
 				player.unsafe().sendPacket(newChatPacket);
 			}
@@ -63,5 +81,18 @@ final class ChatSender implements ISender
 				player.unsafe().sendPacket(legacyChatPacket);
 			}
 		}
+	}
+
+	private static DefinedPacket createSystemChatPacket(final @NotNull String json)
+	{
+		try
+		{
+			return SYSTEM_CHAT_CONSTRUCTOR.newInstance(json, 1);
+		}
+		catch(InstantiationException | IllegalAccessException | InvocationTargetException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
