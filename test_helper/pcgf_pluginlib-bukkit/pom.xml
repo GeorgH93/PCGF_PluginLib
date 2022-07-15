@@ -6,7 +6,7 @@
 		<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
 		<artifactId>pcgf_pluginlib-parent</artifactId>
 		<version>${revision}</version>
-		<relativePath>../..</relativePath>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<version>${revision}</version>
 	<packaging>jar</packaging>

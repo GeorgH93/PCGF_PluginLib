@@ -6,7 +6,6 @@
 		<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
 		<artifactId>pcgf_pluginlib-platform-nms</artifactId>
 		<version>${revision}</version>
-		<relativePath>..</relativePath>
 	</parent>
 	<version>${revision}</version>
 	<packaging>jar</packaging>
