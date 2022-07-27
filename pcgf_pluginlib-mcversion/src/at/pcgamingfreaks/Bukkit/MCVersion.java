@@ -197,7 +197,7 @@ public enum MCVersion
 
 	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, boolean supportsUUIDs)
 	{
-		this(versionID, protocolVersion, mainVersionString, versionString, "");
+		this(versionID, protocolVersion, mainVersionString, versionString, supportsUUIDs, "");
 	}
 
 	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, MCVersion mainVersion)
