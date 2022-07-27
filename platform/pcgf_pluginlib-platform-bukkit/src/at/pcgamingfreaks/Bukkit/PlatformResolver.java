@@ -17,7 +17,6 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import lombok.SneakyThrows;
@@ -70,7 +69,7 @@ public class PlatformResolver
 		}
 		else
 		{
-			String nmsServerVersion = Bukkit.getServer().getClass().getName().split("\\.")[3].substring(1);
+			String nmsServerVersion = MCVersion.CURRENT_VERSION.getIdentifier();
 			tmp = getClass(className + "_" + nmsServerVersion);
 			if(tmp == null)
 			{

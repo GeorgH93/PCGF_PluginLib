@@ -2,6 +2,7 @@
   "templateName": "PluginChannelUtilsNms.ftl",
   "dataModel": {
     "nmsVersion": "${nmsVersion}",
+    "nmsPatchLevel": "${nmsPatchLevel}",
     "mcVersion": ${mcVersion},
     "mojangMapped": ${mojangMapped}
   }

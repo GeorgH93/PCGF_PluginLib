@@ -14,6 +14,7 @@
 
 	<properties>
 		<nmsVersion/>
+		<nmsPatchLevel/>
 		<mcVersion/>
 		<mojangMapped>false</mojangMapped>
 	</properties>
@@ -50,13 +51,13 @@
 							<fileset>
 								<directory>src</directory>
 								<includes>
-									<include>**/*_${nmsVersion}.java</include>
+									<include>**/*_${nmsVersion}*.java</include>
 								</includes>
 							</fileset>
 							<fileset>
 								<directory>generator</directory>
 								<includes>
-									<include>**/*_${nmsVersion}.java.json</include>
+									<include>**/*_${nmsVersion}*.java.json</include>
 								</includes>
 							</fileset>
 						</filesets>

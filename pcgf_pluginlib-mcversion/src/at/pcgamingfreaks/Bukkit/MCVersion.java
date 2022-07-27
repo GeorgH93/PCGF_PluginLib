@@ -114,8 +114,11 @@ public enum MCVersion
 	MC_1_18_2(122, 758, "1_18", "1.18.2"),
 	MC_NMS_1_18_R2(122, 758, "1_18", "1.18_NMS_R2", MC_1_18),
 	MC_1_19(131, 759, "1_19", "1.19"),
+	MC_1_19_1(131, 760, "1_19", "1.19.1", "1"),
+	MC_1_19_2(131, 761, "1_19", "1.19.2", "1"),
 	MC_NMS_1_19_R1(131, 759, "1_19", "1.19_NMS_R1", MC_1_19),
-	MC_NMS_1_19_R2(132, 760, "1_19", "1.19_NMS_R2", MC_1_19),
+	MC_NMS_1_19_R1_1(131, 760, "1_19", "1.19_NMS_R1_1", MC_1_19),
+	MC_NMS_1_19_R2(132, 761, "1_19", "1.19_NMS_R2", MC_1_19),
 	MC_1_20(141, Integer.MAX_VALUE, "1_20", "1.20"),
 	MC_NMS_1_20_R1(141, Integer.MAX_VALUE, "1_20", "1.20_NMS_R1", MC_1_20);
 
@@ -187,16 +190,14 @@ public enum MCVersion
 		this(versionID, protocolVersion, mainVersionString, versionString, true);
 	}
 
+	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, String nmsPatch)
+	{
+		this(versionID, protocolVersion, mainVersionString, versionString, true, nmsPatch);
+	}
+
 	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, boolean supportsUUIDs)
 	{
-		this.versionID = versionID;
-		this.protocolVersion = protocolVersion;
-		this.identifier = mainVersionString + "_R" + versionID % 10;
-		this.mainVersion = this;
-		this.supportsUUIDs = supportsUUIDs;
-		this.name = versionString;
-		dualWielding = protocolVersion >= 107;
-		supportsRgbColors = protocolVersion >= 735;
+		this(versionID, protocolVersion, mainVersionString, versionString, "");
 	}
 
 	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, MCVersion mainVersion)
@@ -206,9 +207,31 @@ public enum MCVersion
 
 	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, MCVersion mainVersion, boolean supportsUUIDs)
 	{
+		this(versionID, protocolVersion, mainVersionString, versionString, mainVersion, supportsUUIDs, "");
+	}
+
+	private static String buildIdentifier(String mainVersionString, int versionID, String nmsPatch)
+	{
+		return mainVersionString + "_R" + versionID % 10 + (nmsPatch.isEmpty() ? "" : "_" + nmsPatch);
+	}
+
+	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, boolean supportsUUIDs, String nmsPatch)
+	{
 		this.versionID = versionID;
 		this.protocolVersion = protocolVersion;
-		this.identifier = mainVersionString + "_R" + versionID % 10;
+		this.identifier = buildIdentifier(mainVersionString, versionID, nmsPatch);
+		this.mainVersion = this;
+		this.supportsUUIDs = supportsUUIDs;
+		this.name = versionString;
+		dualWielding = protocolVersion >= 107;
+		supportsRgbColors = protocolVersion >= 735;
+	}
+
+	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, MCVersion mainVersion, boolean supportsUUIDs, String nmsPatch)
+	{
+		this.versionID = versionID;
+		this.protocolVersion = protocolVersion;
+		this.identifier = buildIdentifier(mainVersionString, versionID, nmsPatch);
 		this.mainVersion = mainVersion;
 		this.supportsUUIDs = supportsUUIDs;
 		this.name = versionString;

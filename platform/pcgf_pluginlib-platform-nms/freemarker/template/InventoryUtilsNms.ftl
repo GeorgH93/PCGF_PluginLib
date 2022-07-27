@@ -64,7 +64,7 @@ import java.util.logging.Logger;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public final class InventoryUtils_${nmsVersion} implements IInventoryUtils
+public final class InventoryUtils_${nmsVersion}${nmsPatchLevel} implements IInventoryUtils
 {
 	@Override
 	public String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)

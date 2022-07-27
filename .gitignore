@@ -67,7 +67,7 @@ bin/
 .flattened-pom.xml
 
 # Auto generated source code
-/platform/pcgf_pluginlib-platform-nms/pcgf_pluginlib-platform-nms-*_R[1-9]/src/**/*_R[1-9].java
-/platform/pcgf_pluginlib-platform-nms/pcgf_pluginlib-platform-nms-*_R[1-9]/generator/**/*_R[1-9].java.json
-/platform/pcgf_pluginlib-platform-nms/pcgf_pluginlib-platform-nms_mm-*_R[1-9]/src/**/*_R[1-9].java
-/platform/pcgf_pluginlib-platform-nms/pcgf_pluginlib-platform-nms_mm-*_R[1-9]/generator/**/*_R[1-9].java.json
+/platform/pcgf_pluginlib-platform-nms/pcgf_pluginlib-platform-nms-*_R[1-9]/src/**/*_R[1-9]*.java
+/platform/pcgf_pluginlib-platform-nms/pcgf_pluginlib-platform-nms-*_R[1-9]/generator/**/*_R[1-9]*.java.json
+/platform/pcgf_pluginlib-platform-nms/pcgf_pluginlib-platform-nms_mm-*_R[1-9]/src/**/*_R[1-9]*.java
+/platform/pcgf_pluginlib-platform-nms/pcgf_pluginlib-platform-nms_mm-*_R[1-9]/generator/**/*_R[1-9]*.java.json

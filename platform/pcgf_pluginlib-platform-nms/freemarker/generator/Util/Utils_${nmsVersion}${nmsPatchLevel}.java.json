@@ -1,7 +1,8 @@
 {
-  "templateName": "InventoryUtilsNms.ftl",
+  "templateName": "UtilsNms.ftl",
   "dataModel": {
     "nmsVersion": "${nmsVersion}",
+    "nmsPatchLevel": "${nmsPatchLevel}",
     "mcVersion": ${mcVersion},
     "mojangMapped": ${mojangMapped}
   }

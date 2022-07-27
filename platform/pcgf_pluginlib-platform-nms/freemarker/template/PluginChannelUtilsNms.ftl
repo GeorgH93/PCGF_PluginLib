@@ -46,7 +46,7 @@ import io.netty.buffer.Unpooled;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public class PluginChannelUtils_${nmsVersion} extends PluginChannelUtils_Reflection
+public class PluginChannelUtils_${nmsVersion}${nmsPatchLevel} extends PluginChannelUtils_Reflection
 {
 	@Override
 	public void sendPluginMessageUnchecked(final @NotNull Plugin plugin, final @NotNull Player player, final @NotNull String channel, final @NotNull byte[] message)

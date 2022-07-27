@@ -49,7 +49,7 @@ import java.util.UUID;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessagePacketFactory
+public final class ChatMessagePacketFactory_${nmsVersion}${nmsPatchLevel} implements IChatMessagePacketFactory
 {
 	@Override
 	public Object makeChatPacket(final @NotNull String json, final @NotNull UUID sender)
@@ -57,9 +57,10 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 		<#if mojangMapped>
 			<#if mcVersion < 100190000>
 		return new ClientboundChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), ChatType.CHAT, sender);
-			<#else>
-			//TODO support the new chat type
+			<#elseif mcVersion < 100190001>
 		return new ClientboundSystemChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), 1);
+			<#else>
+		return new ClientboundSystemChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), false);
 			</#if>
 		<#else>
 			<#if mcVersion < 100160000>
@@ -78,8 +79,10 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 		<#if mojangMapped>
 			<#if mcVersion < 100190000>
 		return new ClientboundChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), ChatType.SYSTEM, EMPTY_UUID);
-			<#else>
+			<#elseif mcVersion < 100190001>
 		return new ClientboundSystemChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), 1);
+			<#else>
+		return new ClientboundSystemChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), false);
 			</#if>
 		<#else>
 			<#if mcVersion < 100160000>
@@ -98,8 +101,10 @@ public final class ChatMessagePacketFactory_${nmsVersion} implements IChatMessag
 		<#if mojangMapped>
 			<#if mcVersion < 100190000>
 		return new ClientboundChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), ChatType.GAME_INFO, EMPTY_UUID);
-			<#else>
+			<#elseif mcVersion < 100190001>
 		return new ClientboundSystemChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), 2);
+			<#else>
+		return new ClientboundSystemChatPacket((Component) IUtils.INSTANCE.jsonToIChatComponent(json), true);
 			</#if>
 		<#else>
 			<#if mcVersion < 100160000>
