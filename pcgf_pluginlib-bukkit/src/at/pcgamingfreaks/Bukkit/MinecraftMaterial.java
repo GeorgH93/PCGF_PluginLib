@@ -20,7 +20,6 @@ package at.pcgamingfreaks.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -99,13 +98,6 @@ public final class MinecraftMaterial
 			return ((MinecraftMaterial) object).getMaterial() == getMaterial() && (((MinecraftMaterial) object).getDataValue() == getDataValue() || getDataValue() == -1 || ((MinecraftMaterial) object).getDataValue() == -1);
 		}
 		return false;
-	}
-
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public boolean equals(final @Nullable Material material, final short dataValue)
-	{
-		return is(material, dataValue);
 	}
 
 	@Override

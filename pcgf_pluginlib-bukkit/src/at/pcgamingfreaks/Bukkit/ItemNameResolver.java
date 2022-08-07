@@ -27,7 +27,6 @@ import at.pcgamingfreaks.Version;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -61,69 +60,6 @@ public class ItemNameResolver
 			itemNameLanguage.load(configuration);
 			load(itemNameLanguage, plugin.getLogger());
 		}
-	}
-
-	/**
-	 * @param language The language file to be used
-	 * @param logger The logger to be used
-	 * @deprecated Use {@link ItemNameResolver#load(IPlugin, ILanguageConfiguration)} instead
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public void load(@NotNull at.pcgamingfreaks.Bukkit.Language language, @NotNull Logger logger)
-	{
-		if(!language.isLoaded()) return;
-		logger.info(LOADING_MESSAGE);
-		int translationCount = 0;
-		//noinspection ConstantConditions
-		for(String key : language.getLang().getKeys(true))
-		{
-			if(!key.startsWith("Items")) continue;
-			String material = key.substring(6), suffix = "";
-			Material mat = Material.matchMaterial(material);
-			if(mat == null) continue;
-			names.computeIfAbsent(mat, k -> new HashMap<>());
-			names.get(mat).put((short) -1, language.getRaw(key, "") + suffix);
-			translationCount++;
-		}
-		logger.log(Level.INFO, FINISHED_LOADING_MESSAGE, translationCount);
-	}
-
-	/**
-	 * @param language The language file to be used
-	 * @param logger The logger to be used
-	 * @deprecated Use {@link ItemNameResolver#load(IPlugin, ILanguageConfiguration)} instead
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public void loadLegacy(@NotNull at.pcgamingfreaks.Bukkit.Language language, @NotNull Logger logger)
-	{
-		if(!language.isLoaded()) return;
-		logger.info(LOADING_MESSAGE);
-		int translationCount = 0;
-		//noinspection ConstantConditions
-		for(String key : language.getLang().getKeys(true))
-		{
-			String material = key, suffix = "";
-			short dataValue = -1;
-			if(key.contains(".") || key.contains(":"))
-			{
-				String[] components = key.split("[.:]");
-				material = components[0];
-				if(components[1].equals("appendDefault")) continue;
-				dataValue = Utils.tryParse(components[1], (short) -1);
-				if(language.getLang().getBoolean(material + ".appendDefault", false))
-				{
-					suffix = language.getRaw(material, language.getRaw(material + ".default", ""));
-				}
-			}
-			Material mat = Material.matchMaterial(material);
-			if(mat == null) continue;
-			names.computeIfAbsent(mat, k -> new HashMap<>());
-			names.get(mat).put(dataValue, language.getRaw(key, "") + suffix);
-			translationCount++;
-		}
-		logger.log(Level.INFO, FINISHED_LOADING_MESSAGE, translationCount);
 	}
 
 	private void load(Language language, @NotNull Logger logger)

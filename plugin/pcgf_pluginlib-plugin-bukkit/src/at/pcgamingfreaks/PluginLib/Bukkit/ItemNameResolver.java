@@ -17,14 +17,10 @@
 
 package at.pcgamingfreaks.PluginLib.Bukkit;
 
-import at.pcgamingfreaks.Bukkit.Language;
 import at.pcgamingfreaks.Config.ILanguageConfiguration;
 import at.pcgamingfreaks.Plugin.IPlugin;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.logging.Logger;
 
 /**
  * This class allows translating minecraft items names.
@@ -51,22 +47,6 @@ public final class ItemNameResolver extends at.pcgamingfreaks.Bukkit.ItemNameRes
 
 	@Override
 	public void load(@NotNull IPlugin plugin, @NotNull ILanguageConfiguration configuration)
-	{
-		// Prevent other plugins from loading item names into the shared ItemNameResolver
-	}
-
-	@Override
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public void load(@NotNull Language language, @NotNull Logger logger)
-	{
-		// Prevent other plugins from loading item names into the shared ItemNameResolver
-	}
-
-	@Override
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public void loadLegacy(@NotNull Language language, @NotNull Logger logger)
 	{
 		// Prevent other plugins from loading item names into the shared ItemNameResolver
 	}
