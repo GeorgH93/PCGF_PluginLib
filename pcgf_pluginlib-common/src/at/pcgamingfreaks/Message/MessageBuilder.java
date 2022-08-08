@@ -594,8 +594,9 @@ public class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE exte
 		MessageComponent component = new MessageComponent("");
 		if(messageList.size() > 1)
 		{
-			component.extra = getJsonMessageAsList();
-			component.extra.removeIf(messageComponent -> messageComponent == null || messageComponent.isEmpty());
+			List<MessageComponent> extras = getJsonMessageAsList();
+			extras.removeIf(messageComponent -> messageComponent == null || messageComponent.isEmpty());
+			component.setExtras(extras);
 		}
 		return component;
 	}

@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bungee.Message;
 
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Message.MessageComponent;
 
 import net.md_5.bungee.api.ChatColor;
 
