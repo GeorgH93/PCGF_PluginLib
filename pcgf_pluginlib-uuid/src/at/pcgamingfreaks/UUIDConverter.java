@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  * Functions to get UUIDs to player names. This library doesn't cache the results! You will have to do this on your own!
  * Works with Bukkit and BungeeCord!
  *
- * @deprecated Use at.pcgamingfreaks.UUID.UuidConverter instead
+ * @deprecated Use {@link at.pcgamingfreaks.UUID.UuidConverter} instead
  */
 @Deprecated
 @ApiStatus.ScheduledForRemoval(inVersion = "1.0.50")
