@@ -73,9 +73,7 @@ public final class UUIDConverter
 	 */
 	public static String getNameFromUUID(@NotNull String uuid)
 	{
-		NameChange[] names = getNamesFromUUID(uuid);
-		if(names == null || names.length == 0) return null;
-		return names[names.length - 1].name;
+		return MOJANG_RESOLVER.getName(toUUID(uuid));
 	}
 
 	/**

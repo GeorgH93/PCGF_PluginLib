@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -254,11 +254,31 @@ public final class MojangUuidResolver
 
 	public @Nullable String getName(final @NotNull UUID uuid)
 	{
-		NameChange[] names = getNameHistory(uuid);
-		if(names == null || names.length == 0) return null;
-		return names[names.length - 1].name;
+		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replaceAll("-", "")).openStream(), StandardCharsets.UTF_8)))
+		{
+			return (((JsonObject) new JsonParser().parse(in)).get("name")).getAsString();
+		}
+		catch(IOException e)
+		{
+			System.out.println("Looks like there is a problem with the connection with Mojang. Please retry later.");
+			if(e.getMessage().contains("HTTP response code: 429"))
+			{
+				System.out.println("You have reached the request limit of the Mojang api! Please retry later!");
+			}
+			else
+			{
+				e.printStackTrace();
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("Looks like there is no player with this uuid!\n UUID: \"" + uuid + "\"");
+			e.printStackTrace();
+		}
+		return "unknown";
 	}
 
+	@Deprecated
 	public @Nullable NameChange[] getNameHistory(final @NotNull UUID uuid)
 	{
 		try(Scanner jsonScanner = new Scanner((new URL(mojangApiHost + "user/profiles/" + uuid.toString().replaceAll("-", "") + "/names")).openConnection().getInputStream(), "UTF-8"))
