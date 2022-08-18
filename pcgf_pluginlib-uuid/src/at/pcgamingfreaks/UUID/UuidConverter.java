@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -88,5 +88,10 @@ public class UuidConverter
 		UUID uuid = mojangUuidResolver.getUUID(name, null);
 		if(uuid != null || !offlineModeFallback) return uuid;
 		return getOfflineModeUUID(name);
+	}
+
+	public String getName(final @NotNull UUID uuid)
+	{
+		return mojangUuidResolver.getName(uuid);
 	}
 }
