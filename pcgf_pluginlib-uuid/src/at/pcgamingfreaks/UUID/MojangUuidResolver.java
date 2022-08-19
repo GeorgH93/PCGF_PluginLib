@@ -254,6 +254,10 @@ public final class MojangUuidResolver
 
 	public @Nullable String getName(final @NotNull UUID uuid)
 	{
+		if (cache.contains(uuid))
+		{
+			return cache.getNameFromUuid(uuid);
+		}
 		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replaceAll("-", "")).openStream(), StandardCharsets.UTF_8)))
 		{
 			return (((JsonObject) new JsonParser().parse(in)).get("name")).getAsString();
