@@ -48,6 +48,7 @@ public final class MojangUuidResolver
 	@Nullable private final UuidCache cache;
 	@Nullable private final Logger logger;
 	@NotNull  private final String mojangApiHost;
+	@NotNull  private final String nameResolverHost;
 
 	public MojangUuidResolver(final @Nullable UuidCache cache)
 	{
@@ -62,21 +63,24 @@ public final class MojangUuidResolver
 	//@SneakyThrows // Hardcoded valid URL, will never throw the exception
 	public MojangUuidResolver(final @Nullable UuidCache cache, final @Nullable Logger logger)
 	{
-		this(cache, logger, "https://api.mojang.com/");
+		this(cache, logger, "https://api.mojang.com/", "https://sessionserver.mojang.com/");
 	}
 
-	public MojangUuidResolver(final @NotNull String customMojangApiHost, final @Nullable UuidCache cache, final @Nullable Logger logger) throws MalformedURLException
+	public MojangUuidResolver(final @NotNull String customMojangApiHost, final @NotNull String customNameResolverHost, final @Nullable UuidCache cache, final @Nullable Logger logger) throws MalformedURLException
 	{
-		this(cache, logger, customMojangApiHost);
+		this(cache, logger, customMojangApiHost, customNameResolverHost);
 		if(!customMojangApiHost.startsWith("http") || customMojangApiHost.length() < 9) throw new MalformedURLException("Url should start with https");
 		new URL(mojangApiHost); // Test if url is valid
+		if(!customNameResolverHost.startsWith("http") || customNameResolverHost.length() < 9) throw new MalformedURLException("Url should start with https");
+		new URL(customNameResolverHost); // Test if url is valid
 	}
 
-	private MojangUuidResolver(final @Nullable UuidCache cache, final @Nullable Logger logger, final @NotNull String customMojangApiHost)
+	private MojangUuidResolver(final @Nullable UuidCache cache, final @Nullable Logger logger, final @NotNull String customMojangApiHost, final @NotNull String customNameResolverHost)
 	{
 		this.cache = cache;
 		this.logger = logger;
 		this.mojangApiHost = customMojangApiHost.endsWith("/") ? customMojangApiHost : customMojangApiHost + '/';
+		this.nameResolverHost = customNameResolverHost.endsWith("/") ? customNameResolverHost : customNameResolverHost + '/';
 	}
 
 	private void log(Level level, String message)
@@ -258,7 +262,7 @@ public final class MojangUuidResolver
 		{
 			return cache.getNameFromUuid(uuid);
 		}
-		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replaceAll("-", "")).openStream(), StandardCharsets.UTF_8)))
+		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL(nameResolverHost + "session/minecraft/profile/" + uuid.toString().replaceAll("-", "")).openStream(), StandardCharsets.UTF_8)))
 		{
 			return (((JsonObject) new JsonParser().parse(in)).get("name")).getAsString();
 		}
