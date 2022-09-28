@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,37 +103,9 @@ public final class UUIDConverter
 	 */
 	public static String getNameFromUUID(@NotNull String uuid)
 	{
-		NameChange[] names = getNamesFromUUID(uuid);
-		return names[names.length - 1].name;
-	}
-
-	/**
-	 * Gets the name history of a player from the Mojang servers.
-	 * Only works for Mojang-UUIDs, not for Bukkit-Offline-UUIDs.
-	 *
-	 * @param uuid The UUID of the player.
-	 * @return The names and name change dates of the player.
-	 */
-	public static NameChange[] getNamesFromUUID(@NotNull UUID uuid)
-	{
-		return getNamesFromUUID(uuid.toString());
-	}
-
-	/**
-	 * Gets the name history of a player from the Mojang servers.
-	 * Only works for Mojang-UUIDs, not for Bukkit-Offline-UUIDs.
-	 *
-	 * @param uuid The UUID of the player.
-	 * @return The names and name change dates of the player.
-	 */
-	public static NameChange[] getNamesFromUUID(@NotNull String uuid)
-	{
-		NameChange[] names = null;
-		try
+		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replaceAll("-", "")).openStream(), StandardCharsets.UTF_8)))
 		{
-			Scanner jsonScanner = new Scanner((new URL("https://api.mojang.com/user/profiles/" + uuid.replaceAll("-", "") + "/names")).openConnection().getInputStream(), "UTF-8");
-			names = GSON.fromJson(jsonScanner.next(), NameChange[].class);
-			jsonScanner.close();
+			return (((JsonObject) new JsonParser().parse(in)).get("name")).getAsString();
 		}
 		catch(IOException e)
 		{
@@ -151,7 +124,37 @@ public final class UUIDConverter
 			System.out.println("Looks like there is no player with this uuid!\n UUID: \"" + uuid + "\"");
 			e.printStackTrace();
 		}
-		return names;
+		return "unknown";
+	}
+
+	/**
+	 * Gets the name history of a player from the Mojang servers.
+	 * Only works for Mojang-UUIDs, not for Bukkit-Offline-UUIDs.
+	 *
+	 * @param uuid The UUID of the player.
+	 * @return The names and name change dates of the player.
+	 * @deprecated The api behind it does no longer exist. Mojang shut it down on 2022-09-13.
+	 */
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
+	public static NameChange[] getNamesFromUUID(@NotNull UUID uuid)
+	{
+		return getNamesFromUUID(uuid.toString());
+	}
+
+	/**
+	 * Gets the name history of a player from the Mojang servers.
+	 * Only works for Mojang-UUIDs, not for Bukkit-Offline-UUIDs.
+	 *
+	 * @param uuid The UUID of the player.
+	 * @return The names and name change dates of the player.
+	 * @deprecated The api behind it does no longer exist. Mojang shut it down on 2022-09-13.
+	 */
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
+	public static NameChange[] getNamesFromUUID(@NotNull String uuid)
+	{
+		return new NameChange[0];
 	}
 
 	/**

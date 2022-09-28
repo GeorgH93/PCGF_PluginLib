@@ -274,33 +274,6 @@ public class UUIDConverterTest
 	}
 
 	@Test
-	@PrepareForTest({ URL.class, UUIDConverter.class })
-	public void testNameHistory() throws Exception
-	{
-		UUIDConverter.NameChange[] nameChanges = UUIDConverter.getNamesFromUUID(TEST_USER2_UUID);
-		assertTrue("There should be at least 2 name changes (2 are already known)", nameChanges.length >= 2);
-		assertEquals("The first name of the user should match", TEST_USER2_NAME_OG, nameChanges[0].name);
-		assertEquals("The username after the fifth name change should match", "Watchdog", nameChanges[5].name);
-		nameChanges = UUIDConverter.getNamesFromUUID(TEST_USER2_UUID_AS_UUID);
-		assertTrue("There should be at least 2 name changes (2 are already known)", nameChanges.length >= 2);
-		assertEquals("The first name of the user should match", TEST_USER2_NAME_OG, nameChanges[0].name);
-		assertEquals("The username after the fifth name change should match", "Watchdog", nameChanges[5].name);
-		assertNull("The invalid UUID should return null", UUIDConverter.getNamesFromUUID("123456"));
-		URL mockedURL = PowerMockito.mock(URL.class);
-		whenNew(URL.class).withAnyArguments().thenReturn(mockedURL);
-		PowerMockito.doThrow(new IOException("HTTP response code: 429")).when(mockedURL).openConnection();
-		UUIDConverter.getNamesFromUUID(TEST_USER2_UUID_AS_UUID);
-		int outputStreamSize = outputStream.size();
-		int errorStreamSize = errorStream.size();
-		assertTrue("A message should be written to the console if an error occurs", outputStreamSize > 0);
-		assertTrue("An exception should be thrown if an error occurs", errorStreamSize > 0);
-		PowerMockito.doThrow(new IOException("HTTP response code: 400")).when(mockedURL).openConnection();
-		UUIDConverter.getNamesFromUUID(TEST_USER2_UUID_AS_UUID);
-		assertTrue("A message should be written to the console if an error occurs", outputStream.size() > outputStreamSize);
-		assertTrue("An exception should be thrown if an error occurs", errorStream.size() > errorStreamSize);
-	}
-
-	@Test
 	public void testNameChangedNameToUUID()
 	{
 		//assertEquals("UUID for " + TEST_USER2_NAME_OG + " on \"" + TEST_USER2_LAST_SEEN.toString() + "\" is expected to be " + TEST_USER2_UUID, TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_OG, true, TEST_USER2_LAST_SEEN));
