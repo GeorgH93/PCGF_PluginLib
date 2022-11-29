@@ -269,7 +269,19 @@ public class StringUtils
 
 	public static List<String> startsWith(Collection<String> strings, String prefix)
 	{
-		return strings.stream().filter(s -> s.startsWith(prefix)).collect(Collectors.toList());
+		return startsWith(strings, prefix, new ArrayList<>(strings.size()));
+	}
+
+	public static List<String> startsWith(Collection<String> strings, String prefix, List<String> output)
+	{
+		for(String s : strings)
+		{
+			if (s != null && s.startsWith(prefix))
+			{
+				output.add(s);
+			}
+		}
+		return output;
 	}
 
 	public static List<String> startsWithIgnoreCase(String[] strings, String prefix)
@@ -279,7 +291,20 @@ public class StringUtils
 
 	public static List<String> startsWithIgnoreCase(Collection<String> strings, String prefix)
 	{
-		return strings.stream().filter(s -> s.toLowerCase(Locale.ENGLISH).startsWith(prefix.toLowerCase(Locale.ENGLISH))).collect(Collectors.toList());
+		return startsWithIgnoreCase(strings, prefix, new ArrayList<>(strings.size()));
+	}
+
+	public static List<String> startsWithIgnoreCase(Collection<String> strings, String prefix, List<String> output)
+	{
+		prefix = prefix.toLowerCase(Locale.ENGLISH);
+		for(String s : strings)
+		{
+			if (s != null && s.toLowerCase(Locale.ENGLISH).startsWith(prefix))
+			{
+				output.add(s);
+			}
+		}
+		return output;
 	}
 
 	/**
