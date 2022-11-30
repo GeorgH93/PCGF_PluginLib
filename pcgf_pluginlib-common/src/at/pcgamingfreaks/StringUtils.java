@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * This class provides some useful methods around strings as well as some useful strings (and char arrays) as well as regex pattern
@@ -79,7 +78,7 @@ public class StringUtils
 	@Contract("_, null -> false")
 	public static boolean arrayContainsAnyIgnoreCase(final @NotNull String[] strings, final @Nullable String... searchFor)
 	{
-		if(searchFor != null && searchFor.length > 0)
+		if(searchFor != null)
 		{
 			for(String str : searchFor)
 			{
@@ -95,7 +94,7 @@ public class StringUtils
 	@Contract("_, null -> false")
 	public static boolean arrayContainsAny(final @NotNull String[] strings, final @Nullable String... searchFor)
 	{
-		if(searchFor != null && searchFor.length > 0)
+		if(searchFor != null)
 		{
 			for(String str : searchFor)
 			{
