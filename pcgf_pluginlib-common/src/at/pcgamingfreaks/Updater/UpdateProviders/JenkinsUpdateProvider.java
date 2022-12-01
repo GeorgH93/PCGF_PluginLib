@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.ConsoleColor;
-import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Util.StringUtils;
 import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;

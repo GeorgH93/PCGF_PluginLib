@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks;
 
+import at.pcgamingfreaks.Util.StringUtils;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Command;
 
 import at.pcgamingfreaks.Reflection;
-import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Util.StringUtils;
 
 import org.bukkit.command.*;
 import org.bukkit.plugin.Plugin;

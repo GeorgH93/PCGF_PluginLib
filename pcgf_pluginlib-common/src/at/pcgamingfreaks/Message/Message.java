@@ -21,7 +21,7 @@ import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Message.Placeholder.Placeholder;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
-import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Util.StringUtils;
 
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.ApiStatus;
