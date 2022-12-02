@@ -173,9 +173,9 @@ public class UUIDConverterTest
 		testNamesSeparators.put("Julezky", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
 		testNamesSeparators.put("NotAnt0_", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
 		Map<String, String> namesUUIDs = UUIDConverter.getUUIDsFromNames(testNamesSeparators.keySet(), true, true);
-		assertEquals("All user UUIDs should match the given ones with separators", namesUUIDs, testNamesSeparators);
+		assertEquals("All user UUIDs should match the given ones with separators", testNamesSeparators, namesUUIDs);
 		namesUUIDs = UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
-		assertEquals("All user UUIDs should match the given ones with separators", namesUUIDs, testNames);
+		assertEquals("All user UUIDs should match the given ones with separators", testNames, namesUUIDs);
 	}
 
 	@Test
