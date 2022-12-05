@@ -19,20 +19,12 @@ package at.pcgamingfreaks.TestClasses;
 
 import at.pcgamingfreaks.Message.MessageBuilder;
 import at.pcgamingfreaks.Message.MessageComponent;
-import at.pcgamingfreaks.Reflection;
-
-import java.util.Collection;
 
 public class TestMessageBuilder extends MessageBuilder<TestMessageBuilder, TestMessage>
 {
 	public boolean appendNewLineFromFatherClass = false;
 
 	private final MessageComponent messageComponent;
-
-	static
-	{
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "MESSAGE_CONSTRUCTOR", Reflection.getConstructor(TestMessage.class, Collection.class));
-	}
 
 	public TestMessageBuilder()
 	{

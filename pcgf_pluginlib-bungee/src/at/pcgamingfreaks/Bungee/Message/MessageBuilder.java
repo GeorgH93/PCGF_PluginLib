@@ -20,7 +20,6 @@ package at.pcgamingfreaks.Bungee.Message;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.MessageFormat;
-import at.pcgamingfreaks.Reflection;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -32,11 +31,6 @@ import java.util.List;
 
 public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, Message>
 {
-	static
-	{
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "MESSAGE_CONSTRUCTOR", Reflection.getConstructor(Message.class, Collection.class));
-	}
-
 	//region Constructors
 	/**
 	 * Creates a new MessageBuilder with an empty {@link MessageComponent}.
