@@ -22,6 +22,7 @@ import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -162,6 +163,12 @@ public final class Utils extends at.pcgamingfreaks.Utils
 	}
 
 	//region Location stuff
+	public static boolean equalsIgnoreOrientation(final @NotNull Location location1, final @NotNull Location location2)
+	{
+		return location1.getX() == location2.getX() && location1.getY() == location2.getY() &&
+				location1.getZ() == location2.getZ() && location1.getWorld().getName().equalsIgnoreCase(location2.getWorld().getName());
+	}
+
 	/**
 	 * Calculates the distance between two players
 	 * Unlike Bukkit's built-in function this will not cause an exception if the players aren't in the same world but return {@link Double#POSITIVE_INFINITY}
