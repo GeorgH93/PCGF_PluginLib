@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<powermock.version>2.0.9</powermock.version><!-- property so that we have to change only one value to update all the powermock dependencies -->
-		<mavenShade.version>3.3.0</mavenShade.version>
+		<mavenShade.version>3.4.1</mavenShade.version>
 		<pluginName>PCGF_PluginLib</pluginName>
 		<author>GeorgH93</author>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
@@ -168,7 +168,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>${mavenShade.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
