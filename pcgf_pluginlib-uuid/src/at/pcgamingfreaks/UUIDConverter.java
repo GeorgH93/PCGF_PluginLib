@@ -105,7 +105,7 @@ public final class UUIDConverter
 	{
 		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replaceAll("-", "")).openStream(), StandardCharsets.UTF_8)))
 		{
-			return (((JsonObject) new JsonParser().parse(in)).get("name")).getAsString();
+			return (((JsonObject) JsonParser.parseReader(in)).get("name")).getAsString();
 		}
 		catch(IOException e)
 		{
@@ -223,7 +223,7 @@ public final class UUIDConverter
 	 * @param withSeparators    True will return the UUID with '-' separators (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).
 	 *                          False will return the UUID without the '-' separator (format: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx).
 	 * @param offlineUUIDonFail True if an offline UUID should be returned if the Mojang server can't resolve the name.
-	 *                          False if null should be returned if the Mojang server doesn't return an UUID.
+	 *                          False if null should be returned if the Mojang server doesn't return a UUID.
 	 * @param lastKnownDate     The last time you know that the player had this name.
 	 * @return The requested UUID.
 	 */
@@ -348,7 +348,7 @@ public final class UUIDConverter
 		String uuid = null;
 		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + name + ((at != null) ? "?at=" + (at.getTime()/1000L) : "")).openStream(), StandardCharsets.UTF_8)))
 		{
-			uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).getAsString();
+			uuid = (((JsonObject) JsonParser.parseReader(in)).get("id")).getAsString();
 			if(uuid != null && (at == null || at.after(new Date(System.currentTimeMillis() - 1000L*24*3600* 30))))
 			{
 				UUID_CACHE.put(name, uuid);
