@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.Message.Placeholder;
 
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
-import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Util.StringUtils;
 import at.pcgamingfreaks.Util.PatternPreservingStringSplitter;
 
 import org.intellij.lang.annotations.Language;

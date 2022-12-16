@@ -32,7 +32,7 @@ import at.pcgamingfreaks.PluginLib.Config;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
 import at.pcgamingfreaks.Reflection;
-import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Util.StringUtils;
 import at.pcgamingfreaks.Updater.UpdateResponseCallback;
 import at.pcgamingfreaks.Version;
 

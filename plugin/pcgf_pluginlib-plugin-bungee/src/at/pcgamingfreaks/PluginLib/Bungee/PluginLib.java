@@ -28,7 +28,7 @@ import at.pcgamingfreaks.PluginLib.Config;
 import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
 import at.pcgamingfreaks.Reflection;
-import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Util.StringUtils;
 import at.pcgamingfreaks.Version;
 
 import net.md_5.bungee.api.plugin.Plugin;

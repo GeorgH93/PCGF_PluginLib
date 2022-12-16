@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.Message.Placeholder;
 
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
-import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Util.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
