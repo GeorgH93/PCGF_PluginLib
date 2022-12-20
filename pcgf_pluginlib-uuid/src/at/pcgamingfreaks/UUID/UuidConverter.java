@@ -70,7 +70,7 @@ public class UuidConverter
 		throw new IllegalArgumentException("Invalid uuid format!");
 	}
 
-	public static UUID getOfflineModeUUID(final @NotNull String name)
+	public static @NotNull UUID getOfflineModeUUID(final @NotNull String name)
 	{
 		return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
 	}
@@ -90,7 +90,7 @@ public class UuidConverter
 		return getOfflineModeUUID(name);
 	}
 
-	public String getName(final @NotNull UUID uuid)
+	public @NotNull String getName(final @NotNull UUID uuid)
 	{
 		return mojangUuidResolver.getName(uuid);
 	}
