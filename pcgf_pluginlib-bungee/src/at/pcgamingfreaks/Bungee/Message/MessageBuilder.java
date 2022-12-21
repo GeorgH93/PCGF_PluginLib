@@ -20,17 +20,11 @@ package at.pcgamingfreaks.Bungee.Message;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.MessageFormat;
-import at.pcgamingfreaks.Reflection;
 
 import java.util.Collection;
 
 public final class MessageBuilder extends at.pcgamingfreaks.Message.MessageBuilder<MessageBuilder, Message>
 {
-	static
-	{
-		Reflection.setStaticField(at.pcgamingfreaks.Message.MessageBuilder.class, "MESSAGE_CONSTRUCTOR", Reflection.getConstructor(Message.class, Collection.class));
-	}
-
 	//region Constructors
 	/**
 	 * Creates a new MessageBuilder with an empty {@link MessageComponent}.

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,14 +15,32 @@
  *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks;
+package at.pcgamingfreaks.UUID;
 
-import org.jetbrains.annotations.ApiStatus;
+import java.util.Date;
 
 /**
- * @deprecated Please use {@link at.pcgamingfreaks.Util.StringUtils} instead.
+ * A helper class to store the name changes and dates
  */
-@Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "1.0.45")
-public class StringUtils extends at.pcgamingfreaks.Util.StringUtils
-{}
+public class NameChange
+{
+	/**
+	 * The name to which the name was changed
+	 */
+	public String name;
+
+	/**
+	 * DateTime of the name change in UNIX time (without milliseconds)
+	 */
+	public long changedToAt;
+
+	/**
+	 * Gets the date of a name change
+	 *
+	 * @return Date of the name change
+	 */
+	public Date getChangeDate()
+	{
+		return new Date(changedToAt);
+	}
+}

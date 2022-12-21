@@ -35,25 +35,25 @@ import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings({ "UnusedReturnValue" })
-public class MessageComponent implements Serializable
+public final class MessageComponent implements Serializable
 {
 	//region JSON Variables
-	protected MessageClickEvent clickEvent = null;
-	protected MessageHoverEvent hoverEvent = null;
-	protected String text, insertion;
-	protected MessageColor color;
-	protected Boolean bold, italic, underlined, strikethrough, obfuscated;
-	protected List<MessageComponent> extra = null;
+	private MessageClickEvent clickEvent = null;
+	private MessageHoverEvent hoverEvent = null;
+	private String text, insertion;
+	private MessageColor color;
+	private Boolean bold, italic, underlined, strikethrough, obfuscated;
+	private List<MessageComponent> extra = null;
 
 	/**
 	 * The font of the component. null = default font
 	 */
-	@Getter @Nullable protected String font = null;
+	@Getter @Nullable private String font = null;
 
 	@SuppressWarnings("unused")
-	protected Object selector, score, translate; // We don't use them now, maybe later
+	private Object selector, score, translate; // We don't use them now, maybe later
 	@SuppressWarnings("unused")
-	protected List<Object> with; // Only for translate
+	private List<Object> with; // Only for translate
 	//endregion
 
 	/**

@@ -54,7 +54,6 @@ public class MessageTest
 	@Test
 	public void testMessage()
 	{
-		assertEquals("The basic message text should be equal", "Test Message", new Message("Test Message").getClassicMessage());
 		assertEquals("The send method of the new message should match", SendMethod.TITLE, new Message("Another test message", SendMethod.TITLE).getSendMethod());
 		assertEquals("The extended message should match", MessageFormat.ITALIC.toString() + MessageColor.BLUE.toString() + "Test Message 3" + MessageColor.RESET, new Message(new MessageComponent[] { new MessageComponent("Test Message 3", MessageColor.BLUE, MessageFormat.ITALIC) }, SendMethod.ACTION_BAR).getClassicMessage());
 		List<MessageComponent> messageComponents = new ArrayList<>();

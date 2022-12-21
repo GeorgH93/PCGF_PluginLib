@@ -17,6 +17,9 @@
 
 package at.pcgamingfreaks.Message;
 
+import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.ServerType;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +30,39 @@ import java.util.*;
 @SuppressWarnings({ "unchecked", "UnusedReturnValue" })
 public class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE extends Message>
 {
-	private final List<MessageComponent> messageList = new ArrayList<>();
 	private static final MessageComponent NEW_LINE_HELPER = MessageComponent.makeNewLineComponent();
-	private static Constructor MESSAGE_CONSTRUCTOR = null;
+	private static final Constructor<?> MESSAGE_CONSTRUCTOR;
+
+	static
+	{
+		Class<?> messageClass = null;
+		try
+		{
+			if (ServerType.isBukkitCompatible())
+			{
+				messageClass = Class.forName("at.pcgamingfreaks.Bukkit.Message.Message");
+			}
+			else if (ServerType.isBungeeCordCompatible())
+			{
+				messageClass = Class.forName("at.pcgamingfreaks.Bungee.Message.Message");
+			}
+			else
+			{
+				messageClass = Class.forName("at.pcgamingfreaks.TestClasses.TestMessage");
+			}
+		}
+		catch(ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		if (messageClass == null)
+		{
+			throw new IllegalStateException("Platform not supported");
+		}
+		MESSAGE_CONSTRUCTOR = Reflection.getConstructor(messageClass, Collection.class);
+	}
+
+	private final List<MessageComponent> messageList = new ArrayList<>();
 	private MessageComponent current;
 
 	/**
@@ -594,8 +627,9 @@ public class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE exte
 		MessageComponent component = new MessageComponent("");
 		if(messageList.size() > 1)
 		{
-			component.extra = getJsonMessageAsList();
-			component.extra.removeIf(messageComponent -> messageComponent == null || messageComponent.isEmpty());
+			List<MessageComponent> extras = getJsonMessageAsList();
+			extras.removeIf(messageComponent -> messageComponent == null || messageComponent.isEmpty());
+			component.setExtras(extras);
 		}
 		return component;
 	}

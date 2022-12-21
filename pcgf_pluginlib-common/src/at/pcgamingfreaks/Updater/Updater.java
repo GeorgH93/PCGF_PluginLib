@@ -18,7 +18,7 @@
 package at.pcgamingfreaks.Updater;
 
 import at.pcgamingfreaks.ConsoleColor;
-import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Util.StringUtils;
 import at.pcgamingfreaks.Updater.UpdateProviders.NotSuccessfullyQueriedException;
 import at.pcgamingfreaks.Updater.UpdateProviders.RequestTypeNotAvailableException;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;

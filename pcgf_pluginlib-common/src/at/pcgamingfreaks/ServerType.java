@@ -17,6 +17,8 @@
 
 package at.pcgamingfreaks;
 
+import at.pcgamingfreaks.Util.StringUtils;
+
 import lombok.Getter;
 
 import java.lang.reflect.InvocationTargetException;

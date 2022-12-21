@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2021 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,14 +15,17 @@
  *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks;
+package at.pcgamingfreaks.UUID;
 
-import org.jetbrains.annotations.ApiStatus;
+import java.util.UUID;
 
-/**
- * @deprecated Please use {@link at.pcgamingfreaks.Util.StringUtils} instead.
- */
-@Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "1.0.45")
-public class StringUtils extends at.pcgamingfreaks.Util.StringUtils
-{}
+public final class MojangProfile
+{
+	public String id;
+	public String name;
+
+	public UUID getUUID()
+	{
+		return UUID.fromString(id.replaceAll(MojangUuidResolver.UUID_FORMAT_REGEX, MojangUuidResolver.UUID_FORMAT_REPLACE_TO));
+	}
+}

@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks.Message;
 
-import at.pcgamingfreaks.StringUtils;
+import at.pcgamingfreaks.Util.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
