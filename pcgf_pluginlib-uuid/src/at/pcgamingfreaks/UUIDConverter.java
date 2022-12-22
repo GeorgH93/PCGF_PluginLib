@@ -77,36 +77,6 @@ public final class UUIDConverter
 	}
 
 	/**
-	 * Gets the name history of a player from the Mojang servers.
-	 * Only works for Mojang-UUIDs, not for Bukkit-Offline-UUIDs.
-	 *
-	 * @param uuid The UUID of the player.
-	 * @return The names and name change dates of the player.
-	 * @deprecated The api behind it does no longer exist. Mojang shut it down on 2022-09-13.
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public static NameChange[] getNamesFromUUID(@NotNull UUID uuid)
-	{
-		return getNamesFromUUID(uuid.toString());
-	}
-
-	/**
-	 * Gets the name history of a player from the Mojang servers.
-	 * Only works for Mojang-UUIDs, not for Bukkit-Offline-UUIDs.
-	 *
-	 * @param uuid The UUID of the player.
-	 * @return The names and name change dates of the player.
-	 * @deprecated The api behind it does no longer exist. Mojang shut it down on 2022-09-13.
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public static NameChange[] getNamesFromUUID(@NotNull String uuid)
-	{
-		return new NameChange[0];
-	}
-
-	/**
 	 * @param name       The name of the player you want the UUID from.
 	 * @param onlineMode True the UUID should be an online mode UUID (from Mojang). False if it should be an offline mode UUID (from Bukkit).
 	 * @return The requested UUID (without separators).

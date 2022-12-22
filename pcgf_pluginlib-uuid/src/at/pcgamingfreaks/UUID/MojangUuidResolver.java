@@ -285,29 +285,4 @@ public final class MojangUuidResolver
 		}
 		return "unknown";
 	}
-
-	@Deprecated
-	public @Nullable NameChange[] getNameHistory(final @NotNull UUID uuid)
-	{
-		try(Scanner jsonScanner = new Scanner((new URL(mojangApiHost + "user/profiles/" + uuid.toString().replaceAll("-", "") + "/names")).openConnection().getInputStream(), "UTF-8"))
-		{
-			return GSON.fromJson(jsonScanner.next(), NameChange[].class);
-		}
-		catch(IOException e)
-		{
-			if(e.getMessage().contains("HTTP response code: 429"))
-			{
-				log(Level.SEVERE, "You have reached the request limit of the Mojang api! Please retry later!");
-			}
-			else
-			{
-				log(Level.SEVERE, "Looks like there is a problem with the connection with Mojang. Please retry later.", e);
-			}
-		}
-		catch(Exception e)
-		{
-			log(Level.WARNING, "Looks like there is no player with this uuid!\n UUID: \"" + uuid + "\"", e);
-		}
-		return null;
-	}
 }
