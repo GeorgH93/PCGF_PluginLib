@@ -60,7 +60,7 @@ public class GuiBuilder
 	{
 		this.title = title;
 		if(multiPageTitleFormat == null) multiPageTitleFormat = title;
-		this.multiPageTitleFormat = multiPageTitleFormat.replaceAll("\\{PageNr}", "%d");
+		this.multiPageTitleFormat = multiPageTitleFormat.placeholder("{PageNr}");
 	}
 
 	public void setMinRowsPerPage(int rows)

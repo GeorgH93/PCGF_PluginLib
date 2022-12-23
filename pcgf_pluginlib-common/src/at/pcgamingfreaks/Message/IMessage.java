@@ -28,21 +28,6 @@ import java.util.Collection;
 
 public interface IMessage<PLAYER, COMMAND_SENDER>
 {
-	/**
-	 * Replaces strings within this message.
-	 * This can be used to replace placeholders with static texts or with whitespaces for string format.
-	 * The function is used the same way as String.replaceAll.
-	 *
-	 * @param regex       The regular expression to which the strings are to be matched.
-	 * @param replacement The string which would replace the found expression.
-	 * @return            This message instance (for chaining).
-	 *
-	 * @deprecated Use placeholders instead. {@link IPlaceholderable#registerPlaceholder(String, IPlaceholderProcessor, int)}.
-	 */
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	@NotNull IPlaceholderable replaceAll(@NotNull @Language("RegExp") String regex, @NotNull String replacement);
-
 	//region Send methods
 	/**
 	 * Sends the message to a target.

@@ -24,7 +24,6 @@ import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Util.StringUtils;
 
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +52,6 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 	protected List<MessageComponent> messageComponents = null;
 	@Getter protected boolean placeholderApiEnabled = false;
 	@Getter private boolean legacy = false;
-	private boolean useStringFormat; // % -> %%
 
 	private PlaceholderHandler placeholderHandler = null;
 	//endregion
@@ -163,24 +161,6 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 		return json.hashCode();
 	}
 
-	/**
-	 * Replaces strings within the JSON and the classic message of this message.
-	 * This can be used to replace placeholders with static texts or with whitespaces for string format.
-	 * The function is used the same way as String.replaceAll.
-	 *
-	 * @param regex       The regular expression to which the strings are to be matched.
-	 * @param replacement The string which would replace the found expression.
-	 * @return            This message instance (for chaining).
-	 */
-	@Override
-	public @NotNull MESSAGE replaceAll(@NotNull @Language("RegExp") String regex, @NotNull String replacement)
-	{
-		json = json.replaceAll(regex, replacement);
-		fallback = fallback.replaceAll(regex, replacement);
-		//noinspection unchecked
-		return (MESSAGE) this;
-	}
-
 	@Override
 	public @NotNull MESSAGE placeholder(@NotNull String placeholder)
 	{
@@ -214,7 +194,6 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 	@Override
 	public @NotNull MESSAGE registerPlaceholders(@NotNull Placeholder... placeholders)
 	{
-		if (useStringFormat) disableStringFormat();
 		if (placeholderHandler == null) placeholderHandler = new PlaceholderHandler(this);
 		placeholderHandler.register(placeholders);
 		//noinspection unchecked
@@ -256,36 +235,6 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 		return registerPlaceholders(new Placeholder(placeholder, placeholderProcessor, parameterIndex, true));
 	}
 
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public void escapeStringFormatCharacters()
-	{
-		enableStringFormat();
-	}
-
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public void enableStringFormat()
-	{
-		if (!useStringFormat)
-		{
-			replaceAll("%", "%%");
-			useStringFormat = true;
-		}
-	}
-
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "1.0.40")
-	public void disableStringFormat()
-	{
-		if(useStringFormat)
-		{
-			useStringFormat = false;
-			replaceAll("%%", "%");
-		}
-	}
-
-
 	protected void quoteArgs(final Object[] args)
 	{
 		for(int i = 0; i < args.length; i++)
@@ -313,15 +262,6 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 			else
 				return placeholderHandler.formatLegacy(args);
 		}
-		else
-		{
-			final String msg = useJson ? json : fallback;
-			if(args != null && args.length > 0)
-			{
-				if(useJson) quoteArgs(args);
-				return String.format(msg, args);  // %% will be converted to % automatically
-			}
-			return useStringFormat ? msg.replaceAll("%%", "%") : msg; // manually convert %% to %
-		}
+		return useJson ? json : fallback;
 	}
 }

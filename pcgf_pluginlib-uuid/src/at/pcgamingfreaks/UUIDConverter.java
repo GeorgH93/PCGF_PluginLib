@@ -300,8 +300,4 @@ public final class UUIDConverter
 		return MOJANG_RESOLVER.getUUIDs(names);
 	}
 	//endregion
-
-	//region Helper Classes
-	public static class NameChange extends at.pcgamingfreaks.UUID.NameChange {}
-	//endregion
 }
