@@ -216,19 +216,16 @@ public class Language extends YamlFileManager
 		logger.info("No custom " + getFileDescription() + " upgrade code. Copying data from old file to new one.");
 		for(String key : yaml.getKeys())
 		{
-			if(oldYamlFile.yaml.isSet(key))
+			if(!oldYamlFile.yaml.isSet(key) || key.equals(KEY_YAML_VERSION)) continue;
+			if(oldYamlFile.yaml.isList(key))
 			{
-				if(key.equals(KEY_YAML_VERSION)) continue;
-				if(oldYamlFile.yaml.isList(key))
-				{
-					yaml.set(key, oldYamlFile.yaml.getStringList(key, new LinkedList<>()));
-				}
-				else
-				{
-					yaml.set(key, oldYamlFile.yaml.getString(key, null));
-					if(oldYamlFile.yaml.isSet(key + KEY_ADDITION_SEND_METHOD)) yaml.set(key + KEY_ADDITION_SEND_METHOD, oldYamlFile.yaml.getString(key + KEY_ADDITION_SEND_METHOD, null));
-					if(oldYamlFile.yaml.isSet(key + KEY_ADDITION_PARAMETERS)) yaml.set(key + KEY_ADDITION_PARAMETERS, oldYamlFile.yaml.getString(key + KEY_ADDITION_PARAMETERS, null));
-				}
+				yaml.set(key, oldYamlFile.yaml.getStringList(key, new LinkedList<>()));
+			}
+			else
+			{
+				yaml.set(key, oldYamlFile.yaml.getString(key, null));
+				if(oldYamlFile.yaml.isSet(key + KEY_ADDITION_SEND_METHOD)) yaml.set(key + KEY_ADDITION_SEND_METHOD, oldYamlFile.yaml.getString(key + KEY_ADDITION_SEND_METHOD, null));
+				if(oldYamlFile.yaml.isSet(key + KEY_ADDITION_PARAMETERS)) yaml.set(key + KEY_ADDITION_PARAMETERS, oldYamlFile.yaml.getString(key + KEY_ADDITION_PARAMETERS, null));
 			}
 		}
 	}
