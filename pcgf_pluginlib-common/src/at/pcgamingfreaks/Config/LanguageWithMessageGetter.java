@@ -23,11 +23,13 @@ import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.Version;
+import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -71,8 +73,7 @@ public class LanguageWithMessageGetter extends Language
 		super(plugin, version, path, prefix, inJarPrefix);
 	}
 
-
-	public @NotNull <T extends Message> T getMessage(@NotNull String path) throws MessageClassesReflectionDataNotSetException
+	public @NotNull <T extends Message> T getMessage(final @NotNull String path) throws MessageClassesReflectionDataNotSetException
 	{
 		if(messageClasses == null)
 		{
@@ -89,41 +90,7 @@ public class LanguageWithMessageGetter extends Language
 				messageClasses.setSendMethod.invoke(msg, Enum.valueOf(messageClasses.enumType, "DISABLED"));
 				return msg;
 			}
-			final String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
-			if(yaml.isSet(pathSendMethod))
-			{
-				final String sendMethodName = yaml.getString(pathSendMethod, "CHAT").toUpperCase(Locale.ROOT);
-				Object sendMethod = null;
-				try
-				{
-					//noinspection unchecked
-					sendMethod = Enum.valueOf(messageClasses.enumType, sendMethodName);
-				}
-				catch(IllegalArgumentException ignored)
-				{
-					logger.warning(ConsoleColor.RED + "Unknown send method '" + sendMethodName + "' for message " + KEY_LANGUAGE + path + ConsoleColor.RESET);
-				}
-				if(sendMethod instanceof ISendMethod)
-				{
-					messageClasses.setSendMethod.invoke(msg, sendMethod);
-					if(yaml.isSet(pathParameter))
-					{
-						IMetadata meta = ((ISendMethod) sendMethod).parseMetadata(yaml.getString(pathParameter));
-						if(meta != null) msg.setOptionalParameters(meta);
-					}
-				}
-			}
-			if(yaml.getBoolean(KEY_LANGUAGE + path + KEY_ADDITION_PAPI, false))
-			{
-				try
-				{
-					msg.setPlaceholderApiEnabled(true);
-				}
-				catch(UnsupportedOperationException e)
-				{
-					logger.warning(ConsoleColor.RED + e.getMessage() + ConsoleColor.RESET);
-				}
-			}
+			handleSendMethodAndParameters(msg, path);
 		}
 		catch(Exception e)
 		{
@@ -131,6 +98,45 @@ public class LanguageWithMessageGetter extends Language
 			else logger.log(Level.WARNING, e, () -> ConsoleColor.RED + "Failed generate metadata for: " + KEY_LANGUAGE + path + " " + ConsoleColor.RESET);
 		}
 		return msg;
+	}
+
+	private <T extends Message> void handleSendMethodAndParameters(final @NotNull T msg, final @NotNull String path) throws InvocationTargetException, IllegalAccessException, YamlKeyNotFoundException
+	{
+		final String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
+		if(yaml.isSet(pathSendMethod))
+		{
+			final String sendMethodName = yaml.getString(pathSendMethod, "CHAT").toUpperCase(Locale.ROOT);
+			Object sendMethod = null;
+			try
+			{
+				//noinspection unchecked
+				sendMethod = Enum.valueOf(messageClasses.enumType, sendMethodName);
+			}
+			catch(IllegalArgumentException ignored)
+			{
+				logger.warning(ConsoleColor.RED + "Unknown send method '" + sendMethodName + "' for message " + KEY_LANGUAGE + path + ConsoleColor.RESET);
+			}
+			if(sendMethod instanceof ISendMethod)
+			{
+				messageClasses.setSendMethod.invoke(msg, sendMethod);
+				if(yaml.isSet(pathParameter))
+				{
+					IMetadata meta = ((ISendMethod) sendMethod).parseMetadata(yaml.getString(pathParameter));
+					if(meta != null) msg.setOptionalParameters(meta);
+				}
+			}
+		}
+		if(yaml.getBoolean(KEY_LANGUAGE + path + KEY_ADDITION_PAPI, false))
+		{
+			try
+			{
+				msg.setPlaceholderApiEnabled(true);
+			}
+			catch(UnsupportedOperationException e)
+			{
+				logger.warning(ConsoleColor.RED + e.getMessage() + ConsoleColor.RESET);
+			}
+		}
 	}
 
 	//region helper class
