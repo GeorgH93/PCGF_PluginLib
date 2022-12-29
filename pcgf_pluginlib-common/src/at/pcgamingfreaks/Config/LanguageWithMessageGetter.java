@@ -37,7 +37,7 @@ import java.util.logging.Level;
 /**
  * This class is not recommended being used directly! Use the Bukkit or Bungee specific Language classes instead!
  */
-public class LanguageWithMessageGetter extends Language
+public class LanguageWithMessageGetter<MESSAGE extends Message<? extends MESSAGE,?,?>> extends Language
 {
 	protected static MessageClassesReflectionDataHolder messageClasses;
 
@@ -73,18 +73,18 @@ public class LanguageWithMessageGetter extends Language
 		super(plugin, version, path, prefix, inJarPrefix);
 	}
 
-	public @NotNull <T extends Message> T getMessage(final @NotNull String path) throws MessageClassesReflectionDataNotSetException
+	public @NotNull MESSAGE getMessage(final @NotNull String path) throws MessageClassesReflectionDataNotSetException
 	{
 		if(messageClasses == null)
 		{
 			throw new MessageClassesReflectionDataNotSetException();
 		}
-		T msg = null;
+		MESSAGE msg = null;
 		try
 		{
 			final String msgString = getTranslated(path);
 			//noinspection unchecked
-			msg = (T) messageClasses.messageConstructor.newInstance(msgString);
+			msg = (MESSAGE) messageClasses.messageConstructor.newInstance(msgString);
 			if(msgString.isEmpty())
 			{
 				messageClasses.setSendMethod.invoke(msg, Enum.valueOf(messageClasses.enumType, "DISABLED"));
@@ -100,7 +100,7 @@ public class LanguageWithMessageGetter extends Language
 		return msg;
 	}
 
-	private <T extends Message> void handleSendMethodAndParameters(final @NotNull T msg, final @NotNull String path) throws InvocationTargetException, IllegalAccessException, YamlKeyNotFoundException
+	private void handleSendMethodAndParameters(final @NotNull MESSAGE msg, final @NotNull String path) throws InvocationTargetException, IllegalAccessException, YamlKeyNotFoundException
 	{
 		final String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
 		if(yaml.isSet(pathSendMethod))

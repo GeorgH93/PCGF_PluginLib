@@ -27,7 +27,7 @@ import at.pcgamingfreaks.Version;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Language extends LanguageWithMessageGetter
+public class Language extends LanguageWithMessageGetter<Message>
 {
 	static
 	{
@@ -64,13 +64,5 @@ public class Language extends LanguageWithMessageGetter
 	public Language(@NotNull IPlugin plugin, Version version, @Nullable String path, @NotNull String prefix, @NotNull String inJarPrefix)
 	{
 		super(plugin, version, path, prefix, inJarPrefix);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public @NotNull Message getMessage(@NotNull String path)
-	{
-		// Only returns null when the messageClasses variable is not set correctly. It is set in this class so this will not return null.
-		return super.getMessage(path);
 	}
 }

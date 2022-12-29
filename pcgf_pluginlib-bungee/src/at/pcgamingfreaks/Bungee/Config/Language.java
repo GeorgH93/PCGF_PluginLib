@@ -31,7 +31,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Language extends LanguageWithMessageGetter
+public class Language extends LanguageWithMessageGetter<Message>
 {
 	static
 	{
@@ -74,12 +74,5 @@ public class Language extends LanguageWithMessageGetter
 	public @NotNull BaseComponent[] getBungeeMessageComponent(@NotNull String option)
 	{
 		return TextComponent.fromLegacyText(MessageColor.translateAlternateColorAndFormatCodes(get(option)));
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public @NotNull Message getMessage(@NotNull String path)
-	{
-		return super.getMessage(path);
 	}
 }
