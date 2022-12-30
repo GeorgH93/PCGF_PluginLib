@@ -18,11 +18,9 @@
 package at.pcgamingfreaks.Bungee.Config;
 
 import at.pcgamingfreaks.Bungee.Message.Message;
-import at.pcgamingfreaks.Bungee.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Config.LanguageWithMessageGetter;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Plugin.IPlugin;
-import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.Version;
 
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -33,11 +31,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class Language extends LanguageWithMessageGetter<Message>
 {
-	static
-	{
-		messageClasses = new MessageClassesReflectionDataHolder(Reflection.getConstructor(Message.class, String.class), Reflection.getMethod(Message.class, "setSendMethod", SendMethod.class), SendMethod.class);
-	}
-
 	/**
 	 * @param plugin  The instance of the plugin
 	 * @param version The current version of the language file
@@ -74,5 +67,11 @@ public class Language extends LanguageWithMessageGetter<Message>
 	public @NotNull BaseComponent[] getBungeeMessageComponent(@NotNull String option)
 	{
 		return TextComponent.fromLegacyText(MessageColor.translateAlternateColorAndFormatCodes(get(option)));
+	}
+
+	@Override
+	public @NotNull Message getMessage(final @NotNull String path)
+	{
+		return super.getMessage(path);
 	}
 }

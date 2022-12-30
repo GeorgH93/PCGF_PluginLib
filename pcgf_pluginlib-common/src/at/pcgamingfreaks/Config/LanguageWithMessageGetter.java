@@ -22,6 +22,8 @@ import at.pcgamingfreaks.Message.Message;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.ISendMethod;
 import at.pcgamingfreaks.Plugin.IPlugin;
+import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.ServerType;
 import at.pcgamingfreaks.Version;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 
@@ -39,7 +41,49 @@ import java.util.logging.Level;
  */
 public class LanguageWithMessageGetter<MESSAGE extends Message<? extends MESSAGE,?,?>> extends Language
 {
-	protected static MessageClassesReflectionDataHolder messageClasses;
+	private final static MessageClassesReflectionDataHolder AUTO_DETECTED_MESSAGE_CLASSES;
+
+	static
+	{
+		MessageClassesReflectionDataHolder data = null;
+
+		// Attempt auto resolution
+		try
+		{
+			Class<?> messageClass = null;
+			Class<?> sendMethodClass = null;
+			if (ServerType.isBukkitCompatible())
+			{
+				messageClass = Class.forName("at.pcgamingfreaks.Bukkit.Message.Message");
+				sendMethodClass = Class.forName("at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod");
+			}
+			else if (ServerType.isBungeeCordCompatible())
+			{
+				messageClass = Class.forName("at.pcgamingfreaks.Bungee.Message.Message");
+				sendMethodClass = Class.forName("at.pcgamingfreaks.Bungee.Message.Sender.SendMethod");
+			}
+			if (messageClass != null && sendMethodClass != null)
+			{
+				Constructor<?> messageConstructor = Reflection.getConstructor(messageClass, String.class);
+				Method setSendMethodMethod = Reflection.getMethod(messageClass, "setSendMethod", sendMethodClass);
+
+				//noinspection unchecked
+				data = new MessageClassesReflectionDataHolder(messageConstructor, setSendMethodMethod, (Class<? extends ISendMethod>)sendMethodClass);
+			}
+		}
+		catch(ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
+		AUTO_DETECTED_MESSAGE_CLASSES = data;
+	}
+
+	protected MessageClassesReflectionDataHolder getMessageClasses()
+	{
+		if (AUTO_DETECTED_MESSAGE_CLASSES != null) return AUTO_DETECTED_MESSAGE_CLASSES;
+		throw new MessageClassesReflectionDataNotSetException();
+	}
 
 	/**
 	 * @param plugin  the plugin instance
@@ -75,10 +119,7 @@ public class LanguageWithMessageGetter<MESSAGE extends Message<? extends MESSAGE
 
 	public @NotNull MESSAGE getMessage(final @NotNull String path) throws MessageClassesReflectionDataNotSetException
 	{
-		if(messageClasses == null)
-		{
-			throw new MessageClassesReflectionDataNotSetException();
-		}
+		final MessageClassesReflectionDataHolder messageClasses = getMessageClasses();
 		MESSAGE msg = null;
 		try
 		{
@@ -105,6 +146,7 @@ public class LanguageWithMessageGetter<MESSAGE extends Message<? extends MESSAGE
 		final String pathSendMethod = KEY_LANGUAGE + path + KEY_ADDITION_SEND_METHOD, pathParameter = KEY_LANGUAGE + path + KEY_ADDITION_PARAMETERS;
 		if(yaml.isSet(pathSendMethod))
 		{
+			final MessageClassesReflectionDataHolder messageClasses = getMessageClasses();
 			final String sendMethodName = yaml.getString(pathSendMethod, "CHAT").toUpperCase(Locale.ROOT);
 			Object sendMethod = null;
 			try
