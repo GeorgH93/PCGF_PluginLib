@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -47,21 +47,21 @@ final class LegacyMessageParser
 			if(c == MessageColor.COLOR_CHAR && i + 1 < legacyMessage.length())
 			{
 				char formatChar = legacyMessage.charAt(++i);
-				String rgbCode;
-				if(MessageColor.isColorChar(formatChar) || MessageFormat.isFormatChar(formatChar) || formatChar == 'r' || formatChar == 'R') // handle single char formatting
+				if(MessageColor.isColorChar(formatChar) || MessageFormat.isFormatOrResetChar(formatChar)) // handle single char formatting
 				{
 					append();
 					processFormatting(formatChar);
 				}
-				else if(formatChar == 'x' || formatChar == 'X') // handle rgb colors
-				{
-					if(i + 12 < legacyMessage.length() && (rgbCode = toColorString(legacyMessage.substring(i + 1, i + 13))) != null)
+				else if(MessageColor.isRgbIndicatorChar(formatChar))
+				{ // handle rgb colors
+					String rgbCode;
+					if((rgbCode = getRgbCode(legacyMessage, i, 12)) != null)
 					{
 						i += 12;
 						append();
 						color = MessageColor.valueOf(rgbCode);
 					}
-					else if(i + 6 < legacyMessage.length() && (rgbCode = toColorString(legacyMessage.substring(i + 1, i + 7))) != null)
+					else if((rgbCode = getRgbCode(legacyMessage, i, 6)) != null)
 					{
 						i += 6;
 						append();
@@ -71,7 +71,7 @@ final class LegacyMessageParser
 				}
 				else wordBuilder.append(c).append(formatChar);
 			}
-			else if(c == ' ' || c == '\n' || c == '\r' || c == '\t')
+			else if(endsWord(c))
 			{
 				endWord();
 				stringBuilder.append(c);
@@ -79,6 +79,20 @@ final class LegacyMessageParser
 			else wordBuilder.append(c);
 		}
 		append();
+	}
+
+	private @Nullable String getRgbCode(final @NotNull String legacyMessage, int i, int charCount)
+	{
+		if (i + charCount < legacyMessage.length())
+		{
+			return toColorString(legacyMessage.substring(i + 1, i + 1 + charCount));
+		}
+		return null;
+	}
+
+	private boolean endsWord(char c)
+	{
+		return c == ' ' || c == '\n' || c == '\r' || c == '\t';
 	}
 
 	private void reset()
@@ -105,7 +119,7 @@ final class LegacyMessageParser
 
 	private void processFormatting(final char formatChar)
 	{
-		if(formatChar == 'r' || formatChar == 'R') // Reset
+		if(MessageColor.isResetChar(formatChar)) // Reset
 		{
 			color = null;
 			formats.clear();

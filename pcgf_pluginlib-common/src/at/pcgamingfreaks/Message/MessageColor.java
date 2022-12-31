@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -196,6 +196,21 @@ public final class MessageColor
 	public static boolean isColorChar(char code)
 	{
 		return ((code >= '0' && code <= '9') || (code >= 'A' && code <= 'F') || (code >= 'a' && code <= 'f'));
+	}
+
+	public static boolean isResetChar(char code)
+	{
+		return code == 'r' || code == 'R';
+	}
+
+	public static boolean isColorOrResetChar(char code)
+	{
+		return isColorChar(code) || isResetChar(code);
+	}
+
+	public static boolean isRgbIndicatorChar(char code)
+	{
+		return code == 'x' || code == 'X';
 	}
 
 	public static @NotNull MessageColor getFromCode(char code) throws IllegalArgumentException

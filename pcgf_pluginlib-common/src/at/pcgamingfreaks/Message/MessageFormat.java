@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -76,6 +76,16 @@ public enum MessageFormat
 	public static boolean isFormatChar(char code)
 	{
 		return (code >= 'K' && code <= 'O') || (code >= 'k' && code <= 'o');
+	}
+
+	public static boolean isResetChar(char code)
+	{
+		return code == 'r' || code == 'R';
+	}
+
+	public static boolean isFormatOrResetChar(char code)
+	{
+		return isFormatChar(code) || isResetChar(code);
 	}
 
 	public static @NotNull MessageFormat getFromCode(char code) throws IllegalArgumentException
