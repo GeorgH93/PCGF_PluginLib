@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -142,7 +142,7 @@ public final class MessageColor
 			BY_NAME.put(nameUpper, this);
 			if(name.contains("_"))
 			{
-				name = name.replaceAll("_", "");
+				name = name.replace("_", "");
 				BY_NAME.put(name, this);
 				BY_NAME.put(name.toUpperCase(Locale.ENGLISH), this);
 			}
@@ -326,7 +326,7 @@ public final class MessageColor
 	public @Nullable String strip(final @Nullable String input)
 	{
 		if(input == null) return null;
-		return input.replaceAll(toString(), "");
+		return input.replace(toString(), "");
 	}
 
 	@Contract("!null->!null; null->null")
