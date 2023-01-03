@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks.Database;
 
-import at.pcgamingfreaks.UUIDConverter;
+import at.pcgamingfreaks.UUID.UuidConverter;
 
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -75,11 +75,13 @@ class UUIDValidator
 	{
 		if(!toConvert.isEmpty())
 		{
-			Map<String, String> newUUIDs = UUIDConverter.getUUIDsFromNames(toConvert.keySet(), useOnlineUUIDs, useUuidSeparators);
-			for(Map.Entry<String, String> entry : newUUIDs.entrySet())
+			UuidConverter converter = new UuidConverter(logger);
+
+			Map<String, UUID> newUUIDs = converter.getUUIDs(toConvert.keySet(), true, useOnlineUUIDs);
+			for(Map.Entry<String, UUID> entry : newUUIDs.entrySet())
 			{
 				UpdateDataUUID updateData = toConvert.get(entry.getKey());
-				updateData.setUuid(entry.getValue());
+				updateData.setUuid((useUuidSeparators) ? entry.getValue().toString() : entry.getValue().toString().replace("-", ""));
 				toUpdate.add(updateData);
 			}
 		}
