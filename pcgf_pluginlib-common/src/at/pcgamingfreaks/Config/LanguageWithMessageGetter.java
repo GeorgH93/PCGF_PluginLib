@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ import java.util.logging.Level;
  */
 public class LanguageWithMessageGetter<MESSAGE extends Message<? extends MESSAGE,?,?>> extends Language
 {
-	private final static MessageClassesReflectionDataHolder AUTO_DETECTED_MESSAGE_CLASSES;
+	private static final MessageClassesReflectionDataHolder AUTO_DETECTED_MESSAGE_CLASSES;
 
 	static
 	{
