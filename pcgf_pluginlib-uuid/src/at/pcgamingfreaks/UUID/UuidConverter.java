@@ -117,10 +117,7 @@ public class UuidConverter
 		{
 			for(String name : names)
 			{
-				if (!resolved.containsKey(name))
-				{
-					resolved.put(name, getOfflineModeUUID(name));
-				}
+				resolved.computeIfAbsent(name, UuidConverter::getOfflineModeUUID);
 			}
 		}
 		return resolved;
