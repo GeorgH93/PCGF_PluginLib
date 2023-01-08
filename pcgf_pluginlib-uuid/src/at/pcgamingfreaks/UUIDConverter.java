@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -211,7 +211,7 @@ public final class UUIDConverter
 		{
 			if(uuid.contains("-"))
 			{
-				uuid = uuid.replaceAll("-", "");
+				uuid = uuid.replace("-", "");
 			}
 		}
 		return uuid;
@@ -295,7 +295,7 @@ public final class UUIDConverter
 	{
 		UUID uuid = MOJANG_RESOLVER.getUUID(name, at);
 		if(uuid == null) return null;
-		return uuid.toString().replaceAll("-", "");
+		return uuid.toString().replace("-", "");
 	}
 
 	//region Multi queries
@@ -306,7 +306,7 @@ public final class UUIDConverter
 		Map<String, String> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		for(Map.Entry<String, UUID> entry : getUUIDsFromNamesAsUUIDs(names, onlineMode).entrySet())
 		{
-			result.put(entry.getKey(), (withSeparators) ? entry.getValue().toString() : entry.getValue().toString().replaceAll("-", ""));
+			result.put(entry.getKey(), (withSeparators) ? entry.getValue().toString() : entry.getValue().toString().replace("-", ""));
 		}
 		return result;
 	}
