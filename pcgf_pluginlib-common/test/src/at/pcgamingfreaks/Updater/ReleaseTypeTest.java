@@ -26,10 +26,10 @@ public class ReleaseTypeTest
 	@Test
 	public void testReleaseType()
 	{
-		assertEquals("The release type enum value should match", ReleaseType.valueOf("ALPHA"), ReleaseType.ALPHA);
-		assertEquals("The release type enum value should match", ReleaseType.valueOf("BETA"), ReleaseType.BETA);
-		assertEquals("The release type enum value should match", ReleaseType.valueOf("RELEASE"), ReleaseType.RELEASE);
-		assertEquals("The release type enum value should match", ReleaseType.valueOf("SNAPSHOT"), ReleaseType.SNAPSHOT);
-		assertEquals("The release type enum value should match", ReleaseType.valueOf("UNKNOWN"), ReleaseType.UNKNOWN);
+		assertEquals("The release type enum value should match", ReleaseType.ALPHA, ReleaseType.valueOf("ALPHA"));
+		assertEquals("The release type enum value should match", ReleaseType.BETA, ReleaseType.valueOf("BETA"));
+		assertEquals("The release type enum value should match", ReleaseType.RELEASE, ReleaseType.valueOf("RELEASE"));
+		assertEquals("The release type enum value should match", ReleaseType.SNAPSHOT, ReleaseType.valueOf("SNAPSHOT"));
+		assertEquals("The release type enum value should match", ReleaseType.UNKNOWN, ReleaseType.valueOf("UNKNOWN"));
 	}
 }
