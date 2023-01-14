@@ -52,7 +52,6 @@ public class LegacyMessageParserTest
 		LegacyMessageParser parser = new LegacyMessageParser(builder);
 		parser.parse(MessageColor.getColor("#123456") + "Test message");
 		assertEquals("[\"\",{\"text\":\"Test message\",\"color\":\"#123456\"}]", builder.getJson());
-		builder.clear();
 	}
 
 	@Test
@@ -62,6 +61,5 @@ public class LegacyMessageParserTest
 		LegacyMessageParser parser = new LegacyMessageParser(builder);
 		parser.parse(MessageColor.translateAlternateColorCodes("&x123456") + "Test message");
 		assertEquals("[\"\",{\"text\":\"Test message\",\"color\":\"#123456\"}]", builder.getJson());
-		builder.clear();
 	}
 }
