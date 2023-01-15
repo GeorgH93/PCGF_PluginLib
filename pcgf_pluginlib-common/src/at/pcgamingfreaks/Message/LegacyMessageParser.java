@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import java.util.EnumSet;
 final class LegacyMessageParser
 {
 	private final MessageBuilder<?,?> builder;
+	private final boolean useJavaEditionFormatting;
 	private final StringBuilder stringBuilder = new StringBuilder(), wordBuilder = new StringBuilder();
 	private final EnumSet<MessageFormat> formats = EnumSet.noneOf(MessageFormat.class);
 	private MessageColor color;
@@ -34,7 +35,13 @@ final class LegacyMessageParser
 
 	LegacyMessageParser(final MessageBuilder<?,?> builder)
 	{
+		this(builder, true);
+	}
+
+	LegacyMessageParser(final MessageBuilder<?,?> builder, boolean useJavaEditionFormatting)
+	{
 		this.builder = builder;
+		this.useJavaEditionFormatting = useJavaEditionFormatting;
 	}
 
 	public void parse(final @NotNull String legacyMessage)
@@ -127,6 +134,10 @@ final class LegacyMessageParser
 		else if(MessageColor.isColorChar(formatChar)) // Color
 		{
 			color = MessageColor.getFromCode(formatChar);
+			if (useJavaEditionFormatting)
+			{
+				formats.clear();
+			}
 		}
 		else if(MessageFormat.isFormatChar(formatChar)) // Format
 		{

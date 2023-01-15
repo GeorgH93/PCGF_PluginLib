@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -61,5 +61,26 @@ public class LegacyMessageParserTest
 		LegacyMessageParser parser = new LegacyMessageParser(builder);
 		parser.parse(MessageColor.translateAlternateColorCodes("&x123456") + "Test message");
 		assertEquals("[\"\",{\"text\":\"Test message\",\"color\":\"#123456\"}]", builder.getJson());
+	}
+
+	@Test
+	public void testParseFormatted()
+	{
+		TestMessageBuilder builder = new TestMessageBuilder();
+		LegacyMessageParser parser = new LegacyMessageParser(builder);
+		parser.parse(MessageColor.translateAlternateColorAndFormatCodes("&kTest &6this &nmessage &owith &8formatting."));
+		assertEquals("[\"\",{\"text\":\"Test \",\"obfuscated\":true},{\"text\":\"this \",\"color\":\"gold\"},{\"text\":\"message \",\"color\":\"gold\",\"underlined\":true},{\"text\":\"with \",\"color\":\"gold\",\"italic\":true,\"underlined\":true},{\"text\":\"formatting.\",\"color\":\"dark_gray\"}]", builder.getJson());
+	}
+
+	@Test
+	public void testParseFormattedBedrockStyle()
+	{
+		TestMessageBuilder builder = new TestMessageBuilder();
+		LegacyMessageParser parser = new LegacyMessageParser(builder, false);
+		parser.parse(MessageColor.translateAlternateColorAndFormatCodes("&kTest &6this &nmessage &owith &8formatting."));
+		assertEquals("[\"\",{\"text\":\"Test \",\"obfuscated\":true},{\"text\":\"this \",\"color\":\"gold\",\"obfuscated\":true},{\"text\":\"message \",\"color\":\"gold\",\"underlined\":true,\"obfuscated\":true},{\"text\":\"with \",\"color\":\"gold\",\"italic\":true,\"underlined\":true,\"obfuscated\":true},{\"text\":\"formatting.\",\"color\":\"dark_gray\",\"italic\":true,\"underlined\":true,\"obfuscated\":true}]", builder.getJson());
+		builder.clear();
+		parser.parse(MessageColor.translateAlternateColorAndFormatCodes("&kTest &r&6this &nmessage &owith &8formatting."));
+		assertEquals("[\"\",{\"text\":\"Test \",\"obfuscated\":true},{\"text\":\"this \",\"color\":\"gold\"},{\"text\":\"message \",\"color\":\"gold\",\"underlined\":true},{\"text\":\"with \",\"color\":\"gold\",\"italic\":true,\"underlined\":true},{\"text\":\"formatting.\",\"color\":\"dark_gray\",\"italic\":true,\"underlined\":true}]", builder.getJson());
 	}
 }
