@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -69,6 +69,17 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pr
 	public Message(final @NotNull String message)
 	{
 		super(message);
+	}
+	/**
+	 * Creates a new Message instance from a string which can be a JSON or just a simple text.
+	 * The messages send method will be the players chat.
+	 *
+	 * @param message The text represented by the message object. Can be a normal string or a JSON.
+	 * @param useJavaEditionFormatting If set to false it will use Bedrock Edition style formatting (format codes persist color changes) when loading legacy messages
+	 */
+	public Message(@NotNull String message, final boolean useJavaEditionFormatting)
+	{
+		super(message, useJavaEditionFormatting);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 	}
 
 	//region Variables
+	@Setter private static boolean defaultUseJavaEditionFormatting = true;
 	@Setter @Getter protected IMetadata optionalParameters = null;
 	@Getter protected String json, fallback;
 	protected List<MessageComponent> messageComponents = null;
@@ -60,6 +61,11 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 
 	//region Constructors
 	protected Message(final @NotNull String message)
+	{
+		this(message, defaultUseJavaEditionFormatting);
+	}
+
+	protected Message(final @NotNull String message, final boolean useJavaEditionFormatting)
 	{
 		String errorMessage = null;
 		try
@@ -92,7 +98,7 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 			try
 			{
 				MessageBuilder<?,?> builder = MESSAGE_BUILDER_CONSTRUCTOR.newInstance();
-				builder.appendLegacy(message);
+				builder.appendLegacy(message, useJavaEditionFormatting);
 				json = builder.getJson();
 				messageComponents = builder.getJsonMessageAsList();
 			}
