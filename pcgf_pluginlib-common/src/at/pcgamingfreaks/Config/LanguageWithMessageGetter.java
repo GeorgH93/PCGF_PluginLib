@@ -43,6 +43,8 @@ public class LanguageWithMessageGetter<MESSAGE extends Message<? extends MESSAGE
 {
 	private static final MessageClassesReflectionDataHolder AUTO_DETECTED_MESSAGE_CLASSES;
 
+	private boolean useJavaEditionFormatting = true;
+
 	static
 	{
 		MessageClassesReflectionDataHolder data = null;
@@ -64,7 +66,7 @@ public class LanguageWithMessageGetter<MESSAGE extends Message<? extends MESSAGE
 			}
 			if (messageClass != null && sendMethodClass != null)
 			{
-				Constructor<?> messageConstructor = Reflection.getConstructor(messageClass, String.class);
+				Constructor<?> messageConstructor = Reflection.getConstructor(messageClass, String.class, boolean.class);
 				Method setSendMethodMethod = Reflection.getMethod(messageClass, "setSendMethod", sendMethodClass);
 
 				//noinspection unchecked
@@ -117,6 +119,13 @@ public class LanguageWithMessageGetter<MESSAGE extends Message<? extends MESSAGE
 		super(plugin, version, path, prefix, inJarPrefix);
 	}
 
+	@Override
+	protected void loaded()
+	{
+		super.loaded();
+		useJavaEditionFormatting = yaml.getBoolean("JavaEditionLegacyFormatting", !yaml.getBoolean("BedrockEditionLegacyFormatting", false));
+	}
+
 	public @NotNull MESSAGE getMessage(final @NotNull String path) throws MessageClassesReflectionDataNotSetException
 	{
 		final MessageClassesReflectionDataHolder messageClasses = getMessageClasses();
@@ -125,7 +134,7 @@ public class LanguageWithMessageGetter<MESSAGE extends Message<? extends MESSAGE
 		{
 			final String msgString = getTranslated(path);
 			//noinspection unchecked
-			msg = (MESSAGE) messageClasses.messageConstructor.newInstance(msgString);
+			msg = (MESSAGE) messageClasses.messageConstructor.newInstance(msgString, useJavaEditionFormatting);
 			if(msgString.isEmpty())
 			{
 				messageClasses.setSendMethod.invoke(msg, Enum.valueOf(messageClasses.enumType, "DISABLED"));
