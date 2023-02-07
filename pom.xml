@@ -280,6 +280,7 @@
 		<module>plugin/pcgf_pluginlib-plugin</module>
 		<module>plugin/PluginLib</module>
 		<module>other/IMessage</module>
+		<module>other/pcgf_pluginlib-version_detection</module>
 		<module>test_helper/pcgf_pluginlib-bukkit</module>
 	</modules>
 
