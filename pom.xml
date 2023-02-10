@@ -269,6 +269,7 @@
 		<module>pcgf_pluginlib-reflection-nms</module>
 		<module>pcgf_pluginlib-common</module>
 		<module>pcgf_pluginlib-mcversion</module>
+		<module>pcgf_pluginlib-version</module>
 		<module>pcgf_pluginlib-uuid</module>
 		<module>pcgf_pluginlib-bukkit</module>
 		<module>pcgf_pluginlib-bungee</module>

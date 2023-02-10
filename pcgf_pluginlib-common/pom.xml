@@ -23,6 +23,11 @@
 			<artifactId>pcgf_pluginlib-uuid</artifactId>
 			<version>${revision}</version>
 		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-version</artifactId>
+			<version>${revision}</version>
+		</dependency>
 		<!-- The YAML-Parser, it doesn't lose the comments in the yml file when they gets changed and saved -->
 		<dependency>
 			<groupId>at.pcgamingfreaks</groupId>
