@@ -28,6 +28,7 @@
 									<excludes>
 										<exclude>META-INF/MANIFEST.MF</exclude>
 										<exclude>*.yml</exclude>
+										<exclude>*.properties</exclude>
 									</excludes>
 								</filter>
 							</filters>
