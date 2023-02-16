@@ -62,10 +62,7 @@ public class PCGF_PluginLibVersionDetection
 			Field versionField = magicValuesClass.getDeclaredField("PCGF_PLUGIN_LIB_VERSION");
 			return (String) versionField.get(null);
 		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+		catch(Exception ignored) {}
 		return "0.0";
 	}
 
