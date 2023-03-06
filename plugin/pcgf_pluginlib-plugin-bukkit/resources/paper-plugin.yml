@@ -11,3 +11,7 @@ dependencies:
 
 load-after:
   - name: PlaceholderAPI
+
+load-before:
+  - name: Minepacks
+  - name: MarriageMaster
