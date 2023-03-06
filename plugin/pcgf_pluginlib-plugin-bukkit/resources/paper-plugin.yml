@@ -1,0 +1,13 @@
+name: "PCGF_PluginLib"
+author: "GeorgH93"
+version: "${version}"
+api-version: "1.19"
+
+main: "at.pcgamingfreaks.PluginLib.Bukkit.PluginLib"
+
+dependencies:
+  - name: PlaceholderAPI
+    required: false
+
+load-after:
+  - name: PlaceholderAPI
