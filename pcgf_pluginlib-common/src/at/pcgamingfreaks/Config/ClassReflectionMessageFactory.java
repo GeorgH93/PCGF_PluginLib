@@ -83,7 +83,7 @@ class ReflectionMessageFactory<MESSAGE extends Message<? extends MESSAGE,?,?>> i
 	@Override
 	public ISendMethod getSendMethod(String sendMethodName)
 	{
-		return (ISendMethod) Enum.valueOf(getMessageClasses().sendMethodClass, "DISABLED");
+		return (ISendMethod) Enum.valueOf(getMessageClasses().sendMethodClass, sendMethodName);
 	}
 
 	@Override
