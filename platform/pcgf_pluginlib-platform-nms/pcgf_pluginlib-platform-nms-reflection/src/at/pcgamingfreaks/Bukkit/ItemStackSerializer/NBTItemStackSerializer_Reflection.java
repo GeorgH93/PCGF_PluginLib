@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -91,10 +91,16 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 					fixerUpdate = NmsReflector.INSTANCE.getNmsMethod("GameProfileSerializer", "a", Reflection.getClass("com.mojang.datafixers.DataFixer"), Reflection.getClass("com.mojang.datafixers.DSL$TypeReference"), CLASS_NBT_TAG_COMPOUND, int.class);
 					fixType = Reflection.getEnum(Reflection.getClass("com.mojang.datafixers.DataFixTypes"), "PLAYER");
 				}
-				else
+				else if (MCVersion.isOlderThan(MCVersion.MC_NMS_1_19_R3))
 				{
 					fixerUpdate = NmsReflector.INSTANCE.getNmsMethod("GameProfileSerializer", "a", Reflection.getClass("com.mojang.datafixers.DataFixer"), NmsReflector.INSTANCE.getNmsClass("DataFixTypes"), CLASS_NBT_TAG_COMPOUND, int.class);
 					fixType = NmsReflector.INSTANCE.getNmsEnum("DataFixTypes", "PLAYER");
+				}
+				else
+				{
+					Class<?> fixTypes = NmsReflector.INSTANCE.getNmsClass("DataFixTypes");
+					fixerUpdate = Reflection.getMethodFromReturnType(fixTypes, CLASS_NBT_TAG_COMPOUND, Reflection.getClass("com.mojang.datafixers.DataFixer"), CLASS_NBT_TAG_COMPOUND, int.class);
+					fixType = Reflection.getEnum(fixTypes, "PLAYER");
 				}
 			}
 			catch(Exception e)
@@ -123,7 +129,15 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 			{
 				Method methodSharedConstantsGetGameVersion = NmsReflector.INSTANCE.getNmsMethod("SharedConstants", getGameVersion);
 				Object gameVersion = methodSharedConstantsGetGameVersion.invoke(null);
-				Method methodGameVersionGetWorldVersion = Reflection.getMethod(Reflection.getClass("com.mojang.bridge.game.GameVersion"), "getWorldVersion");
+				Method methodGameVersionGetWorldVersion;
+				if (MCVersion.isOlderThan(MCVersion.MC_NMS_1_19_R3))
+				{
+					methodGameVersionGetWorldVersion = Reflection.getMethod(Reflection.getClass("com.mojang.bridge.game.GameVersion"), "getWorldVersion");
+				}
+				else
+				{
+					methodGameVersionGetWorldVersion = NmsReflector.INSTANCE.getNmsMethod("WorldVersion", "getWorldVersion");
+				}
 				version = (int) methodGameVersionGetWorldVersion.invoke(gameVersion);
 			}
 			catch (Exception e)
@@ -187,7 +201,14 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 				if(!(boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, KEY_INVENTORY, 9)) convertOldFormatToNew(localNBTTagCompound, size);
 				if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) && dataVersion < CURRENT_DATA_VERSION)
 				{ // MC 1.13 has moved the data-format update code out of the deserializer, so it needs to be done manually
-					localNBTTagCompound = METHOD_DATA_FIXER_UPDATE.invoke(null, DATA_FIXER, ENUM_DATA_FIX_TYPE, localNBTTagCompound, dataVersion);
+					if (MCVersion.isOlderThan(MCVersion.MC_NMS_1_19_R3))
+					{
+						localNBTTagCompound = METHOD_DATA_FIXER_UPDATE.invoke(null, DATA_FIXER, ENUM_DATA_FIX_TYPE, localNBTTagCompound, dataVersion);
+					}
+					else
+					{
+						localNBTTagCompound = METHOD_DATA_FIXER_UPDATE.invoke(DATA_FIXER, localNBTTagCompound, dataVersion);
+					}
 				}
 				ItemStack[] its = new ItemStack[size];
 				Object nbtItemList = METHOD_GET_COMPOUND_LIST.invoke(localNBTTagCompound, KEY_INVENTORY, 10);
@@ -283,6 +304,6 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 
 	public static boolean isMCVersionCompatible()
 	{
-		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_19_R2);
+		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_19_R3);
 	}
 }

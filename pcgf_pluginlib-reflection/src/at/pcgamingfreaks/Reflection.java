@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -302,6 +302,26 @@ public class Reflection
 		}
 		catch(Exception ignored) {}
 		return method;
+	}
+
+	public static @Nullable Method getMethodFromReturnType(final @NotNull Class<?> clazz, final @NotNull Class<?> returnType, final @Nullable Class<?>... args)
+	{
+		try
+		{
+			for(Method method : clazz.getDeclaredMethods())
+			{
+				if (method.getReturnType().equals(returnType) && (args.length == 0 || Arrays.equals(method.getParameterTypes(), args)))
+				{
+					return method;
+				}
+			}
+			throw new NoSuchMethodException(clazz.getName() + " does not contain a method that returns '" + returnType.getName() + "' and accepts '" + Arrays.toString(args) + "' as parameters.");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
