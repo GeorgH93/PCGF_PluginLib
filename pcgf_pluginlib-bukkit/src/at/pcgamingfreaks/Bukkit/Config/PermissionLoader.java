@@ -72,9 +72,13 @@ public class PermissionLoader
 				catch(YamlKeyNotFoundException ignored){}
 				PermissionDefault permDefault = PermissionDefault.getByName(permsYaml.getString(perm + ".default", "op"));
 				if (permDefault == null) permDefault = PermissionDefault.OP;
-				Bukkit.getServer().getPluginManager().addPermission(new Permission(
-						perm, description, permDefault, children
-				));
+				try
+				{
+					Bukkit.getServer().getPluginManager().addPermission(new Permission(
+							perm, description, permDefault, children
+					));
+				}
+				catch(IllegalArgumentException ignored) {}
 			}
 		}
 		catch(Exception e)
