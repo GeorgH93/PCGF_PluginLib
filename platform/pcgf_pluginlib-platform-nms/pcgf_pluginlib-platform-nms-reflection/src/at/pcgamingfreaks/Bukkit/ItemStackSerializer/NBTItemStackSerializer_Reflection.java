@@ -82,24 +82,25 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 		{
 			try
 			{
+				final Class<?> classDataFixer = Reflection.getClass("com.mojang.datafixers.DataFixer");
 				if(MCVersion.isOlderThan(MCVersion.MC_1_17))
 					dataFixer = NmsReflector.INSTANCE.getNmsField("MinecraftServer", "dataConverterManager").get(OBCReflection.getOBCMethod("CraftServer", "getServer").invoke(Bukkit.getServer()));
 				else
 					dataFixer = NmsReflector.INSTANCE.getNmsMethod("MinecraftServer", "getDataFixer").invoke(OBCReflection.getOBCMethod("CraftServer", "getServer").invoke(Bukkit.getServer()));
 				if(MCVersion.isOlderThan(MCVersion.MC_1_14))
 				{
-					fixerUpdate = NmsReflector.INSTANCE.getNmsMethod("GameProfileSerializer", "a", Reflection.getClass("com.mojang.datafixers.DataFixer"), Reflection.getClass("com.mojang.datafixers.DSL$TypeReference"), CLASS_NBT_TAG_COMPOUND, int.class);
+					fixerUpdate = NmsReflector.INSTANCE.getNmsMethod("GameProfileSerializer", "a", classDataFixer, Reflection.getClass("com.mojang.datafixers.DSL$TypeReference"), CLASS_NBT_TAG_COMPOUND, int.class);
 					fixType = Reflection.getEnum(Reflection.getClass("com.mojang.datafixers.DataFixTypes"), "PLAYER");
 				}
 				else if (MCVersion.isOlderThan(MCVersion.MC_NMS_1_19_R3))
 				{
-					fixerUpdate = NmsReflector.INSTANCE.getNmsMethod("GameProfileSerializer", "a", Reflection.getClass("com.mojang.datafixers.DataFixer"), NmsReflector.INSTANCE.getNmsClass("DataFixTypes"), CLASS_NBT_TAG_COMPOUND, int.class);
+					fixerUpdate = NmsReflector.INSTANCE.getNmsMethod("GameProfileSerializer", "a", classDataFixer, NmsReflector.INSTANCE.getNmsClass("DataFixTypes"), CLASS_NBT_TAG_COMPOUND, int.class);
 					fixType = NmsReflector.INSTANCE.getNmsEnum("DataFixTypes", "PLAYER");
 				}
 				else
 				{
-					Class<?> fixTypes = NmsReflector.INSTANCE.getNmsClass("DataFixTypes");
-					fixerUpdate = Reflection.getMethodFromReturnType(fixTypes, CLASS_NBT_TAG_COMPOUND, Reflection.getClass("com.mojang.datafixers.DataFixer"), CLASS_NBT_TAG_COMPOUND, int.class);
+					final Class<?> fixTypes = NmsReflector.INSTANCE.getNmsClass("DataFixTypes");
+					fixerUpdate = Reflection.getMethodFromReturnType(fixTypes, CLASS_NBT_TAG_COMPOUND, classDataFixer, CLASS_NBT_TAG_COMPOUND, int.class);
 					fixType = Reflection.getEnum(fixTypes, "PLAYER");
 				}
 			}
@@ -138,7 +139,15 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 				{
 					methodGameVersionGetWorldVersion = NmsReflector.INSTANCE.getNmsMethod("WorldVersion", "getWorldVersion");
 				}
-				version = (int) methodGameVersionGetWorldVersion.invoke(gameVersion);
+				if (MCVersion.isOlderThan(MCVersion.MC_NMS_1_20_R1))
+				{
+					version = (int) methodGameVersionGetWorldVersion.invoke(gameVersion);
+				}
+				else
+				{
+					Object dataVersion = methodGameVersionGetWorldVersion.invoke(gameVersion);
+					version = (int) NmsReflector.INSTANCE.getNmsMethod("DataVersion", "getVersion").invoke(dataVersion);
+				}
 			}
 			catch (Exception e)
 			{
@@ -207,7 +216,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 					}
 					else
 					{
-						localNBTTagCompound = METHOD_DATA_FIXER_UPDATE.invoke(DATA_FIXER, localNBTTagCompound, dataVersion);
+						localNBTTagCompound = METHOD_DATA_FIXER_UPDATE.invoke(ENUM_DATA_FIX_TYPE, DATA_FIXER, localNBTTagCompound, dataVersion);
 					}
 				}
 				ItemStack[] its = new ItemStack[size];
@@ -304,6 +313,6 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 
 	public static boolean isMCVersionCompatible()
 	{
-		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_19_R3);
+		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_20_R1);
 	}
 }
