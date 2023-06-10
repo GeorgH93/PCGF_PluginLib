@@ -33,11 +33,11 @@ public final class ItemAmountPlaceholderProcessor implements IPlaceholderProcess
 	{
 		if (parameter instanceof ItemStack)
 		{
-			return ((ItemStack) parameter).getAmount() + "";
+			return String.valueOf(((ItemStack) parameter).getAmount());
 		}
 		else if (parameter instanceof ItemStackWrapper)
 		{
-			return ((ItemStackWrapper) parameter).getAmount() + "";
+			return String.valueOf(((ItemStackWrapper) parameter).getAmount());
 		}
 		return "0";
 	}
