@@ -134,17 +134,11 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 				if (MCVersion.isOlderThan(MCVersion.MC_NMS_1_19_R3))
 				{
 					methodGameVersionGetWorldVersion = Reflection.getMethod(Reflection.getClass("com.mojang.bridge.game.GameVersion"), "getWorldVersion");
-				}
-				else
-				{
-					methodGameVersionGetWorldVersion = NmsReflector.INSTANCE.getNmsMethod("WorldVersion", "getWorldVersion");
-				}
-				if (MCVersion.isOlderThan(MCVersion.MC_NMS_1_20_R1))
-				{
 					version = (int) methodGameVersionGetWorldVersion.invoke(gameVersion);
 				}
 				else
 				{
+					methodGameVersionGetWorldVersion = NmsReflector.INSTANCE.getNmsMethod("WorldVersion", "getWorldVersion");
 					Object dataVersion = methodGameVersionGetWorldVersion.invoke(gameVersion);
 					version = (int) NmsReflector.INSTANCE.getNmsMethod("DataVersion", "getVersion").invoke(dataVersion);
 				}
@@ -207,6 +201,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 				Object localNBTTagCompound = METHOD_NBT_COMP_STREAM_A2.invoke(null, new ByteArrayInputStream(data));
 				int size = (int) METHOD_GET_INT.invoke(localNBTTagCompound, "size"), dataVersion = CURRENT_DATA_VERSION;
 				if((boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, KEY_DATA_VERSION, 3)) dataVersion = (int) METHOD_GET_INT.invoke(localNBTTagCompound, KEY_DATA_VERSION);
+				if (dataVersion == MCVersion.MC_1_19_4.getProtocolVersion()) dataVersion = 3337;
 				if(!(boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, KEY_INVENTORY, 9)) convertOldFormatToNew(localNBTTagCompound, size);
 				if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) && dataVersion < CURRENT_DATA_VERSION)
 				{ // MC 1.13 has moved the data-format update code out of the deserializer, so it needs to be done manually

@@ -20,7 +20,8 @@ net.minecraft.nbt.NBTTagList#getCompound a
 net.minecraft.world.item.ItemStack#save b
 net.minecraft.server.MinecraftServer#getDataFixer ax
 net.minecraft.SharedConstants#getGameVersion b
-net.minecraft.WorldVersion#getWorldVersion e
+net.minecraft.WorldVersion#getWorldVersion d
+net.minecraft.world.level.storage.DataVersion#getVersion c
 
 #sendAllDataToRemote
 net.minecraft.world.inventory.Container#updateInventory b
