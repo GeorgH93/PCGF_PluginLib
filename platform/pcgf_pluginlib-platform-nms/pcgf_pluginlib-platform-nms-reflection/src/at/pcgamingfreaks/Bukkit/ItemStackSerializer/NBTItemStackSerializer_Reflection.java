@@ -86,7 +86,13 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 				if(MCVersion.isOlderThan(MCVersion.MC_1_17))
 					dataFixer = NmsReflector.INSTANCE.getNmsField("MinecraftServer", "dataConverterManager").get(OBCReflection.getOBCMethod("CraftServer", "getServer").invoke(Bukkit.getServer()));
 				else
+				{
 					dataFixer = NmsReflector.INSTANCE.getNmsMethod("MinecraftServer", "getDataFixer").invoke(OBCReflection.getOBCMethod("CraftServer", "getServer").invoke(Bukkit.getServer()));
+					if (!classDataFixer.isAssignableFrom(dataFixer.getClass()))
+					{
+						dataFixer = Reflection.getMethodFromReturnType(NmsReflector.INSTANCE.getNmsClass("MinecraftServer"), classDataFixer).invoke(OBCReflection.getOBCMethod("CraftServer", "getServer").invoke(Bukkit.getServer()));
+					}
+				}
 				if(MCVersion.isOlderThan(MCVersion.MC_1_14))
 				{
 					fixerUpdate = NmsReflector.INSTANCE.getNmsMethod("GameProfileSerializer", "a", classDataFixer, Reflection.getClass("com.mojang.datafixers.DSL$TypeReference"), CLASS_NBT_TAG_COMPOUND, int.class);
