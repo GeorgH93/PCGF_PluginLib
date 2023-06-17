@@ -76,7 +76,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.24</version>
+			<version>1.18.26</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- region test dependencies -->
@@ -269,6 +269,7 @@
 		<module>pcgf_pluginlib-reflection-nms</module>
 		<module>pcgf_pluginlib-common</module>
 		<module>pcgf_pluginlib-mcversion</module>
+		<module>pcgf_pluginlib-version</module>
 		<module>pcgf_pluginlib-uuid</module>
 		<module>pcgf_pluginlib-bukkit</module>
 		<module>pcgf_pluginlib-bungee</module>
@@ -279,7 +280,7 @@
 		<module>plugin/pcgf_pluginlib-plugin-bungee</module>
 		<module>plugin/pcgf_pluginlib-plugin</module>
 		<module>plugin/PluginLib</module>
-		<module>other/IMessage</module>
+		<module>other/pcgf_pluginlib-version_detection</module>
 		<module>test_helper/pcgf_pluginlib-bukkit</module>
 	</modules>
 

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -240,7 +240,18 @@ public class MessageBuilder<MESSAGE_BUILDER extends MessageBuilder, MESSAGE exte
 	 */
 	public MESSAGE_BUILDER appendLegacy(final String legacyMessage)
 	{
-		new LegacyMessageParser(this).parse(legacyMessage);
+		return appendLegacy(legacyMessage, true);
+	}
+
+	/**
+	 * Adds a one or more {@link MessageComponent} to the builder, the text and formatting is extracted from the given legacy message.
+	 * @param legacyMessage The legacy message that should be added to the message builder.
+	 * @param useJavaEditionFormatting If set to true, this will use Java Edition style formatting (color changes reset formatting), if not Bedrock style formatting (formatting persists color changes) will be used
+	 * @return The message builder instance (for chaining).
+	 */
+	public MESSAGE_BUILDER appendLegacy(final String legacyMessage, final boolean useJavaEditionFormatting)
+	{
+		new LegacyMessageParser(this, useJavaEditionFormatting).parse(legacyMessage);
 		return (MESSAGE_BUILDER)this;
 	}
 	//endregion

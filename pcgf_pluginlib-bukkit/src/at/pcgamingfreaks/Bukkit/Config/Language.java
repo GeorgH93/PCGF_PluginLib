@@ -18,22 +18,15 @@
 package at.pcgamingfreaks.Bukkit.Config;
 
 import at.pcgamingfreaks.Bukkit.Message.Message;
-import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Config.LanguageWithMessageGetter;
 import at.pcgamingfreaks.Plugin.IPlugin;
-import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.Version;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Language extends LanguageWithMessageGetter
+public class Language extends LanguageWithMessageGetter<Message>
 {
-	static
-	{
-		messageClasses = new MessageClassesReflectionDataHolder(Reflection.getConstructor(Message.class, String.class), Reflection.getMethod(Message.class, "setSendMethod", SendMethod.class), SendMethod.class);
-	}
-
 	/**
 	 * @param plugin  The instance of the plugin
 	 * @param version The current version of the language file
@@ -66,11 +59,9 @@ public class Language extends LanguageWithMessageGetter
 		super(plugin, version, path, prefix, inJarPrefix);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public @NotNull Message getMessage(@NotNull String path)
+	public @NotNull Message getMessage(final @NotNull String path)
 	{
-		// Only returns null when the messageClasses variable is not set correctly. It is set in this class so this will not return null.
 		return super.getMessage(path);
 	}
 }

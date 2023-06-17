@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -75,27 +75,24 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	 * The messages send method will be the players chat.
 	 *
 	 * @param message The text represented by the message object. Can be a normal string or a JSON.
+	 * @param useJavaEditionFormatting If set to false it will use Bedrock Edition style formatting (format codes persist color changes) when loading legacy messages
+	 */
+	public Message(@NotNull String message, final boolean useJavaEditionFormatting)
+	{
+		super(message, useJavaEditionFormatting);
+		handleRgbColors();
+	}
+
+	/**
+	 * Creates a new Message instance from a string which can be a JSON or just a simple text.
+	 * The messages send method will be the players chat.
+	 *
+	 * @param message The text represented by the message object. Can be a normal string or a JSON.
 	 */
 	public Message(@NotNull String message)
 	{
 		super(message);
-		if(!MCVersion.supportsRgbColors())
-		{
-			boolean found = false;
-			Matcher matcher = RGB_COLOR_DETECTION.matcher(json);
-			StringBuffer sb = new StringBuffer();
-			while(matcher.find())
-			{
-				found = true;
-				MessageColor color = MessageColor.getDefaultColor(matcher.group("rgb"));
-				matcher.appendReplacement(sb, color.getName());
-			}
-			if(found)
-			{
-				matcher.appendTail(sb);
-				json = sb.toString();
-			}
-		}
+		handleRgbColors();
 	}
 
 	/**
@@ -107,6 +104,7 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 	public Message(@NotNull String message, @NotNull SendMethod method)
 	{
 		this(message);
+		handleRgbColors();
 		setSendMethod(method);
 	}
 
@@ -175,6 +173,27 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		this(messageBuilder.getJsonMessageAsList(), method);
 	}
 	//endregion
+
+	private void handleRgbColors()
+	{
+		if(!MCVersion.supportsRgbColors())
+		{
+			boolean found = false;
+			Matcher matcher = RGB_COLOR_DETECTION.matcher(json);
+			StringBuffer sb = new StringBuffer();
+			while(matcher.find())
+			{
+				found = true;
+				MessageColor color = MessageColor.getDefaultColor(matcher.group("rgb"));
+				matcher.appendReplacement(sb, color.getName());
+			}
+			if(found)
+			{
+				matcher.appendTail(sb);
+				json = sb.toString();
+			}
+		}
+	}
 
 	/**
 	 * Changes the method used to display this message on the client.

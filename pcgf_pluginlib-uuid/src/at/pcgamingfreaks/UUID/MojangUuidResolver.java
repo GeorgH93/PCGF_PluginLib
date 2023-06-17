@@ -256,22 +256,23 @@ public final class MojangUuidResolver
 		return result;
 	}
 
-	public @Nullable String getName(final @NotNull UUID uuid)
+	public @NotNull String getName(final @NotNull UUID uuid)
 	{
-		if (cache.contains(uuid))
+		if (cache != null)
 		{
-			return cache.getNameFromUuid(uuid);
+			String name = cache.getNameFromUuid(uuid);
+			if (name != null) return name;
 		}
 		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL(nameResolverHost + "session/minecraft/profile/" + uuid.toString().replaceAll("-", "")).openStream(), StandardCharsets.UTF_8)))
 		{
-			return (((JsonObject) new JsonParser().parse(in)).get("name")).getAsString();
+			return (((JsonObject) JsonParser.parseReader(in)).get("name")).getAsString();
 		}
 		catch(IOException e)
 		{
-			System.out.println("Looks like there is a problem with the connection with Mojang. Please retry later.");
+			log(Level.WARNING, "Looks like there is a problem with the connection with Mojang. Please retry later.");
 			if(e.getMessage().contains("HTTP response code: 429"))
 			{
-				System.out.println("You have reached the request limit of the Mojang api! Please retry later!");
+				log(Level.WARNING, "You have reached the request limit of the Mojang api! Please retry later!");
 			}
 			else
 			{
@@ -280,8 +281,11 @@ public final class MojangUuidResolver
 		}
 		catch(Exception e)
 		{
-			System.out.println("Looks like there is no player with this uuid!\n UUID: \"" + uuid + "\"");
-			e.printStackTrace();
+			log(Level.WARNING, "Looks like there is no player with this uuid!\n UUID: \"" + uuid + "\"");
+			if (logger != null)
+			{
+				logger.log(Level.SEVERE, "Failed to query player name!", e);
+			}
 		}
 		return "unknown";
 	}

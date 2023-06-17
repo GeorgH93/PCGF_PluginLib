@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2022 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -41,6 +41,6 @@ public class MojangUuidResolverTest
 	{
 		MojangUuidResolver resolver = new MojangUuidResolver(null, null);
 		assertEquals("Username should be retrieved correctly from the uuid", TEST_USER_NAME, resolver.getName(TEST_USER_UUID));
-		assertNull(resolver.getName(UUID.fromString("00000000-0000-0000-0000-000000000000")));
+		assertEquals("unknown", resolver.getName(UUID.fromString("00000000-0000-0000-0000-000000000000")));
 	}
 }

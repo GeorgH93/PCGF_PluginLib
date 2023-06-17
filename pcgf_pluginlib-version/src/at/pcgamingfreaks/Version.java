@@ -17,8 +17,6 @@
 
 package at.pcgamingfreaks;
 
-import at.pcgamingfreaks.Util.StringUtils;
-
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -188,7 +186,16 @@ public class Version implements Comparable<Version>
 		List<String> result = new ArrayList<>();
 		for(String searchFor : searchForArray)
 		{
-			result.addAll(StringUtils.getAllContainingIgnoreCase(source, searchFor));
+			//noinspection ConstantValue
+			if (searchFor == null) continue;
+			for(String str : source)
+			{
+				//noinspection ConstantConditions
+				if(str != null && str.toLowerCase(Locale.ROOT).contains(searchFor.toLowerCase(Locale.ROOT)))
+				{
+					result.add(str);
+				}
+			}
 		}
 		return result;
 	}

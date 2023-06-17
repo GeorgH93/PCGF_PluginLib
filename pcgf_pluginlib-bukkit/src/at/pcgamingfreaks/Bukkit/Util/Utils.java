@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit.Util;
 
 import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.ServerType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -292,5 +293,42 @@ public final class Utils extends at.pcgamingfreaks.Utils
 		}
 		catch(Exception ignored) {}
 		return false;
+	}
+
+	public static boolean detectVelocity()
+	{
+		try
+		{
+			Object spigotServer = Server.class.getMethod("spigot").invoke(Bukkit.getServer());
+			Method getConfigMethod = spigotServer.getClass().getMethod("getPaperConfig");
+			getConfigMethod.setAccessible(true);
+			YamlConfiguration paperConfig = (YamlConfiguration) getConfigMethod.invoke(spigotServer);
+			return paperConfig.getBoolean("proxies.velocity.enabled");
+		}
+		catch(Exception ignored) {}
+		return false;
+	}
+
+	public static Boolean getBungeeOrVelocityOnlineMode()
+	{
+		if (!ServerType.isPaperCompatible()) return null;
+		try
+		{
+			Object spigotServer = Server.class.getMethod("spigot").invoke(Bukkit.getServer());
+			Method getConfigMethod = spigotServer.getClass().getMethod("getPaperConfig");
+			getConfigMethod.setAccessible(true);
+			YamlConfiguration paperConfig = (YamlConfiguration) getConfigMethod.invoke(spigotServer);
+			if (detectVelocity())
+			{
+				return paperConfig.getBoolean("proxies.velocity.online-mode");
+			}
+			else if (detectBungeeCord())
+			{
+				return paperConfig.getBoolean("proxies.bungee-cord.online-mode");
+			}
+		}
+		catch(Exception ignored) {}
+
+		return null;
 	}
 }

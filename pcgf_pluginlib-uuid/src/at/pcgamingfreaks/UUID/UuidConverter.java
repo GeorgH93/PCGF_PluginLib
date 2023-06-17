@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,6 +22,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -60,6 +63,7 @@ public class UuidConverter
 	}
 	//endregion
 
+	//region static converter
 	public static @NotNull UUID uuidFromString(@NotNull String uuid) throws IllegalArgumentException
 	{
 		if(UUID_FORMAT_PATTERN.matcher(uuid).matches())
@@ -74,6 +78,17 @@ public class UuidConverter
 	{
 		return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
 	}
+
+	public static @NotNull Map<String, UUID> getOfflineModeUUIDs(final @NotNull Collection<String> names)
+	{
+		Map<String, UUID> resolved = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+		for(String name : names)
+		{
+			resolved.put(name, getOfflineModeUUID(name));
+		}
+		return resolved;
+	}
+	//endregion
 
 	@Contract("_,true->!null")
 	public @Nullable UUID getUUIDCacheOnly(final @NotNull String name, boolean offlineModeFallback)
@@ -93,5 +108,30 @@ public class UuidConverter
 	public @NotNull String getName(final @NotNull UUID uuid)
 	{
 		return mojangUuidResolver.getName(uuid);
+	}
+
+	public @NotNull Map<String, UUID> getUUIDs(final @NotNull Collection<String> names, boolean offlineModeFallback)
+	{
+		Map<String, UUID> resolved = mojangUuidResolver.getUUIDs(names);
+		if (offlineModeFallback && resolved.size() < names.size())
+		{
+			for(String name : names)
+			{
+				resolved.computeIfAbsent(name, UuidConverter::getOfflineModeUUID);
+			}
+		}
+		return resolved;
+	}
+
+	public @NotNull Map<String, UUID> getUUIDs(final @NotNull Collection<String> names, boolean offlineModeFallback, boolean onlineUUIDs)
+	{
+		if (onlineUUIDs)
+		{
+			return getUUIDs(names, offlineModeFallback);
+		}
+		else
+		{
+			return getOfflineModeUUIDs(names);
+		}
 	}
 }

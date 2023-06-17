@@ -1,0 +1,29 @@
+net.minecraft.world.scores.criteria.IScoreboardCriteria#getName d
+net.minecraft.server.network.PlayerConnection#sendPacket a
+net.minecraft.nbt.NBTTagCompound#setInt a
+net.minecraft.nbt.NBTTagCompound#setByte a
+net.minecraft.nbt.NBTTagCompound#setDouble a
+net.minecraft.nbt.NBTTagCompound#setFloat a
+net.minecraft.nbt.NBTTagCompound#setLong a
+net.minecraft.nbt.NBTTagCompound#set a
+net.minecraft.nbt.NBTTagCompound#hasKeyOfType b
+net.minecraft.nbt.NBTTagCompound#getList c
+net.minecraft.nbt.NBTTagCompound#getByte f
+net.minecraft.nbt.NBTTagCompound#getShort h
+net.minecraft.nbt.NBTTagCompound#getInt h
+net.minecraft.nbt.NBTTagCompound#getLong i
+net.minecraft.nbt.NBTTagCompound#getFloat j
+net.minecraft.nbt.NBTTagCompound#getDouble k
+net.minecraft.nbt.NBTTagCompound#getString l
+net.minecraft.nbt.NBTTagCompound#getCompound p
+net.minecraft.nbt.NBTTagList#getCompound a
+net.minecraft.world.item.ItemStack#save b
+net.minecraft.server.MinecraftServer#getDataFixer ay
+net.minecraft.SharedConstants#getGameVersion b
+net.minecraft.WorldVersion#getWorldVersion d
+net.minecraft.world.level.storage.DataVersion#getVersion c
+
+#sendAllDataToRemote
+net.minecraft.world.inventory.Container#updateInventory b
+
+net.minecraft.network.chat.IChatBaseComponent#literal b
