@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,28 +17,26 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Placeholder.Processors;
 
-import at.pcgamingfreaks.Bukkit.Message.Placeholder.Processors.Wrappers.ItemStackWrapper;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class ItemAmountPlaceholderProcessor implements IPlaceholderProcessor
+public class PlayerNamePlaceholderProcessor implements IPlaceholderProcessor
 {
-	public static final ItemAmountPlaceholderProcessor INSTANCE = new ItemAmountPlaceholderProcessor();
+	public static final PlayerNamePlaceholderProcessor INSTANCE = new PlayerNamePlaceholderProcessor();
 
 	@Override
 	public @NotNull String process(@Nullable Object parameter)
 	{
-		if (parameter instanceof ItemStack)
+		if (parameter instanceof Player) return ((Player) parameter).getName();
+		if (parameter instanceof OfflinePlayer)
 		{
-			return String.valueOf(((ItemStack) parameter).getAmount());
+			String name = ((OfflinePlayer) parameter).getName();
+			return name == null ? "null" : name;
 		}
-		else if (parameter instanceof ItemStackWrapper)
-		{
-			return String.valueOf(((ItemStackWrapper) parameter).getAmount());
-		}
-		return "0";
+		return "Unknown";
 	}
 }
