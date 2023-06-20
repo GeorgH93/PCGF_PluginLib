@@ -23,6 +23,7 @@ import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IFormattedPlaceholderProcessor;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +43,11 @@ public class PlayerDisplayNamePlaceholderProcessor implements IFormattedPlacehol
 			String name = ((OfflinePlayer) parameter).getName();
 			return MessageColor.GRAY + (name == null ? "null" : name);
 		}
+		else if (parameter instanceof CommandSender)
+		{
+			String name = ((CommandSender) parameter).getName();
+			return MessageColor.GRAY + (name == null ? "null" : name);
+		}
 		return "Unknown";
 	}
 
@@ -57,6 +63,11 @@ public class PlayerDisplayNamePlaceholderProcessor implements IFormattedPlacehol
 		else if (parameter instanceof OfflinePlayer)
 		{
 			String name = ((OfflinePlayer) parameter).getName();
+			return new MessageComponent(name == null ? "null" : name, MessageColor.GRAY);
+		}
+		else if (parameter instanceof CommandSender)
+		{
+			String name = ((CommandSender) parameter).getName();
 			return new MessageComponent(name == null ? "null" : name, MessageColor.GRAY);
 		}
 		return NULL_COMPONENT;

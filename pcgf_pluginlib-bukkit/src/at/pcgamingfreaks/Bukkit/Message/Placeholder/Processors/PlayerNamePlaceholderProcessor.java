@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bukkit.Message.Placeholder.Processors;
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,9 +33,14 @@ public class PlayerNamePlaceholderProcessor implements IPlaceholderProcessor
 	public @NotNull String process(@Nullable Object parameter)
 	{
 		if (parameter instanceof Player) return ((Player) parameter).getName();
-		if (parameter instanceof OfflinePlayer)
+		else if (parameter instanceof OfflinePlayer)
 		{
 			String name = ((OfflinePlayer) parameter).getName();
+			return name == null ? "null" : name;
+		}
+		else if (parameter instanceof CommandSender)
+		{
+			String name = ((CommandSender) parameter).getName();
 			return name == null ? "null" : name;
 		}
 		return "Unknown";
