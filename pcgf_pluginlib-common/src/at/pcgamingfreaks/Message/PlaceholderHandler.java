@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -42,6 +42,12 @@ class PlaceholderHandler
 
 	public void register(Placeholder... placeholders)
 	{
+		if (placeholders.length == 1 && placeholders[0].IsStatic())
+		{
+			legacyPlaceholderEngine.registerStaticPlaceholder(placeholders[0].getName(), placeholders[0].getProcessor(), placeholders[0].getParameter());
+			messageComponentPlaceholderEngine.registerStaticPlaceholder(placeholders[0].getName(), placeholders[0].getProcessor(), placeholders[0].getParameter());
+			return;
+		}
 		int patchAutoIndex = -1, lastIndexRequested = -99, lastIndexUsed = Math.max(nextParameterIndex - 1, 0);
 		for(Placeholder placeholder : placeholders)
 		{

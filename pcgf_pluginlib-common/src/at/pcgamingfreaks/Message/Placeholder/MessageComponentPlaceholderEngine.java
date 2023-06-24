@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -48,9 +48,14 @@ public class MessageComponentPlaceholderEngine
 		tmpPlaceholderList.add(new PlaceholderData(false, placeholder, placeholderIndex, placeholderProcessor));
 	}
 
-	public void registerPlaceholderRegex(final @NotNull @Language("RegExp") String placeholderRegex, final int placeholderIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)
+	public void registerPlaceholderRegex(final @NotNull String placeholderRegex, final int placeholderIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)
 	{
 		tmpPlaceholderList.add(new PlaceholderData(true, placeholderRegex, placeholderIndex, placeholderProcessor));
+	}
+
+	public void registerStaticPlaceholder(final @NotNull String placeholder, final @Nullable IPlaceholderProcessor placeholderProcessor, final @NotNull Object parameter)
+	{
+		tmpPlaceholderList.add(new PlaceholderData(placeholder, placeholderProcessor, parameter));
 	}
 
 	public void prepare()
@@ -87,6 +92,10 @@ public class MessageComponentPlaceholderEngine
 		placeholderEngine = new StringPlaceholderEngine(json);
 		for(PlaceholderData placeholderData : tmpPlaceholderList)
 		{
+			if(placeholderData.IsStatic())
+			{
+				placeholderEngine.registerStaticPlaceholder(placeholderData.getPlaceholder(), placeholderData.getPlaceholderProcessor(), placeholderData.getParameter());
+			}
 			if(placeholderData.isRegex())
 			{
 				placeholderEngine.registerPlaceholderRegex(placeholderData.getPlaceholder(), placeholderData.getPlaceholderIndex(), placeholderData.getPlaceholderProcessor());
@@ -109,9 +118,11 @@ public class MessageComponentPlaceholderEngine
 	private static class PlaceholderData
 	{
 		private final boolean regex, formatted;
+		@Language("RegExp")
 		private final String placeholder;
 		private final int placeholderIndex;
 		private final IPlaceholderProcessor placeholderProcessor;
+		private final Object parameter;
 
 		public PlaceholderData(final boolean regex, final @NotNull String placeholder, final int placeholderIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)
 		{
@@ -128,6 +139,30 @@ public class MessageComponentPlaceholderEngine
 				this.placeholderProcessor = new StringPlaceholderJsonEscapeProcessor(placeholderProcessor);
 				this.formatted = false;
 			}
+			this.parameter = null;
+		}
+
+		public PlaceholderData(final @NotNull String placeholder, final @Nullable IPlaceholderProcessor placeholderProcessor, final @NotNull Object parameter)
+		{
+			this.regex = false;
+			this.placeholder = placeholder;
+			this.placeholderIndex = -1;
+			if(placeholderProcessor instanceof IFormattedPlaceholderProcessor)
+			{
+				this.placeholderProcessor = new MessageComponentToStringPlaceholderProcessor((IFormattedPlaceholderProcessor) placeholderProcessor);
+				this.formatted = true;
+			}
+			else
+			{
+				this.placeholderProcessor = new StringPlaceholderJsonEscapeProcessor(placeholderProcessor);
+				this.formatted = false;
+			}
+			this.parameter = parameter;
+		}
+
+		public boolean IsStatic()
+		{
+			return parameter != null;
 		}
 	}
 }

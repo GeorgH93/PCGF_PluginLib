@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -58,6 +58,29 @@ public class Placeholder
 
 	private static final Pattern PATTERN_PLACEHOLDER_NAME = Pattern.compile("\\{[\\w-]+}");
 
+	private static String FormatName(final @NotNull String name, boolean regex)
+	{
+		if (regex)
+		{
+			if(!(name.startsWith("\\{") && name.endsWith("}")))
+			{ // All placeholders must be between {}
+				return "\\{" + name + '}';
+			}
+		}
+		else
+		{
+			if(!(name.startsWith("{") && name.endsWith("}")))
+			{ // All placeholders must be between {}
+				return '{' + name + '}';
+			}
+			if (!PATTERN_PLACEHOLDER_NAME.matcher(name).matches())
+			{
+				throw new IllegalArgumentException("All placeholder names musst match the pattern: " + PATTERN_PLACEHOLDER_NAME.pattern());
+			}
+		}
+		return name;
+	}
+
 	public Placeholder(final @NotNull String name)
 	{
 		this(name, null);
@@ -83,34 +106,27 @@ public class Placeholder
 		this(name, processor, parameterIndex, false);
 	}
 
-	public Placeholder(@NotNull String name, final @Nullable IPlaceholderProcessor processor, int parameterIndex, boolean regex)
+	public Placeholder(final @NotNull String name, final @Nullable IPlaceholderProcessor processor, int parameterIndex, boolean regex)
 	{
 		if (parameterIndex < HIGHEST_USED)
 		{
 			throw new IllegalArgumentException("Invalid parameter index (" + parameterIndex + ") for placeholder '" + name + "'");
 		}
-		if (regex)
-		{
-			if(!(name.startsWith("\\{") && name.endsWith("}")))
-			{ // All placeholders musst be between {}
-				name = "\\{" + name + '}';
-			}
-		}
-		else
-		{
-			if(!(name.startsWith("{") && name.endsWith("}")))
-			{ // All placeholders musst be between {}
-				name = '{' + name + '}';
-			}
-			if (!PATTERN_PLACEHOLDER_NAME.matcher(name).matches())
-			{
-				throw new IllegalArgumentException("All placeholder names musst match the pattern: " + PATTERN_PLACEHOLDER_NAME.pattern());
-			}
-		}
-		this.name = name;
+
+		this.name = FormatName(name, regex);
 		this.processor = processor;
 		this.parameterIndex = parameterIndex;
 		this.regex = regex;
+		this.parameter = null;
+	}
+
+	public Placeholder(final @NotNull String name, final @Nullable IPlaceholderProcessor processor, final @NotNull Object parameter)
+	{
+		this.name = FormatName(name, false);
+		this.processor = processor;
+		this.parameterIndex = AUTO_INCREMENT_PATCH;
+		this.regex = false;
+		this.parameter = parameter;
 	}
 
 	/**
@@ -132,4 +148,14 @@ public class Placeholder
 	 * Defines if the placeholder name is to be interpreted as a regex or just a name.
 	 */
 	private final boolean regex;
+
+	/**
+	 * If set this placeholder is a static placeholder.
+	 */
+	private final Object parameter;
+
+	public boolean IsStatic()
+	{
+		return parameter != null;
+	}
 }

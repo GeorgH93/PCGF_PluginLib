@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -122,4 +122,6 @@ public interface IPlaceholderable
 	 * @return                     This message instance (for chaining).
 	 */
 	@NotNull IPlaceholderable registerPlaceholderRegex(@NotNull @Language("RegExp") String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor, int parameterIndex);
+
+	@NotNull IPlaceholderable staticPlaceholder(@NotNull String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor, Object parameter);
 }
