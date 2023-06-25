@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 package at.pcgamingfreaks.Message.Placeholder;
 
 import at.pcgamingfreaks.Message.Placeholder.Processors.IPlaceholderProcessor;
-import at.pcgamingfreaks.Util.StringUtils;
 import at.pcgamingfreaks.Util.PatternPreservingStringSplitter;
+import at.pcgamingfreaks.Util.StringUtils;
 
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -66,6 +66,15 @@ public class StringPlaceholderEngine
 			componentId++;
 		}
 		this.components = components.toArray(new String[0]);
+	}
+
+	public void registerStaticPlaceholder(final @NotNull String placeholder, final @Nullable IPlaceholderProcessor placeholderProcessor, final @Nullable Object parameter)
+	{
+		int id = StringUtils.indexOf(components, placeholder);
+		if (id >= 0)
+		{
+			components[id] = placeholderProcessor != null ? placeholderProcessor.process(parameter) : String.valueOf(parameter);
+		}
 	}
 
 	public void registerPlaceholder(final @NotNull String placeholder, final int parameterIndex, final @Nullable IPlaceholderProcessor placeholderProcessor)

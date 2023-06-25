@@ -197,6 +197,19 @@ public abstract class Message<MESSAGE extends Message<?,?,?>, PLAYER, COMMAND_SE
 		return registerPlaceholders(placeholders);
 	}
 
+	public @NotNull MESSAGE staticPlaceholder(@NotNull String placeholder, @Nullable IPlaceholderProcessor placeholderProcessor, Object parameter)
+	{
+		boolean canOptimize = placeholderHandler == null;
+		registerPlaceholders(new Placeholder(placeholder, placeholderProcessor, parameter));
+		if (canOptimize)
+		{
+			fallback = placeholderHandler.formatLegacy();
+			json = placeholderHandler.format();
+			placeholderHandler = null;
+		}
+		return (MESSAGE) this;
+	}
+
 	@Override
 	public @NotNull MESSAGE registerPlaceholders(@NotNull Placeholder... placeholders)
 	{
