@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,16 +25,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -43,9 +37,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@RunWith(PowerMockRunner.class)
 public class UUIDConverterTest
 {
 	private static final String TEST_USER_NAME = "GeorgH93", TEST_USER_UUID = "6c99e2b55c9e4663b4db7ad3bc52d28d", TEST_USER_UUID_SEPARATORS = "6c99e2b5-5c9e-4663-b4db-7ad3bc52d28d";
@@ -99,7 +91,6 @@ public class UUIDConverterTest
 	}
 
 	@Test
-	@PrepareForTest({ URL.class, UUIDConverter.class })
 	public void testGetOnlineUUIDFromName() throws Exception
 	{
 		Field resolver = UUIDConverter.class.getDeclaredField("MOJANG_RESOLVER");
@@ -131,8 +122,8 @@ public class UUIDConverterTest
 		assertEquals("UUID of the offline player should be returned with separators", TEST_USER_OFFLINE_UUID_SEPARATORS, UUIDConverter.getUUIDFromName(TEST_USER_NAME, false, true));
 		//assertEquals("UUID of the online player with the given last seen date should match", TEST_USER2_UUID, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, TEST_USER2_LAST_SEEN));
 		//assertEquals("UUID of the online player with the given last seen date should match the separated one", TEST_USER2_UUID_SEPARATORS, UUIDConverter.getUUIDFromName(TEST_USER2_NAME_NEW, true, true, TEST_USER2_LAST_SEEN));
-		assertNull("UUID of the non existent user name should be null", UUIDConverter.getUUIDFromName("UltraLongUserName", true, false, false));
-		assertEquals("UUID of the non existent user name should be correct", "946a57d3b7a3325480a82b2c927133f8", UUIDConverter.getUUIDFromName("UltraLongUserName", true, false, true));
+		assertNull("UUID of the non-existent username should be null", UUIDConverter.getUUIDFromName("UltraLongUserName", true, false, false));
+		assertEquals("UUID of the non-existent username should be correct", "946a57d3b7a3325480a82b2c927133f8", UUIDConverter.getUUIDFromName("UltraLongUserName", true, false, true));
 	}
 
 	@Test
@@ -153,13 +144,13 @@ public class UUIDConverterTest
 		testNames.put(TEST_USER_NAME, TEST_USER_UUID);
 		testNames.put("Phei", "8abb0b91429b41e49be8bd659923acd6");
 		testNames.put("AFKMaster", "175c57e4cd4b4fb3bfea1c28d094f5dc");
-		testNames.put("Julezky", "fc4b363ba4474ab98778d0ee353151ee");
+		testNames.put("Juuletz", "fc4b363ba4474ab98778d0ee353151ee");
 		testNames.put("NotAnt0_", "5d44a19304d94ebaaa3f630b8c95b48a");
 		final Map<String, String> testNamesSeparators = new TreeMap<>();
 		testNamesSeparators.put(TEST_USER_NAME, TEST_USER_UUID_SEPARATORS);
 		testNamesSeparators.put("Phei", "8abb0b91-429b-41e4-9be8-bd659923acd6");
 		testNamesSeparators.put("AFKMaster", "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc");
-		testNamesSeparators.put("Julezky", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
+		testNamesSeparators.put("Juuletz", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
 		testNamesSeparators.put("NotAnt0_", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
 		Map<String, String> namesUUIDs = UUIDConverter.getUUIDsFromNames(testNamesSeparators.keySet(), true, true);
 		assertEquals("All user UUIDs should match the given ones with separators", testNamesSeparators, namesUUIDs);
@@ -180,7 +171,7 @@ public class UUIDConverterTest
 		testNamesSeparators.put(TEST_USER_NAME, TEST_USER_UUID_SEPARATORS);
 		testNamesSeparators.put("Phei", "8abb0b91-429b-41e4-9be8-bd659923acd6");
 		testNamesSeparators.put("AFKMaster", "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc");
-		testNamesSeparators.put("Julezky", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
+		testNamesSeparators.put("Juuletz", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
 		testNamesSeparators.put("NotAnt0_", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
 		testNamesSeparators.put("Watchdog", "4ec35d4f-609c-4245-8d53-f779c6160dd2");
 		testNamesSeparators.put("Artifexus", "27205e77-f8b4-4b31-b9a0-5bd97efc0560");
@@ -201,20 +192,19 @@ public class UUIDConverterTest
 
 	@Test
 	@SuppressWarnings("SpellCheckingInspection")
-	@PrepareForTest({ URL.class, UUIDConverter.class })
 	public void testGetUUIDsFromNames() throws Exception
 	{
 		final Map<String, String> testNames = new TreeMap<>();
 		testNames.put(TEST_USER_NAME, TEST_USER_UUID);
 		testNames.put("Phei", "8abb0b91429b41e49be8bd659923acd6");
 		testNames.put("AFKMaster", "175c57e4cd4b4fb3bfea1c28d094f5dc");
-		testNames.put("Julezky", "fc4b363ba4474ab98778d0ee353151ee");
+		testNames.put("Juuletz", "fc4b363ba4474ab98778d0ee353151ee");
 		testNames.put("NotAnt0_", "5d44a19304d94ebaaa3f630b8c95b48a");
 		final Map<String, String> testNamesSeparators = new TreeMap<>();
 		testNamesSeparators.put(TEST_USER_NAME, TEST_USER_UUID_SEPARATORS);
 		testNamesSeparators.put("Phei", "8abb0b91-429b-41e4-9be8-bd659923acd6");
 		testNamesSeparators.put("AFKMaster", "175c57e4-cd4b-4fb3-bfea-1c28d094f5dc");
-		testNamesSeparators.put("Julezky", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
+		testNamesSeparators.put("Juuletz", "fc4b363b-a447-4ab9-8778-d0ee353151ee");
 		testNamesSeparators.put("NotAnt0_", "5d44a193-04d9-4eba-aa3f-630b8c95b48a");
 		/*Field uuidCache = UUIDConverter.class.getDeclaredField("UUID_CACHE");
 		uuidCache.setAccessible(true);
@@ -251,14 +241,8 @@ public class UUIDConverterTest
 		assertEquals("The user count of offline mode users should match the given amount of users", testNames.size(), namesUUIDs.size());
 		uuidCache.set(this, currentCacheMap);*/
 		Map<String, String> namesUUIDs = UUIDConverter.getUUIDsFromNames(testNames.keySet(), true, false);
-		assertTrue("All user names should exist in the map when using no cache", namesUUIDs.keySet().containsAll(testNames.keySet()));
+		assertTrue("All usernames should exist in the map when using no cache", namesUUIDs.keySet().containsAll(testNames.keySet()));
 		assertEquals("The user count of online mode users should match the given amount of users", testNames.size(), namesUUIDs.size());
-		URL mockedURL = PowerMockito.mock(URL.class);
-		whenNew(URL.class).withArguments(anyString()).thenReturn(mockedURL);
-		HttpURLConnection mockedHttpURLConnection = mock(HttpURLConnection.class);
-		PowerMockito.doReturn(429).doThrow(new IOException()).when(mockedHttpURLConnection).getResponseCode();
-		PowerMockito.doThrow(new IOException()).when(mockedHttpURLConnection).getOutputStream();
-		PowerMockito.doReturn(mockedHttpURLConnection).when(mockedURL).openConnection();
 	}
 
 	@AfterClass
