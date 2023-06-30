@@ -136,7 +136,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 		}
 		catch(IOException e)
 		{
-			logger.log(Level.SEVERE, "Failed to query spigot api for updates.", e);
+			logger.log(Level.WARNING, "Failed to query spigot api for updates. Error: {0}", e.getMessage());
 			return UpdateResult.FAIL_FILE_NOT_FOUND;
 		}
 		return UpdateResult.SUCCESS;
