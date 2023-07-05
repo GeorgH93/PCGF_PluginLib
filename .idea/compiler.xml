@@ -27,6 +27,7 @@
         <module name="pcgf_pluginlib-bungee" />
         <module name="pcgf_pluginlib-mcversion" />
         <module name="pcgf_pluginlib-plugin-common" />
+        <module name="pcgf_pluginlib-placeholder_api_wrapper" />
         <module name="IMessage" />
         <module name="PluginLib" />
         <module name="pcgf_pluginlib-plugin" />

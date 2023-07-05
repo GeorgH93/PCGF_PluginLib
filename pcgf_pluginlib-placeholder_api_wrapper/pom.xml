@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>pcgf_pluginlib-bukkit</artifactId>
+	<artifactId>pcgf_pluginlib-placeholder_api_wrapper</artifactId>
 	<parent>
 		<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
 		<artifactId>pcgf_pluginlib-parent</artifactId>
@@ -17,40 +17,14 @@
 			<id>placeholderapi</id>
 			<url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
+		<repository>
+			<id>mvdw-software</id>
+			<name>MVdW Public Repositories</name>
+			<url>https://repo.mvdw-software.com/content/groups/public/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-common</artifactId>
-			<version>${revision}</version>
-		</dependency>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-placeholder_api_wrapper</artifactId>
-			<version>${revision}</version>
-		</dependency>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-mcversion</artifactId>
-			<version>${revision}</version>
-		</dependency>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-reflection-nms</artifactId>
-			<version>${revision}</version>
-		</dependency>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
-			<artifactId>pcgf_pluginlib-platform-bukkit</artifactId>
-			<version>${revision}</version>
-		</dependency>
-		<dependency>
-			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
-			<artifactId>pcgf_pluginlib-test_helper-bukkit</artifactId>
-			<version>${revision}</version>
-			<scope>test</scope>
-		</dependency>
 		<!-- Bukkit API -->
 		<dependency>
 			<groupId>org.bukkit</groupId>
@@ -58,26 +32,44 @@
 			<version>${bukkitVersion}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-reflection</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-version</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-common</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<!-- MVdW Placeholder API -->
+		<dependency>
+			<groupId>be.maximvdw</groupId>
+			<artifactId>MVdWPlaceholderAPI</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.spigotmc</groupId>
+					<artifactId>spigot</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>be.maximvdw</groupId>
+					<artifactId>MVdWUpdater</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>provided</scope>
+		</dependency>
 		<!-- PlaceholderAPI -->
 		<dependency>
 			<groupId>me.clip</groupId>
 			<artifactId>placeholderapi</artifactId>
-			<version>2.9.2</version>
+			<version>2.11.1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<resources>
-			<resource>
-				<directory>resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>test/resources</directory>
-			</testResource>
-		</testResources>
-	</build>
 </project>

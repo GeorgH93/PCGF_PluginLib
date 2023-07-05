@@ -7,7 +7,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<revision>1.0.39-SNAPSHOT</revision>
+		<revision>1.0.39.1-SNAPSHOT</revision>
 		<website>https://github.com/GeorgH93/PCGF_PluginLib/</website>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -273,6 +273,7 @@
 		<module>pcgf_pluginlib-uuid</module>
 		<module>pcgf_pluginlib-bukkit</module>
 		<module>pcgf_pluginlib-bungee</module>
+		<module>pcgf_pluginlib-placeholder_api_wrapper</module>
 		<module>platform/pcgf_pluginlib-platform-bukkit</module>
 		<module>platform/pcgf_pluginlib-platform-nms</module>
 		<module>plugin/pcgf_pluginlib-plugin-common</module>
