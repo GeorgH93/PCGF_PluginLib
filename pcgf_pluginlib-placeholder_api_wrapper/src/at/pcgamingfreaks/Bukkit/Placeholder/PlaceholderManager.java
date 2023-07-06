@@ -26,6 +26,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import lombok.Getter;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ import java.util.TreeMap;
 public abstract class PlaceholderManager
 {
 	private static MVdWPlaceholderReplacer mVdWPlaceholderReplacer = null; // The MVdWPlaceholder API does not allow unregistering hooked placeholders
-	private final Plugin plugin;
+	@Getter private final Plugin plugin;
 	private final Map<String, at.pcgamingfreaks.Bukkit.Placeholder.PlaceholderReplacer> placeholders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	private final List<PlaceholderAPIHook> hooks = new ArrayList<>(2);
 	private final List<String> placeholdersList = new ArrayList<>();
