@@ -19,8 +19,12 @@ package at.pcgamingfreaks.Bukkit.Util;
 
 <#if mojangMapped>
 import net.minecraft.network.FriendlyByteBuf;
+	<#if mcVersion < 100200002>
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
+	<#else>
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+	</#if>
 <#else>
 	<#if mcVersion < 100170000>
 		<#if 100130000 <= mcVersion>
@@ -48,6 +52,7 @@ import io.netty.buffer.Unpooled;
  */
 public class PluginChannelUtils_${nmsVersion}${nmsPatchLevel} extends PluginChannelUtils_Reflection
 {
+	<#if mcVersion < 100200002>
 	@Override
 	public void sendPluginMessageUnchecked(final @NotNull Plugin plugin, final @NotNull Player player, final @NotNull String channel, final @NotNull byte[] message)
 	{
@@ -65,4 +70,5 @@ public class PluginChannelUtils_${nmsVersion}${nmsPatchLevel} extends PluginChan
 			</#if>
 		</#if>
 	}
+	</#if>
 }
