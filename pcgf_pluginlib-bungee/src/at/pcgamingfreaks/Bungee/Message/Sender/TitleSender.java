@@ -18,19 +18,43 @@
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
 import at.pcgamingfreaks.Message.Sender.IMetadata;
+import at.pcgamingfreaks.Reflection;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.packet.Title;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 final class TitleSender implements ISender
 {
+	private static final Method SET_TEXT;
+	private static final boolean BASE_COMPONENT_TITLE;
 	private static final TitleMetadata METADATA = new TitleMetadata(); // Default metadata object
-	private static final Title EMPTY_TITLE = mkTitlePacket("", METADATA);
+	private static final Title EMPTY_TITLE;
+
+	static
+	{
+		Method setText;
+		boolean baseComp = false;
+		try
+		{
+			setText = Title.class.getMethod("setText", String.class);
+		}
+		catch(Exception ignored)
+		{
+			setText = Reflection.getMethod(Title.class, "setText", Reflection.getClass("net.md_5.bungee.api.chat.BaseComponent"));
+			baseComp = true;
+		}
+		SET_TEXT = setText;
+		BASE_COMPONENT_TITLE = baseComp;
+		EMPTY_TITLE = mkTitlePacket("", METADATA);
+	}
 
 	private static Title mkTimesPacket(final @NotNull TitleMetadata metadata)
 	{
@@ -46,7 +70,21 @@ final class TitleSender implements ISender
 	{
 		Title titleSend = new Title();
 		titleSend.setAction(metadata.getTitleType());
-		titleSend.setText(json);
+		try
+		{
+			if (BASE_COMPONENT_TITLE)
+			{
+				SET_TEXT.invoke(titleSend, ComponentSerializer.parse(json));
+			}
+			else
+			{
+				SET_TEXT.invoke(titleSend, json);
+			}
+		}
+		catch(IllegalAccessException | InvocationTargetException e)
+		{
+			e.printStackTrace();
+		}
 		return titleSend;
 	}
 
