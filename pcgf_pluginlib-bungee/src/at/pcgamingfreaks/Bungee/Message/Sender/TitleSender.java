@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@ package at.pcgamingfreaks.Bungee.Message.Sender;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Reflection;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.packet.Title;
@@ -74,7 +76,12 @@ final class TitleSender implements ISender
 		{
 			if (BASE_COMPONENT_TITLE)
 			{
-				SET_TEXT.invoke(titleSend, ComponentSerializer.parse(json));
+				BaseComponent sendComponent;
+				BaseComponent[] components = ComponentSerializer.parse(json);
+				if (components.length == 0) return titleSend;
+				else if (components.length == 1) sendComponent = components[0];
+				else sendComponent = new TextComponent(components);
+				SET_TEXT.invoke(titleSend, sendComponent);
 			}
 			else
 			{
