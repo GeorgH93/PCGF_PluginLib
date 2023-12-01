@@ -22,6 +22,7 @@
         <module name="pcgf_pluginlib-platform-nms-1_16_R2" />
         <module name="pcgf_pluginlib-platform-nms-1_16_R1" />
         <module name="pcgf_pluginlib-platform-nms-1_16_R3" />
+        <module name="pcgf_pluginlib-platform-nms-1_20_R3" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R2" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R1" />
         <module name="pcgf_pluginlib-platform-nms-1_19_R1_1" />
