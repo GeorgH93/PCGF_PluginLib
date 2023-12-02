@@ -33,7 +33,7 @@ final class TitleSender implements ISender
 {
 	private static final ITitleMessagePacketFactory TITLE_MESSAGE_PACKET_FACTORY = ITitleMessagePacketFactory.INSTANCE;
 	private static final ITitleMetadata METADATA = new TitleMetadata(); // Default metadata object
-	private static final Object PACKET_EMPTY_TITLE = TITLE_MESSAGE_PACKET_FACTORY == null ? null : TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacket(""); // TITLE_MESSAGE_PACKET_FACTORY will be null during unit tests!
+	private static final Object PACKET_EMPTY_TITLE = TITLE_MESSAGE_PACKET_FACTORY == null ? null : TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacket("[{\"text\":\"\"}]"); // TITLE_MESSAGE_PACKET_FACTORY will be null during unit tests!
 
 	@Override
 	public void send(final @NotNull Player player, final @NotNull String json)

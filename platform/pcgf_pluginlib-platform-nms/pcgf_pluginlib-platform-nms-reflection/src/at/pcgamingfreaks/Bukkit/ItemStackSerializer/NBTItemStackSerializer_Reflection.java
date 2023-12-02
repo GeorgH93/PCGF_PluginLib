@@ -62,6 +62,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 	private static final Method METHOD_CREATE_STACK                 = (MCVersion.isOlderThan(MCVersion.MC_1_11)) ? NmsReflector.INSTANCE.getNmsMethod(CLASS_NMS_ITEM_STACK, "createStack", CLASS_NBT_TAG_COMPOUND) : (MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13)) ? NmsReflector.INSTANCE.getNmsMethod(CLASS_NMS_ITEM_STACK, "a", CLASS_NBT_TAG_COMPOUND) : null;
 	private static final Method METHOD_AS_BUKKIT_COPY               = Reflection.getMethod(CLASS_CRAFT_ITEM_STACK, "asBukkitCopy", CLASS_NMS_ITEM_STACK);
 	private static final Method METHOD_NBT_COMP_STREAM_A2           = NmsReflector.INSTANCE.getNmsMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", InputStream.class);
+	private static final Method METHOD_NBT_COMP_STREAM_FROM_DATA_INPUT = MCVersion.isOlderThan(MCVersion.MC_NMS_1_20_R3) ? null : NmsReflector.INSTANCE.getNmsMethod(CLASS_NBT_COMPRESSED_STREAM_TOOLS, "a", DataInput.class);
 	private static final Method METHOD_NBT_TAG_LIST_SIZE            = NmsReflector.INSTANCE.getNmsMethod(CLASS_NBT_TAG_LIST, "size");
 	private static final Method METHOD_DATA_FIXER_UPDATE;
 	private static final Enum<?> ENUM_DATA_FIX_TYPE;
@@ -205,6 +206,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 			try
 			{
 				Object localNBTTagCompound = METHOD_NBT_COMP_STREAM_A2.invoke(null, new ByteArrayInputStream(data));
+				if (METHOD_NBT_COMP_STREAM_FROM_DATA_INPUT != null) localNBTTagCompound = METHOD_NBT_COMP_STREAM_FROM_DATA_INPUT.invoke(null, localNBTTagCompound);
 				int size = (int) METHOD_GET_INT.invoke(localNBTTagCompound, "size"), dataVersion = CURRENT_DATA_VERSION;
 				if((boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, KEY_DATA_VERSION, 3)) dataVersion = (int) METHOD_GET_INT.invoke(localNBTTagCompound, KEY_DATA_VERSION);
 				if (dataVersion == MCVersion.MC_1_19_4.getProtocolVersion()) dataVersion = 3337;
@@ -314,6 +316,6 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 
 	public static boolean isMCVersionCompatible()
 	{
-		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_20_R2);
+		return MCVersion.isNewerOrEqualThan(MCVersion.MC_1_7) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_20_R3);
 	}
 }
