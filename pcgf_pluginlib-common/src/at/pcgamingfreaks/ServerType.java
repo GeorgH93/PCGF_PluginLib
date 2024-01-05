@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@ public class ServerType
 			catch(NullPointerException ignored)
 			{ // Fix for people that have the bukkit server interface class on their bungee install
 				bukkitClass = null;
+				bukkitComp = false;
 			}
 			if(unknown)
 			{ // Unknown server implementation, fall back to checking for existing classes
