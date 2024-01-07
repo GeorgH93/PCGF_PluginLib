@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@ import java.lang.reflect.Field;
 
 public class PCGF_PluginLibVersionDetection
 {
+	private PCGF_PluginLibVersionDetection() { /* hide implicit constructor */ }
+
 	/**
 	 * Gets the version of the PCGF_PluginLib or null if the Bukkit version of the plugin lib is not installed.
 	 * @return The version of the lib or null if not installed.
