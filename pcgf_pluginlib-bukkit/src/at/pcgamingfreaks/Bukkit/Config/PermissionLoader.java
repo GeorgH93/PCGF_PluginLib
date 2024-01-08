@@ -31,6 +31,8 @@ import java.util.Map;
 
 public class PermissionLoader
 {
+	private PermissionLoader() { /* Hide implicit constructor */ }
+
 	public static void loadPermissionsFromPlugin(JavaPlugin plugin)
 	{
 		try
