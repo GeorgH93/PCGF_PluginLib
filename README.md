@@ -57,7 +57,7 @@ and provides cross version support for a lot of Minecraft features
 
 ## Adding it to your plugin:
 The library can be added in two ways to your plugin.
-1. Requiring it to be installed as a plugin (will be published on dev.bukkit.org and spigotmc.org soon)
+1. Requiring it to be installed as a plugin (might be published on dev.bukkit.org and spigotmc.org at some point)
 2. Shading it into your plugin (requires more RAM and some features will not work)
 
 ### Adding the library as a dependency with Maven:
@@ -74,7 +74,7 @@ The library can be added in two ways to your plugin.
 <dependency>
  	<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
  	<artifactId>PluginLib</artifactId>
- 	<version>1.0.36-SNAPSHOT</version><!-- Check version shield for newest version -->
+ 	<version>1.0.39.3-SNAPSHOT</version><!-- Check version shield for newest version -->
 </dependency>
 ```
 
