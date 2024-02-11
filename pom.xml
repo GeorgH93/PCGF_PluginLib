@@ -18,7 +18,7 @@
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<bukkitVersion>1.12.2-R0.1-SNAPSHOT</bukkitVersion>
-		<bungeeVersion>1.19-R0.1-SNAPSHOT</bungeeVersion>
+		<bungeeVersion>1.20-R0.2</bungeeVersion>
 
 		<sonar.organization>georgh93</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
