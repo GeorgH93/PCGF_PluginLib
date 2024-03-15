@@ -57,9 +57,12 @@ public class ServerType
 				{
 					if (StringUtils.containsIgnoreCase(version, "universe")) {
 					    isPaper = true;
-					}
-					isSpigot = true;
-					spigotComp = true;
+					    spigotComp = true;
+					    paperComp = true;
+					} else {
+					    isSpigot = true;
+					    spigotComp = true;
+				        }
 				}
 				else if(StringUtils.containsIgnoreCase(version, "paper"))
 				{
