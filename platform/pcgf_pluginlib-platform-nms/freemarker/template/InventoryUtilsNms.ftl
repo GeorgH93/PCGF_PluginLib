@@ -21,8 +21,6 @@ package at.pcgamingfreaks.Bukkit.Util;
 import net.minecraft.nbt.CompoundTag;
 	<#if mcVersion < 100190000>
 import net.minecraft.network.chat.TranslatableComponent;
-	<#else>
-import net.minecraft.network.chat.Component;
 	</#if>
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
@@ -57,6 +55,10 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+<#if mcVersion < 100200005><#else>
+import com.google.gson.Gson;
+</#if>
+
 import java.util.logging.Logger;
 
 /*
@@ -69,7 +71,11 @@ public final class InventoryUtils_${nmsVersion}${nmsPatchLevel} implements IInve
 	@Override
 	public String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
 	{
+		<#if mcVersion < 100200005>
 		return CraftItemStack.asNMSCopy(itemStack).save(new <#if mojangMapped>CompoundTag<#else>NBTTagCompound</#if>()).toString();
+		<#else>
+		return new Gson().toJson(itemStack);
+		</#if>
 	}
 
 	@Override

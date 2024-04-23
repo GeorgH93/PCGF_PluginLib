@@ -74,7 +74,7 @@ The library can be added in two ways to your plugin.
 <dependency>
  	<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
  	<artifactId>PluginLib</artifactId>
- 	<version>1.0.39.3-SNAPSHOT</version><!-- Check version shield for newest version -->
+ 	<version>1.0.39.4-SNAPSHOT</version><!-- Check version shield for newest version -->
 </dependency>
 ```
 
@@ -123,9 +123,10 @@ Replace `your_package` with the package of your plugin.
 ### Requirements:
 * Java JDK
   * Min: 8
-  * Recommended: 17
+  * Recommended: 21
     * Acceleration for Minecraft 1.17 can only be built with Java >= 16
     * Acceleration for Minecraft 1.18 can only be built with Java >= 17
+    * Acceleration for Minecraft 1.20.5 can only be built with Java >= 21
 * Maven >= 3.6.3
 * git
 
