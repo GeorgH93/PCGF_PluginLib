@@ -15,6 +15,16 @@
 	<dependencies>
 		<dependency>
 			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-base</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-servertype</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
 			<artifactId>pcgf_pluginlib-reflection</artifactId>
 			<version>${revision}</version>
 		</dependency>

@@ -267,7 +267,9 @@
 		<module>pcgf_pluginlib-reflection</module>
 		<module>pcgf_pluginlib-reflection-obc</module>
 		<module>pcgf_pluginlib-reflection-nms</module>
+		<module>pcgf_pluginlib-base</module>
 		<module>pcgf_pluginlib-common</module>
+		<module>pcgf_pluginlib-servertype</module>
 		<module>pcgf_pluginlib-mcversion</module>
 		<module>pcgf_pluginlib-version</module>
 		<module>pcgf_pluginlib-uuid</module>

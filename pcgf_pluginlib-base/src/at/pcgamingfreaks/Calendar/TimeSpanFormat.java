@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,16 +15,9 @@
  *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.Datastructures;
+package at.pcgamingfreaks.Calendar;
 
-import lombok.Data;
-
-/**
- * Just a simple pair class to be used as a DTO.
- */
-@Data
-public class Pair<T1, T2>
+public interface TimeSpanFormat
 {
-	private T1 key;
-	private T2 value;
+	String format(TimeSpan timeSpan);
 }

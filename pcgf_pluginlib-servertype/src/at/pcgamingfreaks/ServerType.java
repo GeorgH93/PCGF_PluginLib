@@ -17,7 +17,7 @@
 
 package at.pcgamingfreaks;
 
-import at.pcgamingfreaks.Util.StringUtils;
+import at.pcgamingfreaks.Util.BaseStringUtils;
 
 import lombok.Getter;
 
@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 /**
  * Helper class to figure out which server software is being used to run the server.
  */
-public class ServerType
+public final class ServerType
 {
 	private ServerType() {}
 
@@ -49,28 +49,31 @@ public class ServerType
 			{
 				String version  = (String) Reflection.getMethod(bukkitClass, "getVersion").invoke(null);
 				if (version == null) unknown = true;
-				else if(StringUtils.containsIgnoreCase(version, "bukkit"))
+				else if(BaseStringUtils.containsIgnoreCase(version, "bukkit"))
 				{
 					isBukkit = true;
 				}
-				else if(StringUtils.containsIgnoreCase(version, "spigot"))
+				else if(BaseStringUtils.containsIgnoreCase(version, "spigot"))
 				{
-					if (StringUtils.containsIgnoreCase(version, "universe")) {
-					    isPaper = true;
-					    spigotComp = true;
-					    paperComp = true;
-					} else {
-					    isSpigot = true;
-					    spigotComp = true;
-				        }
+					if(BaseStringUtils.containsIgnoreCase(version, "universe"))
+					{
+						isPaper = true;
+						spigotComp = true;
+						paperComp = true;
+					}
+					else
+					{
+						isSpigot = true;
+						spigotComp = true;
+					}
 				}
-				else if(StringUtils.containsIgnoreCase(version, "paper"))
+				else if(BaseStringUtils.containsIgnoreCase(version, "paper"))
 				{
 					isPaper = true;
 					spigotComp = true;
 					paperComp = true;
 				}
-				else if(StringUtils.containsIgnoreCase(version, "glowstone"))
+				else if(BaseStringUtils.containsIgnoreCase(version, "glowstone"))
 				{
 					isGlowstone = true;
 					glowComp = true;
