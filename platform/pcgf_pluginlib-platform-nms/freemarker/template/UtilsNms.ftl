@@ -48,9 +48,10 @@ import org.jetbrains.annotations.NotNull;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public final class Utils_${nmsVersion}${nmsPatchLevel} implements IUtils
+public final class Utils_${nmsVersion}${nmsPatchLevel}${nmsExtension} implements IUtils
 {
-	static <#if mojangMapped>ServerPlayer<#else>EntityPlayer</#if> getHandle(final @NotNull Player player)
+	@Override
+	public <#if mojangMapped>ServerPlayer<#else>EntityPlayer</#if> getHandle(final @NotNull Player player)
 	{
 		return ((CraftPlayer) player).getHandle();
 	}

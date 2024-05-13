@@ -46,8 +46,12 @@ import net.minecraft.world.inventory.Containers;
 	</#if>
 </#if>
 
+<#if !mojangMapped>
 import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
+</#if>
+<#if mcVersion < 100200005>
 import org.bukkit.craftbukkit.v${nmsVersion}.inventory.CraftItemStack;
+</#if>
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -66,7 +70,7 @@ import java.util.logging.Logger;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public final class InventoryUtils_${nmsVersion}${nmsPatchLevel} implements IInventoryUtils
+public final class InventoryUtils_${nmsVersion}${nmsPatchLevel}${nmsExtension} implements IInventoryUtils
 {
 	@Override
 	public String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
@@ -113,7 +117,7 @@ public final class InventoryUtils_${nmsVersion}${nmsPatchLevel} implements IInve
 		if(topInv.getType() == InventoryType.CRAFTING) return;
 
 			<#if mojangMapped>
-		ServerPlayer entityPlayer = ((CraftPlayer)player).getHandle();
+		ServerPlayer entityPlayer = (ServerPlayer) IUtils.INSTANCE.getHandle(player);
 		ClientboundOpenScreenPacket packet = new ClientboundOpenScreenPacket(entityPlayer.containerMenu.containerId, (MenuType<?>) InventoryTypeMapper_Reflection.getInvContainersObject(topInv), (Component) newTitle);
 		entityPlayer.connection.send(packet);
 		entityPlayer.containerMenu.sendAllDataToRemote();

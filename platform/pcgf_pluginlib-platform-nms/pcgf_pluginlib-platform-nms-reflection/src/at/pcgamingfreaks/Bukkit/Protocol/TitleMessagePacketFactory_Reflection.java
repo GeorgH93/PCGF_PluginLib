@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2021 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -50,10 +50,11 @@ public class TitleMessagePacketFactory_Reflection implements ITitleMessagePacket
 	{
 		try
 		{
+			Object component = IUtils.INSTANCE.jsonToIChatComponent(json);
 			if(PACKET_PLAY_OUT_TITLE_CONSTRUCTOR != null)
-				return PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TITLE, IUtils.INSTANCE.jsonToIChatComponent(json), -1, -1, -1);
+				return PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TITLE, component, -1, -1, -1);
 			else if(PACKET_TITLE_CONSTRUCTOR != null)
-				return PACKET_TITLE_CONSTRUCTOR.newInstance(IUtils.INSTANCE.jsonToIChatComponent(json));
+				return PACKET_TITLE_CONSTRUCTOR.newInstance(component);
 		}
 		catch(InstantiationException | IllegalAccessException | InvocationTargetException e)
 		{
@@ -67,10 +68,11 @@ public class TitleMessagePacketFactory_Reflection implements ITitleMessagePacket
 	{
 		try
 		{
+			Object component = IUtils.INSTANCE.jsonToIChatComponent(json);
 			if(PACKET_PLAY_OUT_TITLE_CONSTRUCTOR != null)
-				return PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_SUBTITLE, IUtils.INSTANCE.jsonToIChatComponent(json), -1, -1, -1);
+				return PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_SUBTITLE, component, -1, -1, -1);
 			else if(PACKET_SUB_TITLE_CONSTRUCTOR != null)
-				return PACKET_SUB_TITLE_CONSTRUCTOR.newInstance(IUtils.INSTANCE.jsonToIChatComponent(json));
+				return PACKET_SUB_TITLE_CONSTRUCTOR.newInstance(component);
 		}
 		catch(InstantiationException | IllegalAccessException | InvocationTargetException e)
 		{
@@ -102,10 +104,11 @@ public class TitleMessagePacketFactory_Reflection implements ITitleMessagePacket
 		if(ENUM_ACTION_BAR == null && PACKET_ACTIONBAR_CONSTRUCTOR == null) return IChatMessagePacketFactory.INSTANCE.makeChatPacketActionBar(json);
 		try
 		{
+			Object component = IUtils.INSTANCE.jsonToIChatComponent(json);
 			if(PACKET_PLAY_OUT_TITLE_CONSTRUCTOR != null)
-				return PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_ACTION_BAR, IUtils.INSTANCE.jsonToIChatComponent(json), -1, -1, -1);
+				return PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_ACTION_BAR, component, -1, -1, -1);
 			else if(PACKET_ACTIONBAR_CONSTRUCTOR != null)
-				return PACKET_ACTIONBAR_CONSTRUCTOR.newInstance(IUtils.INSTANCE.jsonToIChatComponent(json));
+				return PACKET_ACTIONBAR_CONSTRUCTOR.newInstance(component);
 		}
 		catch(InstantiationException | IllegalAccessException | InvocationTargetException e)
 		{

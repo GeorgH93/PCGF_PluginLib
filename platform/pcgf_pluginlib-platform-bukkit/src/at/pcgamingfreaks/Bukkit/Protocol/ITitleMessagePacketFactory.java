@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ITitleMessagePacketFactory extends IPlatformDependent
 {
-	ITitleMessagePacketFactory INSTANCE = PlatformResolver.createPlatformInstance(ITitleMessagePacketFactory.class);
+	ITitleMessagePacketFactory INSTANCE = PlatformResolver.createPlatformInstance(ITitleMessagePacketFactory.class/*, ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4)*/);
 
 	Object makeTitlePacket(@NotNull String json);
 	Object makeSubTitlePacket(@NotNull String json);

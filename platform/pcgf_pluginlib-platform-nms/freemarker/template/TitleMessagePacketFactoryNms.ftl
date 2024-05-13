@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public final class TitleMessagePacketFactory_${nmsVersion}${nmsPatchLevel} implements ITitleMessagePacketFactory
+public final class TitleMessagePacketFactory_${nmsVersion}${nmsPatchLevel}${nmsExtension} implements ITitleMessagePacketFactory
 {
 	@Override
 	public Object makeTitlePacket(final @NotNull String json)

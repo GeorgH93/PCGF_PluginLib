@@ -1,9 +1,10 @@
 {
-  "templateName": "TitleMessagePacketFactoryNms.ftl",
+  "templateName": "PluginChannelUtilsNms.ftl",
   "dataModel": {
     "nmsVersion": "${nmsVersion}",
     "nmsPatchLevel": "${nmsPatchLevel}",
     "mcVersion": ${mcVersion},
-    "mojangMapped": ${mojangMapped}
+    "mojangMapped": ${mojangMapped},
+    "nmsExtension": "${nmsExtension}"
   }
 }

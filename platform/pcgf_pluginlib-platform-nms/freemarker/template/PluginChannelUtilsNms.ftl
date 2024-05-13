@@ -50,7 +50,7 @@ import io.netty.buffer.Unpooled;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public class PluginChannelUtils_${nmsVersion}${nmsPatchLevel} extends PluginChannelUtils_Reflection
+public class PluginChannelUtils_${nmsVersion}${nmsPatchLevel}${nmsExtension} extends PluginChannelUtils_Reflection
 {
 	<#if mcVersion < 100200002>
 	@Override
