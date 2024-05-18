@@ -16,6 +16,7 @@
         <module name="pcgf_pluginlib-version_detection" />
         <module name="pcgf_pluginlib-platform-nms-1_19_R3" />
         <module name="pcgf_pluginlib-plugin-bukkit" />
+        <module name="pcgf_pluginlib-servertype" />
         <module name="pcgf_pluginlib-platform-nms-1_17_R1" />
         <module name="pcgf_pluginlib-platform-nms-1_19_R2" />
         <module name="pcgf_pluginlib-platform-nms-1_19_R1" />
@@ -24,14 +25,16 @@
         <module name="pcgf_pluginlib-platform-nms-1_16_R3" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R3" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R2" />
+        <module name="pcgf_pluginlib-platform-nms-1_20_R4" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R1" />
+        <module name="pcgf_pluginlib-platform-nms-1_20_R4_Paper" />
         <module name="pcgf_pluginlib-platform-nms-1_19_R1_1" />
         <module name="pcgf_pluginlib-bungee" />
         <module name="pcgf_pluginlib-mcversion" />
         <module name="pcgf_pluginlib-plugin-common" />
         <module name="pcgf_pluginlib-placeholder_api_wrapper" />
         <module name="IMessage" />
-        <module name="PluginLib" />
+        <module name="pcgf_pluginlib-base" />
         <module name="pcgf_pluginlib-plugin" />
         <module name="pcgf_pluginlib-platform-nms-1_18_R1" />
         <module name="pcgf_pluginlib-reflection" />
@@ -45,11 +48,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="IMessage" target="1.8" />
-      <module name="PCGF_PluginLib" target="1.8" />
-      <module name="pcgf_pluginlib-nms" target="1.8" />
-      <module name="pcgf_pluginlib-nms-reflection" target="1.8" />
-      <module name="PluginLib" target="1.8" />
+      <module name="PluginLib" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

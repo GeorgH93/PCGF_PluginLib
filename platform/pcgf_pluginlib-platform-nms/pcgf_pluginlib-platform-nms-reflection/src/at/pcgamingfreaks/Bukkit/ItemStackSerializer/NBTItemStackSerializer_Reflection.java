@@ -303,7 +303,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 						METHOD_NBT_TAG_C_SET_BYTE.invoke(itemNBTCompound, "Slot", (byte) i);
 						Object nmsCopy = METHOD_AS_NMS_COPY.invoke(null, itemStacks[i]);
 						if (METHOD_SAVE != null) METHOD_SAVE.invoke(nmsCopy, itemNBTCompound);
-						else METHOD_SAVE_NEW.invoke(nmsCopy, REGISTRY, itemNBTCompound);
+						else itemNBTCompound = METHOD_SAVE_NEW.invoke(nmsCopy, REGISTRY, itemNBTCompound);
 						if(MCVersion.isOlderThan(MCVersion.MC_1_14))
 							METHOD_NBT_TAG_LIST_ADD.invoke(nbtItemList, itemNBTCompound);
 						else
