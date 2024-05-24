@@ -128,13 +128,15 @@ public enum MCVersion
 	MC_1_20_2(142, 764, "1_20", "1.20.2"),
 	MC_NMS_1_20_R2(142, 764, "1_20", "1.20_NMS_R2", MC_1_20),
 	MC_1_20_3(143, 765, "1_20", "1.20.3"),
-	MC_1_20_4(143, 766, "1_20", "1.20.4"),
+	MC_1_20_4(143, 765, "1_20", "1.20.4"),
 	MC_NMS_1_20_R3(143, 766, "1_20", "1.20_NMS_R3", MC_1_20),
-	MC_1_20_5(144, 767, "1_20", "1.20.5"),
-	MC_1_20_6(144, 768, "1_20", "1.20.6"),
-	MC_NMS_1_20_R4(144, 768, "1_20", "1.20_NMS_R4", MC_1_20),
-	MC_1_21(151, Integer.MAX_VALUE, "1_21", "1.21"),
-	MC_NMS_1_21_R1(151, Integer.MAX_VALUE, "1_21", "1.21_NMS_R1", MC_1_21);
+	MC_1_20_5(144, 766, "1_20", "1.20.5"),
+	MC_1_20_6(144, 766, "1_20", "1.20.6"),
+	MC_NMS_1_20_R4(144, 766, "1_20", "1.20_NMS_R4", MC_1_20),
+	MC_1_21(151, 767, "1_21", "1.21"),
+	MC_NMS_1_21_R1(151, 767, "1_21", "1.21_NMS_R1", MC_1_21),
+	MC_1_22(161, Integer.MAX_VALUE, "1_22", "1.22"),
+	MC_NMS_1_22_R1(161, Integer.MAX_VALUE, "1_22", "1.22_NMS_R1", MC_1_22);
 
 	private static final Map<String, MCVersion> VERSION_MAP = new HashMap<>();
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new HashMap<>();
