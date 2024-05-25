@@ -49,19 +49,13 @@ import net.minecraft.world.inventory.Containers;
 <#if !mojangMapped>
 import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
 </#if>
-<#if mcVersion < 100200005>
 import org.bukkit.craftbukkit.v${nmsVersion}.inventory.CraftItemStack;
-</#if>
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-<#if mcVersion < 100200005><#else>
-import com.google.gson.Gson;
-</#if>
 
 import java.util.logging.Logger;
 
@@ -78,7 +72,7 @@ public final class InventoryUtils_${nmsVersion}${nmsPatchLevel}${nmsExtension} i
 		<#if mcVersion < 100200005>
 		return CraftItemStack.asNMSCopy(itemStack).save(new <#if mojangMapped>CompoundTag<#else>NBTTagCompound</#if>()).toString();
 		<#else>
-		return new Gson().toJson(itemStack);
+		return CraftItemStack.asNMSCopy(itemStack).save(net.minecraft.core.RegistryAccess.EMPTY).toString();
 		</#if>
 	}
 
