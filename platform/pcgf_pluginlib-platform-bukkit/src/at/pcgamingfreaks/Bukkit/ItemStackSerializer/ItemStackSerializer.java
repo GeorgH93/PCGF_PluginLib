@@ -27,6 +27,9 @@ import java.util.logging.Logger;
 
 public interface ItemStackSerializer extends IPlatformDependent
 {
+	String KEY_INVENTORY = "Inventory", KEY_DATA_VERSION = "DataVersion";
+	String KEY_SIZE = "size", KEY_SLOT = "Slot";
+
 	/**
 	 * Deserialize a serialized byte array to an ItemStack array.
 	 *

@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 @SuppressWarnings("ConstantConditions")
-public final class NBTItemStackSerializer_Reflection implements ItemStackSerializer
+public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 {
 	//region Reflection Variables
 	private static final Class<?> CLASS_NBT_BASE                    = NmsReflector.INSTANCE.getNmsClass("NBTBase");
@@ -75,8 +75,6 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 
 	private static final Object DATA_FIXER;
 	private static final int CURRENT_DATA_VERSION;
-
-	private static final String KEY_INVENTORY = "Inventory", KEY_DATA_VERSION = "DataVersion";
 
 	static
 	{
@@ -177,7 +175,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 	{
 		this.logger = logger;
 		if(logger == null) return;
-		if(CLASS_NBT_TAG_COMPOUND == null || METHOD_NBT_TAG_C_SET2 == null || METHOD_NBT_TAG_C_SET_INT == null || METHOD_AS_NMS_COPY == null || METHOD_NBT_COMP_STEAM_A == null ||
+		if(CLASS_NBT_TAG_COMPOUND == null || METHOD_NBT_TAG_C_SET2 == null || METHOD_NBT_TAG_C_SET_INT == null || METHOD_NBT_COMP_STEAM_A == null ||
 				METHOD_NBT_COMP_STREAM_A2 == null || METHOD_GET_INT == null || METHOD_HAS_KEY_OF_TYPE == null || METHOD_AS_BUKKIT_COPY == null || METHOD_GET_COMPOUND == null ||
 				(METHOD_CREATE_STACK == null && CONSTRUCTOR_NMS_ITEM_STACK == null && METHOD_CREATE_STACK_NEW == null))
 		{
@@ -216,7 +214,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 			{
 				Object localNBTTagCompound = METHOD_NBT_COMP_STREAM_A2.invoke(null, new ByteArrayInputStream(data));
 				if (METHOD_NBT_COMP_STREAM_FROM_DATA_INPUT != null) localNBTTagCompound = METHOD_NBT_COMP_STREAM_FROM_DATA_INPUT.invoke(null, localNBTTagCompound);
-				int size = (int) METHOD_GET_INT.invoke(localNBTTagCompound, "size"), dataVersion = CURRENT_DATA_VERSION;
+				int size = (int) METHOD_GET_INT.invoke(localNBTTagCompound, KEY_SIZE), dataVersion = CURRENT_DATA_VERSION;
 				if((boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, KEY_DATA_VERSION, 3)) dataVersion = (int) METHOD_GET_INT.invoke(localNBTTagCompound, KEY_DATA_VERSION);
 				if (dataVersion == MCVersion.MC_1_19_4.getProtocolVersion()) dataVersion = 3337;
 				if(!(boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, KEY_INVENTORY, 9)) convertOldFormatToNew(localNBTTagCompound, size);
@@ -237,7 +235,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 				for(int i = 0; i < listSize; i++)
 				{
 					Object compound = METHOD_GET_COMPOUND_FROM_LIST.invoke(nbtItemList, i);
-					byte slot = (byte) METHOD_GET_BYTE.invoke(compound, "Slot");
+					byte slot = (byte) METHOD_GET_BYTE.invoke(compound, KEY_SLOT);
 					try
 					{
 						its[slot] = deserializeNBTCompound(compound);
@@ -291,7 +289,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 			{
 				//noinspection ConstantConditions
 				Object localNBTTagCompound = CONSTRUCTOR_NBT_TAG_COMPOUND.newInstance();
-				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, "size", itemStacks.length);
+				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, KEY_SIZE, itemStacks.length);
 				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, KEY_DATA_VERSION, CURRENT_DATA_VERSION);
 				Object nbtItemList = CONSTRUCTOR_NBT_TAG_LIST.newInstance();
 				METHOD_NBT_TAG_C_SET_NBT_BASE.invoke(localNBTTagCompound, KEY_INVENTORY, nbtItemList);
@@ -300,7 +298,7 @@ public final class NBTItemStackSerializer_Reflection implements ItemStackSeriali
 					if(itemStacks[i] != null)
 					{
 						Object itemNBTCompound = CONSTRUCTOR_NBT_TAG_COMPOUND.newInstance();
-						METHOD_NBT_TAG_C_SET_BYTE.invoke(itemNBTCompound, "Slot", (byte) i);
+						METHOD_NBT_TAG_C_SET_BYTE.invoke(itemNBTCompound, KEY_SLOT, (byte) i);
 						Object nmsCopy = METHOD_AS_NMS_COPY.invoke(null, itemStacks[i]);
 						if (METHOD_SAVE != null) METHOD_SAVE.invoke(nmsCopy, itemNBTCompound);
 						else itemNBTCompound = METHOD_SAVE_NEW.invoke(nmsCopy, REGISTRY, itemNBTCompound);
