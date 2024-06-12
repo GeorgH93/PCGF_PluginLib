@@ -21,7 +21,7 @@
 				<plugin>
 					<groupId>net.md-5</groupId>
 					<artifactId>specialsource-maven-plugin</artifactId>
-					<version>2.0.2</version>
+					<version>2.0.3</version>
 					<executions>
 						<execution>
 							<phase>package</phase>
@@ -77,6 +77,7 @@
 			</activation>
 			<modules>
 				<module>pcgf_pluginlib-platform-nms_mm-1_20_R4</module>
+				<module>pcgf_pluginlib-platform-nms_mm-1_21_R1</module>
 			</modules>
 		</profile>
 	</profiles>

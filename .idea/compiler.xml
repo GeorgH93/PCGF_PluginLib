@@ -44,6 +44,7 @@
         <module name="pcgf_pluginlib-platform-bukkit" />
         <module name="pcgf_pluginlib-platform-nms-reflection" />
         <module name="pcgf_pluginlib-common" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R1" />
         <module name="pcgf_pluginlib-uuid" />
       </profile>
     </annotationProcessing>
