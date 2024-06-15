@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>pcgf_pluginlib-platform-nms-1_20_R4_Paper</artifactId>
+	<artifactId>pcgf_pluginlib-platform-nms-1_21_R1_Paper</artifactId>
 	<parent>
 		<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
 		<artifactId>pcgf_pluginlib-platform-nms</artifactId>
@@ -14,10 +14,10 @@
 	<url>${website}</url>
 
 	<properties>
-		<nmsVersion>1_20_R4</nmsVersion>
-		<mcVersion>100200005</mcVersion>
+		<nmsVersion>1_21_R1</nmsVersion>
+		<mcVersion>100210000</mcVersion>
 		<mojangMapped>true</mojangMapped>
-		<spigotVersion>1.20.6-R0.1-SNAPSHOT</spigotVersion>
+		<spigotVersion>1.21-R0.1-SNAPSHOT</spigotVersion>
 		<nmsExtension>_Paper</nmsExtension>
 	</properties>
 

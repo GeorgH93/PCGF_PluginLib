@@ -77,7 +77,9 @@
 			</activation>
 			<modules>
 				<module>pcgf_pluginlib-platform-nms_mm-1_20_R4</module>
+				<module>pcgf_pluginlib-platform-nms_paper-1_20_R4</module>
 				<module>pcgf_pluginlib-platform-nms_mm-1_21_R1</module>
+				<module>pcgf_pluginlib-platform-nms_paper-1_21_R1</module>
 			</modules>
 		</profile>
 	</profiles>

@@ -146,15 +146,5 @@
 				<module>pom_mojang_mapped.xml</module>
 			</modules>
 		</profile>
-		<profile>
-			<id>Java21AndUp</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-				<jdk>[21,)</jdk>
-			</activation>
-			<modules>
-				<module>pcgf_pluginlib-platform-nms_paper-1_20_R4</module>
-			</modules>
-		</profile>
 	</profiles>
 </project>
