@@ -128,10 +128,17 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 				for(int i = 0, used = -1; i < itemStacks.length; i++)
 				{
 					if (itemStacks[i] == null) continue;
-					CompoundTag itemTag = new CompoundTag();
-					itemTag.putByte(KEY_SLOT, (byte) i);
-					Tag t = CraftItemStack.asNMSCopy(itemStacks[i]).save(RegistryAccess.EMPTY, itemTag);
-					list.addTag(++used, t);
+					try
+					{
+						CompoundTag itemTag = new CompoundTag();
+						itemTag.putByte(KEY_SLOT, (byte) i);
+						Tag t = CraftItemStack.asNMSCopy(itemStacks[i]).save(RegistryAccess.EMPTY, itemTag);
+						list.addTag(++used, t);
+					}
+					catch (Exception ignored)
+					{
+						logger.warning("Failed to store item on slot " + i + ":\n" + itemStacks[i].toString());
+					}
 				}
 				NbtIo.write(tag, dataOutputStream);
 				dataOutputStream.flush();
