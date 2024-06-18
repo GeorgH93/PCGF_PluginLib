@@ -26,9 +26,10 @@ import at.pcgamingfreaks.Bukkit.MCVersion;
 import com.mojang.datafixers.DataFixer;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.*;
 import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.server.MinecraftServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v${nmsVersion}.CraftServer;
@@ -53,6 +54,8 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 	private static final DataFixer DATA_FIXER = ((CraftServer) Bukkit.getServer()).getServer().fixerUpper;
 
 	@Setter private Logger logger = null;
+
+	private final HolderLookup.Provider registry = MinecraftServer.getServer().registryAccess();
 
 	@Override
 	public ItemStack[] deserialize(byte[] data)
@@ -79,7 +82,7 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 					{
 						itemTag = list.getCompound(i);
 						byte slot = itemTag.getByte(KEY_SLOT);
-						Optional<net.minecraft.world.item.ItemStack> item = net.minecraft.world.item.ItemStack.parse(RegistryAccess.EMPTY, itemTag);
+						Optional<net.minecraft.world.item.ItemStack> item = net.minecraft.world.item.ItemStack.parse(registry, itemTag);
 						its[slot] = CraftItemStack.asBukkitCopy(item.orElse(net.minecraft.world.item.ItemStack.EMPTY));
 					}
 					catch(Exception ignored)
@@ -132,7 +135,7 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 					{
 						CompoundTag itemTag = new CompoundTag();
 						itemTag.putByte(KEY_SLOT, (byte) i);
-						Tag t = CraftItemStack.asNMSCopy(itemStacks[i]).save(RegistryAccess.EMPTY, itemTag);
+						Tag t = CraftItemStack.asNMSCopy(itemStacks[i]).save(registry, itemTag);
 						list.addTag(++used, t);
 					}
 					catch (Exception ignored)
