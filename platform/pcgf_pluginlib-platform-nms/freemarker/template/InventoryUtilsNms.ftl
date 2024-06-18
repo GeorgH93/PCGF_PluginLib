@@ -51,11 +51,13 @@ import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
 </#if>
 import org.bukkit.craftbukkit.v${nmsVersion}.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Logger;
 
@@ -189,5 +191,18 @@ public final class InventoryUtils_${nmsVersion}${nmsPatchLevel}${nmsExtension} i
 	@Override
 	public void setInventoryTitlePrepared(final @NotNull Inventory inventory, final @NotNull Object newTitle)
 	{
+	}
+
+	@Override
+	public @Nullable Inventory getClickedInventory(final @NotNull InventoryClickEvent event)
+	{
+		if (event.getRawSlot() < 0) return null;
+
+		InventoryView view = event.getView();
+		Inventory topInventory = view.getTopInventory();
+		if (event.getRawSlot() < topInventory.getSize())
+			return topInventory;
+		else
+			return view.getBottomInventory();
 	}
 }
