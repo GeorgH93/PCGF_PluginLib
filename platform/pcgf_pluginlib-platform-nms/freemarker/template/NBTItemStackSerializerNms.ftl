@@ -74,10 +74,18 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 				int listSize = list.size();
 				for (int i = 0; i < listSize; i++)
 				{
-					CompoundTag itemTag = list.getCompound(i);
-					byte slot = itemTag.getByte(KEY_SLOT);
-					Optional<net.minecraft.world.item.ItemStack> item = net.minecraft.world.item.ItemStack.parse(RegistryAccess.EMPTY, itemTag);
-					its[slot] = CraftItemStack.asBukkitCopy(item.orElse(net.minecraft.world.item.ItemStack.EMPTY));
+					CompoundTag itemTag = null;
+					try
+					{
+						itemTag = list.getCompound(i);
+						byte slot = itemTag.getByte(KEY_SLOT);
+						Optional<net.minecraft.world.item.ItemStack> item = net.minecraft.world.item.ItemStack.parse(RegistryAccess.EMPTY, itemTag);
+						its[slot] = CraftItemStack.asBukkitCopy(item.orElse(net.minecraft.world.item.ItemStack.EMPTY));
+					}
+					catch(Exception ignored)
+					{
+						if(logger != null) logger.warning("Failed to restore item on slot " + i + " with json:\n" + (itemTag == null ? "null" : itemTag.toString()));
+					}
 				}
 				return its;
 			}
