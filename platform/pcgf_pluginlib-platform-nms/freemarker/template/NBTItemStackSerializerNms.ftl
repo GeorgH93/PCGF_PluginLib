@@ -57,6 +57,29 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 
 	private final HolderLookup.Provider registry = MinecraftServer.getServer().registryAccess();
 
+
+	private CompoundTag readData(byte[] data) throws IOException
+	{
+		String error = "";
+		try
+		{
+			return NbtIo.read(new DataInputStream(new ByteArrayInputStream(data)));
+		}
+		catch(Exception e)
+		{
+			error = e.getMessage();
+		}
+		try
+		{
+			return NbtIo.readCompressed(new ByteArrayInputStream(data), NbtAccounter.unlimitedHeap());
+		}
+		catch(Exception e)
+		{
+			error += " | " + e.getMessage();
+		}
+		throw new IOException(error);
+	}
+
 	@Override
 	public ItemStack[] deserialize(byte[] data)
 	{
@@ -64,7 +87,7 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 		{
 			try
 			{
-				CompoundTag tag = NbtIo.read(new DataInputStream(new ByteArrayInputStream(data)));
+				CompoundTag tag = readData(data);
 				int size = tag.getInt(KEY_SIZE), dataVersion = DATA_VERSION;
 				if (tag.contains(KEY_DATA_VERSION, CompoundTag.TAG_INT)) dataVersion = tag.getInt(KEY_DATA_VERSION);
 				if (!tag.contains(KEY_INVENTORY)) { convertOldFormatToNew(tag, size); }
