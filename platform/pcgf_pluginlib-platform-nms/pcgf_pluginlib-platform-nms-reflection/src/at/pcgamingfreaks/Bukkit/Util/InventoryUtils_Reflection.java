@@ -238,4 +238,12 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 		else
 			return view.getBottomInventory();
 	}
+
+	@Override
+	public @Nullable Inventory getPlayerTopInventory(final @NotNull Player player)
+	{
+		InventoryView view = player.getOpenInventory();
+		if(view == null) return null;
+		return view.getTopInventory();
+	}
 }

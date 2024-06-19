@@ -56,4 +56,6 @@ interface IInventoryUtils extends IPlatformDependent
 	void setInventoryTitlePrepared(final @NotNull Inventory inventory, final @NotNull Object newTitle);
 
 	@Nullable Inventory getClickedInventory(final @NotNull InventoryClickEvent event);
+
+	@Nullable Inventory getPlayerTopInventory(final @NotNull Player player);
 }

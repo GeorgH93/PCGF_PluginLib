@@ -205,4 +205,12 @@ public final class InventoryUtils_${nmsVersion}${nmsPatchLevel}${nmsExtension} i
 		else
 			return view.getBottomInventory();
 	}
+
+	@Override
+	public @Nullable Inventory getPlayerTopInventory(final @NotNull Player player)
+	{
+		InventoryView view = player.getOpenInventory();
+		if(view == null) return null;
+		return view.getTopInventory();
+	}
 }
