@@ -284,5 +284,10 @@ public class InventoryUtils
 		INSTANCE.setInventoryTitle(inventory, newTitle);
 	}
 
+	public static @Nullable Inventory getPlayerTopInventory(final @NotNull Player player)
+	{
+		return INSTANCE.getPlayerTopInventory(player);
+	}
+
 	private InventoryUtils() {}
 }
