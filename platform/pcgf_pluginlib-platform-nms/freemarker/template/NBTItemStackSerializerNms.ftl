@@ -94,7 +94,7 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 			}
 			catch (Exception e)
 			{
-				if (logger != null) logger.log(Level.SEVERE, "Failed to deserialize NBTItemStack", e);
+				if (logger != null) logger.log(Level.SEVERE, "Failed to deserialize NBTItemStack (size: " + data.length + ")", e);
 				else e.printStackTrace();
 			}
 		}
