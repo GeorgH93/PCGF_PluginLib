@@ -93,7 +93,7 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 				if (!tag.contains(KEY_INVENTORY)) { convertOldFormatToNew(tag, size); }
 				if (dataVersion < DATA_VERSION)
 				{ // Update data
-					DataFixTypes.PLAYER.updateToCurrentVersion(DATA_FIXER, tag, dataVersion);
+					tag = DataFixTypes.PLAYER.updateToCurrentVersion(DATA_FIXER, tag, dataVersion);
 				}
 				ItemStack[] its = new ItemStack[size];
 				ListTag list = tag.getList(KEY_INVENTORY, CompoundTag.TAG_COMPOUND);
