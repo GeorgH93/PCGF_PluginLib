@@ -23,6 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 	</#if>
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
@@ -74,7 +75,7 @@ public final class InventoryUtils_${nmsVersion}${nmsPatchLevel}${nmsExtension} i
 		<#if mcVersion < 100200005>
 		return CraftItemStack.asNMSCopy(itemStack).save(new <#if mojangMapped>CompoundTag<#else>NBTTagCompound</#if>()).toString();
 		<#else>
-		return CraftItemStack.asNMSCopy(itemStack).save(net.minecraft.core.RegistryAccess.EMPTY).toString();
+		return CraftItemStack.asNMSCopy(itemStack).save(MinecraftServer.getServer().registryAccess()).toString();
 		</#if>
 	}
 
