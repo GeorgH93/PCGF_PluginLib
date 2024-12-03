@@ -13,6 +13,7 @@
         <module name="pcgf_pluginlib-test_helper-bukkit" />
         <module name="pcgf_pluginlib-reflection-obc" />
         <module name="pcgf_pluginlib-version" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R3_Paper" />
         <module name="pcgf_pluginlib-version_detection" />
         <module name="pcgf_pluginlib-platform-nms-1_19_R3" />
         <module name="pcgf_pluginlib-plugin-bukkit" />
@@ -26,6 +27,7 @@
         <module name="pcgf_pluginlib-platform-nms-1_20_R3" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R2" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R4" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R1_Paper" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R1" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R4_Paper" />
         <module name="pcgf_pluginlib-platform-nms-1_19_R1_1" />
@@ -42,9 +44,12 @@
         <module name="pcgf_pluginlib-reflection-nms" />
         <module name="pcgf_pluginlib-platform-nms-1_15_R1" />
         <module name="pcgf_pluginlib-platform-bukkit" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R3" />
         <module name="pcgf_pluginlib-platform-nms-reflection" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R2" />
         <module name="pcgf_pluginlib-common" />
         <module name="pcgf_pluginlib-platform-nms-1_21_R1" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R2_Paper" />
         <module name="pcgf_pluginlib-uuid" />
       </profile>
     </annotationProcessing>
