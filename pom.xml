@@ -113,13 +113,6 @@
 			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.jacoco</groupId>
-			<artifactId>org.jacoco.agent</artifactId>
-			<version>0.8.12</version>
-			<classifier>runtime</classifier>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -186,11 +179,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.2</version>
-				<configuration>
-					<systemPropertyVariables>
-						<jacoco-agent.destfile>${project.build.directory}/coverage.exec</jacoco-agent.destfile>
-					</systemPropertyVariables>
-				</configuration>
 			</plugin>
 			<!-- flatten the pom -->
 			<plugin>
@@ -230,35 +218,6 @@
 						<url/>
 					</pomElements>
 				</configuration>
-			</plugin>
-			<!-- Creates the coverage report -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.12</version>
-				<executions>
-					<execution>
-						<id>instrument</id>
-						<goals>
-							<goal>instrument</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>restore-instrumented-classes</id>
-						<goals>
-							<goal>restore-instrumented-classes</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<dataFile>${project.build.directory}/coverage.exec</dataFile>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
