@@ -17,7 +17,7 @@
 		<nmsVersion>1_21_R1</nmsVersion>
 		<mcVersion>100210000</mcVersion>
 		<mojangMapped>true</mojangMapped>
-		<spigotVersion>1.21-R0.1-SNAPSHOT</spigotVersion>
+		<spigotVersion>1.21.1-R0.1-SNAPSHOT</spigotVersion>
 		<nmsExtension>_Paper</nmsExtension>
 	</properties>
 
