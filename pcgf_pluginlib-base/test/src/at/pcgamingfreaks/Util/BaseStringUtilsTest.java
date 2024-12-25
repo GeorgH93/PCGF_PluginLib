@@ -17,8 +17,6 @@
 
 package at.pcgamingfreaks.Util;
 
-import at.pcgamingfreaks.ConsoleColor;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,8 +32,6 @@ public class BaseStringUtilsTest
 	private static final String longTextFinal = longText.substring(0, maxLength), shortTextFinal = shortText, exactTextFinal = exactText;
 	private static final String t1 = "Test String 1", t2 = "test 2", t3 = "The tree is old.";
 	private static final String[] testArray = new String[] { t1, t2, t3 };
-	private static final String ENABLED_MESSAGE = ConsoleColor.GREEN + " TestPlugin v1.2 has been enabled! " + ConsoleColor.YELLOW + " :) " + ConsoleColor.RESET;
-	private static final String DISABLED_MESSAGE = ConsoleColor.RED + " TestPlugin v1.2 has been disabled. " + ConsoleColor.YELLOW + " :( " + ConsoleColor.RESET;
 	private static final String TEST_STRING = "This is a test string!";
 
 	@BeforeClass
