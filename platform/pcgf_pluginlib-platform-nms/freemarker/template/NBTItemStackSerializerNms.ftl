@@ -88,23 +88,36 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 			try
 			{
 				CompoundTag tag = readData(data);
+				<#if mcVersion < 100210005>
 				int size = tag.getInt(KEY_SIZE), dataVersion = DATA_VERSION;
 				if (tag.contains(KEY_DATA_VERSION, CompoundTag.TAG_INT)) dataVersion = tag.getInt(KEY_DATA_VERSION);
+				<#else>
+				int size = tag.getInt(KEY_SIZE).orElseThrow(), dataVersion = tag.getIntOr(KEY_DATA_VERSION, DATA_VERSION);
+				</#if>
 				if (!tag.contains(KEY_INVENTORY)) { convertOldFormatToNew(tag, size); }
 				if (dataVersion < DATA_VERSION)
 				{ // Update data
 					tag = DataFixTypes.PLAYER.updateToCurrentVersion(DATA_FIXER, tag, dataVersion);
 				}
 				ItemStack[] its = new ItemStack[size];
+				<#if mcVersion < 100210005>
 				ListTag list = tag.getList(KEY_INVENTORY, CompoundTag.TAG_COMPOUND);
+				<#else>
+				ListTag list = tag.getList(KEY_INVENTORY).orElseThrow();
+				</#if>
 				int listSize = list.size();
 				for (int i = 0; i < listSize; i++)
 				{
 					CompoundTag itemTag = null;
 					try
 					{
+	<#if mcVersion < 100210005>
 						itemTag = list.getCompound(i);
 						byte slot = itemTag.getByte(KEY_SLOT);
+	<#else>
+						itemTag = list.getCompound(i).orElseThrow();
+						byte slot = itemTag.getByte(KEY_SLOT).orElseThrow();
+	</#if>
 						Optional<net.minecraft.world.item.ItemStack> item = net.minecraft.world.item.ItemStack.parse(registry, itemTag);
 						its[slot] = CraftItemStack.asBukkitCopy(item.orElse(net.minecraft.world.item.ItemStack.EMPTY));
 					}
@@ -130,9 +143,16 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 		tag.put(KEY_INVENTORY, list);
 		for(int i = 0; i < size; i++)
 		{
-			if (tag.contains(String.valueOf(i), CompoundTag.TAG_COMPOUND))
+			String is = String.valueOf(i);
+	<#if mcVersion < 100210005>
+			if (tag.contains(is, CompoundTag.TAG_COMPOUND))
 			{
-				CompoundTag itemTag = tag.getCompound(String.valueOf(i));
+				CompoundTag itemTag = tag.getCompound(is);
+	<#else>
+			if (tag.contains(is))
+			{
+				CompoundTag itemTag = tag.getCompound(is).orElseThrow();
+	</#if>
 				itemTag.putByte(KEY_SLOT, (byte) i);
 				list.add(itemTag);
 			}
