@@ -91,7 +91,10 @@ public class HeadUtils
 
 		if (itemName != null)
 		{
-			builder.append("minecraft:custom_name='{\"text\":\"").append(itemName).append("\"}',");
+			if(MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_21_R4))
+				builder.append("minecraft:custom_name='").append(itemName).append("',");
+			else
+				builder.append("minecraft:custom_name='{\"text\":\"").append(itemName).append("\"}',");
 		}
 
 		// Profile
