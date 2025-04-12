@@ -33,6 +33,7 @@
         <module name="pcgf_pluginlib-platform-nms-1_19_R1_1" />
         <module name="pcgf_pluginlib-bungee" />
         <module name="pcgf_pluginlib-mcversion" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R4_Paper" />
         <module name="pcgf_pluginlib-plugin-common" />
         <module name="pcgf_pluginlib-placeholder_api_wrapper" />
         <module name="IMessage" />
@@ -44,6 +45,7 @@
         <module name="pcgf_pluginlib-reflection-nms" />
         <module name="pcgf_pluginlib-platform-nms-1_15_R1" />
         <module name="pcgf_pluginlib-platform-bukkit" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R4" />
         <module name="pcgf_pluginlib-platform-nms-1_21_R3" />
         <module name="pcgf_pluginlib-platform-nms-reflection" />
         <module name="pcgf_pluginlib-platform-nms-1_21_R2" />

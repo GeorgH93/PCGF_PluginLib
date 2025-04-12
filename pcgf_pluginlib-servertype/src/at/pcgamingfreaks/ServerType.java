@@ -31,13 +31,14 @@ public final class ServerType
 {
 	private ServerType() {}
 
-	@Getter private static final boolean server, bukkit, bukkitCompatible,  spigot, spigotCompatible, paper, paperCompatible, glowstone, glowstoneCompatible;
+	@Getter private static final boolean server, bukkit, bukkitCompatible,  spigot, spigotCompatible, paper, paperCompatible, glowstone, glowstoneCompatible, folia;
 	@Getter private static final boolean proxy, bungeeCord, bungeeCordCompatible, waterfall, waterfallCompatible, velocity, velocityCompatible;
 
 	static
 	{
 		boolean bukkitComp = false, spigotComp = false, paperComp = false, glowComp = false, bungeeComp = false, waterfallComp = false, velocityComp = false;
 		boolean isBukkit = false, isSpigot = false, isPaper = false, isGlowstone = false, isBungee = false, isWaterfall = false, isVelocity = false;
+		boolean tmpFolia = false;
 
 		// Detecting current server type
 		Class<?> bukkitClass = Reflection.getClassSilent("org.bukkit.Bukkit");
@@ -106,6 +107,11 @@ public final class ServerType
 					}
 				}
 			}
+			// Check if folia is supported
+			try {
+				Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+				tmpFolia = true;
+			} catch (ClassNotFoundException ignored) {}
 		}
 		if (bukkitClass == null)
 		{ // Is not bukkit compatible server, probably a proxy
@@ -161,6 +167,7 @@ public final class ServerType
 		bukkit = isBukkit;
 		spigot = isSpigot;
 		paper = isPaper;
+		folia = tmpFolia;
 		glowstone = isGlowstone;
 		bungeeCord = isBungee;
 		waterfall = isWaterfall;
