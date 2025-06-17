@@ -74,8 +74,12 @@ public final class InventoryUtils_${nmsVersion}${nmsPatchLevel}${nmsExtension} i
 	{
 		<#if mcVersion < 100200005>
 		return CraftItemStack.asNMSCopy(itemStack).save(new <#if mojangMapped>CompoundTag<#else>NBTTagCompound</#if>()).toString();
-		<#else>
+		<#elseif mcVersion < 100210006>
 		return CraftItemStack.asNMSCopy(itemStack).save(MinecraftServer.getServer().registryAccess()).toString();
+		<#else>
+		net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
+		Object base = net.minecraft.world.item.ItemStack.CODEC.encodeStart(MinecraftServer.getServer().registryAccess().createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE), stack).getOrThrow();
+		return base.toString();
 		</#if>
 	}
 

@@ -50,7 +50,11 @@ import java.util.logging.Logger;
  */
 public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension} implements ItemStackSerializer
 {
+	<#if mcVersion < 100210006>
 	private static final int DATA_VERSION = SharedConstants.getCurrentVersion().getDataVersion().getVersion();
+	<#else>
+	private static final int DATA_VERSION = SharedConstants.getCurrentVersion().dataVersion().version();
+	</#if>
 	private static final DataFixer DATA_FIXER = ((CraftServer) Bukkit.getServer()).getServer().fixerUpper;
 
 	@Setter private Logger logger = null;
@@ -111,14 +115,20 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 					CompoundTag itemTag = null;
 					try
 					{
-	<#if mcVersion < 100210005>
+						<#if mcVersion < 100210005>
 						itemTag = list.getCompound(i);
 						byte slot = itemTag.getByte(KEY_SLOT);
-	<#else>
+						<#else>
 						itemTag = list.getCompound(i).orElseThrow();
 						byte slot = itemTag.getByte(KEY_SLOT).orElseThrow();
-	</#if>
+						</#if>
+						<#if mcVersion < 100210006>
 						Optional<net.minecraft.world.item.ItemStack> item = net.minecraft.world.item.ItemStack.parse(registry, itemTag);
+						<#else>
+						Optional<net.minecraft.world.item.ItemStack> item =  net.minecraft.world.item.ItemStack.CODEC.parse(registry.createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE), itemTag).resultOrPartial((s) -> {
+							logger.severe(String.format("Tried to load invalid item: '%s'", s));
+						});
+						</#if>
 						its[slot] = CraftItemStack.asBukkitCopy(item.orElse(net.minecraft.world.item.ItemStack.EMPTY));
 					}
 					catch(Exception ignored)
@@ -178,7 +188,13 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 					{
 						CompoundTag itemTag = new CompoundTag();
 						itemTag.putByte(KEY_SLOT, (byte) i);
+						<#if mcVersion < 100210006>
 						Tag t = CraftItemStack.asNMSCopy(itemStacks[i]).save(registry, itemTag);
+						<#else>
+						net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(itemStacks[i]);
+						Tag t = net.minecraft.world.item.ItemStack.CODEC.encode(stack, MinecraftServer.getServer().registryAccess().createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE), itemTag).getOrThrow();
+						</#if>
+
 						list.addTag(++used, t);
 					}
 					catch (Exception ignored)

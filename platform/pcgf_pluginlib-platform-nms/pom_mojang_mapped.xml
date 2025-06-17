@@ -86,6 +86,8 @@
 				<module>pcgf_pluginlib-platform-nms_paper-1_21_R3</module>
 				<module>pcgf_pluginlib-platform-nms_mm-1_21_R4</module>
 				<module>pcgf_pluginlib-platform-nms_paper-1_21_R4</module>
+				<module>pcgf_pluginlib-platform-nms_mm-1_21_R5</module>
+				<module>pcgf_pluginlib-platform-nms_paper-1_21_R5</module>
 			</modules>
 		</profile>
 	</profiles>
