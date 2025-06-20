@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2023 GeorgH93
+ *   Copyright (C) 2025 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -123,10 +123,30 @@ public enum MCVersion
 	MC_1_19_4(133, 762, "1_19", "1.19.4"),
 	MC_NMS_1_19_R3(133, 762, "1_19", "1.19_NMS_R3", MC_1_19),
 	MC_1_20(141, 763, "1_20", "1.20"),
-	MC_1_20_1(141, 764, "1_20", "1.20.1"),
+	MC_1_20_1(141, 763, "1_20", "1.20.1"),
 	MC_NMS_1_20_R1(141, 763, "1_20", "1.20_NMS_R1", MC_1_20),
-	MC_1_21(151, Integer.MAX_VALUE, "1_21", "1.21"),
-	MC_NMS_1_21_R1(151, Integer.MAX_VALUE, "1_21", "1.21_NMS_R1", MC_1_21);
+	MC_1_20_2(142, 764, "1_20", "1.20.2"),
+	MC_NMS_1_20_R2(142, 764, "1_20", "1.20_NMS_R2", MC_1_20),
+	MC_1_20_3(143, 765, "1_20", "1.20.3"),
+	MC_1_20_4(143, 765, "1_20", "1.20.4"),
+	MC_NMS_1_20_R3(143, 766, "1_20", "1.20_NMS_R3", MC_1_20),
+	MC_1_20_5(144, 766, "1_20", "1.20.5"),
+	MC_1_20_6(144, 766, "1_20", "1.20.6"),
+	MC_NMS_1_20_R4(144, 766, "1_20", "1.20_NMS_R4", MC_1_20),
+	MC_1_21(151, 767, "1_21", "1.21"),
+	MC_1_21_1(151, 767, "1_21", "1.21.1"),
+	MC_NMS_1_21_R1(151, 767, "1_21", "1.21_NMS_R1", MC_1_21),
+	MC_1_21_2(152, 768, "1_21", "1.21.2"),
+	MC_1_21_3(152, 768, "1_21", "1.21.3"),
+	MC_NMS_1_21_R2(152, 768, "1_21", "1.21_NMS_R2", MC_1_21),
+	MC_1_21_4(153, 769, "1_21", "1.21.4"),
+	MC_NMS_1_21_R3(153, 769, "1_21", "1.21_NMS_R3", MC_1_21),
+	MC_1_21_5(154, 770, "1_21", "1.21.5"),
+	MC_NMS_1_21_R4(154, 770, "1_21", "1.21_NMS_R4", MC_1_21),
+	MC_1_21_6(155, 771, "1_21", "1.21.6"),
+	MC_NMS_1_21_R5(155, 771, "1_21", "1.21_NMS_R5", MC_1_21),
+	MC_1_22(161, Integer.MAX_VALUE, "1_22", "1.22"),
+	MC_NMS_1_22_R1(161, Integer.MAX_VALUE, "1_22", "1.22_NMS_R1", MC_1_22);
 
 	private static final Map<String, MCVersion> VERSION_MAP = new HashMap<>();
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new HashMap<>();

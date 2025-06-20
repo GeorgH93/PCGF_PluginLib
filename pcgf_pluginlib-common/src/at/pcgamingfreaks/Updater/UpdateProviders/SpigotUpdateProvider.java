@@ -90,10 +90,9 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 			UpdateFile result = new UpdateFile();
 			HttpURLConnection connection = connect(new URL(SPIGOT_API + projectID));
 			if(connection == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
-			JsonParser parser = new JsonParser();
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
 			{
-				JsonObject resObject = parser.parse(reader).getAsJsonObject();
+				JsonObject resObject = JsonParser.parseReader(reader).getAsJsonObject();
 				downloadable = !resObject.get("external").getAsBoolean();
 				if(downloadable)
 				{
@@ -129,7 +128,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 			if(connection == null) return UpdateResult.FAIL_FILE_NOT_FOUND;
 			try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
 			{
-				result.setVersion(new Version(parser.parse(reader).getAsJsonObject().get("name").getAsString()));
+				result.setVersion(new Version(JsonParser.parseReader(reader).getAsJsonObject().get("name").getAsString()));
 			}
 			connection.disconnect();
 			lastResult = result;
@@ -137,7 +136,7 @@ public class SpigotUpdateProvider extends BaseOnlineProvider
 		}
 		catch(IOException e)
 		{
-			logger.log(Level.SEVERE, "Failed to query spigot api for updates.", e);
+			logger.log(Level.WARNING, "Failed to query spigot api for updates. Error: {0}", e.getMessage());
 			return UpdateResult.FAIL_FILE_NOT_FOUND;
 		}
 		return UpdateResult.SUCCESS;

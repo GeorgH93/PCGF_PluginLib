@@ -139,7 +139,7 @@ public class GitHubUpdateProvider extends BaseOnlineProviderWithDownload
 			{
 				logger.severe(ConsoleColor.RED + "api.github.com rejected the provided API key!" + ConsoleColor.RESET);
 				logger.severe(ConsoleColor.RED + "Please double-check your configuration to ensure it is correct." + ConsoleColor.RESET);
-				logger.log(Level.SEVERE, null, e);
+				logger.log(Level.SEVERE, "", e);
 				return UpdateResult.FAIL_API_KEY;
 			}
 			else

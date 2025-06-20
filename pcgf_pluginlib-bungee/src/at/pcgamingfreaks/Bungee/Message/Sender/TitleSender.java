@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2023 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,19 +18,45 @@
 package at.pcgamingfreaks.Bungee.Message.Sender;
 
 import at.pcgamingfreaks.Message.Sender.IMetadata;
+import at.pcgamingfreaks.Reflection;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.packet.Title;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 final class TitleSender implements ISender
 {
+	private static final Method SET_TEXT;
+	private static final boolean BASE_COMPONENT_TITLE;
 	private static final TitleMetadata METADATA = new TitleMetadata(); // Default metadata object
-	private static final Title EMPTY_TITLE = mkTitlePacket("", METADATA);
+	private static final Title EMPTY_TITLE;
+
+	static
+	{
+		Method setText;
+		boolean baseComp = false;
+		try
+		{
+			setText = Title.class.getMethod("setText", String.class);
+		}
+		catch(Exception ignored)
+		{
+			setText = Reflection.getMethod(Title.class, "setText", Reflection.getClass("net.md_5.bungee.api.chat.BaseComponent"));
+			baseComp = true;
+		}
+		SET_TEXT = setText;
+		BASE_COMPONENT_TITLE = baseComp;
+		EMPTY_TITLE = mkTitlePacket("", METADATA);
+	}
 
 	private static Title mkTimesPacket(final @NotNull TitleMetadata metadata)
 	{
@@ -46,7 +72,26 @@ final class TitleSender implements ISender
 	{
 		Title titleSend = new Title();
 		titleSend.setAction(metadata.getTitleType());
-		titleSend.setText(json);
+		try
+		{
+			if (BASE_COMPONENT_TITLE)
+			{
+				BaseComponent sendComponent;
+				BaseComponent[] components = ComponentSerializer.parse(json);
+				if (components.length == 0) return titleSend;
+				else if (components.length == 1) sendComponent = components[0];
+				else sendComponent = new TextComponent(components);
+				SET_TEXT.invoke(titleSend, sendComponent);
+			}
+			else
+			{
+				SET_TEXT.invoke(titleSend, json);
+			}
+		}
+		catch(IllegalAccessException | InvocationTargetException e)
+		{
+			e.printStackTrace();
+		}
 		return titleSend;
 	}
 

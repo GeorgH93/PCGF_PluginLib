@@ -1,0 +1,10 @@
+{
+  "templateName": "NBTItemStackSerializerNms.ftl",
+  "dataModel": {
+    "nmsVersion": "${nmsVersion}",
+    "nmsPatchLevel": "${nmsPatchLevel}",
+    "mcVersion": ${mcVersion},
+    "mojangMapped": ${mojangMapped},
+    "nmsExtension": "${nmsExtension}"
+  }
+}

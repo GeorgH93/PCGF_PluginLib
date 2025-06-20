@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,11 +25,13 @@ import at.pcgamingfreaks.Util.StringUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -223,4 +225,25 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 		}
 	}
 	//endregion
+
+	@Override
+	public @Nullable Inventory getClickedInventory(final @NotNull InventoryClickEvent event)
+	{
+		if (event.getRawSlot() < 0) return null;
+
+		InventoryView view = event.getView();
+		Inventory topInventory = view.getTopInventory();
+		if (event.getRawSlot() < topInventory.getSize())
+			return topInventory;
+		else
+			return view.getBottomInventory();
+	}
+
+	@Override
+	public @Nullable Inventory getPlayerTopInventory(final @NotNull Player player)
+	{
+		InventoryView view = player.getOpenInventory();
+		if(view == null) return null;
+		return view.getTopInventory();
+	}
 }

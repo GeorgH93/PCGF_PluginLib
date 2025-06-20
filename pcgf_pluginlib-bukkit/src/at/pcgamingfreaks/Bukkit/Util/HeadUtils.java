@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -70,6 +70,44 @@ public class HeadUtils
 	public static ItemStack fromBase64(final @NotNull ItemStack item, final @NotNull String value, final @Nullable String itemName, @Nullable UUID ownerUUID)
 	{
 		if(ownerUUID == null) ownerUUID = UUID.randomUUID();
+		if (MCVersion.isOlderThan(MCVersion.MC_1_20_5)) {
+			return fromBase64Legacy(item, value, itemName, ownerUUID);
+		} else {
+			return fromBase64MCKeyed(item, value, itemName, ownerUUID);
+		}
+	}
+
+	private static void formatUUID(@NotNull UUID uuid, @NotNull StringBuilder builder)
+	{
+		long most = uuid.getMostSignificantBits(), least = uuid.getLeastSignificantBits();
+		builder.append("[I;");
+		builder.append((int) (most >> 32)).append(',').append((int) most).append(',');
+		builder.append((int) (least >> 32)).append(',').append((int) least).append(']');
+	}
+
+	public static ItemStack fromBase64MCKeyed(final @NotNull ItemStack item, final @NotNull String value, final @Nullable String itemName, @NotNull UUID ownerUUID)
+	{
+		StringBuilder builder = new StringBuilder("player_head[");
+
+		if (itemName != null)
+		{
+			if(MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_21_R4))
+				builder.append("minecraft:custom_name='").append(itemName).append("',");
+			else
+				builder.append("minecraft:custom_name='{\"text\":\"").append(itemName).append("\"}',");
+		}
+
+		// Profile
+		builder.append("profile={id:");
+		formatUUID(ownerUUID, builder);
+		builder.append(",properties:[{name:\"textures\",value:\"").append(value).append("\"}]}");
+
+		builder.append("]");
+		return Bukkit.getUnsafe().modifyItemStack(item, builder.toString());
+	}
+
+	public static ItemStack fromBase64Legacy(final @NotNull ItemStack item, final @NotNull String value, final @Nullable String itemName, @NotNull UUID ownerUUID)
+	{
 		StringBuilder builder = new StringBuilder("{");
 		if(itemName != null)
 		{
@@ -87,15 +125,13 @@ public class HeadUtils
 		}
 		else
 		{
-			long most = ownerUUID.getMostSignificantBits(), least = ownerUUID.getLeastSignificantBits();
-			builder.append("[I;");
-			builder.append((int) (most >> 32)).append(',').append((int) most).append(',');
-			builder.append((int) (least >> 32)).append(',').append((int) least).append(']');
+			formatUUID(ownerUUID, builder);
 		}
 		builder.append(",Properties:{textures:[{Value:\"").append(value).append("\"}]}}}");
-		Bukkit.getUnsafe().modifyItemStack(item, builder.toString());
-		return item;
+		return Bukkit.getUnsafe().modifyItemStack(item, builder.toString());
 	}
+
+
 
 	private static String encodeUrl(String url)
 	{

@@ -21,10 +21,9 @@ package at.pcgamingfreaks.Bukkit.Util;
 import net.minecraft.nbt.CompoundTag;
 	<#if mcVersion < 100190000>
 import net.minecraft.network.chat.TranslatableComponent;
-	<#else>
-import net.minecraft.network.chat.Component;
 	</#if>
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
@@ -48,14 +47,18 @@ import net.minecraft.world.inventory.Containers;
 	</#if>
 </#if>
 
+<#if !mojangMapped>
 import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
+</#if>
 import org.bukkit.craftbukkit.v${nmsVersion}.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Logger;
 
@@ -64,12 +67,20 @@ import java.util.logging.Logger;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public final class InventoryUtils_${nmsVersion}${nmsPatchLevel} implements IInventoryUtils
+public final class InventoryUtils_${nmsVersion}${nmsPatchLevel}${nmsExtension} implements IInventoryUtils
 {
 	@Override
 	public String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
 	{
+		<#if mcVersion < 100200005>
 		return CraftItemStack.asNMSCopy(itemStack).save(new <#if mojangMapped>CompoundTag<#else>NBTTagCompound</#if>()).toString();
+		<#elseif mcVersion < 100210006>
+		return CraftItemStack.asNMSCopy(itemStack).save(MinecraftServer.getServer().registryAccess()).toString();
+		<#else>
+		net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
+		Object base = net.minecraft.world.item.ItemStack.CODEC.encodeStart(MinecraftServer.getServer().registryAccess().createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE), stack).getOrThrow();
+		return base.toString();
+		</#if>
 	}
 
 	@Override
@@ -107,7 +118,7 @@ public final class InventoryUtils_${nmsVersion}${nmsPatchLevel} implements IInve
 		if(topInv.getType() == InventoryType.CRAFTING) return;
 
 			<#if mojangMapped>
-		ServerPlayer entityPlayer = ((CraftPlayer)player).getHandle();
+		ServerPlayer entityPlayer = (ServerPlayer) IUtils.INSTANCE.getHandle(player);
 		ClientboundOpenScreenPacket packet = new ClientboundOpenScreenPacket(entityPlayer.containerMenu.containerId, (MenuType<?>) InventoryTypeMapper_Reflection.getInvContainersObject(topInv), (Component) newTitle);
 		entityPlayer.connection.send(packet);
 		entityPlayer.containerMenu.sendAllDataToRemote();
@@ -185,5 +196,26 @@ public final class InventoryUtils_${nmsVersion}${nmsPatchLevel} implements IInve
 	@Override
 	public void setInventoryTitlePrepared(final @NotNull Inventory inventory, final @NotNull Object newTitle)
 	{
+	}
+
+	@Override
+	public @Nullable Inventory getClickedInventory(final @NotNull InventoryClickEvent event)
+	{
+		if (event.getRawSlot() < 0) return null;
+
+		InventoryView view = event.getView();
+		Inventory topInventory = view.getTopInventory();
+		if (event.getRawSlot() < topInventory.getSize())
+			return topInventory;
+		else
+			return view.getBottomInventory();
+	}
+
+	@Override
+	public @Nullable Inventory getPlayerTopInventory(final @NotNull Player player)
+	{
+		InventoryView view = player.getOpenInventory();
+		if(view == null) return null;
+		return view.getTopInventory();
 	}
 }

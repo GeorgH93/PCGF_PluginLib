@@ -26,6 +26,8 @@ import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
 import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 
+import com.google.gson.JsonParseException;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -242,7 +244,20 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 		{
 			String jsonMsg = prepareMessage(true, args);
 			if(isPlaceholderApiEnabled()) jsonMsg = PlaceholderAPI.setPlaceholders((Player) target, jsonMsg);
-			sendMethod.getActiveSender().send((Player) target, jsonMsg, optionalParameters);
+			try
+			{
+				sendMethod.getActiveSender().send((Player) target, jsonMsg, optionalParameters);
+			}
+			catch(JsonParseException e)
+			{
+				System.out.println("Failed to parse message: " + jsonMsg);
+				e.printStackTrace();
+			}
+			catch(Exception ex)
+			{
+				System.out.println("Failed to send message: " + jsonMsg + " to " + target.getName());
+				ex.printStackTrace();
+			}
 		}
 		else
 		{

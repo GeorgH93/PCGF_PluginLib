@@ -1,0 +1,35 @@
+#EntityPlayer mappings
+net.minecraft.server.level.EntityPlayer#playerConnection b
+net.minecraft.server.level.EntityPlayer#ping e
+
+net.minecraft.world.entity.player.EntityHuman#activeContainer bV
+
+net.minecraft.world.inventory.Container#windowId q
+
+#Containers enum mappings
+net.minecraft.world.inventory.MenuType#GENERIC_9X1 a
+net.minecraft.world.inventory.MenuType#GENERIC_9X2 b
+net.minecraft.world.inventory.MenuType#GENERIC_9X3 c
+net.minecraft.world.inventory.MenuType#GENERIC_9X4 d
+net.minecraft.world.inventory.MenuType#GENERIC_9X5 e
+net.minecraft.world.inventory.MenuType#GENERIC_9X6 f
+net.minecraft.world.inventory.MenuType#GENERIC_3X3 g
+net.minecraft.world.inventory.MenuType#CRAFTER h
+net.minecraft.world.inventory.MenuType#CRAFTER_3x3 h
+net.minecraft.world.inventory.MenuType#ANVIL i
+net.minecraft.world.inventory.MenuType#BEACON j
+net.minecraft.world.inventory.MenuType#BLAST_FURNACE k
+net.minecraft.world.inventory.MenuType#BREWING_STAND l
+net.minecraft.world.inventory.MenuType#CRAFTING m
+net.minecraft.world.inventory.MenuType#ENCHANTMENT n
+net.minecraft.world.inventory.MenuType#FURNACE o
+net.minecraft.world.inventory.MenuType#GRINDSTONE p
+net.minecraft.world.inventory.MenuType#HOPPER q
+net.minecraft.world.inventory.MenuType#LECTERN r
+net.minecraft.world.inventory.MenuType#LOOM s
+net.minecraft.world.inventory.MenuType#MERCHANT t
+net.minecraft.world.inventory.MenuType#SHULKER_BOX u
+net.minecraft.world.inventory.MenuType#SMITHING v
+net.minecraft.world.inventory.MenuType#SMOKER w
+net.minecraft.world.inventory.MenuType#CARTOGRAPHY_TABLE x
+net.minecraft.world.inventory.MenuType#STONECUTTER y

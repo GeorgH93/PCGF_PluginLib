@@ -49,7 +49,7 @@ import java.util.UUID;
  * Reference: https://freemarker.apache.org/
  * See template: ${.main_template_name}
  */
-public final class ChatMessagePacketFactory_${nmsVersion}${nmsPatchLevel} implements IChatMessagePacketFactory
+public final class ChatMessagePacketFactory_${nmsVersion}${nmsPatchLevel}${nmsExtension} implements IChatMessagePacketFactory
 {
 	@Override
 	public Object makeChatPacket(final @NotNull String json, final @NotNull UUID sender)

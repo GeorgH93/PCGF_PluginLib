@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import java.util.UUID;
 
 public interface IChatMessagePacketFactory extends IPlatformDependent
 {
-	IChatMessagePacketFactory INSTANCE = PlatformResolver.createPlatformInstance(IChatMessagePacketFactory.class);
+	IChatMessagePacketFactory INSTANCE = PlatformResolver.createPlatformInstance(IChatMessagePacketFactory.class/*, ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4)*/);
 	UUID EMPTY_UUID = new UUID(0, 0);
 
 	default Object makeChatPacket(final @NotNull String json)

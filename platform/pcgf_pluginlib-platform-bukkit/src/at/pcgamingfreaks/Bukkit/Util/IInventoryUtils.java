@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,9 +21,11 @@ import at.pcgamingfreaks.Bukkit.IPlatformDependent;
 import at.pcgamingfreaks.Bukkit.PlatformResolver;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Logger;
 
@@ -52,4 +54,8 @@ interface IInventoryUtils extends IPlatformDependent
 	void setInventoryTitle(final @NotNull Inventory inventory, final @NotNull String newTitle);
 
 	void setInventoryTitlePrepared(final @NotNull Inventory inventory, final @NotNull Object newTitle);
+
+	@Nullable Inventory getClickedInventory(final @NotNull InventoryClickEvent event);
+
+	@Nullable Inventory getPlayerTopInventory(final @NotNull Player player);
 }

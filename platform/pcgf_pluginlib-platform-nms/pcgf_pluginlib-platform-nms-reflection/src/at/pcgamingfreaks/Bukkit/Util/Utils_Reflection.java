@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package at.pcgamingfreaks.Bukkit.Util;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NmsReflector;
+import at.pcgamingfreaks.Bukkit.OBCReflection;
 import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.entity.Player;
@@ -32,24 +33,30 @@ import java.lang.reflect.Method;
 public class Utils_Reflection implements IUtils
 {
 	//region Reflection constants for the sendPacket method
-	static final Class<?> ENTITY_PLAYER = NmsReflector.INSTANCE.getNmsClass("EntityPlayer");
+	static final Class<?> ENTITY_PLAYER = MCVersion.isOlderThan(MCVersion.MC_NMS_1_20_R4) ? NmsReflector.INSTANCE.getNmsClass("EntityPlayer") : null;
 	static final Class<?> PACKET = NmsReflector.INSTANCE.getNmsClass("Packet");
-	static final Method SEND_PACKET = NmsReflector.INSTANCE.getNmsMethod("PlayerConnection", "sendPacket", PACKET);
-	static final Field PLAYER_CONNECTION = NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "playerConnection");
+	static final Method SEND_PACKET = MCVersion.isOlderThan(MCVersion.MC_NMS_1_20_R4) ? NmsReflector.INSTANCE.getNmsMethod("PlayerConnection", "sendPacket", PACKET) : null;
+	static final Field PLAYER_CONNECTION = MCVersion.isOlderThan(MCVersion.MC_NMS_1_20_R4) ? NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "playerConnection") : null;
 	//endregion
 	private static final Field PLAYER_PING = MCVersion.isOlderThan(MCVersion.MC_1_18) ? NmsReflector.INSTANCE.getNmsField(ENTITY_PLAYER, "ping") : null;
 	private static final Method GET_PLAYER_PING = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_18) ? Reflection.getMethod(Player.class, "getPing") : null;
 	//region Reflection constants for the json to IChatComponent converter
-	private static final Class<?> CHAT_SERIALIZER = NmsReflector.INSTANCE.getNmsClass((MCVersion.is(MCVersion.MC_NMS_1_8_R1)) ? "ChatSerializer" : "IChatBaseComponent$ChatSerializer");
-	private static final Method CHAT_SERIALIZER_METHOD_A = NmsReflector.INSTANCE.getNmsMethod(CHAT_SERIALIZER, "a", String.class);
+	private static final Class<?> CHAT_SERIALIZER = MCVersion.isOlderThan(MCVersion.MC_NMS_1_20_R4) ? NmsReflector.INSTANCE.getNmsClass((MCVersion.is(MCVersion.MC_NMS_1_8_R1)) ? "ChatSerializer" : "IChatBaseComponent$ChatSerializer") : null;
+	private static final Method CHAT_SERIALIZER_METHOD_A = MCVersion.isOlderThan(MCVersion.MC_NMS_1_20_R4) ? NmsReflector.INSTANCE.getNmsMethod(CHAT_SERIALIZER, "a", String.class) : OBCReflection.getOBCMethod("util.CraftChatMessage", "fromJSON", String.class);
 	//endregion
+
+	@Override
+	public Object getHandle(final @NotNull Player player)
+	{
+		return NmsReflector.getHandle(player);
+	}
 
 	@Override
 	public int getPing(final @NotNull Player player)
 	{
 		if(PLAYER_PING != null)
 		{
-			Object handle = NmsReflector.getHandle(player);
+			Object handle = getHandle(player);
 			if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
 			{
 				try
@@ -76,16 +83,32 @@ public class Utils_Reflection implements IUtils
 	@Override
 	public void sendPacket(@NotNull Player player, @NotNull Object packet)
 	{
-		Object handle = NmsReflector.getHandle(player);
-		if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
+		Object handle = getHandle(player);
+		if(handle != null && (ENTITY_PLAYER == null || handle.getClass() == ENTITY_PLAYER)) // If it's not a real player we can't send him the packet
 		{
 			try
 			{
-				SEND_PACKET.invoke(PLAYER_CONNECTION.get(handle), packet);
+				if (MCVersion.isOlderThan(MCVersion.MC_NMS_1_20_R4))
+				{
+					SEND_PACKET.invoke(PLAYER_CONNECTION.get(handle), packet);
+				}
+				else
+				{
+					Object conn = handle.getClass().getField("connection").get(handle);
+					conn.getClass().getMethod("sendPacket", PACKET).invoke(conn, packet);
+				}
 			}
 			catch(IllegalAccessException | InvocationTargetException e)
 			{
 				e.printStackTrace();
+			}
+			catch(NoSuchFieldException e)
+			{
+				throw new RuntimeException(e);
+			}
+			catch(NoSuchMethodException e)
+			{
+				throw new RuntimeException(e);
 			}
 		}
 	}

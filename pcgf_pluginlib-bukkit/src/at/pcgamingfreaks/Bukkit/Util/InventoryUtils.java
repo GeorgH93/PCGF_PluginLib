@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -87,14 +87,12 @@ public class InventoryUtils
 	 */
 	public static @Nullable Inventory getClickedInventory(final @NotNull InventoryClickEvent event)
 	{
-		if (event.getRawSlot() < 0) return null;
-
-		return event.getRawSlot() < event.getView().getTopInventory().getSize() ? event.getView().getTopInventory() : event.getView().getBottomInventory();
+		return INSTANCE.getClickedInventory(event);
 	}
 
 	/**
 	 * Get the item in the players hand.
-	 * If the player does not have an item in it's main hand, the off hand will be used.
+	 * If the player does not have an item in its main hand, the offhand will be used.
 	 *
 	 * @param player The player for whom the item should be obtained.
 	 * @return The item in the players hand.
@@ -284,6 +282,11 @@ public class InventoryUtils
 	public static void setInventoryTitle(final @NotNull Inventory inventory, final @NotNull String newTitle)
 	{
 		INSTANCE.setInventoryTitle(inventory, newTitle);
+	}
+
+	public static @Nullable Inventory getPlayerTopInventory(final @NotNull Player player)
+	{
+		return INSTANCE.getPlayerTopInventory(player);
 	}
 
 	private InventoryUtils() {}

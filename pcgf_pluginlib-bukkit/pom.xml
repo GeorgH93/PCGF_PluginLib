@@ -27,6 +27,11 @@
 		</dependency>
 		<dependency>
 			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
+			<artifactId>pcgf_pluginlib-placeholder_api_wrapper</artifactId>
+			<version>${revision}</version>
+		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib</groupId>
 			<artifactId>pcgf_pluginlib-mcversion</artifactId>
 			<version>${revision}</version>
 		</dependency>

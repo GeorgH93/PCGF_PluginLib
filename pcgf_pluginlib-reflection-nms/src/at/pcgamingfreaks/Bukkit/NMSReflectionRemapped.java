@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.ServerType;
 
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Contract;
@@ -52,7 +53,11 @@ public final class NMSReflectionRemapped implements NmsReflector
 
 	private static void loadMappings(final @NotNull Map<String, String> map, final @NotNull String type)
 	{
-		InputStream fieldMappingStream = NMSReflectionRemapped.class.getClassLoader().getResourceAsStream("mappings/" + MCVersion.CURRENT_VERSION.getIdentifier() + "/" + type + "Mappings.txt");
+		InputStream fieldMappingStream = null;
+		if (ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4))
+			fieldMappingStream = NMSReflectionRemapped.class.getClassLoader().getResourceAsStream("mappings/" + MCVersion.CURRENT_VERSION.getIdentifier() + "_Paper/" + type + "Mappings.txt");
+		if (fieldMappingStream == null)
+			fieldMappingStream = NMSReflectionRemapped.class.getClassLoader().getResourceAsStream("mappings/" + MCVersion.CURRENT_VERSION.getIdentifier() + "/" + type + "Mappings.txt");
 		if(fieldMappingStream == null) return;
 		try(BufferedReader reader = new BufferedReader(new InputStreamReader(fieldMappingStream)))
 		{

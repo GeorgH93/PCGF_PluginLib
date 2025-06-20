@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2024 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
  */
 
 package at.pcgamingfreaks.Bukkit;
+
+import at.pcgamingfreaks.ServerType;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,12 +39,23 @@ public class PlatformResolver
 	@SneakyThrows
 	public static @NotNull <T extends IPlatformDependent> T createPlatformInstance(final Class<T> clazz)
 	{
+		return createPlatformInstance(clazz, false);
+	}
+
+	/**
+	 * @param clazz The class/interface that defines the platform depending class. Must implement {@link IPlatformDependent} and if it is an interface, it's name must start with an I.
+	 * @param <T> The type of the class.
+	 * @return The created instance of the platform dependent class. <b>WARNING: Will always return null during unit tests!!!!</b>
+	 */
+	@SneakyThrows
+	public static @NotNull <T extends IPlatformDependent> T createPlatformInstance(final Class<T> clazz, boolean forceReflection)
+	{
 		//region setup
 		Matcher classMatcher = (clazz.isInterface() ? INTERFACE_NAME_PATTERN : CLASS_NAME_PATTERN).matcher(clazz.getName());
 		if(!classMatcher.matches()) throw new IllegalArgumentException("The given class is not valid");
 		String className = classMatcher.group("package") + "." + classMatcher.group("class");
 		//endregion
-		return createPlatformInstance(clazz, className);
+		return createPlatformInstance(clazz, className, forceReflection);
 	}
 
 	/**
@@ -54,6 +67,18 @@ public class PlatformResolver
 	@SneakyThrows
 	public static @NotNull <T extends IPlatformDependent> T createPlatformInstance(final Class<T> clazz, final @NotNull String className)
 	{
+		return createPlatformInstance(clazz, className, false);
+	}
+
+	/**
+	 * @param clazz The class/interface that defines the platform depending class. Must implement {@link IPlatformDependent}.
+	 * @param className The name that should be used as the base for the platform dependent class name.
+	 * @param <T> The type of the class.
+	 * @return The created instance of the platform dependent class. <b>WARNING: Will always return null during unit tests!!!!</b>
+	 */
+	@SneakyThrows
+	public static @NotNull <T extends IPlatformDependent> T createPlatformInstance(final Class<T> clazz, final @NotNull String className, boolean forceReflection)
+	{
 		//region check if running as Test
 		StackTraceElement[] stackTraceElements = new Exception().getStackTrace();
 		String runnerClass = stackTraceElements[stackTraceElements.length - 1].getClassName();
@@ -62,7 +87,7 @@ public class PlatformResolver
 			return null;
 		}
 		//endregion
-		Class<?> tmp;
+		Class<?> tmp = null;
 		if(getClass("net.glowstone.GlowServer") != null)
 		{
 			tmp = getClass(className + "_Glowstone");
@@ -70,8 +95,11 @@ public class PlatformResolver
 		else
 		{
 			String nmsServerVersion = MCVersion.CURRENT_VERSION.getIdentifier();
-			tmp = getClass(className + "_" + nmsServerVersion);
-			if(tmp == null)
+			if (ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4))
+				tmp = getClass(className + "_" + nmsServerVersion + "_Paper");
+			if (tmp == null)
+				tmp = getClass(className + "_" + nmsServerVersion);
+			if(tmp == null || forceReflection)
 			{
 				tmp = getClass(className + "_Reflection");
 			}
