@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 GeorgH93
+ *   Copyright (C) 2025 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface IUtils extends IPlatformDependent
 {
-	IUtils INSTANCE = PlatformResolver.createPlatformInstance(IUtils.class, ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4));
+	IUtils INSTANCE = PlatformResolver.createPlatformInstance(IUtils.class, ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_21_R4));
 
 	Object getHandle(final @NotNull Player player);
 	int getPing(@NotNull Player player);
