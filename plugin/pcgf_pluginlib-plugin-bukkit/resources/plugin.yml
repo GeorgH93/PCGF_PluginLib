@@ -6,3 +6,4 @@ main: "at.pcgamingfreaks.PluginLib.Bukkit.PluginLib"
 version: "${project.version}-T${timestamp}"
 api-version: "1.13"
 softdepend: [ "PlaceholderAPI" ]
+folia-supported: true

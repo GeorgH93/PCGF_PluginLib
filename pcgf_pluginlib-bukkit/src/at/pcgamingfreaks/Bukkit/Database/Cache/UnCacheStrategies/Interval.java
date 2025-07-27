@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 GeorgH93
+ *   Copyright (C) 2025 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,18 +21,19 @@ import at.pcgamingfreaks.Database.Cache.ICacheablePlayer;
 import at.pcgamingfreaks.Database.Cache.IPlayerCache;
 import at.pcgamingfreaks.Database.Cache.BaseUnCacheStrategy;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
+import com.tcoded.folialib.impl.PlatformScheduler;
+import com.tcoded.folialib.wrapper.task.WrappedTask;
+
 import org.jetbrains.annotations.NotNull;
 
 public class Interval extends BaseUnCacheStrategy implements Runnable
 {
-	final int taskId;
+	final WrappedTask task;
 
-	public Interval(final @NotNull Plugin plugin, final @NotNull IPlayerCache cache, final long delay, final long interval)
+	public Interval(final @NotNull PlatformScheduler scheduler, final @NotNull IPlayerCache cache, final long delay, final long interval)
 	{
 		super(cache);
-		taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, delay, interval);
+		task = scheduler.runTimer(this, delay, interval);
 	}
 
 	@Override
@@ -50,6 +51,6 @@ public class Interval extends BaseUnCacheStrategy implements Runnable
 	@Override
 	public void close()
 	{
-		Bukkit.getScheduler().cancelTask(taskId);
+		task.cancel();
 	}
 }

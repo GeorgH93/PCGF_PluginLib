@@ -2,7 +2,7 @@ name: "PCGF_PluginLib"
 author: "GeorgH93"
 version: "${version}"
 api-version: "1.19"
-
+folia-supported: true
 main: "at.pcgamingfreaks.PluginLib.Bukkit.PluginLib"
 
 dependencies:

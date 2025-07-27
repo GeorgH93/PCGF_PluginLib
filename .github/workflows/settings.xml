@@ -5,7 +5,7 @@
       <id>pcgf-public</id>
       <name>PCGF Public</name>
       <url>https://repo.pcgamingfreaks.at/repository/maven-public/</url>
-      <mirrorOf>central,spigot-nexus,spigot-repo,placeholderapi,sonatype-nexus-snapshots,pcgf-repo,herocraftonline-repo,sk89q-repo,CodeMC,mvdw-software</mirrorOf>
+      <mirrorOf>central,spigot-nexus,spigot-repo,placeholderapi,sonatype-nexus-snapshots,pcgf-repo,herocraftonline-repo,sk89q-repo,CodeMC,mvdw-software,jitpack</mirrorOf>
     </mirror>
   </mirrors>
 </settings>

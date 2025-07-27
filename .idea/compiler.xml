@@ -15,6 +15,7 @@
         <module name="pcgf_pluginlib-version" />
         <module name="pcgf_pluginlib-platform-nms-1_21_R3_Paper" />
         <module name="pcgf_pluginlib-version_detection" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R5_Paper" />
         <module name="pcgf_pluginlib-platform-nms-1_19_R3" />
         <module name="pcgf_pluginlib-plugin-bukkit" />
         <module name="pcgf_pluginlib-servertype" />
@@ -47,6 +48,7 @@
         <module name="pcgf_pluginlib-platform-bukkit" />
         <module name="pcgf_pluginlib-platform-nms-1_21_R4" />
         <module name="pcgf_pluginlib-platform-nms-1_21_R3" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R5" />
         <module name="pcgf_pluginlib-platform-nms-reflection" />
         <module name="pcgf_pluginlib-platform-nms-1_21_R2" />
         <module name="pcgf_pluginlib-common" />
