@@ -74,7 +74,6 @@
 			<groupId>com.github.technicallycoded</groupId>
 			<artifactId>FoliaLib</artifactId>
 			<version>0.4.4</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
@@ -90,38 +89,5 @@
 				<directory>test/resources</directory>
 			</testResource>
 		</testResources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>${mavenShade.version}</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<minimizeJar>false</minimizeJar>
-							<shadedClassifierName>shade-friendly</shadedClassifierName>
-							<shadedArtifactAttached>true</shadedArtifactAttached>
-							<createDependencyReducedPom>false</createDependencyReducedPom>
-							<artifactSet>
-								<includes>
-									<include>com.github.technicallycoded:FoliaLib</include>
-								</includes>
-							</artifactSet>
-							<relocations>
-								<!-- Relocate the lib to prevent conflicts with other plugins using it -->
-								<relocation>
-									<pattern>com.tcoded.folialib</pattern>
-									<shadedPattern>at.pcgamingfreaks.libs.com.tcoded.folialib</shadedPattern>
-								</relocation>
-							</relocations>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 	</build>
 </project>
