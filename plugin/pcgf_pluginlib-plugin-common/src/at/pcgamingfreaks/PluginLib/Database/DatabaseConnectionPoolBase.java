@@ -29,6 +29,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class DatabaseConnectionPoolBase implements DatabaseConnectionPool, ConnectionProvider
@@ -39,6 +40,10 @@ public abstract class DatabaseConnectionPoolBase implements DatabaseConnectionPo
 
 	public static DatabaseConnectionPoolBase startPool(Configuration configuration, Logger logger, File dataFolder)
 	{
+		final String slf4jPropBackup = System.getProperty(org.slf4j.LoggerFactory.PROVIDER_PROPERTY_KEY);
+		final String slf4jInternalVerbosityBackup = System.getProperty(org.slf4j.helpers.Reporter.SLF4J_INTERNAL_VERBOSITY_KEY);
+		System.setProperty(org.slf4j.LoggerFactory.PROVIDER_PROPERTY_KEY, org.slf4j.jul.JULServiceProvider.class.getName());
+		System.setProperty(org.slf4j.helpers.Reporter.SLF4J_INTERNAL_VERBOSITY_KEY, "ERROR");
 		final DatabaseConnectionPoolBase connectionPool;
 		switch(configuration.getString("Database.Type", "off").toLowerCase(Locale.ROOT))
 		{
@@ -48,16 +53,17 @@ public abstract class DatabaseConnectionPoolBase implements DatabaseConnectionPo
 		}
 		try
 		{
-			// Test if we can get a connection an close it
+			// Test if we can get a connection and close it
 			connectionPool.getConnection().close();
 		}
 		catch(Exception e)
 		{
-			logger.warning("Failed to start connection pool.");
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Failed to start connection pool.", e);
 			connectionPool.close();
 			return null;
 		}
+		System.setProperty(org.slf4j.LoggerFactory.PROVIDER_PROPERTY_KEY, slf4jPropBackup);
+		System.setProperty(org.slf4j.helpers.Reporter.SLF4J_INTERNAL_VERBOSITY_KEY, slf4jInternalVerbosityBackup);
 		return connectionPool;
 	}
 
