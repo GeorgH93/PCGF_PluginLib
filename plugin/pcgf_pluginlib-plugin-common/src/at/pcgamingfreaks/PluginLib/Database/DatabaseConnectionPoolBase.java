@@ -19,6 +19,7 @@ package at.pcgamingfreaks.PluginLib.Database;
 
 import at.pcgamingfreaks.Config.Configuration;
 import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
+import at.pcgamingfreaks.PluginLib.Slf4jToJavaLogger;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -42,8 +43,9 @@ public abstract class DatabaseConnectionPoolBase implements DatabaseConnectionPo
 	{
 		final String slf4jPropBackup = System.getProperty(org.slf4j.LoggerFactory.PROVIDER_PROPERTY_KEY);
 		final String slf4jInternalVerbosityBackup = System.getProperty(org.slf4j.helpers.Reporter.SLF4J_INTERNAL_VERBOSITY_KEY);
-		System.setProperty(org.slf4j.LoggerFactory.PROVIDER_PROPERTY_KEY, org.slf4j.jul.JULServiceProvider.class.getName());
+		System.setProperty(org.slf4j.LoggerFactory.PROVIDER_PROPERTY_KEY, Slf4jToJavaLogger.class.getName());
 		System.setProperty(org.slf4j.helpers.Reporter.SLF4J_INTERNAL_VERBOSITY_KEY, "ERROR");
+		Slf4jToJavaLogger.setTargetLogger(logger);
 		final DatabaseConnectionPoolBase connectionPool;
 		switch(configuration.getString("Database.Type", "off").toLowerCase(Locale.ROOT))
 		{
