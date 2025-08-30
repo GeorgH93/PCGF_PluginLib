@@ -25,7 +25,7 @@ import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
 import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.PluginLib.Config;
-import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
+import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolImpl;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
 import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.Util.StringUtils;
@@ -50,7 +50,7 @@ public final class PluginLib extends Plugin implements PluginLibrary, IPlugin
 	@Getter private ManagedUpdater updater;
 	private Config config;
 	@Getter private Version version;
-	@Getter private DatabaseConnectionPoolBase databaseConnectionPool;
+	@Getter private DatabaseConnectionPoolImpl databaseConnectionPool;
 
 	@Override
 	public void onEnable()
@@ -67,7 +67,7 @@ public final class PluginLib extends Plugin implements PluginLibrary, IPlugin
 		updater.setConfig(config);
 		updater.autoUpdate();
 
-		this.databaseConnectionPool = DatabaseConnectionPoolBase.startPool(this.config, this.getLogger(), this.getDataFolder());
+		this.databaseConnectionPool = DatabaseConnectionPoolImpl.startPool(this.config, this.getLogger(), this.getDataFolder());
 
 
 		Language commonLanguage = new Language(this, new Version(2), File.separator + "lang", "common_");

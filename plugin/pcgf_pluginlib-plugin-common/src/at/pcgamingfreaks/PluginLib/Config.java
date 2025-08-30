@@ -19,13 +19,14 @@ package at.pcgamingfreaks.PluginLib;
 
 import at.pcgamingfreaks.Config.Configuration;
 import at.pcgamingfreaks.Config.ILanguageConfiguration;
+import at.pcgamingfreaks.Database.DatabaseConnectionConfiguration;
 import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.Updater.IUpdateConfiguration;
 import at.pcgamingfreaks.Version;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class Config extends Configuration implements IUpdateConfiguration, ILanguageConfiguration
+public final class Config extends Configuration implements IUpdateConfiguration, ILanguageConfiguration, DatabaseConnectionConfiguration
 {
 	public Config(final @NotNull IPlugin plugin, final Version version)
 	{

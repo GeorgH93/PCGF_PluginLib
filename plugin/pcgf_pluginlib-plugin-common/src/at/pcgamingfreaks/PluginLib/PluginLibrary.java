@@ -38,7 +38,9 @@ public interface PluginLibrary
 	 * It's recommended to use the getConnectionProvider instead to get the connection provider directly.
 	 *
 	 * @return The database connection pool. Null if failed to start up or disabled.
+	 * @deprecated Use getConnectionProvider()
 	 */
+	@Deprecated
 	@Nullable DatabaseConnectionPool getDatabaseConnectionPool();
 
 	/**

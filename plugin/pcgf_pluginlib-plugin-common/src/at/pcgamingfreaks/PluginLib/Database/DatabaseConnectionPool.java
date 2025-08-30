@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@Deprecated
 public interface DatabaseConnectionPool
 {
 	/**

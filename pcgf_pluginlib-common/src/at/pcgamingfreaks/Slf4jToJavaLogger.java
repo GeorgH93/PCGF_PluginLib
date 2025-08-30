@@ -15,7 +15,7 @@
  *   along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.PluginLib;
+package at.pcgamingfreaks;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.IMarkerFactory;

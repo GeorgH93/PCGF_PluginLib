@@ -29,7 +29,7 @@ import at.pcgamingfreaks.ConsoleColor;
 import at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider;
 import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.PluginLib.Config;
-import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolBase;
+import at.pcgamingfreaks.PluginLib.Database.DatabaseConnectionPoolImpl;
 import at.pcgamingfreaks.PluginLib.PluginLibrary;
 import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.Util.StringUtils;
@@ -55,7 +55,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary, IPlugi
 	@Getter private ManagedUpdater updater;
 	private Config config;
 	@Getter private Version version;
-	@Getter private DatabaseConnectionPoolBase databaseConnectionPool;
+	@Getter private DatabaseConnectionPoolImpl databaseConnectionPool;
 	@Getter private ItemNameResolver itemNameResolver;
 
 	@Override
@@ -85,7 +85,7 @@ public final class PluginLib extends JavaPlugin implements PluginLibrary, IPlugi
 			this.getLogger().warning(ConsoleColor.RED + "You are using an unknown version of Minecraft! Please check for updates! (Your MC version: " + Bukkit.getVersion() + ") " + ConsoleColor.RESET);
 		}
 
-		this.databaseConnectionPool = DatabaseConnectionPoolBase.startPool(this.config, this.getLogger(), this.getDataFolder());
+		this.databaseConnectionPool = DatabaseConnectionPoolImpl.startPool(this.config, this.getLogger(), this.getDataFolder());
 
 		itemNameResolver = new at.pcgamingfreaks.PluginLib.Bukkit.ItemNameResolver(this);
 
