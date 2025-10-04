@@ -18,8 +18,8 @@
 			<url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 		<repository>
-			<id>jitpack</id>
-			<url>https://jitpack.io</url>
+			<id>tcoded-releases</id>
+			<url>https://repo.tcoded.com/releases</url>
 		</repository>
 	</repositories>
 
@@ -71,9 +71,9 @@
 		</dependency>
 		<!-- FoliaLib -->
 		<dependency>
-			<groupId>com.github.technicallycoded</groupId>
+			<groupId>com.tcoded</groupId>
 			<artifactId>FoliaLib</artifactId>
-			<version>0.4.4</version>
+			<version>0.5.1</version>
 		</dependency>
 	</dependencies>
 

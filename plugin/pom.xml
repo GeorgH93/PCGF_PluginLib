@@ -245,7 +245,7 @@
 									<include>at.pcgamingfreaks:YAML-Parser</include>
 									<include>com.google.code.gson:gson</include> <!-- Not included in Bukkit, we need it (a lot)! -->
 									<include>com.zaxxer:HikariCP</include>
-									<include>com.github.technicallycoded:FoliaLib</include>
+									<include>com.tcoded:FoliaLib</include>
 									<include>org.slf4j:*</include>
 								</includes>
 							</artifactSet>
