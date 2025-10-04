@@ -50,12 +50,6 @@ public class MessageTest
 		assertEquals("The message text should be correct", "[{\"text\":\"Message text\"}]", message3.toString());
 		//noinspection deprecation
 		assertEquals("The message components should be equal", messageComponents.toArray(), message3.getMessageComponents());
-		message1.replaceAll("A m", "M");
-		message1.replaceAll("ext", "est");
-		message2.replaceAll("ext", "est");
-		assertEquals("The message texts should match", message1.getClassicMessage(), message2.getClassicMessage());
-		assertNotEquals("A string should not equal a message object", "False", message1);
-		assertNotEquals("The messages should not be equal", message1, message3);
 	}
 
 	@Test

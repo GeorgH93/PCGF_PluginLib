@@ -4,8 +4,5 @@
     <file url="file://$PROJECT_DIR$/pcgf_pluginlib-common/src/at/pcgamingfreaks/Database/DBTools.java" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/pcgf_pluginlib-common/src/at/pcgamingfreaks/Database/MySQLTableValidator.java" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/pcgf_pluginlib-common/src/at/pcgamingfreaks/Database/SQLTableValidator.java" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/pcgf_pluginlib-common/src/at/pcgamingfreaks/Database/SQLiteTableValidator.java" dialect="SQLite" />
-    <file url="file://$PROJECT_DIR$/pcgf_pluginlib-common/test/src/at/pcgamingfreaks/Database/DBToolsTest.java" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/pcgf_pluginlib-common/test/src/at/pcgamingfreaks/Database/MySQLTableValidatorTest.java" dialect="MySQL" />
   </component>
 </project>
