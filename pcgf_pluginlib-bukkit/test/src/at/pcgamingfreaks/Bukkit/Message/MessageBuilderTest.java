@@ -24,7 +24,10 @@ import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 
-import org.bukkit.*;
+import org.bukkit.Achievement;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -68,7 +71,6 @@ public class MessageBuilderTest
 		assertNotNull("The message builder should not be null", new MessageBuilder(messageComponents.get(0)));
 		assertNotNull("The message builder should not be null", new MessageBuilder(messageComponents));
 		assertNotNull("The message builder should not be null", new MessageBuilder("", MessageColor.BLUE));
-		assertNotNull("The message builder should not be null", new MessageBuilder("", new ChatColor[] { ChatColor.BOLD }));
 		assertNotNull("The message builder should not be null", MessageBuilder.fromJson(""));
 	}
 

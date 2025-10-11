@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2025 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,11 +17,13 @@
 
 package at.pcgamingfreaks.Bukkit.Message;
 
-import at.pcgamingfreaks.Bukkit.Language;
+import at.pcgamingfreaks.Bukkit.Config.Language;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
+import at.pcgamingfreaks.Config.YamlFileUpdateMethod;
+import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
-import at.pcgamingfreaks.YamlFileUpdateMethod;
+import at.pcgamingfreaks.Version;
 
 import com.google.common.io.Files;
 
@@ -91,8 +93,9 @@ public class LegacyFormattedMessageTest
 	@Test
 	public void testLegacyToJsonResults()
 	{
-		Language jsonLang = new Language(TestObjects.getJavaPlugin(), 0, 0, "", "");
-		Language legacyLang = new Language(TestObjects.getJavaPlugin(), 0, 0, "", "");
+		IPlugin plugin = TestObjects.getIPlugin();
+		Language jsonLang = new Language(plugin, new Version(0));
+		Language legacyLang = new Language(plugin, new Version(0));
 		jsonLang.load("enJson", YamlFileUpdateMethod.UPGRADE);
 		legacyLang.load("enLegacy", YamlFileUpdateMethod.UPGRADE);
 		for(String key : jsonLang.getYaml().getKeys())

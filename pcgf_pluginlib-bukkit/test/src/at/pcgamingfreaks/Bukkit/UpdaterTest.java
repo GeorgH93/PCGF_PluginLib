@@ -52,7 +52,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PrepareForTest({ Bukkit.class, JavaPlugin.class, PluginDescriptionFile.class, Thread.class })
 public class UpdaterTest
 {
-	private static final File PLUGINS_FOLDER = new File("plugins"), TARGET_FILE = new File(PLUGINS_FOLDER, "updates" + File.separator + "MM.jar");
+	private static final File PLUGINS_FOLDER = new File("plugins");
 
 	private static PluginDescriptionFile mockedPluginDescription;
 	private static String runnableStatus = "";
@@ -100,7 +100,7 @@ public class UpdaterTest
 	@Test
 	public void testUpdater() throws Exception
 	{
-		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, new BukkitUpdateProvider(74734, TestObjects.getJavaPlugin().getLogger()));
+		Updater updater = new Updater(TestObjects.getJavaPlugin(), true, new BukkitUpdateProvider(74734, TestObjects.getJavaPlugin().getLogger()));
 		assertNotNull("The updater should not be null", updater);
 		updater.runSync(syncRunnable);
 		assertEquals("The runnable status text should match", "SYNC", runnableStatus);
@@ -158,7 +158,7 @@ public class UpdaterTest
 	public void testWaitForAsync() throws Exception
 	{
 		TestUtils.initReflection();
-		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, new BukkitUpdateProvider(74734, TestObjects.getJavaPlugin().getLogger()));
+		Updater updater = new Updater(TestObjects.getJavaPlugin(), true, new BukkitUpdateProvider(74734, TestObjects.getJavaPlugin().getLogger()));
 		final Thread dummyThread = new Thread(() -> {
 			try
 			{
@@ -184,7 +184,7 @@ public class UpdaterTest
 
 		UpdateProvider mockedUpdateProvider = mock(BukkitUpdateProvider.class);
 		when(mockedUpdateProvider.getLatestMinecraftVersions()).thenReturn(new String[] {"1.7", "1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15"});
-		Updater updater = new Updater(TestObjects.getJavaPlugin(), TARGET_FILE, true, mockedUpdateProvider);
+		Updater updater = new Updater(TestObjects.getJavaPlugin(), true, mockedUpdateProvider);
 		assertTrue(updater.checkCompatibility());
 		when(mockedUpdateProvider.getLatestMinecraftVersions()).thenReturn(new String[] {"1.7", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15"});
 		assertFalse(updater.checkCompatibility());

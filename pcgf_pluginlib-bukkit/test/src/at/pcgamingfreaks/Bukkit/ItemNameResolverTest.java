@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 GeorgH93
+ *   Copyright (C) 2025 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,9 @@
 
 package at.pcgamingfreaks.Bukkit;
 
+import at.pcgamingfreaks.Config.Language;
 import at.pcgamingfreaks.Message.MessageColor;
+import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestBlock;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
@@ -27,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +42,7 @@ public class ItemNameResolverTest
 {
 	@SuppressWarnings({ "ConstantConditions" })
 	@Test
-	public void testGetName() throws YamlKeyNotFoundException
+	public void testGetName() throws YamlKeyNotFoundException, InvocationTargetException, IllegalAccessException
 	{
 		ItemNameResolver itemNameResolver = new ItemNameResolver();
 		assertEquals("The name of the block should match", "air", itemNameResolver.getName(new TestBlock()));
@@ -57,7 +60,7 @@ public class ItemNameResolverTest
 		}).when(mockedLogger).log(eq(Level.INFO), anyString(), any(Object.class));
 		Language mockedLanguage = mock(Language.class);
 		doReturn(false).when(mockedLanguage).isLoaded();
-		itemNameResolver.loadLegacy(mockedLanguage, mockedLogger);
+		Reflection.getMethod(ItemNameResolver.class, "loadLegacy", Language.class, Logger.class).invoke(itemNameResolver, mockedLanguage, mockedLogger);
 		assertEquals("The info count should match", 0, counts[0]);
 		YAML mockedYAML = mock(YAML.class);
 		HashSet<String> keys = new HashSet<>();
@@ -101,7 +104,7 @@ public class ItemNameResolverTest
 		doReturn("Wood Plank").when(mockedLanguage).getRaw(eq("5"), anyString());
 		doReturn("Oak").when(mockedLanguage).getRaw(eq("5.0"), anyString());
 		doReturn("Oak Sapling").when(mockedLanguage).getRaw(eq("6.0"), anyString());
-		itemNameResolver.loadLegacy(mockedLanguage, mockedLogger);
+		Reflection.getMethod(ItemNameResolver.class, "loadLegacy", Language.class, Logger.class).invoke(itemNameResolver, mockedLanguage, mockedLogger);
 		assertEquals("The info count should match", 2, counts[0]);
 		assertEquals("The name of the material should match", "Air", itemNameResolver.getName(Material.AIR));
 		assertEquals("The name of the material should match", "Andesite", itemNameResolver.getName(Material.STONE, (short) 5));

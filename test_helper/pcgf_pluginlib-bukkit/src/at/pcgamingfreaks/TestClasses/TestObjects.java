@@ -20,6 +20,8 @@ package at.pcgamingfreaks.TestClasses;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.OBCReflection;
+import at.pcgamingfreaks.Plugin.IPlugin;
+import at.pcgamingfreaks.Version;
 
 import com.google.common.io.Files;
 
@@ -29,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.jetbrains.annotations.NotNull;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.io.File;
@@ -44,6 +47,32 @@ import static org.powermock.api.mockito.PowerMockito.*;
 
 public class TestObjects
 {
+	static class MockIPlugin implements IPlugin {
+		@Override
+		public @NotNull Logger getLogger()
+		{
+			return mockedJavaPlugin.getLogger();
+		}
+
+		@Override
+		public @NotNull File getDataFolder()
+		{
+			return mockedJavaPlugin.getDataFolder();
+		}
+
+		@Override
+		public @NotNull Version getVersion()
+		{
+			return new Version(0);
+		}
+
+		@Override
+		public @NotNull String getName()
+		{
+			return "";
+		}
+	}
+
 	private static JavaPlugin mockedJavaPlugin;
 	private static org.bukkit.plugin.Plugin mockedBukkitPlugin;
 
@@ -135,4 +164,6 @@ public class TestObjects
 	public static JavaPlugin getJavaPlugin() { return mockedJavaPlugin; }
 
 	public static org.bukkit.plugin.Plugin getBukkitPlugin() { return mockedBukkitPlugin; }
+
+	public static IPlugin getIPlugin() { return new MockIPlugin(); }
 }
