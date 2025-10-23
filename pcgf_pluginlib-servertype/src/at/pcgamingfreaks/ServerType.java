@@ -23,6 +23,7 @@ import lombok.Getter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 /**
  * Helper class to figure out which server software is being used to run the server.
@@ -31,14 +32,14 @@ public final class ServerType
 {
 	private ServerType() {}
 
-	@Getter private static final boolean server, bukkit, bukkitCompatible,  spigot, spigotCompatible, paper, paperCompatible, glowstone, glowstoneCompatible, folia;
+	@Getter private static final boolean server, bukkit, bukkitCompatible,  spigot, spigotCompatible, paper, paperCompatible, glowstone, glowstoneCompatible, folia, forge;
 	@Getter private static final boolean proxy, bungeeCord, bungeeCordCompatible, waterfall, waterfallCompatible, velocity, velocityCompatible;
 
 	static
 	{
 		boolean bukkitComp = false, spigotComp = false, paperComp = false, glowComp = false, bungeeComp = false, waterfallComp = false, velocityComp = false;
 		boolean isBukkit = false, isSpigot = false, isPaper = false, isGlowstone = false, isBungee = false, isWaterfall = false, isVelocity = false;
-		boolean tmpFolia = false;
+		boolean tmpFolia = false, tmpForge = false;
 
 		// Detecting current server type
 		Class<?> bukkitClass = Reflection.getClassSilent("org.bukkit.Bukkit");
@@ -49,6 +50,15 @@ public final class ServerType
 			try
 			{
 				String version  = (String) Reflection.getMethod(bukkitClass, "getVersion").invoke(null);
+				String name = "";
+				try {
+					Method method = Reflection.getMethod(bukkitClass, "getName");
+					if (method != null)
+					{
+						name = (String) method.invoke(null);
+						name = name.toLowerCase(Locale.ENGLISH);
+					}
+				} catch (Exception ignored) {}
 				if (version == null) unknown = true;
 				else if(BaseStringUtils.containsIgnoreCase(version, "bukkit"))
 				{
@@ -82,6 +92,11 @@ public final class ServerType
 				else
 				{
 					unknown = true;
+				}
+
+				if (name.contains("youer") || name.contains("mohist") || name.contains("forge"))
+				{
+					tmpForge = true;
 				}
 			}
 			catch(IllegalAccessException | InvocationTargetException e)
@@ -168,6 +183,7 @@ public final class ServerType
 		spigot = isSpigot;
 		paper = isPaper;
 		folia = tmpFolia;
+		forge = tmpForge;
 		glowstone = isGlowstone;
 		bungeeCord = isBungee;
 		waterfall = isWaterfall;
