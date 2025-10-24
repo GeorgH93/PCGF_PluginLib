@@ -27,7 +27,19 @@ import org.jetbrains.annotations.NotNull;
 
 public interface IUtils extends IPlatformDependent
 {
-	IUtils INSTANCE = PlatformResolver.createPlatformInstance(IUtils.class, ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_21_R4));
+	static boolean UseReflection()
+	{
+		if (ServerType.isPaperCompatible())
+		{
+			if (MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4) && MCVersion.isOlderOrEqualThan(MCVersion.MC_NMS_1_21_R4))
+			{
+				return !ServerType.isForge();
+			}
+		}
+		return false;
+	}
+
+	IUtils INSTANCE = PlatformResolver.createPlatformInstance(IUtils.class, UseReflection());
 
 	Object getHandle(final @NotNull Player player);
 	int getPing(@NotNull Player player);
