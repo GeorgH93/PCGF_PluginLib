@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Database.ConnectionProvider;
 
 import at.pcgamingfreaks.ConsoleColor;
+import at.pcgamingfreaks.Slf4jLoggerForcer;
 import at.pcgamingfreaks.Slf4jToJavaLogger;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -44,41 +45,38 @@ public abstract class PooledConnectionProvider implements ConnectionProvider
 
 	public void init()
 	{
-		final String slf4jPropBackup = System.getProperty(org.slf4j.LoggerFactory.PROVIDER_PROPERTY_KEY);
-		final String slf4jInternalVerbosityBackup = System.getProperty(org.slf4j.helpers.Reporter.SLF4J_INTERNAL_VERBOSITY_KEY);
-		System.setProperty(org.slf4j.LoggerFactory.PROVIDER_PROPERTY_KEY, Slf4jToJavaLogger.class.getName());
-		System.setProperty(org.slf4j.helpers.Reporter.SLF4J_INTERNAL_VERBOSITY_KEY, "ERROR");
-		Slf4jToJavaLogger.setTargetLogger(logger);
-		try
+		try (Slf4jLoggerForcer slf4jForcer = new Slf4jLoggerForcer(Slf4jToJavaLogger.class))
 		{
-			HikariConfig poolConfig = getPoolConfig();
-			poolConfig.setPoolName(pluginName + "-Connection-Pool");
-			poolConfig.addDataSourceProperty("useUnicode", "true");
-			poolConfig.addDataSourceProperty("characterEncoding", "utf-8");
-			poolConfig.addDataSourceProperty("cachePrepStmts", "true");
-			poolConfig.addDataSourceProperty("prepStmtCacheSize", "250");
-			poolConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-			dataSource = new HikariDataSource(poolConfig);
+			slf4jForcer.enable();
+			Slf4jToJavaLogger.setTargetLogger(logger);
+			try
+			{
+				HikariConfig poolConfig = getPoolConfig();
+				poolConfig.setPoolName(pluginName + "-Connection-Pool");
+				poolConfig.addDataSourceProperty("useUnicode", "true");
+				poolConfig.addDataSourceProperty("characterEncoding", "utf-8");
+				poolConfig.addDataSourceProperty("cachePrepStmts", "true");
+				poolConfig.addDataSourceProperty("prepStmtCacheSize", "250");
+				poolConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+				dataSource = new HikariDataSource(poolConfig);
+			}
+			catch(Exception e)
+			{
+				Throwable cause = e;
+				while(cause.getCause() != null) { cause = cause.getCause(); }
+				logger.severe(ConsoleColor.RED + "There was a problem creating the connection pool for the SQL server! Please check your configuration." + ConsoleColor.RESET + "\nError: " + cause.getMessage());
+			}
+			try
+			{
+				// Test if we can get a connection and close it
+				getConnection().close();
+			}
+			catch(Exception e)
+			{
+				logger.log(Level.SEVERE, "Failed to start connection pool.", e);
+				close();
+			}
 		}
-		catch(Exception e)
-		{
-			Throwable cause = e;
-			while(cause.getCause() != null) { cause = cause.getCause(); }
-			logger.severe(ConsoleColor.RED + "There was a problem creating the connection pool for the SQL server! Please check your configuration." + ConsoleColor.RESET + "\nError: " + cause.getMessage());
-		}
-		try
-		{
-			// Test if we can get a connection and close it
-			getConnection().close();
-		}
-		catch(Exception e)
-		{
-			logger.log(Level.SEVERE, "Failed to start connection pool.", e);
-			close();
-		}
-		// Reset helper
-		if (slf4jPropBackup != null) System.setProperty(org.slf4j.LoggerFactory.PROVIDER_PROPERTY_KEY, slf4jPropBackup);
-		if (slf4jInternalVerbosityBackup != null) System.setProperty(org.slf4j.helpers.Reporter.SLF4J_INTERNAL_VERBOSITY_KEY, slf4jInternalVerbosityBackup);
 	}
 
 	/**
