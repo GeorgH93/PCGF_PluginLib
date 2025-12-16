@@ -90,6 +90,8 @@
 				<module>pcgf_pluginlib-platform-nms_paper-1_21_R5</module>
 				<module>pcgf_pluginlib-platform-nms_mm-1_21_R6</module>
 				<module>pcgf_pluginlib-platform-nms_paper-1_21_R6</module>
+				<module>pcgf_pluginlib-platform-nms_mm-1_21_R7</module>
+				<module>pcgf_pluginlib-platform-nms_paper-1_21_R7</module>
 			</modules>
 		</profile>
 	</profiles>
