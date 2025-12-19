@@ -19,13 +19,15 @@ package at.pcgamingfreaks.Bukkit.Util;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NmsReflector;
+import at.pcgamingfreaks.Reflection;
 
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
-import java.util.EnumMap;
+import java.util.*;
+import java.util.function.Function;
 
 final class InventoryTypeMapper_Reflection
 {
@@ -37,6 +39,20 @@ final class InventoryTypeMapper_Reflection
 	{
 		if(CLASS_CONTAINERS != null)
 		{
+			Collection<Field> fields = Reflection.getFieldsIncludeParents(CLASS_CONTAINERS);
+			Map<String, Field> fieldMap = new HashMap<>();
+			for(Field f : fields)
+			{
+				//System.out.println(f.getName());
+				fieldMap.put(f.getName(), f);
+				fieldMap.put(f.getName().toUpperCase(Locale.ENGLISH), f);
+			}
+			Function<String, Field> resolveField = type -> {
+				Field field = fieldMap.get(type); // Fast pass when no remapping is needed
+				if(field != null) return field;
+				field = NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINERS, type);  // Fallback when remapping is needed
+				return field;
+			};
 			for(InventoryType inventoryType : InventoryType.values())
 			{
 				String type = inventoryType.name();
@@ -51,7 +67,7 @@ final class InventoryTypeMapper_Reflection
 				else if(type.equals("COMPOSTER") || type.equals("CHISELED_BOOKSHELF") || type.equals("SMITHING_NEW") || type.equals("JUKEBOX") || type.equals("DECORATED_POT") || type.equals("SHELF")) continue; // They don't have inventory screens
 				try
 				{
-					Field field = NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINERS, type);
+					Field field = resolveField.apply(type);
 					if(field == null) continue;
 					INVENTORY_TYPE_MAP.put(inventoryType, field.get(null));
 				}
@@ -62,7 +78,7 @@ final class InventoryTypeMapper_Reflection
 			{
 				try
 				{
-					INVENTORY_TYPE_CHEST[i] = NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINERS, "GENERIC_9X" + (i + 1)).get(null);
+					INVENTORY_TYPE_CHEST[i] = resolveField.apply("GENERIC_9X" + (i + 1)).get(null);
 				}
 				catch(IllegalAccessException | NullPointerException ignored) {}
 			}

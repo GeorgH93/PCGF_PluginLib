@@ -49,6 +49,8 @@
         <module name="pcgf_pluginlib-reflection" />
         <module name="pcgf_pluginlib-platform-nms-1_18_R2" />
         <module name="pcgf_pluginlib-platform-nms-1_15_R1" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R7_Paper" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R7" />
         <module name="pcgf_pluginlib-platform-bukkit" />
         <module name="pcgf_pluginlib-platform-nms-1_21_R4" />
         <module name="pcgf_pluginlib-platform-nms-1_21_R3" />
