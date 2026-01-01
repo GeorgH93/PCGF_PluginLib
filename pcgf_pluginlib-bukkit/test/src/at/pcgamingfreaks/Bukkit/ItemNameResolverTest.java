@@ -27,6 +27,7 @@ import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.junit.Assume;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -44,6 +45,8 @@ public class ItemNameResolverTest
 	@Test
 	public void testGetName() throws YamlKeyNotFoundException, InvocationTargetException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+ - can't mock Logger", 
+			System.getProperty("java.specification.version").compareTo("16") < 0);
 		ItemNameResolver itemNameResolver = new ItemNameResolver();
 		assertEquals("The name of the block should match", "air", itemNameResolver.getName(new TestBlock()));
 		assertEquals("The name of the material should match", "stone", itemNameResolver.getName(Material.STONE));
@@ -117,6 +120,8 @@ public class ItemNameResolverTest
 	@Test
 	public void testGetNameFromItemStack()
 	{
+		Assume.assumeTrue("Skip on Java 16+", 
+			System.getProperty("java.specification.version").compareTo("16") < 0);
 		ItemNameResolver itemNameResolver = new ItemNameResolver();
 		// Setup item
 		ItemStack stack = mock(ItemStack.class);
@@ -140,6 +145,8 @@ public class ItemNameResolverTest
 	@Test
 	public void testGetDisplayName()
 	{
+		Assume.assumeTrue("Skip on Java 16+", 
+			System.getProperty("java.specification.version").compareTo("16") < 0);
 		ItemNameResolver itemNameResolver = new ItemNameResolver();
 		// Setup item
 		ItemStack stack = mock(ItemStack.class);

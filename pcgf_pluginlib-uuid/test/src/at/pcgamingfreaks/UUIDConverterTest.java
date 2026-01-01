@@ -22,18 +22,20 @@ import at.pcgamingfreaks.UUID.UuidCache;
 import at.pcgamingfreaks.UUID.UuidConverter;
 
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+
+import sun.misc.Unsafe;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -93,13 +95,16 @@ public class UUIDConverterTest
 	@Test
 	public void testGetOnlineUUIDFromName() throws Exception
 	{
+		Assume.assumeTrue("Skip on Java 16+ - can't mock UuidCache", 
+			System.getProperty("java.specification.version").compareTo("16") < 0);
 		Field resolver = UUIDConverter.class.getDeclaredField("MOJANG_RESOLVER");
-		resolver.setAccessible(true);
-		Field modifiers = resolver.getClass().getDeclaredField("modifiers");
-		modifiers.setAccessible(true);
-		modifiers.setInt(resolver, resolver.getModifiers() & ~Modifier.FINAL);
+		Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+		unsafeField.setAccessible(true);
+		Unsafe unsafe = (Unsafe) unsafeField.get(null);
+		Object base = unsafe.staticFieldBase(resolver);
+		long offset = unsafe.staticFieldOffset(resolver);
 		UuidCache mockedUUIDCache = mock(UuidCache.class);
-		resolver.set(this, new MojangUuidResolver(mockedUUIDCache));
+		unsafe.putObject(base, offset, new MojangUuidResolver(mockedUUIDCache));
 		assertEquals("Username with no time given and no cache should match the current username", TEST_USER_UUID, UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, null));
 		assertEquals("Username at the current time with no cache should match the current username", TEST_USER_UUID, UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, TODAY));
 		when(mockedUUIDCache.contains(TEST_USER_NAME)).thenReturn(true);
@@ -107,8 +112,8 @@ public class UUIDConverterTest
 		assertEquals("Username with no time given and available cache should match the current username", TEST_USER_UUID, UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, null));
 		assertEquals("Username at the current time and available cache should match the current username", TEST_USER_UUID, UUIDConverter.getUUIDFromName(TEST_USER_NAME, true, TODAY));
 		reset(mockedUUIDCache);
-		resolver.set(this, new MojangUuidResolver(UuidCache.getSHARED_UUID_CACHE()));
-		resolver.setAccessible(false);
+		unsafe.putObject(base, offset, new MojangUuidResolver(UuidCache.getSHARED_UUID_CACHE()));
+		unsafeField.setAccessible(false);
 	}
 
 	@Test

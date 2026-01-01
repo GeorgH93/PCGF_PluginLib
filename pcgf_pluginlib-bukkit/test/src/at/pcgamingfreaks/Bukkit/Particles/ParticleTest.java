@@ -18,43 +18,41 @@
 package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.material.MaterialData;
-import org.junit.BeforeClass;
+import org.junit.Assume;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ MCVersion.class })
 public class ParticleTest
 {
-	@BeforeClass
-	public static void prepareTestData() throws Exception
-	{
-		final int[] counter = { 0 };
-		mockStatic(MCVersion.class);
-		doAnswer((Answer<Boolean>) invocationOnMock -> ++counter[0] >= 36 && counter[0] < 45).when(MCVersion.class, "isNewerOrEqualThan", any());
-		doReturn(true).when(MCVersion.class, "isOlderThan", any());
-	}
-
 	@Test
 	public void testParticles()
 	{
-		assertEquals("The name of the enum constant should match", "explode", Particle.EXPLOSION.getOldName());
-		assertEquals("The name of the enum constant should match", "EXPLODE", Particle.EXPLOSION.getOldNameUpperCase());
-		assertEquals("The new name of the enum constant should match", "EXPLOSION_NORMAL", Particle.EXPLOSION.getName());
-		assertEquals("The min version should match", MCVersion.MC_1_9, Particle.DAMAGE_INDICATOR.getMinVersion());
-		assertEquals("The Particle object should match", Particle.FALLING_DUST, Particle.getFrom(org.bukkit.Particle.FALLING_DUST));
-		assertEquals("The data type should match", MaterialData.class, Particle.FALLING_DUST.getDataType());
-		assertEquals("The data type should match", Void.class, Particle.SPIT.getDataType());
+		Assume.assumeTrue("Skip if mockito-inline not available", TestUtils.canMockJdkClasses());
+		final int[] counter = { 0 };
+		try (MockedStatic<MCVersion> mockedMCVersion = Mockito.mockStatic(MCVersion.class))
+		{
+			mockedMCVersion.when(() -> MCVersion.isNewerOrEqualThan(any()))
+					.thenAnswer((Answer<Boolean>) invocationOnMock -> ++counter[0] >= 36 && counter[0] < 45);
+			mockedMCVersion.when(() -> MCVersion.isOlderThan(any())).thenReturn(true);
+
+			assertEquals("The name of the enum constant should match", "explode", Particle.EXPLOSION.getOldName());
+			assertEquals("The name of the enum constant should match", "EXPLODE", Particle.EXPLOSION.getOldNameUpperCase());
+			assertEquals("The new name of the enum constant should match", "EXPLOSION_NORMAL", Particle.EXPLOSION.getName());
+			assertEquals("The min version should match", MCVersion.MC_1_9, Particle.DAMAGE_INDICATOR.getMinVersion());
+			assertEquals("The Particle object should match", Particle.FALLING_DUST, Particle.getFrom(org.bukkit.Particle.FALLING_DUST));
+			assertEquals("The data type should match", MaterialData.class, Particle.FALLING_DUST.getDataType());
+			assertEquals("The data type should match", Void.class, Particle.SPIT.getDataType());
+		}
 	}
 
 	@Test

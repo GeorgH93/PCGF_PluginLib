@@ -17,14 +17,15 @@
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
+import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.Assume;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,10 +33,7 @@ import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ BaseOnlineProviderWithDownload.class, GitHubUpdateProvider.class, URL.class })
 public class GitHubUpdateProviderTest
 { //TODO the connection to github should be mocked away to improve the reliability of the test
 	private final Logger logger = Logger.getLogger("GitHubUpdateProviderTest");
@@ -70,9 +68,14 @@ public class GitHubUpdateProviderTest
 		@NotNull UpdateResult result = updateProvider.query();
 		if(result == UpdateResult.FAIL_API_KEY) return; // Workaround for Travis-CI
 		assertEquals("The update result should match", UpdateResult.FAIL_SERVER_OFFLINE, result);
-		whenNew(URL.class).withArguments(anyString()).thenThrow(new MalformedURLException());
-		updateProvider = new GitHubUpdateProvider("GeorgH93", "TelePlusPlus", logger);
-		assertEquals("The update result should match", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
+		Assume.assumeTrue("Skip if mockito-inline not available", TestUtils.canMockJdkClasses());
+		try (MockedConstruction<URL> mcURL = Mockito.mockConstruction(URL.class, (mock, context) -> {
+			throw new MalformedURLException();
+		}))
+		{
+			updateProvider = new GitHubUpdateProvider("GeorgH93", "TelePlusPlus", logger);
+			assertEquals("The update result should match", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
+		}
 	}
 
 	@Test

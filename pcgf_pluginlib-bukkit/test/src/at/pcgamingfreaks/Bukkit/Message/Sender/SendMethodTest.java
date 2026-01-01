@@ -21,30 +21,34 @@ import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class })
 public class SendMethodTest
 {
+	private static boolean skipTests = false; // will be set in prepareTestData
+	
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
+		skipTests = !TestUtils.canMockJdkClasses();
+		if (!skipTests)
+		{
+			Bukkit.setServer(new TestBukkitServer());
+			TestObjects.initNMSReflection();
+		}
 	}
 
 	@Test
 	public void testSendMethod()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		SendMethod sendMethod = SendMethod.TITLE;
 		assertEquals("The metadata class should match", TitleMetadata.class, sendMethod.getMetadataClass());
 		assertNotNull("The metadata supplier Method should be returned", sendMethod.getMetadataSupplier());
@@ -53,6 +57,7 @@ public class SendMethodTest
 	@Test
 	public void testIsAvailable()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		assertTrue(SendMethod.CHAT.isAvailable());
 		//assertFalse(SendMethod.BOSS_BAR.isAvailable());
 	}
@@ -60,6 +65,7 @@ public class SendMethodTest
 	@Test
 	public void testHasMetadata()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		assertFalse(SendMethod.CHAT.hasMetadata());
 		assertTrue(SendMethod.TITLE.hasMetadata());
 	}

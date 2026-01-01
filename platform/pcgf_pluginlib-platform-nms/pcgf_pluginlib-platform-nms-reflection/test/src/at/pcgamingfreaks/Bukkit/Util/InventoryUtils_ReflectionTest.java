@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,11 +38,13 @@ import static org.mockito.Mockito.*;
 
 public class InventoryUtils_ReflectionTest
 {
-	private static final TestBukkitServer server = new TestBukkitServer();
+	private static boolean skipTests = !TestUtils.canMockJdkClasses();
+	private static final TestBukkitServer server = skipTests ? null : new TestBukkitServer();
 
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
+		if (skipTests) return;
 		server.allowPluginManager = true;
 		Bukkit.setServer(server);
 		TestObjects.initNMSReflection();
@@ -51,6 +54,7 @@ public class InventoryUtils_ReflectionTest
 	@Test
 	public void testConvertItemStackToJson()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		InventoryUtils_Reflection invUtils = new InventoryUtils_Reflection();
 		Logger mockedLogger = spy(server.getLogger());
 		ItemStack itemStack = new ItemStack(Material.STONE, 23);

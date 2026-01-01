@@ -23,6 +23,7 @@ import at.pcgamingfreaks.Config.YamlFileUpdateMethod;
 import at.pcgamingfreaks.Plugin.IPlugin;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.Version;
 
 import com.google.common.io.Files;
@@ -30,11 +31,9 @@ import com.google.common.io.Files;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,21 +42,24 @@ import java.net.URLDecoder;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ JavaPlugin.class, NMSReflection.class })
 public class LegacyFormattedMessageTest
 {
+	private static boolean skipTests = !TestUtils.canMockJdkClasses();
+	
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		TestBukkitServer server = new TestBukkitServer();
-		server.serverVersion = "git-Paper-138 (MC: 1.12.2)";
-		Bukkit.setServer(server);
-		TestObjects.initNMSReflection();
-		TestObjects.initMockedJavaPlugin();
+		if (!skipTests)
+		{
+			TestBukkitServer server = new TestBukkitServer();
+			server.serverVersion = "git-Paper-138 (MC: 1.12.2)";
+			Bukkit.setServer(server);
+			TestObjects.initNMSReflection();
+			TestObjects.initMockedJavaPlugin();
 
-		setupTestFile("enJson.yml");
-		setupTestFile("enLegacy.yml");
+			setupTestFile("enJson.yml");
+			setupTestFile("enLegacy.yml");
+		}
 	}
 
 	private static void setupTestFile(String name)
@@ -93,6 +95,7 @@ public class LegacyFormattedMessageTest
 	@Test
 	public void testLegacyToJsonResults()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		IPlugin plugin = TestObjects.getIPlugin();
 		Language jsonLang = new Language(plugin, new Version(0));
 		Language legacyLang = new Language(plugin, new Version(0));

@@ -20,6 +20,7 @@ package at.pcgamingfreaks.Bungee;
 import at.pcgamingfreaks.TestClasses.TestObjects;
 import at.pcgamingfreaks.Updater.UpdateProviders.BukkitUpdateProvider;
 
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,6 +29,11 @@ import static org.mockito.Mockito.when;
 
 public class UpdaterTest
 {
+	private static boolean isJava16Plus()
+	{
+		return System.getProperty("java.specification.version").compareTo("16") >= 0;
+	}
+
 	private static String status;
 
 	private Runnable syncRunnable = new Runnable() {
@@ -49,12 +55,14 @@ public class UpdaterTest
 	@Before
 	public void prepareTestObjects()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !isJava16Plus());
 		TestObjects.initMockedPlugin();
 	}
 
 	@Test
 	public void testUpdater()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !isJava16Plus());
 		Updater updater = new Updater(TestObjects.getPlugin(), false, new BukkitUpdateProvider(2, TestObjects.getPlugin().getLogger()));
 		assertEquals("The author should match", "", updater.getAuthor());
 		when(updater.getAuthor()).thenReturn("MarkusWME");

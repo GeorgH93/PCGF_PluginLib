@@ -25,20 +25,20 @@ import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,23 +46,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Bukkit.class, NMSReflection.class })
 public class MessageTest
 {
+	private static boolean skipTests = false; // will be set in prepareTestData
+	
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
-		SendMethod tmp = SendMethod.CHAT_CLASSIC; // Init class, do not remove!
+		skipTests = !TestUtils.canMockJdkClasses();
+		if (!skipTests)
+		{
+			Bukkit.setServer(new TestBukkitServer());
+			TestObjects.initNMSReflection();
+			SendMethod tmp = SendMethod.CHAT_CLASSIC; // Init class, do not remove!
+		}
 	}
 
 	@Test(expected = ClassCastException.class)
 	public void testGenericClass() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		setVersion("1_7");
 		Message message = new Message("");
 		assertEquals("The send method should be correct", SendMethod.CHAT_CLASSIC, message.getSendMethod());
@@ -72,6 +76,7 @@ public class MessageTest
 	@Test
 	public void testMessage() throws NoSuchFieldException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		setVersion("1_8");
 		Message message = new Message("", SendMethod.ACTION_BAR);
 		assertNotNull("The message object should not be null", message);
@@ -89,6 +94,7 @@ public class MessageTest
 	@Test(expected = IllegalArgumentException.class)
 	public void testOptionalParameters() throws NoSuchFieldException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		setVersion("1_7");
 		new Message("").setOptionalParameters(json -> null);
 	}
@@ -96,6 +102,7 @@ public class MessageTest
 	@Test
 	public void testSend() throws NoSuchFieldException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		int playerCalls = 0;
 		int commandSenderCalls = 0;
 		final int[] doSendCalls = { 0 };
@@ -142,7 +149,7 @@ public class MessageTest
 		doAnswer(invocationOnMock -> {
 			doSendCalls[0]++;
 			return null;
-		}).when(mockedSender).send(anyCollectionOf(Player.class), anyString(), any());
+		}).when(mockedSender).send(anyList(), anyString(), any());
 		Field defaultSender = SendMethod.class.getDeclaredField("activeSender");
 		defaultSender.setAccessible(true);
 		Object senderBackup = defaultSender.get(SendMethod.CHAT);
@@ -166,6 +173,7 @@ public class MessageTest
 	@Test
 	public void testBroadcast() throws NoSuchFieldException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		int currentCalls = 0;
 		final int[] broadcastCalls = { 0 };
 		setVersion("1_9");
@@ -179,36 +187,38 @@ public class MessageTest
 		defaultSender.setAccessible(true);
 		Object senderBackup = defaultSender.get(SendMethod.CHAT);
 		defaultSender.set(SendMethod.CHAT, mockedSender);
-		mockStatic(Bukkit.class);
-		ConsoleCommandSender mockedConsoleCommandSender = mock(ConsoleCommandSender.class);
-		doAnswer(invocationOnMock -> {
-			broadcastCalls[0]++;
-			return null;
-		}).when(mockedConsoleCommandSender).sendMessage(anyString());
-		when(Bukkit.broadcastMessage(anyString())).thenAnswer(invocationOnMock -> {
-			broadcastCalls[0]++;
-			return null;
-		});
-		when(Bukkit.getConsoleSender()).thenReturn(mockedConsoleCommandSender);
-		message.broadcast((Object[]) null);
-		currentCalls += 2;
-		assertEquals("The broadcast method should be called as often as given", currentCalls, broadcastCalls[0]);
-		message.broadcast();
-		currentCalls += 2;
-		assertEquals("The broadcast method should be called as often as given", currentCalls, broadcastCalls[0]);
-		message.broadcast(false);
-		currentCalls += 2;
-		assertEquals("The broadcast method should be called as often as given", currentCalls, broadcastCalls[0]);
-		message.setSendMethod(SendMethod.CHAT_CLASSIC);
-		message.broadcast((Object[]) null);
-		assertEquals("The broadcast method should be called as often as given", ++currentCalls, broadcastCalls[0]);
-		message.broadcast();
-		assertEquals("The broadcast method should be called as often as given", ++currentCalls, broadcastCalls[0]);
-		message.broadcast(false);
-		assertEquals("The broadcast method should be called as often as given", ++currentCalls, broadcastCalls[0]);
-		message.setSendMethod(null);
-		message.broadcast();
-		assertEquals("The broadcast method should be called as often as given", currentCalls, broadcastCalls[0]);
+		try (MockedStatic<Bukkit> mockedBukkit = Mockito.mockStatic(Bukkit.class))
+		{
+			ConsoleCommandSender mockedConsoleCommandSender = mock(ConsoleCommandSender.class);
+			doAnswer(invocationOnMock -> {
+				broadcastCalls[0]++;
+				return null;
+			}).when(mockedConsoleCommandSender).sendMessage(anyString());
+			mockedBukkit.when(() -> Bukkit.broadcastMessage(anyString())).thenAnswer(invocationOnMock -> {
+				broadcastCalls[0]++;
+				return null;
+			});
+			mockedBukkit.when(Bukkit::getConsoleSender).thenReturn(mockedConsoleCommandSender);
+			message.broadcast((Object[]) null);
+			currentCalls += 2;
+			assertEquals("The broadcast method should be called as often as given", currentCalls, broadcastCalls[0]);
+			message.broadcast();
+			currentCalls += 2;
+			assertEquals("The broadcast method should be called as often as given", currentCalls, broadcastCalls[0]);
+			message.broadcast(false);
+			currentCalls += 2;
+			assertEquals("The broadcast method should be called as often as given", currentCalls, broadcastCalls[0]);
+			message.setSendMethod(SendMethod.CHAT_CLASSIC);
+			message.broadcast((Object[]) null);
+			assertEquals("The broadcast method should be called as often as given", ++currentCalls, broadcastCalls[0]);
+			message.broadcast();
+			assertEquals("The broadcast method should be called as often as given", ++currentCalls, broadcastCalls[0]);
+			message.broadcast(false);
+			assertEquals("The broadcast method should be called as often as given", ++currentCalls, broadcastCalls[0]);
+			message.setSendMethod(null);
+			message.broadcast();
+			assertEquals("The broadcast method should be called as often as given", currentCalls, broadcastCalls[0]);
+		}
 		defaultSender.set(SendMethod.CHAT, senderBackup);
 		defaultSender.setAccessible(false);
 	}
@@ -216,14 +226,7 @@ public class MessageTest
 	private void setVersion(String version) throws NoSuchFieldException, IllegalAccessException
 	{
 		TestObjects.setBukkitVersion(version + "_R1");
-		Field versionField = Message.class.getDeclaredField("PRE_1_8_MC");
-		Field modifiers = Field.class.getDeclaredField("modifiers");
-		modifiers.setAccessible(true);
-		versionField.setAccessible(true);
-		modifiers.set(versionField, versionField.getModifiers() & ~Modifier.FINAL);
-		versionField.set(null, MCVersion.isOlderThan(MCVersion.MC_1_8));
-		modifiers.set(versionField, versionField.getModifiers() | Modifier.FINAL);
-		versionField.setAccessible(false);
-		modifiers.setAccessible(false);
+		Field versionField = TestUtils.setAccessible(Message.class, null, "PRE_1_8_MC", MCVersion.isOlderThan(MCVersion.MC_1_8));
+		TestUtils.setUnaccessible(versionField, null, true);
 	}
 }

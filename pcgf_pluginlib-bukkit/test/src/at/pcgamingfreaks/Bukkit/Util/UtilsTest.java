@@ -29,12 +29,10 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.logging.Logger;
 
@@ -42,17 +40,21 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Bukkit.class, NMSReflection.class, PlayerConnection.class, PluginDescriptionFile.class, Reflection.class })
 public class UtilsTest
 {
-	private static TestBukkitServer server = new TestBukkitServer();
-	private static final World WORLD_1 = Mockito.mock(World.class), WORLD_2 = Mockito.mock(World.class);
-	private static final Player PLAYER1 = Mockito.mock(Player.class), PLAYER2 = Mockito.mock(Player.class), PLAYER3 = Mockito.mock(Player.class), PLAYER4 = Mockito.mock(Player.class);
+	private static boolean skipTests = !TestUtils.canMockJdkClasses();
+	private static TestBukkitServer server = skipTests ? null : new TestBukkitServer();
+	private static final World WORLD_1 = skipTests ? null : Mockito.mock(World.class);
+	private static final World WORLD_2 = skipTests ? null : Mockito.mock(World.class);
+	private static final Player PLAYER1 = skipTests ? null : Mockito.mock(Player.class);
+	private static final Player PLAYER2 = skipTests ? null : Mockito.mock(Player.class);
+	private static final Player PLAYER3 = skipTests ? null : Mockito.mock(Player.class);
+	private static final Player PLAYER4 = skipTests ? null : Mockito.mock(Player.class);
 
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
+		if (skipTests) return;
 		server.allowPluginManager = true;
 		Bukkit.setServer(server);
 		TestObjects.initNMSReflection();
@@ -79,6 +81,7 @@ public class UtilsTest
 	@Test
 	public void testWarnIfPerWorldPluginInstalled()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		Logger mockedLogger = spy(server.getLogger());
 		Utils.warnIfPerWorldPluginsIsInstalled(mockedLogger);
 		verify(mockedLogger, times(0)).warning(anyString());
@@ -90,6 +93,7 @@ public class UtilsTest
 	@Test
 	public void testGetDistance()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		Player mockedPlayer1 = mock(Player.class);
 		Player mockedPlayer2 = mock(Player.class);
 		World mockedWorld1 = mock(World.class);
@@ -111,6 +115,7 @@ public class UtilsTest
 	@Test
 	public void testGetDistanceSquared()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		Player mockedPlayer1 = mock(Player.class);
 		Player mockedPlayer2 = mock(Player.class);
 		World mockedWorld1 = mock(World.class);
@@ -132,6 +137,7 @@ public class UtilsTest
 	@Test
 	public void testInRange()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		assertTrue(Utils.inRange(PLAYER1, PLAYER2, -1.0));
 		assertTrue(Utils.inRange(PLAYER1, PLAYER4, -1.0));
 		assertTrue(Utils.inRange(PLAYER1, PLAYER2, 0));
@@ -154,6 +160,7 @@ public class UtilsTest
 	@Test
 	public void testInRangeSquared()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER2, -1.0));
 		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER4, -1.0));
 		assertTrue(Utils.inRangeSquared(PLAYER1, PLAYER2, 0));

@@ -27,23 +27,19 @@ import com.google.common.io.Files;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
-import org.powermock.api.mockito.PowerMockito;
+
+import sun.misc.Unsafe;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Mockito.*;
 
 public class TestObjects
 {
@@ -76,6 +72,30 @@ public class TestObjects
 	private static JavaPlugin mockedJavaPlugin;
 	private static org.bukkit.plugin.Plugin mockedBukkitPlugin;
 
+	private static final Unsafe UNSAFE;
+
+	static
+	{
+		try
+		{
+			Field f = Unsafe.class.getDeclaredField("theUnsafe");
+			f.setAccessible(true);
+			UNSAFE = (Unsafe) f.get(null);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException("Failed to get Unsafe instance", e);
+		}
+	}
+
+	private static void setStaticField(Class<?> clazz, String fieldName, Object value) throws NoSuchFieldException
+	{
+		Field field = clazz.getDeclaredField(fieldName);
+		Object base = UNSAFE.staticFieldBase(field);
+		long offset = UNSAFE.staticFieldOffset(field);
+		UNSAFE.putObject(base, offset, value);
+	}
+
 	public static void initMockedJavaPlugin()
 	{
 		BukkitScheduler mockedScheduler = mock(BukkitScheduler.class);
@@ -85,7 +105,7 @@ public class TestObjects
 		});
 		Server mockedServer = mock(Server.class);
 		when(mockedServer.getScheduler()).thenReturn(mockedScheduler);
-		mockedJavaPlugin = PowerMockito.mock(JavaPlugin.class);
+		mockedJavaPlugin = mock(JavaPlugin.class);
 		when(mockedJavaPlugin.getLogger()).thenReturn(Logger.getLogger("TestLogger"));
 		File pluginDir = Files.createTempDir();
 		pluginDir.deleteOnExit();
@@ -95,51 +115,25 @@ public class TestObjects
 
 	public static void initMockedBukkitPlugin()
 	{
-		PluginDescriptionFile mockedPluginDescription = PowerMockito.mock(PluginDescriptionFile.class);
-		PowerMockito.when(mockedPluginDescription.getFullName()).thenReturn("TestPlugin");
+		PluginDescriptionFile mockedPluginDescription = mock(PluginDescriptionFile.class);
+		when(mockedPluginDescription.getFullName()).thenReturn("TestPlugin");
 		mockedBukkitPlugin = mock(org.bukkit.plugin.Plugin.class);
 		when(mockedBukkitPlugin.getLogger()).thenReturn(Logger.getLogger("BukkitTestLogger"));
 		when(mockedBukkitPlugin.getDescription()).thenReturn(mockedPluginDescription);
 		when(mockedBukkitPlugin.getName()).thenReturn("TestPlugin");
 	}
 
-	public static void initNMSReflection() throws NoSuchFieldException, IllegalAccessException
+	public static void initNMSReflection() throws NoSuchFieldException
 	{
 		setBukkitVersion("1_8_R1");
-		Field modifiers = Field.class.getDeclaredField("modifiers");
-		modifiers.setAccessible(true);
-		Field nmsClassPath = NMSReflection.class.getDeclaredField("NMS_CLASS_PATH");
-		nmsClassPath.setAccessible(true);
-		modifiers.set(nmsClassPath, nmsClassPath.getModifiers() & ~Modifier.FINAL);
-		nmsClassPath.set(null, "at.pcgamingfreaks.TestClasses.NMS.");
-		modifiers.set(nmsClassPath, nmsClassPath.getModifiers() | Modifier.FINAL);
-		nmsClassPath.setAccessible(false);
-		Field obcClassPath = OBCReflection.class.getDeclaredField("OBC_CLASS_PATH");
-		obcClassPath.setAccessible(true);
-		modifiers.set(obcClassPath, obcClassPath.getModifiers() & ~Modifier.FINAL);
-		obcClassPath.set(null, "at.pcgamingfreaks.TestClasses.OBC.");
-		modifiers.set(obcClassPath, obcClassPath.getModifiers() | Modifier.FINAL);
-		obcClassPath.setAccessible(false);
-		modifiers.setAccessible(false);
+		setStaticField(NMSReflection.class, "NMS_CLASS_PATH", "at.pcgamingfreaks.TestClasses.NMS.");
+		setStaticField(OBCReflection.class, "OBC_CLASS_PATH", "at.pcgamingfreaks.TestClasses.OBC.");
 	}
 
-	public static void setBukkitVersion(String version) throws NoSuchFieldException, IllegalAccessException
+	public static void setBukkitVersion(String version) throws NoSuchFieldException
 	{
-		Field modifiers = Field.class.getDeclaredField("modifiers");
-		modifiers.setAccessible(true);
-		Field bukkitVersion = OBCReflection.class.getDeclaredField("BUKKIT_VERSION");
-		bukkitVersion.setAccessible(true);
-		modifiers.set(bukkitVersion, bukkitVersion.getModifiers() & ~Modifier.FINAL);
-		bukkitVersion.set(null, version);
-		modifiers.set(bukkitVersion, bukkitVersion.getModifiers() | Modifier.FINAL);
-		bukkitVersion.setAccessible(false);
-		Field currentVersion = MCVersion.class.getDeclaredField("CURRENT_VERSION");
-		currentVersion.setAccessible(true);
-		modifiers.set(currentVersion, currentVersion.getModifiers() & ~Modifier.FINAL);
-		currentVersion.set(null, MCVersion.getFromServerVersion(version));
-		modifiers.set(currentVersion, currentVersion.getModifiers() | Modifier.FINAL);
-		currentVersion.setAccessible(false);
-		modifiers.setAccessible(false);
+		setStaticField(OBCReflection.class, "BUKKIT_VERSION", version);
+		setStaticField(MCVersion.class, "CURRENT_VERSION", MCVersion.getFromServerVersion(version));
 	}
 
 	public static void initBukkitOnlinePlayers() throws Exception
@@ -153,11 +147,7 @@ public class TestObjects
 		}
 		else
 		{
-			List<Player> bukkitPlayers = new ArrayList<>();
-			bukkitPlayers.add(new TestBukkitPlayer());
-			bukkitPlayers.add(new TestBukkitPlayer());
-			mockStatic(Bukkit.class);
-			doReturn(bukkitPlayers).when(Bukkit.class, "getOnlinePlayers");
+			throw new UnsupportedOperationException("initBukkitOnlinePlayers requires TestBukkitServer. Set Bukkit.setServer(new TestBukkitServer()) first.");
 		}
 	}
 

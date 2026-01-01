@@ -19,57 +19,60 @@ package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.Util.IUtils;
-import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import sun.misc.Unsafe;
+
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class })
 public class ParticleSpawner_ReflectionTest
 {
+	private static boolean skipTests = false; // set in prepareTestData
 	IUtils mockedUtils = null;
 
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
+		skipTests = !TestUtils.canMockJdkClasses();
+		if (!skipTests)
+		{
+			Bukkit.setServer(new TestBukkitServer());
+			TestObjects.initNMSReflection();
+		}
 	}
 
 	@Before
-	public void prepareTestObjects() throws NoSuchFieldException, IllegalAccessException
+	public void prepareTestObjects() throws Exception
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		mockedUtils = mock(IUtils.class);
 		doNothing().when(mockedUtils).sendPacket(any(Player.class), any());
-		Reflection.setFinalField(IUtils.class.getDeclaredField("INSTANCE"), null, mockedUtils);
+		TestUtils.setFieldValue(null, IUtils.class.getDeclaredField("INSTANCE"), mockedUtils);
 	}
 
 	@After
 	public void cleanupTestObjects() throws NoSuchFieldException, IllegalAccessException
 	{
 		mockedUtils = null;
-		Reflection.setFinalField(IUtils.class.getDeclaredField("INSTANCE"), null, null);
+		TestUtils.setFieldValue(null, IUtils.class.getDeclaredField("INSTANCE"), null);
 	}
 
 	@Test
@@ -90,20 +93,20 @@ public class ParticleSpawner_ReflectionTest
 		verify(mockedUtils, times(++sendPacketCalls)).sendPacket(any(TestBukkitPlayer.class), any());
 		effect.spawnParticle(mockedLocation, Particle.BLOCK_CRACK, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f, new int[] { 0 });
 		verify(mockedUtils, times(++sendPacketCalls)).sendPacket(any(TestBukkitPlayer.class), any());
-		Field modifiers = Field.class.getDeclaredField("modifiers");
-		modifiers.setAccessible(true);
+		// Use Unsafe to set the static final field PACKET_CONSTRUCTOR to null
 		Field packetConstructorField = ParticleSpawner_Reflection.class.getDeclaredField("PACKET_CONSTRUCTOR");
-		packetConstructorField.setAccessible(true);
-		modifiers.set(packetConstructorField, packetConstructorField.getModifiers() & ~Modifier.FINAL);
-		Constructor<?> packetConstructor = (Constructor<?>) packetConstructorField.get(null);
-		packetConstructorField.set(null, null);
+		Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+		unsafeField.setAccessible(true);
+		Unsafe unsafe = (Unsafe) unsafeField.get(null);
+		Object base = unsafe.staticFieldBase(packetConstructorField);
+		long offset = unsafe.staticFieldOffset(packetConstructorField);
+		Constructor<?> packetConstructor = (Constructor<?>) unsafe.getObject(base, offset);
+		unsafe.putObject(base, offset, null);
 		effect.spawnParticle(mockedLocation, Particle.CLOUD, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f);
 		verify(mockedUtils, times(sendPacketCalls)).sendPacket(any(TestBukkitPlayer.class), any());
 		effect.spawnParticle(mockedLocation, Particle.BLOCK_CRACK, 100.0, 4000, 10.0f, 10.0f, 10.0f, 1.0f, new int[] { 0 });
 		verify(mockedUtils, times(sendPacketCalls)).sendPacket(any(TestBukkitPlayer.class), any());
-		packetConstructorField.set(null, packetConstructor);
-		modifiers.set(packetConstructorField, packetConstructorField.getModifiers() | Modifier.FINAL);
-		packetConstructorField.setAccessible(false);
-		modifiers.setAccessible(false);
+		unsafe.putObject(base, offset, packetConstructor);
+		unsafeField.setAccessible(false);
 	}
 }

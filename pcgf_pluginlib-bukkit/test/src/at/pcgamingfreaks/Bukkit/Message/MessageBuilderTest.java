@@ -20,20 +20,18 @@ package at.pcgamingfreaks.Bukkit.Message;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageComponent;
-import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,20 +41,30 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class })
 public class MessageBuilderTest
 {
+	private static boolean skipTests = false; // will be set in prepareTestData
+	
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
+		skipTests = !TestUtils.canMockJdkClasses();
+		if (!skipTests)
+		{
+			Bukkit.setServer(new TestBukkitServer());
+			TestObjects.initNMSReflection();
+		}
+	}
+	
+	private static void assumeJava8to15()
+	{
+		Assume.assumeTrue("Skip on Java 16+ - Bukkit.setServer() not supported", !skipTests);
 	}
 
 	@Test
 	public void testGenericClass()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		at.pcgamingfreaks.Message.MessageBuilder messageBuilder = new MessageBuilder();
 		messageBuilder.appendJson("test");
 		//noinspection SpellCheckingInspection
@@ -84,11 +92,11 @@ public class MessageBuilderTest
 	}
 
 	@Test
-	@SuppressWarnings("SpellCheckingInspection")
 	public void testTootltips() throws NoSuchFieldException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		IStatisticResolver statisticResolver = mock(IStatisticResolver.class);
-		Reflection.setFinalField(MessageTooltipFactory.class.getDeclaredField("STATISTIC_RESOLVER"), null, statisticResolver);
+		TestUtils.setFieldValue(null, MessageTooltipFactory.class.getDeclaredField("STATISTIC_RESOLVER"), statisticResolver);
 
 		MessageBuilder messageBuilder = new MessageBuilder("Test");
 		doReturn("BREED_COW").when(statisticResolver).getAchievementName(any(Achievement.class));
@@ -104,6 +112,6 @@ public class MessageBuilderTest
 		messageBuilder.statisticTooltip(Statistic.ENTITY_KILLED_BY, EntityType.ARROW);
 		assertTrue("The tooltip should match", messageBuilder.getJson().contains("ARROW"));
 
-		Reflection.setFinalField(MessageTooltipFactory.class.getDeclaredField("STATISTIC_RESOLVER"), null, null);
+		TestUtils.setFieldValue(null, MessageTooltipFactory.class.getDeclaredField("STATISTIC_RESOLVER"), null);
 	}
 }

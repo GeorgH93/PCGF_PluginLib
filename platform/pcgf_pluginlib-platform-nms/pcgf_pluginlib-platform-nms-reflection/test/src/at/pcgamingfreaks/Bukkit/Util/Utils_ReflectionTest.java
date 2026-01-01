@@ -30,26 +30,24 @@ import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Bukkit.class, NMSReflection.class, PlayerConnection.class, PluginDescriptionFile.class, Reflection.class })
 public class Utils_ReflectionTest
 {
-	private static final TestBukkitServer server = new TestBukkitServer();
+	private static boolean skipTests = !TestUtils.canMockJdkClasses();
+	private static final TestBukkitServer server = skipTests ? null : new TestBukkitServer();
 
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
+		if (skipTests) return;
 		server.allowPluginManager = true;
 		Bukkit.setServer(server);
 		TestObjects.initNMSReflection();
@@ -59,6 +57,7 @@ public class Utils_ReflectionTest
 	@Test
 	public void testSendPacket()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		Utils_Reflection utils = new Utils_Reflection();
 		int sendPacketCalls = 0;
 		TestBukkitPlayer player = spy(new TestBukkitPlayer());
@@ -72,6 +71,7 @@ public class Utils_ReflectionTest
 	@Test
 	public void testGetPing() throws NoSuchFieldException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		Utils_Reflection utils = new Utils_Reflection();
 		TestBukkitPlayer player = spy(new TestBukkitPlayer());
 		assertEquals("The Ping should match", 123, utils.getPing(player));

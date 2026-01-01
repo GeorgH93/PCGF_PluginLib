@@ -17,10 +17,12 @@
 
 package at.pcgamingfreaks;
 
+import at.pcgamingfreaks.TestClasses.TestUtils;
+
+import org.junit.Assume;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,12 +30,8 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Utils.class)
 public class UtilsTest
 {
 	private static final byte[] byteArray1 = new byte[] { 0x01, 0x02, 0x03 }, byteArray2 = new byte[] { (byte) 0xFD, (byte) 0xDA, 0x11 };
@@ -77,7 +75,8 @@ public class UtilsTest
 	@Test
 	public void testExtract() throws Exception
 	{
-		Logger mockedLogger = mock(Logger.class);
+		Assume.assumeTrue("Skip if mockito-inline not available", TestUtils.canMockJdkClasses());
+		Logger logger = Logger.getLogger(UtilsTest.class.getName());
 		File mockedFile = mock(File.class);
 		doReturn(true).when(mockedFile).exists();
 		doReturn(false).when(mockedFile).delete();
@@ -86,9 +85,10 @@ public class UtilsTest
 		doReturn(parentFile).when(mockedFile).getParentFile();
 		doReturn(false).when(parentFile).exists();
 		doReturn(false).when(parentFile).mkdirs();
-		FileOutputStream mockedFileStream = mock(FileOutputStream.class);
-		whenNew(FileOutputStream.class).withAnyArguments().thenReturn(mockedFileStream);
-		Utils.extractFile(UtilsTest.class, mockedLogger, "", mockedFile);
+		try (MockedConstruction<FileOutputStream> mockedFileStream = Mockito.mockConstruction(FileOutputStream.class))
+		{
+			Utils.extractFile(UtilsTest.class, logger, "", mockedFile);
+		}
 	}
 
 	@Test

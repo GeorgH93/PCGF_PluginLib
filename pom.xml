@@ -11,7 +11,7 @@
 		<website>https://github.com/GeorgH93/PCGF_PluginLib/</website>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<powermock.version>2.0.9</powermock.version><!-- property so that we have to change only one value to update all the powermock dependencies -->
+		<mockito.version>4.11.0</mockito.version>
 		<mavenShade.version>3.5.3</mavenShade.version>
 		<pluginName>PCGF_PluginLib</pluginName>
 		<author>GeorgH93</author>
@@ -19,6 +19,7 @@
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<bukkitVersion>1.12.2-R0.1-SNAPSHOT</bukkitVersion>
 		<bungeeVersion>1.19-R0.1-SNAPSHOT</bungeeVersion>
+		<surefire.argLine></surefire.argLine>
 
 		<sonar.organization>georgh93</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -92,25 +93,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>2.28.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>${powermock.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito2</artifactId>
-			<version>${powermock.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-classloading-xstream</artifactId>
-			<version>${powermock.version}</version>
+			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -175,11 +158,14 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
-			</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>3.2.5</version>
+			<configuration>
+				<argLine>${surefire.argLine}</argLine>
+			</configuration>
+		</plugin>
 			<!-- flatten the pom -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -248,13 +234,29 @@
 
 	<profiles>
 		<profile>
-			<id>DisableTestsOnJava16AndUp</id>
+			<id>AddOpensForJava9+</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
-				<jdk>[16,)</jdk>
+				<jdk>[9,)</jdk>
 			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-inline</artifactId>
+					<version>${mockito.version}</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
 			<properties>
-				<maven.test.skip>true</maven.test.skip>
+				<surefire.argLine>
+					--add-opens java.base/java.lang=ALL-UNNAMED
+					--add-opens java.base/java.lang.reflect=ALL-UNNAMED
+					--add-opens java.base/java.util=ALL-UNNAMED
+					--add-opens java.base/java.io=ALL-UNNAMED
+					--add-opens java.base/java.net=ALL-UNNAMED
+					--add-opens java.base/java.util.logging=ALL-UNNAMED
+					--add-opens java.base/java.util.zip=ALL-UNNAMED
+					--add-opens java.base/sun.nio.ch=ALL-UNNAMED
+				</surefire.argLine>
 			</properties>
 		</profile>
 	</profiles>

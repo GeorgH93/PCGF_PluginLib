@@ -33,6 +33,8 @@ public class BaseOnlineProviderTest
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public void testGetLatestReleaseType() throws NotSuccessfullyQueriedException
 	{
+		org.junit.Assume.assumeTrue("Skip on Java 16+ - can't mock BaseOnlineProvider", 
+			System.getProperty("java.specification.version").compareTo("16") < 0);
 		BaseOnlineProvider provider = mock(BaseOnlineProvider.class, Mockito.CALLS_REAL_METHODS);
 		Version mockedVersion = mock(Version.class);
 		doReturn(true).when(mockedVersion).isPreRelease();

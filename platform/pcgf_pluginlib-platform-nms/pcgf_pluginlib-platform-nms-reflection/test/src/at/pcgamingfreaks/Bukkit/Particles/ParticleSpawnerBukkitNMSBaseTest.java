@@ -19,10 +19,10 @@ package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.Util.IUtils;
-import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,12 +31,10 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -46,32 +44,36 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class })
 public class ParticleSpawnerBukkitNMSBaseTest
 {
+	private static boolean skipTests = false; // set in prepareTestData
 	IUtils mockedUtils = null;
 
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
+		skipTests = !TestUtils.canMockJdkClasses();
+		if (!skipTests)
+		{
+			Bukkit.setServer(new TestBukkitServer());
+			TestObjects.initNMSReflection();
+		}
 	}
 
 	@Before
 	public void prepareTestObjects() throws Exception
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		mockedUtils = mock(IUtils.class);
 		doNothing().when(mockedUtils).sendPacket(any(Player.class), any());
-		Reflection.setFinalField(IUtils.class.getDeclaredField("INSTANCE"), null, mockedUtils);
+		TestUtils.setFieldValue(null, IUtils.class.getDeclaredField("INSTANCE"), mockedUtils);
 	}
 
 	@After
 	public void cleanupTestObjects() throws NoSuchFieldException, IllegalAccessException
 	{
 		mockedUtils = null;
-		Reflection.setFinalField(IUtils.class.getDeclaredField("INSTANCE"), null, null);
+		TestUtils.setFieldValue(null, IUtils.class.getDeclaredField("INSTANCE"), null);
 	}
 
 	@Test

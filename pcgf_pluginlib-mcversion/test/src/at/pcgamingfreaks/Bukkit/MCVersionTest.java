@@ -21,7 +21,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+
+import sun.misc.Unsafe;
 
 import static org.junit.Assert.*;
 
@@ -30,15 +31,14 @@ public class MCVersionTest
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		final Field currentVersion = MCVersion.class.getDeclaredField("CURRENT_VERSION");
-		final Field modifiers = Field.class.getDeclaredField("modifiers");
-		modifiers.setAccessible(true);
-		currentVersion.setAccessible(true);
-		modifiers.set(currentVersion, currentVersion.getModifiers() & ~Modifier.FINAL);
-		currentVersion.set(null, MCVersion.MC_NMS_1_8_R1);
-		modifiers.set(currentVersion, currentVersion.getModifiers() | Modifier.FINAL);
-		currentVersion.setAccessible(false);
-		modifiers.setAccessible(false);
+		Field currentVersion = MCVersion.class.getDeclaredField("CURRENT_VERSION");
+		Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+		unsafeField.setAccessible(true);
+		Unsafe unsafe = (Unsafe) unsafeField.get(null);
+		Object base = unsafe.staticFieldBase(currentVersion);
+		long offset = unsafe.staticFieldOffset(currentVersion);
+		unsafe.putObject(base, offset, MCVersion.MC_NMS_1_8_R1);
+		unsafeField.setAccessible(false);
 	}
 
 	@Test

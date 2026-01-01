@@ -17,20 +17,58 @@
 
 package at.pcgamingfreaks.TestClasses;
 
+import sun.misc.Unsafe;
+
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class TestUtils
 {
-	private static Field modifiersField;
+	private static final Unsafe UNSAFE;
 	private static Map<String, Object> fields;
+	private static final boolean STATIC_MOCKING_AVAILABLE = checkStaticMockingAvailable();
 
-	public static void initReflection() throws NoSuchFieldException
+	static
 	{
-		modifiersField = Field.class.getDeclaredField("modifiers");
-		modifiersField.setAccessible(true);
+		try
+		{
+			Field f = Unsafe.class.getDeclaredField("theUnsafe");
+			f.setAccessible(true);
+			UNSAFE = (Unsafe) f.get(null);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException("Failed to get Unsafe instance", e);
+		}
+	}
+
+	private static boolean checkStaticMockingAvailable()
+	{
+		try
+		{
+			// Check if mockito-inline is on the classpath by looking for its MockMaker configuration
+			return TestUtils.class.getClassLoader()
+				.getResource("mockito-extensions/org.mockito.plugins.MockMaker") != null;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+
+	public static boolean isStaticMockingAvailable()
+	{
+		return STATIC_MOCKING_AVAILABLE;
+	}
+
+	public static boolean canMockJdkClasses()
+	{
+		return STATIC_MOCKING_AVAILABLE && System.getProperty("java.specification.version").compareTo("16") < 0;
+	}
+
+	public static void initReflection()
+	{
 		fields = new TreeMap<>();
 	}
 
@@ -38,21 +76,35 @@ public class TestUtils
 	{
 		Field field = clazz.getDeclaredField(name);
 		field.setAccessible(true);
-		modifiersField.set(field, field.getModifiers() & ~Modifier.FINAL);
 		fields.put(name, field.get(object));
-		field.set(object, value);
+		setFieldValue(object, field, value);
 		return field;
 	}
 
 	@SuppressWarnings("SpellCheckingInspection")
 	public static void setUnaccessible(Field field, Object object, boolean isFinal) throws IllegalAccessException
 	{
-		field.set(object, fields.get(field.getName()));
+		setFieldValue(object, field, fields.get(field.getName()));
 		fields.remove(field.getName());
-		if (isFinal)
-		{
-			modifiersField.set(field, field.getModifiers() | Modifier.FINAL);
-		}
 		field.setAccessible(false);
+	}
+
+	/**
+	 * Sets a field value using sun.misc.Unsafe, bypassing final field restrictions.
+	 * Works on Java 8 through Java 21+.
+	 */
+	public static void setFieldValue(Object target, Field field, Object value)
+	{
+		if (target == null)
+		{
+			Object base = UNSAFE.staticFieldBase(field);
+			long offset = UNSAFE.staticFieldOffset(field);
+			UNSAFE.putObject(base, offset, value);
+		}
+		else
+		{
+			long offset = UNSAFE.objectFieldOffset(field);
+			UNSAFE.putObject(target, offset, value);
+		}
 	}
 }

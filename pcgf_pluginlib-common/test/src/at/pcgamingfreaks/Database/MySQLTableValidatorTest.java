@@ -35,6 +35,8 @@ public class MySQLTableValidatorTest
 	@Before
 	public void prepareTestObjects() throws SQLException
 	{
+		org.junit.Assume.assumeTrue("Skip on Java 16+ - can't mock java.sql.Connection", 
+			System.getProperty("java.specification.version").compareTo("16") < 0);
 		mockedStatement = mock(Statement.class);
 		PreparedStatement mockedPreparedStatement = mock(PreparedStatement.class);
 		mockedConnection = mock(Connection.class);

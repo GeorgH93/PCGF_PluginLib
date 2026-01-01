@@ -19,21 +19,19 @@ package at.pcgamingfreaks.Message;
 
 import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestMessage;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
+import org.junit.Assume;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Reflection.class })
 public class MessageTest
 {
 	@Test
@@ -62,8 +60,11 @@ public class MessageTest
 	@Test
 	public void testMessageWithError()
 	{
+		Assume.assumeTrue("Skip if mockito-inline not available", TestUtils.isStaticMockingAvailable());
 		assertEquals("The test message should be empty", "", new TestMessage("").getClassicMessage());
-		mockStatic(Reflection.class);
-		assertEquals("The test message should be empty", "", new TestMessage("").getClassicMessage());
+		try (MockedStatic<Reflection> mockedReflection = Mockito.mockStatic(Reflection.class))
+		{
+			assertEquals("The test message should be empty", "", new TestMessage("").getClassicMessage());
+		}
 	}
 }

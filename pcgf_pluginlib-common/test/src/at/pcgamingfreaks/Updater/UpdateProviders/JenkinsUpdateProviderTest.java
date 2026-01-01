@@ -17,34 +17,41 @@
 
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
+import at.pcgamingfreaks.TestClasses.LogCapture;
 import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 
-import com.google.gson.JsonParser;
-
+import org.junit.After;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.IndicateReloadClass;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ URL.class, JenkinsUpdateProvider.class, JsonParser.class })
 public class JenkinsUpdateProviderTest
 {
+	private static final Logger LOGGER = Logger.getLogger(JenkinsUpdateProviderTest.class.getName());
+	private LogCapture logCapture;
+	
+	@Before
+	public void setUp()
+	{
+		logCapture = new LogCapture();
+		LogCapture.createTestLogger(JenkinsUpdateProviderTest.class.getName(), logCapture);
+	}
+	
+	@After
+	public void tearDown()
+	{
+		LOGGER.removeHandler(logCapture);
+	}
 	@Test(expected = NullPointerException.class)
 	public void testJenkinsUpdateProviderWithoutJob()
 	{
@@ -64,46 +71,35 @@ public class JenkinsUpdateProviderTest
 	{
 		int currentWarnings = 0;
 		int currentSevere = 0;
-		final int[] counts = { 0, 0 };
-		Logger mockedLogger = mock(Logger.class);
-		doAnswer(invocationOnMock -> {
-			System.out.println(invocationOnMock.getArguments()[0]);
-			counts[0]++;
-			return null;
-		}).when(mockedLogger).warning(anyString());
-		doAnswer(invocationOnMock -> {
-			System.out.println(invocationOnMock.getArguments()[0]);
-			counts[1]++;
-			return null;
-		}).when(mockedLogger).severe(anyString());
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", LOGGER);
 		assertEquals("The invalid query should return a failure", UpdateResult.FAIL_FILE_NOT_FOUND, updater.query());
-		assertEquals("A warning should be shown", currentWarnings, counts[0]);
-		assertEquals("An error should be shown", ++currentSevere, counts[1]);
-		updater = new JenkinsUpdateProvider("ci.pcgamingfreaks.at", "PluginLib", "", mockedLogger);
+		assertEquals("A warning should be shown", currentWarnings, logCapture.getRecordCountByLevel(Level.WARNING));
+		assertEquals("An error should be shown", ++currentSevere, logCapture.getRecordCountByLevel(Level.SEVERE));
+		updater = new JenkinsUpdateProvider("ci.pcgamingfreaks.at", "PluginLib", "", LOGGER);
 		assertEquals("The query should be successful", UpdateResult.SUCCESS, updater.query());
-		assertEquals("No warning should be shown", currentWarnings, counts[0]);
-		updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", "", mockedLogger);
+		assertEquals("No warning should be shown", currentWarnings, logCapture.getRecordCountByLevel(Level.WARNING));
+		updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", "", LOGGER);
 		assertEquals("The query should be successful", UpdateResult.SUCCESS, updater.query());
-		assertEquals("No warning should be shown", currentWarnings, counts[0]);
+		assertEquals("No warning should be shown", currentWarnings, logCapture.getRecordCountByLevel(Level.WARNING));
+		Assume.assumeTrue("Skip if mockito-inline not available", TestUtils.canMockJdkClasses());
 		TestUtils.initReflection();
-		URL mockedURL = PowerMockito.mock(URL.class);
-		PowerMockito.doThrow(new IOException("HTTP response code: 403")).when(mockedURL).openConnection();
+		java.net.URL mockedURL = mock(java.net.URL.class);
+		doThrow(new java.io.IOException("HTTP response code: 403")).when(mockedURL).openConnection();
 		Field urlField = TestUtils.setAccessible(JenkinsUpdateProvider.class, updater, "url", mockedURL);
 		assertEquals("The query should return a failure", UpdateResult.FAIL_API_KEY, updater.query());
 		currentSevere += 2;
-		assertEquals("The logger should log the error", currentSevere, counts[1]);
+		assertEquals("The logger should log the error", currentSevere, logCapture.getRecordCountByLevel(Level.SEVERE));
 		Field tokenField = TestUtils.setAccessible(JenkinsUpdateProvider.class, updater, "token", null);
 		assertEquals("The query should return a failure", UpdateResult.FAIL_API_KEY, updater.query());
 		currentSevere += 2;
-		assertEquals("The logger should log the error", currentSevere, counts[1]);
+		assertEquals("The logger should log the error", currentSevere, logCapture.getRecordCountByLevel(Level.SEVERE));
 		TestUtils.setUnaccessible(tokenField, updater, true);
-		PowerMockito.doThrow(new IOException("")).when(mockedURL).openConnection();
+		doThrow(new java.io.IOException("")).when(mockedURL).openConnection();
 		assertEquals("The query should return a offline message", UpdateResult.FAIL_SERVER_OFFLINE, updater.query());
 		currentSevere += 3;
-		assertEquals("The logger should log the error", currentSevere, counts[1]);
+		assertEquals("The logger should log the error", currentSevere, logCapture.getRecordCountByLevel(Level.SEVERE));
 		TestUtils.setUnaccessible(urlField, updater, true);
-		updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger, "PLib");
+		updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", LOGGER, "PLib");
 		updater.query();
 		assertNotNull("The updater object should not be null", updater);
 	}
@@ -111,16 +107,14 @@ public class JenkinsUpdateProviderTest
 	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestVersionFailure() throws NotSuccessfullyQueriedException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", LOGGER);
 		updater.getLatestVersion();
 	}
 
 	@Test
 	public void testGetLatestVersionSuccess() throws NotSuccessfullyQueriedException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", LOGGER);
 		updater.query();
 		assertNotNull("The latest version should not be null", updater.getLatestVersion());
 	}
@@ -128,16 +122,14 @@ public class JenkinsUpdateProviderTest
 	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestFileURLFailure() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", LOGGER);
 		updater.getLatestFileURL();
 	}
 
 	@Test
 	public void testGetLatestFileURLSuccess() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", LOGGER);
 		updater.query();
 		assertNotNull("The latest file URL should not be null", updater.getLatestFileURL());
 	}
@@ -145,16 +137,14 @@ public class JenkinsUpdateProviderTest
 	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestVersionFileNameFailure() throws NotSuccessfullyQueriedException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", LOGGER);
 		updater.getLatestFileName();
 	}
 
 	@Test
 	public void testGetLatestVersionFileNameSuccess() throws NotSuccessfullyQueriedException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", LOGGER);
 		updater.query();
 		assertNotNull("The latest version file name should not be null", updater.getLatestFileName());
 	}
@@ -162,16 +152,14 @@ public class JenkinsUpdateProviderTest
 	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestNameFailure() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", LOGGER);
 		updater.getLatestName();
 	}
 
 	@Test
 	public void testGetLatestNameSuccess() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", LOGGER);
 		updater.query();
 		assertNotNull("The latest version should not be null", updater.getLatestName());
 	}
@@ -179,16 +167,14 @@ public class JenkinsUpdateProviderTest
 	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestChecksumFailure() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", LOGGER);
 		updater.getLatestChecksum();
 	}
 
 	@Test
 	public void testGetLatestChecksumSuccess() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", LOGGER);
 		updater.query();
 		assertNotNull("The latest checksum should not be null", updater.getLatestChecksum());
 	}
@@ -196,16 +182,14 @@ public class JenkinsUpdateProviderTest
 	@Test(expected = NotSuccessfullyQueriedException.class)
 	public void testGetLatestChangelogFailure() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("abc://invalid/", "NOPE", LOGGER);
 		updater.getLatestChangelog();
 	}
 
 	@Test
 	public void testGetLatestChangelogSuccess() throws NotSuccessfullyQueriedException, RequestTypeNotAvailableException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", LOGGER);
 		updater.query();
 		assertNotNull("The latest changelog should not be null", updater.getLatestChangelog());
 	}
@@ -213,24 +197,21 @@ public class JenkinsUpdateProviderTest
 	@Test(expected = RequestTypeNotAvailableException.class)
 	public void testGetLatestMinecraftVersion() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", LOGGER);
 		updater.getLatestMinecraftVersion();
 	}
 
 	@Test(expected = RequestTypeNotAvailableException.class)
 	public void testGetLatestDependencies() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", LOGGER);
 		updater.getLatestDependencies();
 	}
 
 	@Test(expected = RequestTypeNotAvailableException.class)
 	public void testGetUpdateHistory() throws RequestTypeNotAvailableException, NotSuccessfullyQueriedException
 	{
-		Logger mockedLogger = mock(Logger.class);
-		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", mockedLogger);
+		JenkinsUpdateProvider updater = new JenkinsUpdateProvider("https://ci.pcgamingfreaks.at", "PluginLib", LOGGER);
 		updater.getUpdateHistory();
 	}
 
@@ -242,7 +223,6 @@ public class JenkinsUpdateProviderTest
 		assertTrue("The JenkinsUpdateProvider should provide a download URL", updater.providesDownloadURL());
 		assertTrue("The JenkinsUpdateProvider should provide a changelog", updater.providesChangelog());
 		assertEquals("The JenkinsUpdateProvider should provide a MD5 checksum", ChecksumType.MD5, updater.providesChecksum());
-		updater = (JenkinsUpdateProvider) JenkinsUpdateProvider.class.getDeclaredConstructors()[0].newInstance(new IndicateReloadClass());
 		assertFalse("The JenkinsUpdateProvider should not provide a Minecraft version", updater.providesMinecraftVersion());
 		assertFalse("The JenkinsUpdateProvider should not provide a update history", updater.providesUpdateHistory());
 		assertFalse("The JenkinsUpdateProvider should not provide dependencies", updater.providesDependencies());

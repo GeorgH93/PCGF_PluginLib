@@ -27,11 +27,11 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,51 +39,64 @@ import java.lang.reflect.Field;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ BukkitItemStackSerializer.class, BukkitObjectInputStream.class, BukkitObjectOutputStream.class })
 public class BukkitItemStackSerializerTest
 {
+	private static boolean skipTests = false;
+	
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
-		TestUtils.initReflection();
+		skipTests = !TestUtils.canMockJdkClasses();
+		if (!skipTests)
+		{
+			Bukkit.setServer(new TestBukkitServer());
+			TestObjects.initNMSReflection();
+			TestUtils.initReflection();
+		}
 	}
 
 	@Test
 	public void testDeserialize() throws Exception
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		BukkitItemStackSerializer deserializer = new BukkitItemStackSerializer();
 		assertNull("Deserialized data should be null", deserializer.deserialize(null));
 		assertNull("Deserialized data should be null when an error occurs", deserializer.deserialize(new byte[] { 2, 5, 6 }));
-		BukkitObjectInputStream mockedInputStream = mock(BukkitObjectInputStream.class);
-		doReturn(new ItemStack[] {}).when(mockedInputStream).readObject();
-		whenNew(BukkitObjectInputStream.class).withAnyArguments().thenReturn(mockedInputStream);
-		assertNotNull("Deserialized data should not be null", deserializer.deserialize(new byte[] { 22, 25, 65 }));
+		try (MockedConstruction<BukkitObjectInputStream> mockedInputStream = Mockito.mockConstruction(BukkitObjectInputStream.class,
+				(mock, context) -> when(mock.readObject()).thenReturn(new ItemStack[] {})))
+		{
+			assertNotNull("Deserialized data should not be null", deserializer.deserialize(new byte[] { 22, 25, 65 }));
+		}
 	}
 
 	@Test
 	public void testSerialize() throws Exception
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		BukkitItemStackSerializer serializer = new BukkitItemStackSerializer();
 		assertNull("Serialized data should be null", serializer.serialize(null));
 		assertNull("Serialized data should be null when an error occurs", serializer.serialize(new ItemStack[] { new ItemStack(Material.APPLE, 10) }));
-		BukkitObjectOutputStream mockedOutputStream = mock(BukkitObjectOutputStream.class);
-		doNothing().when(mockedOutputStream).writeObject(any(at.pcgamingfreaks.TestClasses.NMS.ItemStack[].class));
-		doNothing().when(mockedOutputStream).flush();
-		whenNew(BukkitObjectOutputStream.class).withArguments(any(ByteArrayOutputStream.class)).thenReturn(mockedOutputStream);
-		assertNotNull("Serialized data should not be null", serializer.serialize(new ItemStack[] { new ItemStack(Material.APPLE, 10) }));
-		doThrow(new IOException()).when(mockedOutputStream).writeObject(any(ItemStack[].class));
-		assertNull("Serialized data should be null when an error occurs", serializer.serialize(new ItemStack[] { new ItemStack(Material.APPLE, 10) }));
+		try (MockedConstruction<BukkitObjectOutputStream> mockedOutputStream = Mockito.mockConstruction(BukkitObjectOutputStream.class,
+				(mock, context) -> {
+					doNothing().when(mock).writeObject(any(at.pcgamingfreaks.TestClasses.NMS.ItemStack[].class));
+					doNothing().when(mock).flush();
+				}))
+		{
+			assertNotNull("Serialized data should not be null", serializer.serialize(new ItemStack[] { new ItemStack(Material.APPLE, 10) }));
+		}
+		try (MockedConstruction<BukkitObjectOutputStream> mockedOutputStream = Mockito.mockConstruction(BukkitObjectOutputStream.class,
+				(mock, context) -> doThrow(new IOException()).when(mock).writeObject(any(ItemStack[].class))))
+		{
+			assertNull("Serialized data should be null when an error occurs", serializer.serialize(new ItemStack[] { new ItemStack(Material.APPLE, 10) }));
+		}
 	}
 
 	@Test
 	public void testIsMCVersionCompatible() throws NoSuchFieldException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		Field field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.MC_1_8);
 		assertTrue("The serializer should be compatible with all MC versions", BukkitItemStackSerializer.isMCVersionCompatible());
 		TestUtils.setUnaccessible(field, null, true);
@@ -92,6 +105,7 @@ public class BukkitItemStackSerializerTest
 	@Test
 	public void testCheckIsMCVersionCompatible() throws NoSuchFieldException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		Field field = TestUtils.setAccessible(MCVersion.class, null, "CURRENT_VERSION", MCVersion.UNKNOWN);
 		assertTrue("The serializer should be compatible with all MC versions", new BukkitItemStackSerializer().checkIsMCVersionCompatible());
 		TestUtils.setUnaccessible(field, null, true);

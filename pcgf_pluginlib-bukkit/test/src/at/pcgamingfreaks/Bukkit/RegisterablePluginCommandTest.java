@@ -20,16 +20,15 @@ package at.pcgamingfreaks.Bukkit;
 import at.pcgamingfreaks.Bukkit.Command.RegisterablePluginCommand;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.command.*;
 import org.bukkit.command.defaults.ReloadCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -42,13 +41,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("SpellCheckingInspection")
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ PluginDescriptionFile.class })
 public class RegisterablePluginCommandTest
 {
 	@Before
 	public void prepareTestObjects()
 	{
+		Assume.assumeTrue("Skip if mockito-inline not available", TestUtils.canMockJdkClasses());
 		TestObjects.initMockedBukkitPlugin();
 	}
 

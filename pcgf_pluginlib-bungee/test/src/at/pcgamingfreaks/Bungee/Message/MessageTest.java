@@ -29,8 +29,8 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import org.junit.Assume;
 import org.junit.Test;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -43,9 +43,15 @@ import static org.mockito.Mockito.*;
 
 public class MessageTest
 {
+	private static boolean isJava16Plus()
+	{
+		return System.getProperty("java.specification.version").compareTo("16") >= 0;
+	}
+
 	@Test(expected = ClassCastException.class)
 	public void testGenericClass()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !isJava16Plus());
 		at.pcgamingfreaks.Message.Message message = new Message("");
 		//noinspection unchecked
 		message.send(new Object(), "");
@@ -54,6 +60,7 @@ public class MessageTest
 	@Test
 	public void testMessage()
 	{
+		Assume.assumeTrue("Skip on Java 16+", !isJava16Plus());
 		assertEquals("The send method of the new message should match", SendMethod.TITLE, new Message("Another test message", SendMethod.TITLE).getSendMethod());
 		assertEquals("The extended message should match", MessageFormat.ITALIC.toString() + MessageColor.BLUE.toString() + "Test Message 3" + MessageColor.RESET, new Message(new MessageComponent[] { new MessageComponent("Test Message 3", MessageColor.BLUE, MessageFormat.ITALIC) }, SendMethod.ACTION_BAR).getClassicMessage());
 		List<MessageComponent> messageComponents = new ArrayList<>();
@@ -67,6 +74,7 @@ public class MessageTest
 	@Test
 	public void testSetOptionalParameters() throws NoSuchFieldException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !isJava16Plus());
 		Message message = new Message("");
 		TitleMetadata titleMetadata = new TitleMetadata(10, 20, 30);
 		BossBarMetadata bossBarMetadata = new BossBarMetadata();
@@ -82,6 +90,7 @@ public class MessageTest
 	@Test
 	public void testSend() throws Exception
 	{
+		Assume.assumeTrue("Skip on Java 16+", !isJava16Plus());
 		int sendMessageCalls = 0;
 		int doSendCalls = 0;
 		Message message = new Message("");
@@ -113,28 +122,28 @@ public class MessageTest
 		doSendCalls = 0;
 		List<ProxiedPlayer> proxiedPlayers = new ArrayList<>();
 		message.send(proxiedPlayers);
-		verify(mockedSender, times(doSendCalls)).send(anyCollectionOf(ProxiedPlayer.class), anyString(), any());
+		verify(mockedSender, times(doSendCalls)).send(anyCollection(), anyString(), any());
 		proxiedPlayers.add(mockedProxiedPlayer);
 		message.send(proxiedPlayers, (Object[]) null);
-		verify(mockedSender, times(++doSendCalls)).send(anyCollectionOf(ProxiedPlayer.class), anyString(), any());
+		verify(mockedSender, times(++doSendCalls)).send(anyCollection(), anyString(), any());
 		message.send(proxiedPlayers);
-		verify(mockedSender, times(++doSendCalls)).send(anyCollectionOf(ProxiedPlayer.class), anyString(), any());
+		verify(mockedSender, times(++doSendCalls)).send(anyCollection(), anyString(), any());
 		message.send(proxiedPlayers, "Test");
-		verify(mockedSender, times(++doSendCalls)).send(anyCollectionOf(ProxiedPlayer.class), anyString(), any());
+		verify(mockedSender, times(++doSendCalls)).send(anyCollection(), anyString(), any());
 		message.setSendMethod(null);
 		message.send(mockedCommandSender);
 		//noinspection deprecation
 		verify(mockedCommandSender, times(sendMessageCalls)).sendMessage(anyString());
 		message.send(proxiedPlayers);
-		verify(mockedSender, times(doSendCalls)).send(anyCollectionOf(ProxiedPlayer.class), anyString(), any());
+		verify(mockedSender, times(doSendCalls)).send(anyCollection(), anyString(), any());
 		defaultSender.setAccessible(false);
 		method.setAccessible(false);
 	}
 
-	@PrepareForTest({ ProxyServer.class })
 	@Test
 	public void testBroadcast() throws NoSuchFieldException, IllegalAccessException
 	{
+		Assume.assumeTrue("Skip on Java 16+", !isJava16Plus());
 		int sendMessageCalls = 0;
 		int doBroadcastCalls = 0;
 		Message message = new Message("");

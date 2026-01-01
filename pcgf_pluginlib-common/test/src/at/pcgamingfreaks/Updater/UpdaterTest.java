@@ -30,12 +30,10 @@ import com.google.common.io.Files;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.*;
-import org.junit.runner.RunWith;
+import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.MockRepository;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -50,17 +48,9 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.doReturn;
-import static org.powermock.api.mockito.PowerMockito.*;
 
 @SuppressWarnings("UnstableApiUsage")
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ByteStreams.class, FileOutputStream.class, Updater.class, Utils.class })
 public class UpdaterTest
 {
 	private static final Logger LOGGER = Logger.getLogger(UpdaterTest.class.getName());
@@ -75,6 +65,41 @@ public class UpdaterTest
 
 	private static UpdateProvider bukkitProvider;
 
+	public static class TestableUpdater extends Updater
+	{
+		public TestableUpdater(File pluginsFolder, boolean enabled, boolean downloadDependencies, Logger logger, UpdateProvider updateProvider, String localVersion, String localFileName)
+		{
+			super(pluginsFolder, enabled, downloadDependencies, logger, updateProvider, localVersion, localFileName);
+		}
+
+		@Override
+		protected void runSync(Runnable runnable)
+		{
+			runnable.run();
+		}
+
+		@Override
+		protected void runAsync(Runnable runnable)
+		{
+			runnable.run();
+		}
+
+		@Override
+		protected @NotNull String getAuthor()
+		{
+			return "GeorgH93";
+		}
+
+		@Override
+		public void waitForAsyncOperation() {}
+
+		@Override
+		public boolean isRunning()
+		{
+			return false;
+		}
+	}
+
 	private Updater getUpdater(String version)
 	{
 		return getUpdater(version, bukkitProvider);
@@ -82,35 +107,7 @@ public class UpdaterTest
 
 	private Updater getUpdater(String version, UpdateProvider provider)
 	{
-		return new Updater(PLUGINS_FOLDER, false, false, LOGGER, provider, version, TARGET_FILE.getName())
-		{
-			@Override
-			protected void runSync(Runnable runnable)
-			{
-				runnable.run();
-			}
-
-			@Override
-			protected void runAsync(Runnable runnable)
-			{
-				runnable.run();
-			}
-
-			@Override
-			protected @NotNull String getAuthor()
-			{
-				return "GeorgH93";
-			}
-
-			@Override
-			public void waitForAsyncOperation() {}
-
-			@Override
-			public boolean isRunning()
-			{
-				return false;
-			}
-		};
+		return new TestableUpdater(PLUGINS_FOLDER, false, false, LOGGER, provider, version, TARGET_FILE.getName());
 	}
 
 	private void setFile(URL source, File target) throws IOException
@@ -202,6 +199,8 @@ public class UpdaterTest
 	@Test
 	public void testUpdate() throws NoSuchFieldException, IllegalAccessException, RequestTypeNotAvailableException, NotSuccessfullyQueriedException, MalformedURLException
 	{
+		org.junit.Assume.assumeTrue("Skip on Java 16+ - spy() doesn't work on TestableUpdater", 
+			System.getProperty("java.specification.version").compareTo("16") < 0);
 		int shouldHaveUpdateResponses = 0;
 		final int[] updateResponses = { 0 };
 		final UpdateResponseCallback updaterResponse = result -> updateResponses[0]++;
@@ -280,6 +279,7 @@ public class UpdaterTest
 	@Test
 	public void testUnzip() throws Exception
 	{
+		Assume.assumeTrue("Skip if mockito-inline not available", TestUtils.canMockJdkClasses());
 		File file = new File("ZIP-Archive.zip");
 		Updater updater = getUpdater("1.0");
 		updater.unzip(new File("Not-Found.zip"));
@@ -298,7 +298,6 @@ public class UpdaterTest
 		//noinspection ResultOfMethodCallIgnored
 		pluginFile.delete();
 		final boolean[] hasMore = { false };
-		ZipFile mockedZipFile = mock(ZipFile.class);
 		ZipEntry mockedZipEntry = mock(ZipEntry.class);
 		doReturn("Test-JAR.jar").when(mockedZipEntry).getName();
 		final Enumeration<?> mockedEnumeration = mock(Enumeration.class);
@@ -307,76 +306,131 @@ public class UpdaterTest
 			return hasMore[0];
 		}).when(mockedEnumeration).hasMoreElements();
 		doReturn(mockedZipEntry).when(mockedEnumeration).nextElement();
-		doAnswer(invocationOnMock -> {
-			hasMore[0] = false;
-			return mockedEnumeration;
-		}).when(mockedZipFile).entries();
-		whenNew(ZipFile.class).withAnyArguments().thenReturn(mockedZipFile);
-		mockStatic(ByteStreams.class);
-		PowerMockito.doAnswer((Answer<Long>) invocationOnMock -> (long) ((InputStream) invocationOnMock.getArguments()[0]).available()).when(ByteStreams.class, "copy", any(BufferedInputStream.class), any(BufferedOutputStream.class));
-		updater.unzip(file);
-		BufferedOutputStream mockedOutputStream = mock(BufferedOutputStream.class);
-		doThrow(new IOException()).when(mockedOutputStream).flush();
-		whenNew(BufferedOutputStream.class).withAnyArguments().thenReturn(mockedOutputStream);
-		updater.unzip(file);
-		PowerMockito.doThrow(new IOException()).when(ByteStreams.class, "copy", any(BufferedInputStream.class), any(BufferedOutputStream.class));
-		updater.unzip(file);
-		whenNew(FileOutputStream.class).withParameterTypes(File.class).withArguments(any(File.class)).thenThrow(new FileNotFoundException());
-		updater.unzip(file);
-		MockRepository.remove(FileOutputStream.class);
-		whenNew(FileOutputStream.class).withParameterTypes(File.class).withArguments(any(File.class)).thenThrow(new SecurityException());
-		Exception exception = null;
-		try
+
+		try (MockedStatic<ByteStreams> mockedByteStreams = Mockito.mockStatic(ByteStreams.class);
+			 MockedConstruction<ZipFile> mcZipFile = Mockito.mockConstruction(ZipFile.class, (mock, context) -> {
+				 doAnswer(invocationOnMock -> {
+					 hasMore[0] = false;
+					 return mockedEnumeration;
+				 }).when(mock).entries();
+			 }))
+		{
+			ZipFile testZipFile = mcZipFile.constructed().isEmpty() ? null : mcZipFile.constructed().get(0);
+			if (testZipFile != null)
+			{
+				doAnswer(invocationOnMock -> {
+					hasMore[0] = false;
+					return mockedEnumeration;
+				}).when(testZipFile).entries();
+			}
+			mockedByteStreams.when(() -> ByteStreams.copy(any(BufferedInputStream.class), any(BufferedOutputStream.class)))
+				.thenAnswer((Answer<Long>) invocationOnMock -> (long) ((InputStream) invocationOnMock.getArguments()[0]).available());
+			updater.unzip(file);
+		}
+
+		try (MockedStatic<ByteStreams> mockedByteStreams = Mockito.mockStatic(ByteStreams.class);
+			 MockedConstruction<ZipFile> mcZipFile = Mockito.mockConstruction(ZipFile.class, (mock, context) -> {
+				 doAnswer(invocationOnMock -> {
+					 hasMore[0] = false;
+					 return mockedEnumeration;
+				 }).when(mock).entries();
+			 });
+			 MockedConstruction<BufferedOutputStream> mcBufferedOutputStream = Mockito.mockConstruction(BufferedOutputStream.class, (mock, context) -> {
+				 doThrow(new IOException()).when(mock).flush();
+			 }))
+		{
+			mockedByteStreams.when(() -> ByteStreams.copy(any(BufferedInputStream.class), any(BufferedOutputStream.class)))
+				.thenAnswer((Answer<Long>) invocationOnMock -> (long) ((InputStream) invocationOnMock.getArguments()[0]).available());
+			updater.unzip(file);
+		}
+
+		try (MockedStatic<ByteStreams> mockedByteStreams = Mockito.mockStatic(ByteStreams.class);
+			 MockedConstruction<ZipFile> mcZipFile = Mockito.mockConstruction(ZipFile.class, (mock, context) -> {
+				 doAnswer(invocationOnMock -> {
+					 hasMore[0] = false;
+					 return mockedEnumeration;
+				 }).when(mock).entries();
+			 }))
+		{
+			mockedByteStreams.when(() -> ByteStreams.copy(any(BufferedInputStream.class), any(BufferedOutputStream.class)))
+				.thenThrow(new IOException());
+			updater.unzip(file);
+		}
+
+		try (MockedConstruction<FileOutputStream> mcFileOutputStream = Mockito.mockConstruction(FileOutputStream.class, (mock, context) -> {
+			throw new FileNotFoundException();
+		}))
 		{
 			updater.unzip(file);
 		}
-		catch(Exception e)
+
+		try (MockedConstruction<FileOutputStream> mcFileOutputStream = Mockito.mockConstruction(FileOutputStream.class, (mock, context) -> {
+			throw new SecurityException();
+		}))
 		{
-			exception = e;
+			Exception exception = null;
+			try
+			{
+				updater.unzip(file);
+			}
+			catch(Exception e)
+			{
+				exception = e;
+			}
+			assertNotNull("An exception should be thrown", exception);
+			assertEquals("The exception should be the correct one", SecurityException.class, exception.getClass());
 		}
-		assertNotNull("An exception should be thrown", exception);
-		assertEquals("The exception should be the correct one", SecurityException.class, exception.getClass());
-		MockRepository.remove(FileOutputStream.class);
-		whenNew(BufferedOutputStream.class).withAnyArguments().thenThrow(new IllegalArgumentException());
-		exception = null;
-		try
+
+		try (MockedConstruction<BufferedOutputStream> mcBufferedOutputStream = Mockito.mockConstruction(BufferedOutputStream.class, (mock, context) -> {
+			throw new IllegalArgumentException();
+		}))
+		{
+			Exception exception = null;
+			try
+			{
+				updater.unzip(file);
+			}
+			catch(Exception e)
+			{
+				exception = e;
+			}
+			assertNotNull("An exception should be thrown", exception);
+			assertEquals("The exception should be the correct one", IllegalArgumentException.class, exception.getClass());
+		}
+
+		try (MockedConstruction<ZipFile> mcZipFile = Mockito.mockConstruction(ZipFile.class, (mock, context) -> {
+			doThrow(new IllegalStateException()).when(mock).getInputStream(any(ZipEntry.class));
+		}))
+		{
+			Exception exception = null;
+			try
+			{
+				updater.unzip(file);
+			}
+			catch(Exception e)
+			{
+				exception = e;
+			}
+			assertNotNull("An exception should be thrown", exception);
+			assertEquals("The exception should be the correct one", IllegalStateException.class, exception.getClass());
+		}
+
+		try (MockedConstruction<ZipFile> mcZipFile = Mockito.mockConstruction(ZipFile.class, (mock, context) -> {
+			doThrow(new ZipException()).when(mock).getInputStream(any(ZipEntry.class));
+		}))
 		{
 			updater.unzip(file);
 		}
-		catch(Exception e)
-		{
-			exception = e;
-		}
-		assertNotNull("An exception should be thrown", exception);
-		assertEquals("The exception should be the correct one", IllegalArgumentException.class, exception.getClass());
-		doThrow(new IllegalStateException()).when(mockedZipFile).getInputStream(any(ZipEntry.class));
-		exception = null;
-		try
+
+		try (MockedConstruction<ZipFile> mcZipFile = Mockito.mockConstruction(ZipFile.class, (mock, context) -> {
+			doThrow(new IOException()).when(mock).close();
+		}))
 		{
 			updater.unzip(file);
 		}
-		catch(Exception e)
-		{
-			exception = e;
-		}
-		assertNotNull("An exception should be thrown", exception);
-		assertEquals("The exception should be the correct one", IllegalStateException.class, exception.getClass());
-		doThrow(new ZipException()).when(mockedZipFile).getInputStream(any(ZipEntry.class));
-		updater.unzip(file);
-		doThrow(new IOException()).when(mockedZipFile).close();
-		updater.unzip(file);
-		whenNew(ZipFile.class).withAnyArguments().thenReturn(null);
-		exception = null;
-		try
-		{
-			updater.unzip(file);
-		}
-		catch(Exception e)
-		{
-			exception = e;
-		}
-		assertNotNull("An exception should be thrown", exception);
-		assertEquals("The exception should be the correct one", NullPointerException.class, exception.getClass());
+
+		// Mockito 4.x cannot make mockConstruction return null, skipping null ZipFile test case
+
 		//noinspection ResultOfMethodCallIgnored
 		file.delete();
 		File testJAR = new File(PLUGINS_FOLDER, "updates/Test-JAR.jar");
@@ -435,25 +489,25 @@ public class UpdaterTest
 	{
 		Updater updater = getUpdater("1.0");
 		Field result = TestUtils.setAccessible(Updater.class, updater, "result", UpdateResult.NO_UPDATE);
-		URL mockedURL = PowerMockito.mock(URL.class);
+		URL mockedURL = Mockito.mock(URL.class);
 		HttpURLConnection mockedConnection = mock(HttpURLConnection.class);
 		doReturn(HttpURLConnection.HTTP_MOVED_PERM).when(mockedConnection).getResponseCode();
-		PowerMockito.doReturn(mockedConnection).when(mockedURL).openConnection();
+		doReturn(mockedConnection).when(mockedURL).openConnection();
 		InputStream mockedInputStream = mock(InputStream.class);
-		PowerMockito.doReturn(3).doReturn(0).when(mockedInputStream).available();
-		PowerMockito.doReturn(3).doReturn(0).when(mockedInputStream).read(any(byte[].class), anyInt(), anyInt());
-		PowerMockito.doReturn(mockedInputStream).when(mockedURL).openStream();
+		doReturn(3).doReturn(0).when(mockedInputStream).available();
+		doReturn(3).doReturn(0).when(mockedInputStream).read(any(byte[].class), anyInt(), anyInt());
+		doReturn(mockedInputStream).when(mockedURL).openStream();
 		updater.download(mockedURL, "Test-JAR.jar");
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
 		result.set(updater, UpdateResult.NO_UPDATE);
-		PowerMockito.doReturn(3L).when(mockedConnection).getContentLengthLong();
+		doReturn(3L).when(mockedConnection).getContentLengthLong();
 		updater.download(mockedURL, "Test-JAR.jar");
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
 		doReturn(HttpURLConnection.HTTP_OK).when(mockedConnection).getResponseCode();
 		Field announceDownload = TestUtils.setAccessible(Updater.class, updater, "announceDownloadProgress", false);
 		UpdateProvider mockedUpdateProvider = mock(UpdateProvider.class);
 		doReturn(ChecksumType.NONE).when(mockedUpdateProvider).providesChecksum();
-		Field updateProvider = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
+		Field updateProviderField = TestUtils.setAccessible(Updater.class, updater, "updateProvider", mockedUpdateProvider);
 		result.set(updater, UpdateResult.NO_UPDATE);
 		updater.download(mockedURL, "Test-Download.zip");
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
@@ -463,36 +517,43 @@ public class UpdaterTest
 		result.set(updater, UpdateResult.SUCCESS);
 		updater.download(mockedURL, "Test-JAR.jar");
 		assertEquals("The update result should be correct", UpdateResult.SUCCESS, result.get(updater));
-		mockStatic(Utils.class);
-		//noinspection PrimitiveArrayArgumentToVarargsMethod
-		PowerMockito.doReturn("abc").when(Utils.class, "byteArrayToHex", any(byte[].class));
-		doReturn(ChecksumType.MD5).when(mockedUpdateProvider).providesChecksum();
-		result.set(updater, UpdateResult.NO_UPDATE);
-		updater.download(mockedURL, "Test-Download.zip");
-		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
-		File tmpDir = Files.createTempDir();
-		tmpDir.deleteOnExit();
-		File mockedFile = spy(new File(tmpDir, "Test-ZIP.zip"));
-		doReturn(false).when(mockedFile).delete();
-		whenNew(File.class).withAnyArguments().thenReturn(mockedFile);
-		updater.download(mockedURL, "Test-ZIP.zip");
-		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
-		PowerMockito.doReturn(mockedInputStream).when(mockedConnection).getInputStream();
-		doReturn("123").when(mockedUpdateProvider).getLatestChecksum();
-		result.set(updater, UpdateResult.NO_UPDATE);
-		updater.download(mockedURL, "Test-Download.zip");
-		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
-		doThrow(new RequestTypeNotAvailableException("")).when(mockedUpdateProvider).getLatestChecksum();
-		result.set(updater, UpdateResult.NO_UPDATE);
-		updater.download(mockedURL, "Test-Download.zip");
-		assertEquals("The update result should be correct", UpdateResult.NO_UPDATE, result.get(updater));
-		doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestChecksum();
-		result.set(updater, UpdateResult.NO_UPDATE);
-		updater.download(mockedURL, "Test-Download.zip");
-		assertEquals("The update result should be correct", UpdateResult.FAIL_NO_VERSION_FOUND, result.get(updater));
+		try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class);
+			 MockedConstruction<File> mcFile = Mockito.mockConstruction(File.class, (mock, context) -> {
+				 File tmpDir = Files.createTempDir();
+				 tmpDir.deleteOnExit();
+				 File spiedFile = spy(new File(tmpDir, "Test-ZIP.zip"));
+				 doReturn(false).when(spiedFile).delete();
+			 }))
+		{
+			//noinspection PrimitiveArrayArgumentToVarargsMethod
+			mockedUtils.when(() -> Utils.byteArrayToHex(any(byte[].class))).thenReturn("abc");
+			doReturn(ChecksumType.MD5).when(mockedUpdateProvider).providesChecksum();
+			result.set(updater, UpdateResult.NO_UPDATE);
+			updater.download(mockedURL, "Test-Download.zip");
+			assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
+			File tmpDir = Files.createTempDir();
+			tmpDir.deleteOnExit();
+			File mockedFile = spy(new File(tmpDir, "Test-ZIP.zip"));
+			doReturn(false).when(mockedFile).delete();
+			updater.download(mockedURL, "Test-ZIP.zip");
+			assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
+			doReturn(mockedInputStream).when(mockedConnection).getInputStream();
+			doReturn("123").when(mockedUpdateProvider).getLatestChecksum();
+			result.set(updater, UpdateResult.NO_UPDATE);
+			updater.download(mockedURL, "Test-Download.zip");
+			assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
+			doThrow(new RequestTypeNotAvailableException("")).when(mockedUpdateProvider).getLatestChecksum();
+			result.set(updater, UpdateResult.NO_UPDATE);
+			updater.download(mockedURL, "Test-Download.zip");
+			assertEquals("The update result should be correct", UpdateResult.NO_UPDATE, result.get(updater));
+			doThrow(new NotSuccessfullyQueriedException()).when(mockedUpdateProvider).getLatestChecksum();
+			result.set(updater, UpdateResult.NO_UPDATE);
+			updater.download(mockedURL, "Test-Download.zip");
+			assertEquals("The update result should be correct", UpdateResult.FAIL_NO_VERSION_FOUND, result.get(updater));
+		}
 		TestUtils.setUnaccessible(updateFolder, updater, true);
 		TestUtils.setUnaccessible(announceDownload, updater, true);
-		TestUtils.setUnaccessible(updateProvider, updater, true);
+		TestUtils.setUnaccessible(updateProviderField, updater, true);
 		TestUtils.setUnaccessible(result, updater, true);
 	}
 

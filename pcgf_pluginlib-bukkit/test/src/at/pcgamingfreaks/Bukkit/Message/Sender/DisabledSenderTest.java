@@ -22,75 +22,79 @@ import at.pcgamingfreaks.Bukkit.Util.Utils;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
+import at.pcgamingfreaks.TestClasses.TestUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class, Utils.class })
 public class DisabledSenderTest
 {
+	private static boolean skipTests = false; // will be set in prepareTestData
+	
 	@BeforeClass
 	public static void prepareTestData() throws Exception
 	{
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
+		skipTests = !TestUtils.canMockJdkClasses();
+		if (!skipTests)
+		{
+			Bukkit.setServer(new TestBukkitServer());
+			TestObjects.initNMSReflection();
+		}
 	}
 
 	@Before
 	public void prepareTestObjects() throws Exception
 	{
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
 		TestObjects.initBukkitOnlinePlayers();
-		mockStatic(Utils.class);
-		doNothing().when(Utils.class, "sendPacket", any(Player.class), any());
 	}
 
 	@Test
 	public void testSend()
 	{
-		int sendPacketCalls = 0;
-		TestBukkitPlayer player = new TestBukkitPlayer();
-		List<Player> players = new ArrayList<>();
-		players.add(player);
-		players.add(player);
-		DisabledSender disabledSender = new DisabledSender();
-		disabledSender.send(player, "");
-		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), any());
-		disabledSender.send(player, "", null);
-		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), any());
-		disabledSender.send(players, "");
-		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), any());
-		disabledSender.send(players, "", null);
-		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), any());
+		Assume.assumeTrue("Skip on Java 16+", !skipTests);
+		try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class))
+		{
+			int sendPacketCalls = 0;
+			TestBukkitPlayer player = new TestBukkitPlayer();
+			List<Player> players = new ArrayList<>();
+			players.add(player);
+			players.add(player);
+			DisabledSender disabledSender = new DisabledSender();
+			disabledSender.send(player, "");
+			mockedUtils.verify(() -> Utils.sendPacket(any(Player.class), any()), times(sendPacketCalls));
+			disabledSender.send(player, "", null);
+			mockedUtils.verify(() -> Utils.sendPacket(any(Player.class), any()), times(sendPacketCalls));
+			disabledSender.send(players, "");
+			mockedUtils.verify(() -> Utils.sendPacket(any(Player.class), any()), times(sendPacketCalls));
+			disabledSender.send(players, "", null);
+			mockedUtils.verify(() -> Utils.sendPacket(any(Player.class), any()), times(sendPacketCalls));
+		}
 	}
 
 	@Test
 	public void testBroadcast()
 	{
-		int sendPacketCalls = 0;
-		DisabledSender disabledSender = new DisabledSender();
-		disabledSender.broadcast("");
-		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), any());
-		disabledSender.broadcast("", null);
-		verifyStatic(Utils.class, times(sendPacketCalls));
-		Utils.sendPacket(any(Player.class), any());
+		try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class))
+		{
+			int sendPacketCalls = 0;
+			DisabledSender disabledSender = new DisabledSender();
+			disabledSender.broadcast("");
+			mockedUtils.verify(() -> Utils.sendPacket(any(Player.class), any()), times(sendPacketCalls));
+			disabledSender.broadcast("", null);
+			mockedUtils.verify(() -> Utils.sendPacket(any(Player.class), any()), times(sendPacketCalls));
+		}
 	}
 }
