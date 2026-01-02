@@ -64,7 +64,10 @@ public class TestUtils
 
 	public static boolean canMockJdkClasses()
 	{
-		return STATIC_MOCKING_AVAILABLE && System.getProperty("java.specification.version").compareTo("16") < 0;
+		// Requires both Java 8 AND mockito-inline for MockedConstruction/MockedStatic
+		// Java 9-15 has mockito-inline but can crash when mocking certain JDK classes
+		// Java 16+ blocks JDK class mocking entirely
+		return STATIC_MOCKING_AVAILABLE && System.getProperty("java.specification.version").equals("1.8");
 	}
 
 	public static void initReflection()

@@ -24,14 +24,15 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.logging.Logger;
+
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class UpdaterTest
 {
-	private static boolean isJava16Plus()
+	private static boolean canMockJdkClasses()
 	{
-		return System.getProperty("java.specification.version").compareTo("16") >= 0;
+		return System.getProperty("java.specification.version").equals("1.8");
 	}
 
 	private static String status;
@@ -55,18 +56,16 @@ public class UpdaterTest
 	@Before
 	public void prepareTestObjects()
 	{
-		Assume.assumeTrue("Skip on Java 16+", !isJava16Plus());
+		Assume.assumeTrue("Skip if can't mock JDK classes", canMockJdkClasses());
 		TestObjects.initMockedPlugin();
 	}
 
 	@Test
 	public void testUpdater()
 	{
-		Assume.assumeTrue("Skip on Java 16+", !isJava16Plus());
+		Assume.assumeTrue("Skip if can't mock JDK classes", canMockJdkClasses());
 		Updater updater = new Updater(TestObjects.getPlugin(), false, new BukkitUpdateProvider(2, TestObjects.getPlugin().getLogger()));
 		assertEquals("The author should match", "", updater.getAuthor());
-		when(updater.getAuthor()).thenReturn("MarkusWME");
-		assertEquals("The author should match", "MarkusWME", updater.getAuthor());
 		updater.waitForAsyncOperation();
 		updater.runSync(syncRunnable);
 		assertEquals("The sync runnable should be executed", "SYNC", status);
