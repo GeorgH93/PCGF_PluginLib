@@ -21,6 +21,10 @@
 		<bungeeVersion>1.19-R0.1-SNAPSHOT</bungeeVersion>
 		<surefire.argLine></surefire.argLine>
 
+		<!-- Linter configuration -->
+		<checkstyle.skip>false</checkstyle.skip>
+		<pmd.skip>false</pmd.skip>
+
 		<sonar.organization>georgh93</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
@@ -166,6 +170,77 @@
 				<argLine>${surefire.argLine}</argLine>
 			</configuration>
 		</plugin>
+		<!-- Checkstyle - Code style and convention enforcement -->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-checkstyle-plugin</artifactId>
+			<version>3.3.1</version>
+			<configuration>
+				<configLocation>${maven.multiModuleProjectDirectory}/checkstyle.xml</configLocation>
+				<suppressionsLocation>${maven.multiModuleProjectDirectory}/checkstyle-suppressions.xml</suppressionsLocation>
+				<consoleOutput>true</consoleOutput>
+				<failOnViolation>false</failOnViolation>
+				<failsOnError>false</failsOnError>
+				<includeTestSourceDirectory>true</includeTestSourceDirectory>
+				<sourceDirectories>
+					<sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+				</sourceDirectories>
+				<testSourceDirectories>
+					<testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
+				</testSourceDirectories>
+				<excludes>**/freemarker/**,**/pcgf_pluginlib-platform-nms-*/**</excludes>
+			</configuration>
+			<dependencies>
+				<dependency>
+					<groupId>com.puppycrawl.tools</groupId>
+					<artifactId>checkstyle</artifactId>
+					<version>10.12.7</version>
+				</dependency>
+			</dependencies>
+			<executions>
+				<execution>
+					<id>checkstyle-check</id>
+					<phase>verify</phase>
+					<goals>
+						<goal>check</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+		<!-- PMD - Code quality and anti-pattern detection -->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-pmd-plugin</artifactId>
+			<version>3.21.2</version>
+			<configuration>
+				<rulesets>
+					<ruleset>${maven.multiModuleProjectDirectory}/pmd.xml</ruleset>
+				</rulesets>
+				<printFailingErrors>true</printFailingErrors>
+				<failOnViolation>false</failOnViolation>
+				<includeTests>true</includeTests>
+				<sourceEncoding>UTF-8</sourceEncoding>
+				<targetJdk>1.8</targetJdk>
+				<excludeRoots>
+					<excludeRoot>target/generated-sources</excludeRoot>
+					<excludeRoot>target/generated-sources/delombok</excludeRoot>
+				</excludeRoots>
+				<excludes>
+					<exclude>**/freemarker/**</exclude>
+					<exclude>**/pcgf_pluginlib-platform-nms-*/**</exclude>
+				</excludes>
+			</configuration>
+			<executions>
+				<execution>
+					<id>pmd-check</id>
+					<phase>verify</phase>
+					<goals>
+						<goal>check</goal>
+						<goal>cpd-check</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
 			<!-- flatten the pom -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -233,6 +308,13 @@
 	</modules>
 
 	<profiles>
+		<profile>
+			<id>SkipLinting</id>
+			<properties>
+				<checkstyle.skip>true</checkstyle.skip>
+				<pmd.skip>true</pmd.skip>
+			</properties>
+		</profile>
 		<profile>
 			<id>AddOpensForJava9+</id>
 			<activation>

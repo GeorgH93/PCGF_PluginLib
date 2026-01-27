@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionXpathFilter Experimental Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressionxpathfilter_1_2_experimental.dtd">
+
+<suppressions>
+    <!-- Suppress all checks for generated NMS code -->
+    <suppress-xpath files=".*[/\\]pcgf_pluginlib-platform-nms-(?!reflection)[/\\].*\.java$"
+                    checks=".*"/>
+    
+    <!-- Suppress checks for FreeMarker templates (they're not Java, but just in case) -->
+    <suppress-xpath files=".*[/\\]freemarker[/\\].*" checks=".*"/>
+    
+    <!-- Relax checks for test files -->
+    <suppress-xpath files=".*[/\\]test[/\\]src[/\\].*" 
+                    checks="JavadocMethod|MissingJavadocMethod|MissingJavadocType|MagicNumber"/>
+    
+    <!-- Suppress for test helper classes -->
+    <suppress-xpath files=".*[/\\]test_helper[/\\].*" 
+                    checks="JavadocMethod|MissingJavadocMethod|MissingJavadocType"/>
+    
+    <!-- Relax magic number check for Bukkit version constants -->
+    <suppress-xpath files=".*Version\.java$" checks="MagicNumber"/>
+    
+    <!-- Suppress for legacy/compatibility code that needs raw types -->
+    <suppress-xpath files=".*Legacy.*\.java$" checks="RawType"/>
+</suppressions>
