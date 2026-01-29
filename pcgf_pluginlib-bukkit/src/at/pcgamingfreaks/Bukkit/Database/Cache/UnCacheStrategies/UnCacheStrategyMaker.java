@@ -39,6 +39,7 @@ public class UnCacheStrategyMaker
 	 * @param cache The cache for which the uncache strategy should be generated
 	 * @param config The config for the uncache strategy
 	 * @return The created uncache strategy
+	 * @deprecated Use the constructor-based uncache strategy API directly instead.
 	 */
 	@Deprecated
 	public static @NotNull BaseUnCacheStrategy make(final @NotNull Plugin plugin, final @NotNull IPlayerCache cache, final @NotNull IUnCacheStrategyConfig config)

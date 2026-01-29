@@ -24,6 +24,9 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * @deprecated Use {@link at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider} directly instead.
+ */
 @Deprecated
 public interface DatabaseConnectionPool
 {

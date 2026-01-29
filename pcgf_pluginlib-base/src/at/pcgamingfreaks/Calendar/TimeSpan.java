@@ -286,6 +286,7 @@ public class TimeSpan
 	 * @param unitNames Names for the time unites to be used. Array must contain 12 elements.
 	 *                  new String[] { "year", "years", "month", "months", "day", "days", "hour", "hours", "minute", "minutes", "second", "seconds" }
 	 * @return The TimeSpan converted to a string
+	 * @deprecated Use {@link #toString(TimeSpanFormat)} with a {@link BasicTimeSpanFormat} instead.
 	 */
 	@Deprecated
 	public String toString(@NotNull String[] unitNames)

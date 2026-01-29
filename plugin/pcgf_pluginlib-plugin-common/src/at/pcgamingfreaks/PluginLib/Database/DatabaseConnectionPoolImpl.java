@@ -34,6 +34,12 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Thread-safety: {@link #startPool} and {@link #shutdown} must be called from a single thread (typically the plugin enable/disable thread).
+ * Once the pool is started, {@link #getConnection} delegates to the underlying {@link at.pcgamingfreaks.Database.ConnectionProvider.ConnectionProvider}
+ * (HikariCP for MySQL, single-connection for SQLite), which is itself thread-safe for connection acquisition.
+ * {@link #close} is intentionally a no-op to prevent other plugins from closing the shared pool.
+ */
 @AllArgsConstructor
 public final class DatabaseConnectionPoolImpl implements DatabaseConnectionPool, ConnectionProvider
 {

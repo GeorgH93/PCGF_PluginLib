@@ -25,6 +25,7 @@ public interface ISendMethod
 	 * Gets the metadata class for the used option.
 	 *
 	 * @return The metadata class.
+	 * @deprecated Use {@link #parseMetadata(String)} instead.
 	 */
 	@Deprecated
 	@Nullable Class<? extends IMetadata> getMetadataClass();

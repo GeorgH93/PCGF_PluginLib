@@ -112,9 +112,15 @@ public abstract class SubCommand<COMMAND_SENDER>
 	 */
 	public void close() {}
 
+	/**
+	 * @deprecated Sub-command registration is handled automatically by the command manager.
+	 */
 	@Deprecated
 	public void registerSubCommands() {}
 
+	/**
+	 * @deprecated Sub-command unregistration is handled automatically by the command manager.
+	 */
 	@Deprecated
 	public void unRegisterSubCommands() {}
 

@@ -55,6 +55,7 @@ public final class TitleMetadata extends at.pcgamingfreaks.Message.Sender.TitleM
 	 * Creates a new TitleMetadata object to configure how the title will be displayed.
 	 *
 	 * @param isSubtitle Defines if the title should be displayed as a title or a subtitle.
+	 * @deprecated Use {@link #TitleMetadata(TitleLocation)} instead.
 	 */
 	@Deprecated
 	public TitleMetadata(boolean isSubtitle)
@@ -69,6 +70,7 @@ public final class TitleMetadata extends at.pcgamingfreaks.Message.Sender.TitleM
 	 * @param fadeOut    Defines how long the title will fade-out. Value in ticks (1/20 sec).
 	 * @param stay       Defines how long the title will stay on the screen of the player. Value in ticks (1/20 sec).
 	 * @param isSubtitle Defines if the title should be displayed as a title or a subtitle (false = title, true = subtitle).
+	 * @deprecated Use {@link #TitleMetadata(int, int, int, TitleLocation)} instead.
 	 */
 	@Deprecated
 	public TitleMetadata(int fadeIn, int fadeOut, int stay, boolean isSubtitle)

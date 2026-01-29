@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 /**
  * Functions to get UUIDs to player names. This library doesn't cache the results! You will have to do this on your own!
  * Works with Bukkit and BungeeCord!
+ * <p>Thread-safety: all public methods are static and stateless with respect to mutable shared state;
+ * the underlying {@link at.pcgamingfreaks.UUID.UuidCache} is thread-safe.
  *
  * @deprecated Use {@link at.pcgamingfreaks.UUID.UuidConverter} instead
  */

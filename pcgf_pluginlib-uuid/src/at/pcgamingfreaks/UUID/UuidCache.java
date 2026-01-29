@@ -33,6 +33,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Thread-safe UUID/name bi-directional cache.
+ * All public methods are safe for concurrent access; both internal maps are backed by {@link java.util.concurrent.ConcurrentHashMap}.
+ */
 public class UuidCache
 {
 	@Getter private static final UuidCache SHARED_UUID_CACHE = new UuidCache();
