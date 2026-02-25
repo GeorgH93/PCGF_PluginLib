@@ -42,8 +42,8 @@ public final class MojangUuidResolver
 
 	private static final Gson GSON = new Gson();
 	private static final Pattern API_MAX_PROFILE_BATCH_SIZE_PATTERN = Pattern.compile(".*Not more that (?<batchSize>\\d+) profile name per call is allowed.*");
-	private static final long MOJANG_QUERY_RETRY_TIME = 600000L;
-	private static int BATCH_SIZE = 100; // Limit from Mojang
+	private static final long MOJANG_QUERY_RETRY_TIME = 600_000L;
+	private static int BATCH_SIZE = 100; // NOPMD - Limit from Mojang
 
 	@Nullable private final UuidCache cache;
 	@Nullable private final Logger logger;
@@ -83,7 +83,7 @@ public final class MojangUuidResolver
 		this.nameResolverHost = customNameResolverHost.endsWith("/") ? customNameResolverHost : customNameResolverHost + '/';
 	}
 
-	private void log(Level level, String message)
+	private void log(final Level level, final String message)
 	{
 		if(logger != null)
 		{
@@ -91,7 +91,7 @@ public final class MojangUuidResolver
 		}
 	}
 
-	private void log(Level level, String message, Throwable throwable)
+	private void log(final Level level, final String message, final Throwable throwable)
 	{
 		if(logger != null)
 		{
@@ -105,11 +105,11 @@ public final class MojangUuidResolver
 		{
 			return cache.getUuidFromName(name);
 		}
-		String url = mojangApiHost + "users/profiles/minecraft/" + name + ((at != null) ? "?at=" + (at.getTime()/1000L) : "");
+		final String url = mojangApiHost + "users/profiles/minecraft/" + name + ((at != null) ? "?at=" + (at.getTime()/1000L) : "");
 		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL(url).openStream(), StandardCharsets.UTF_8)))
 		{
-			String uuidString = (((JsonObject) new JsonParser().parse(in)).get("id")).getAsString();
-			UUID uuid = uuidString != null ? UUID.fromString(uuidString.replaceAll(UUID_FORMAT_REGEX, UUID_FORMAT_REPLACE_TO)) : null;
+			final String uuidString = (((JsonObject) JsonParser.parseReader(in)).get("id")).getAsString();
+			final UUID uuid = uuidString != null ? UUID.fromString(uuidString.replaceAll(UUID_FORMAT_REGEX, UUID_FORMAT_REPLACE_TO)) : null;
 			if(uuid != null && (at == null || at.after(new Date(System.currentTimeMillis() - 1000L*24*3600* 30))) && cache != null)
 			{
 				cache.addToCache(uuid, name);
@@ -151,28 +151,47 @@ public final class MojangUuidResolver
 		return null;
 	}
 
+	private boolean handleRateLimit(final int responseCode) throws InterruptedException
+	{
+		if (responseCode == 429)
+		{
+			log(Level.INFO,"Reached the request limit of the mojang api!\nConverting will be paused for 10 minutes and then continue!");
+			//TODO: better fail handling
+			Thread.sleep(MOJANG_QUERY_RETRY_TIME);
+			return true;
+		}
+		return false;
+	}
+
+	private int checkCache(final Iterator<String> players, final List<String> batch, final Map<String, UUID> result)
+	{
+		int fromCache = 0;
+		while (players.hasNext() && batch.size() < BATCH_SIZE)
+		{
+			final String name = players.next();
+			if(cache != null && cache.contains(name))
+			{
+				result.put(name, cache.getUuidFromName(name));
+				fromCache++;
+			}
+			else
+			{
+				batch.add(name);
+			}
+		}
+		return fromCache;
+	}
+
 	public Map<String, UUID> getUUIDs(final @NotNull Collection<String> names)
 	{
-		List<String> batch = new ArrayList<>(BATCH_SIZE);
-		Iterator<String> players = names.iterator();
-		Map<String, UUID> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+		final List<String> batch = new ArrayList<>(BATCH_SIZE);
+		final Iterator<String> players = names.iterator();
+		final Map<String, UUID> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		boolean success;
 		int fromCache = 0, fromWeb = 0;
 		while (players.hasNext())
 		{
-			while (players.hasNext() && batch.size() < BATCH_SIZE)
-			{
-				String name = players.next();
-				if(cache != null && cache.contains(name))
-				{
-					result.put(name, cache.getUuidFromName(name));
-					fromCache++;
-				}
-				else
-				{
-					batch.add(name);
-				}
-			}
+			fromCache += checkCache(players, batch, result);
 			do
 			{
 				HttpURLConnection connection = null;
@@ -193,7 +212,7 @@ public final class MojangUuidResolver
 					{
 						profiles = GSON.fromJson(in, MojangProfile[].class);
 					}
-					for (MojangProfile profile : profiles)
+					for (final MojangProfile profile : profiles)
 					{
 						result.put(profile.name, profile.getUUID());
 						if(cache != null) cache.addToCache(profile.getUUID(), profile.name);
@@ -206,11 +225,8 @@ public final class MojangUuidResolver
 					{
 						if(connection != null)
 						{
-							if(connection.getResponseCode() == 429)
+							if(handleRateLimit(connection.getResponseCode()))
 							{
-								log(Level.INFO,"Reached the request limit of the mojang api!\nConverting will be paused for 10 minutes and then continue!");
-								//TODO: better fail handling
-								Thread.sleep(MOJANG_QUERY_RETRY_TIME);
 								success = false;
 								continue;
 							}
@@ -218,14 +234,14 @@ public final class MojangUuidResolver
 							{
 								try(BufferedReader errorStreamReader = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
 								{
-									StringBuilder errorBuilder = new StringBuilder();
+									final StringBuilder errorBuilder = new StringBuilder();
 									String line;
 									while((line = errorStreamReader.readLine()) != null)
 									{
 										errorBuilder.append(line);
 									}
-									String errorMessage = errorBuilder.toString();
-									Matcher matcher = API_MAX_PROFILE_BATCH_SIZE_PATTERN.matcher(errorMessage);
+									final String errorMessage = errorBuilder.toString();
+									final Matcher matcher = API_MAX_PROFILE_BATCH_SIZE_PATTERN.matcher(errorMessage);
 									if(connection.getResponseCode() == 400 && matcher.matches())
 									{
 										BATCH_SIZE = Integer.parseInt(matcher.group("batchSize"));
@@ -245,7 +261,7 @@ public final class MojangUuidResolver
 						}
 					}
 					catch(InterruptedException | IOException ignore) {}
-					log(Level.SEVERE, "Could not convert all names to uuids because of an issue. Please check the log.");
+					log(Level.SEVERE, "Could not convert all names to UUIDs because of an issue. Please check the log.");
 					return result;
 				}
 				batch.clear();
@@ -260,7 +276,7 @@ public final class MojangUuidResolver
 	{
 		if (cache != null)
 		{
-			String name = cache.getNameFromUuid(uuid);
+			final String name = cache.getNameFromUuid(uuid);
 			if (name != null) return name;
 		}
 		try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL(nameResolverHost + "session/minecraft/profile/" + uuid.toString().replaceAll("-", "")).openStream(), StandardCharsets.UTF_8)))
@@ -276,16 +292,13 @@ public final class MojangUuidResolver
 			}
 			else
 			{
-				e.printStackTrace();
+				log(Level.SEVERE, "Failed to query player name with IOException.", e);
 			}
 		}
 		catch(Exception e)
 		{
 			log(Level.WARNING, "Looks like there is no player with this uuid!\n UUID: \"" + uuid + "\"");
-			if (logger != null)
-			{
-				logger.log(Level.SEVERE, "Failed to query player name!", e);
-			}
+			log(Level.SEVERE, "Failed to query player name!", e);
 		}
 		return "unknown";
 	}

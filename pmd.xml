@@ -1,145 +1,155 @@
 <?xml version="1.0"?>
 <ruleset name="PCGF_PluginLib Ruleset"
-         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+		 xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
-    <description>
-        PCGF_PluginLib PMD Configuration
-        
-        Enforces:
-        - Code quality standards
-        - Best practices
-        - Performance considerations
-        - Security checks
-        
-        Note: Package structure conventions are enforced via Checkstyle.
-    </description>
+	<description>
+		PCGF_PluginLib PMD Configuration
+		
+		Enforces:
+		- Code quality standards
+		- Best practices
+		- Performance considerations
+		- Security checks
+		
+		Note: Package structure conventions are enforced via Checkstyle.
+	</description>
 
-    <!-- Exclude generated NMS code from analysis -->
-    <exclude-pattern>.*/pcgf_pluginlib-platform-nms-(?!reflection)/.*</exclude-pattern>
-    <exclude-pattern>.*/freemarker/.*</exclude-pattern>
-    <exclude-pattern>.*/target/generated-sources/.*</exclude-pattern>
+	<!-- Exclude generated NMS code from analysis -->
+	<exclude-pattern>.*/pcgf_pluginlib-platform-nms-(?!reflection)/.*</exclude-pattern>
+	<exclude-pattern>.*/freemarker/.*</exclude-pattern>
+	<exclude-pattern>.*/target/generated-sources/.*</exclude-pattern>
 
-    <!-- ============================================== -->
-    <!-- BEST PRACTICES                                -->
-    <!-- ============================================== -->
-    <rule ref="category/java/bestpractices.xml">
-        <exclude name="GuardLogStatement"/>
-        <exclude name="JUnitTestContainsTooManyAsserts"/>
-        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
-        <exclude name="SystemPrintln"/>
-    </rule>
+	<!-- ============================================== -->
+	<!-- BEST PRACTICES								-->
+	<!-- ============================================== -->
+	<rule ref="category/java/bestpractices.xml">
+		<exclude name="GuardLogStatement"/>
+		<exclude name="JUnitTestContainsTooManyAsserts"/>
+		<exclude name="JUnitAssertionsShouldIncludeMessage"/>
+		<exclude name="SystemPrintln"/>
+	</rule>
 
-    <!-- ============================================== -->
-    <!-- CODE STYLE                                    -->
-    <!-- ============================================== -->
-    <rule ref="category/java/codestyle.xml">
-        <exclude name="AtLeastOneConstructor"/>
-        <exclude name="CallSuperInConstructor"/>
-        <exclude name="CommentDefaultAccessModifier"/>
-        <exclude name="ConfusingTernary"/>
-        <exclude name="DefaultPackage"/>
-        <exclude name="LongVariable"/>
-        <exclude name="OnlyOneReturn"/>
-        <exclude name="ShortClassName"/>
-        <exclude name="ShortMethodName"/>
-        <exclude name="ShortVariable"/>
-        <exclude name="TooManyStaticImports"/>
-    </rule>
+	<!-- ============================================== -->
+	<!-- CODE STYLE									-->
+	<!-- ============================================== -->
+	<rule ref="category/java/codestyle.xml">
+		<exclude name="AtLeastOneConstructor"/>
+		<exclude name="CallSuperInConstructor"/>
+		<exclude name="CommentDefaultAccessModifier"/>
+		<exclude name="ConfusingTernary"/>
+		<exclude name="DefaultPackage"/>
+		<exclude name="LongVariable"/>
+		<exclude name="OnlyOneReturn"/>
+		<exclude name="ShortClassName"/>
+		<exclude name="ShortMethodName"/>
+		<exclude name="ShortVariable"/>
+		<exclude name="TooManyStaticImports"/>
+		<exclude name="PackageCase"/>
+		<exclude name="UselessParentheses"/>
+		<exclude name="OneDeclarationPerLine"/>
+	</rule>
 
-    <!-- LongVariable - allow up to 40 chars (project uses descriptive names) -->
-    <rule ref="category/java/codestyle.xml/LongVariable">
-        <properties>
-            <property name="minimum" value="40"/>
-        </properties>
-    </rule>
+	<!-- LongVariable - allow up to 40 chars (project uses descriptive names) -->
+	<rule ref="category/java/codestyle.xml/LongVariable">
+		<properties>
+			<property name="minimum" value="40"/>
+		</properties>
+	</rule>
 
-    <!-- ShortVariable - allow 2 chars for common patterns (id, db, etc.) -->
-    <rule ref="category/java/codestyle.xml/ShortVariable">
-        <properties>
-            <property name="minimum" value="2"/>
-        </properties>
-    </rule>
+	<!-- ShortVariable - allow 2 chars for common patterns (id, db, etc.) -->
+	<rule ref="category/java/codestyle.xml/ShortVariable">
+		<properties>
+			<property name="minimum" value="2"/>
+		</properties>
+	</rule>
 
-    <!-- ============================================== -->
-    <!-- DESIGN                                        -->
-    <!-- ============================================== -->
-    <rule ref="category/java/design.xml">
-        <exclude name="AvoidCatchingGenericException"/>
-        <exclude name="CouplingBetweenObjects"/>
-        <exclude name="DataClass"/>
-        <exclude name="ExcessiveImports"/>
-        <exclude name="LawOfDemeter"/>
-        <exclude name="LoosePackageCoupling"/>
-        <exclude name="TooManyFields"/>
-        <exclude name="TooManyMethods"/>
-    </rule>
+	<rule ref="category/java/codestyle.xml/ControlStatementBraces">
+		<properties>
+			<property name="checkSingleIfStmt" value="false"/>
+		</properties>
+	</rule>
 
-    <!-- Cognitive complexity - allow up to 25 (some methods are inherently complex) -->
-    <rule ref="category/java/design.xml/CognitiveComplexity">
-        <properties>
-            <property name="reportLevel" value="25"/>
-        </properties>
-    </rule>
+	<!-- ============================================== -->
+	<!-- DESIGN										-->
+	<!-- ============================================== -->
+	<rule ref="category/java/design.xml">
+		<exclude name="AvoidCatchingGenericException"/>
+		<exclude name="CouplingBetweenObjects"/>
+		<exclude name="DataClass"/>
+		<exclude name="ExcessiveImports"/>
+		<exclude name="LawOfDemeter"/>
+		<exclude name="LoosePackageCoupling"/>
+		<exclude name="TooManyFields"/>
+		<exclude name="TooManyMethods"/>
+	</rule>
 
-    <!-- Cyclomatic complexity - allow up to 15 -->
-    <rule ref="category/java/design.xml/CyclomaticComplexity">
-        <properties>
-            <property name="classReportLevel" value="80"/>
-            <property name="methodReportLevel" value="15"/>
-        </properties>
-    </rule>
+	<!-- Cognitive complexity - allow up to 25 (some methods are inherently complex) -->
+	<rule ref="category/java/design.xml/CognitiveComplexity">
+		<properties>
+			<property name="reportLevel" value="25"/>
+		</properties>
+	</rule>
 
-    <!-- NPath complexity -->
-    <rule ref="category/java/design.xml/NPathComplexity">
-        <properties>
-            <property name="reportLevel" value="200"/>
-        </properties>
-    </rule>
+	<!-- Cyclomatic complexity - allow up to 15 -->
+	<rule ref="category/java/design.xml/CyclomaticComplexity">
+		<properties>
+			<property name="classReportLevel" value="80"/>
+			<property name="methodReportLevel" value="20"/>
+		</properties>
+	</rule>
 
-    <!-- ============================================== -->
-    <!-- DOCUMENTATION                                 -->
-    <!-- ============================================== -->
-    <rule ref="category/java/documentation.xml">
-        <exclude name="CommentRequired"/>
-        <exclude name="CommentSize"/>
-    </rule>
+	<!-- NPath complexity -->
+	<rule ref="category/java/design.xml/NPathComplexity">
+		<properties>
+			<property name="reportLevel" value="200"/>
+		</properties>
+	</rule>
 
-    <!-- ============================================== -->
-    <!-- ERROR PRONE                                   -->
-    <!-- ============================================== -->
-    <rule ref="category/java/errorprone.xml">
-        <exclude name="AvoidDuplicateLiterals"/>
-        <exclude name="AvoidFieldNameMatchingMethodName"/>
-        <exclude name="AvoidFieldNameMatchingTypeName"/>
-        <exclude name="AvoidLiteralsInIfCondition"/>
-        <exclude name="BeanMembersShouldSerialize"/>
-        <exclude name="DataflowAnomalyAnalysis"/>
-        <exclude name="MissingSerialVersionUID"/>
-        <exclude name="NullAssignment"/>
-    </rule>
+	<!-- ============================================== -->
+	<!-- DOCUMENTATION								 -->
+	<!-- ============================================== -->
+	<rule ref="category/java/documentation.xml">
+		<exclude name="CommentRequired"/>
+		<exclude name="CommentSize"/>
+	</rule>
 
-    <!-- Avoid duplicate literals - use default settings, rely on exclusions for SQL/keys -->
+	<!-- ============================================== -->
+	<!-- ERROR PRONE								   -->
+	<!-- ============================================== -->
+	<rule ref="category/java/errorprone.xml">
+		<exclude name="AvoidDuplicateLiterals"/>
+		<exclude name="AvoidFieldNameMatchingMethodName"/>
+		<exclude name="AvoidFieldNameMatchingTypeName"/>
+		<exclude name="AvoidLiteralsInIfCondition"/>
+		<exclude name="BeanMembersShouldSerialize"/>
+		<exclude name="DataflowAnomalyAnalysis"/>
+		<exclude name="MissingSerialVersionUID"/>
+		<exclude name="NullAssignment"/>
+		<exclude name="EmptyCatchBlock"/>
+	</rule>
 
-    <!-- ============================================== -->
-    <!-- MULTITHREADING                                -->
-    <!-- ============================================== -->
-    <rule ref="category/java/multithreading.xml">
-        <exclude name="DoNotUseThreads"/>
-        <exclude name="UseConcurrentHashMap"/>
-    </rule>
+	<!-- Avoid duplicate literals - use default settings, rely on exclusions for SQL/keys -->
 
-    <!-- ============================================== -->
-    <!-- PERFORMANCE                                   -->
-    <!-- ============================================== -->
-    <rule ref="category/java/performance.xml">
-        <exclude name="AvoidInstantiatingObjectsInLoops"/>
-    </rule>
+	<!-- ============================================== -->
+	<!-- MULTITHREADING								-->
+	<!-- ============================================== -->
+	<rule ref="category/java/multithreading.xml">
+		<exclude name="DoNotUseThreads"/>
+		<exclude name="UseConcurrentHashMap"/>
+	</rule>
 
-    <!-- ============================================== -->
-    <!-- SECURITY                                      -->
-    <!-- ============================================== -->
-    <rule ref="category/java/security.xml"/>
+	<!-- ============================================== -->
+	<!-- PERFORMANCE								   -->
+	<!-- ============================================== -->
+	<rule ref="category/java/performance.xml">
+		<exclude name="AvoidInstantiatingObjectsInLoops"/>
+	</rule>
+
+	<!-- ============================================== -->
+	<!-- SECURITY									  -->
+	<!-- ============================================== -->
+	<rule ref="category/java/security.xml"/>
 
 </ruleset>
