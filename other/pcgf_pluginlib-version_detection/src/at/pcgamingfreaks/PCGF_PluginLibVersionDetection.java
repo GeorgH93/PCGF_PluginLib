@@ -22,7 +22,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 
-public class PCGF_PluginLibVersionDetection
+/**
+ * Helper class to detect PCGF PluginLib version
+ */
+public final class PCGF_PluginLibVersionDetection
 {
 	private PCGF_PluginLibVersionDetection() { /* hide implicit constructor */ }
 

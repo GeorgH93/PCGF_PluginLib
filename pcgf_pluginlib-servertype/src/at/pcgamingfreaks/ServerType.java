@@ -28,11 +28,12 @@ import java.util.Locale;
 /**
  * Helper class to figure out which server software is being used to run the server.
  */
+@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass")
 public final class ServerType
 {
-	private ServerType() {}
-
-	@Getter private static final boolean server, bukkit, bukkitCompatible,  spigot, spigotCompatible, paper, paperCompatible, glowstone, glowstoneCompatible, folia, forge;
+	@SuppressWarnings({"checkstyle:ConstantName", "PMD.FieldNamingConventions"}) //For more convenient naming with lombok
+	@Getter private static final boolean server, bukkit, bukkitCompatible, spigot, spigotCompatible, paper, paperCompatible, glowstone, glowstoneCompatible, folia, forge;
+	@SuppressWarnings({"checkstyle:ConstantName", "PMD.FieldNamingConventions"}) //For more convenient naming with lombok
 	@Getter private static final boolean proxy, bungeeCord, bungeeCordCompatible, waterfall, waterfallCompatible, velocity, velocityCompatible;
 
 	static
@@ -49,21 +50,20 @@ public final class ServerType
 			boolean unknown = false;
 			try
 			{
-				String version  = (String) Reflection.getMethod(bukkitClass, "getVersion").invoke(null);
+				final String version  = (String) Reflection.getMethod(bukkitClass, "getVersion").invoke(null);
 				String name = "";
-				try {
+				try
+				{
 					Method method = Reflection.getMethod(bukkitClass, "getName");
 					if (method != null)
 					{
 						name = (String) method.invoke(null);
 						name = name.toLowerCase(Locale.ENGLISH);
 					}
-				} catch (Exception ignored) {}
-				if (version == null) unknown = true;
-				else if(BaseStringUtils.containsIgnoreCase(version, "bukkit"))
-				{
-					isBukkit = true;
 				}
+				catch (Exception ignored) {}
+				if (version == null) unknown = true;
+				else if(BaseStringUtils.containsIgnoreCase(version, "bukkit")) isBukkit = true;
 				else if(BaseStringUtils.containsIgnoreCase(version, "spigot"))
 				{
 					if(BaseStringUtils.containsIgnoreCase(version, "universe"))
@@ -101,6 +101,7 @@ public final class ServerType
 			}
 			catch(IllegalAccessException | InvocationTargetException e)
 			{
+				//noinspection CallToPrintStackTrace
 				e.printStackTrace();
 				unknown = true;
 			}
@@ -111,37 +112,33 @@ public final class ServerType
 			}
 			if(unknown)
 			{ // Unknown server implementation, fall back to checking for existing classes
-				Class<?> spigotServerClass = Reflection.getClassSilent("org.bukkit.Server$Spigot");
+				final Class<?> spigotServerClass = Reflection.getClassSilent("org.bukkit.Server$Spigot");
 				if(spigotServerClass != null)
 				{
 					spigotComp = true;
-					Method methodGetPaperConfig = Reflection.getMethodSilent(spigotServerClass, "getPaperConfig");
-					if(methodGetPaperConfig != null)
-					{
-						paperComp = true;
-					}
+					final Method methodGetPaperConfig = Reflection.getMethodSilent(spigotServerClass, "getPaperConfig");
+					if(methodGetPaperConfig != null) paperComp = true;
 				}
 			}
 			// Check if folia is supported
-			try {
+			try
+			{
 				Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
 				tmpFolia = true;
-			} catch (ClassNotFoundException ignored) {}
+			}
+			catch (ClassNotFoundException ignored) {}
 		}
 		if (bukkitClass == null)
 		{ // Is not bukkit compatible server, probably a proxy
-			Class<?> bungeeProxyServerClass = Reflection.getClassSilent("net.md_5.bungee.api.ProxyServer");
+			final Class<?> bungeeProxyServerClass = Reflection.getClassSilent("net.md_5.bungee.api.ProxyServer");
 			if(bungeeProxyServerClass != null)
 			{ // Is BungeeCompatible proxy
 				bungeeComp = true;
 				try
 				{
-					Object bungeeInstance = Reflection.getMethod(bungeeProxyServerClass, "getInstance").invoke(null);
-					String proxyName = (String) Reflection.getMethod(bungeeProxyServerClass, "getName").invoke(bungeeInstance);
-					if("BungeeCord".equals(proxyName))
-					{
-						isBungee = true;
-					}
+					final Object bungeeInstance = Reflection.getMethod(bungeeProxyServerClass, "getInstance").invoke(null);
+					final String proxyName = (String) Reflection.getMethod(bungeeProxyServerClass, "getName").invoke(bungeeInstance);
+					if("BungeeCord".equals(proxyName)) isBungee = true;
 					else if("Waterfall".equals(proxyName))
 					{
 						isWaterfall = true;
@@ -154,6 +151,7 @@ public final class ServerType
 				}
 				catch(IllegalAccessException | InvocationTargetException e)
 				{
+					//noinspection CallToPrintStackTrace
 					e.printStackTrace();
 				}
 			}
@@ -189,4 +187,6 @@ public final class ServerType
 		waterfall = isWaterfall;
 		velocity = isVelocity;
 	}
+
+	private ServerType() {}
 }

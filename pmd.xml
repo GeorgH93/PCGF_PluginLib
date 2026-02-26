@@ -17,9 +17,10 @@
 	</description>
 
 	<!-- Exclude generated NMS code from analysis -->
-	<exclude-pattern>.*/pcgf_pluginlib-platform-nms-(?!reflection)/.*</exclude-pattern>
+	<exclude-pattern>.*/pcgf_pluginlib-platform-nms-.*/.*</exclude-pattern>
 	<exclude-pattern>.*/freemarker/.*</exclude-pattern>
 	<exclude-pattern>.*/target/generated-sources/.*</exclude-pattern>
+	<exclude-pattern>.*/test/.*</exclude-pattern>
 
 	<!-- ============================================== -->
 	<!-- BEST PRACTICES								-->
@@ -29,6 +30,7 @@
 		<exclude name="JUnitTestContainsTooManyAsserts"/>
 		<exclude name="JUnitAssertionsShouldIncludeMessage"/>
 		<exclude name="SystemPrintln"/>
+		<exclude name="OneDeclarationPerLine"/>
 	</rule>
 
 	<!-- ============================================== -->
@@ -48,7 +50,6 @@
 		<exclude name="TooManyStaticImports"/>
 		<exclude name="PackageCase"/>
 		<exclude name="UselessParentheses"/>
-		<exclude name="OneDeclarationPerLine"/>
 	</rule>
 
 	<!-- LongVariable - allow up to 40 chars (project uses descriptive names) -->
@@ -67,6 +68,7 @@
 
 	<rule ref="category/java/codestyle.xml/ControlStatementBraces">
 		<properties>
+			<property name="checkIfElseStmt" value="false"/>
 			<property name="checkSingleIfStmt" value="false"/>
 		</properties>
 	</rule>
@@ -123,7 +125,6 @@
 		<exclude name="AvoidFieldNameMatchingMethodName"/>
 		<exclude name="AvoidFieldNameMatchingTypeName"/>
 		<exclude name="AvoidLiteralsInIfCondition"/>
-		<exclude name="BeanMembersShouldSerialize"/>
 		<exclude name="DataflowAnomalyAnalysis"/>
 		<exclude name="MissingSerialVersionUID"/>
 		<exclude name="NullAssignment"/>
