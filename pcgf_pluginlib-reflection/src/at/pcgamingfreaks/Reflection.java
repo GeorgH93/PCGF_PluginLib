@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+@SuppressWarnings({ "CallToPrintStackTrace", "PMD.AvoidPrintStackTrace", "PMD.AvoidAccessibilityAlteration" })
 public class Reflection
 {
 	/**
@@ -77,8 +78,8 @@ public class Reflection
 	{
 		try
 		{
-			Class<?>[] classes = clazz.getClasses();
-			for(Class<?> innerClass : classes)
+			final Class<?>[] classes = clazz.getClasses();
+			for(final Class<?> innerClass : classes)
 			{
 				if(innerClass.getSimpleName().equals(className)) return innerClass;
 			}

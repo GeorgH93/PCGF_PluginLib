@@ -188,7 +188,7 @@
 				<testSourceDirectories>
 					<testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
 				</testSourceDirectories>
-				<excludes>**/freemarker/**,**/pcgf_pluginlib-platform-nms-*/**</excludes>
+				<excludes>**/freemarker/**,**/pcgf_pluginlib-platform-nms-*/**,**/*Test.java</excludes>
 			</configuration>
 			<dependencies>
 				<dependency>
@@ -219,7 +219,6 @@
 				<printFailingErrors>true</printFailingErrors>
 				<failOnViolation>false</failOnViolation>
 				<includeTests>true</includeTests>
-				<sourceEncoding>UTF-8</sourceEncoding>
 				<targetJdk>1.8</targetJdk>
 				<excludeRoots>
 					<excludeRoot>target/generated-sources</excludeRoot>

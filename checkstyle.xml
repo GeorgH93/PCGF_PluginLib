@@ -87,7 +87,7 @@
 			<property name="tokens" value="CLASS_DEF, INTERFACE_DEF, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO, LITERAL_TRY, LITERAL_FINALLY, LITERAL_SWITCH"/>
 		</module>
 		<module name="NeedBraces">
-			<property name="tokens" value="LITERAL_FOR, LITERAL_WHILE, LITERAL_DO, LITERAL_CASE, LITERAL_DEFAULT"/>
+			<property name="tokens" value="LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
 		</module>
 		<module name="RightCurly">
 			<property name="option" value="alone_or_singleline"/>
@@ -106,7 +106,6 @@
 		<!-- Coding										-->
 		<!-- ============================================== -->
 		<module name="CovariantEquals"/>
-		<module name="DeclarationOrder"/>
 		<module name="DefaultComesLast"/>
 		<module name="EmptyStatement"/>
 		<module name="EqualsAvoidNull"/>
@@ -118,7 +117,6 @@
 		<module name="NoClone"/>
 		<module name="NoFinalizer"/>
 		<module name="OneStatementPerLine"/>
-		<module name="OverloadMethodsDeclarationOrder"/>
 		<module name="PackageDeclaration"/>
 		<module name="SimplifyBooleanExpression"/>
 		<module name="SimplifyBooleanReturn"/>
@@ -127,7 +125,6 @@
 		<!-- ============================================== -->
 		<!-- Imports									   -->
 		<!-- ============================================== -->
-		<module name="AvoidStarImport"/>
 		<module name="CustomImportOrder">
 			<property name="customImportOrderRules" value="SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>
 			<property name="specialImportsRegExp" value="^at\."/>
@@ -157,10 +154,6 @@
 		<module name="JavadocParagraph"/>
 		<module name="JavadocStyle">
 			<property name="checkFirstSentence" value="false"/>
-		</module>
-		<module name="MissingJavadocMethod">
-			<property name="scope" value="public"/>
-			<property name="allowMissingPropertyJavadoc" value="true"/>
 		</module>
 		<module name="MissingJavadocType">
 			<property name="scope" value="public"/>
@@ -280,9 +273,10 @@
 			<property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
 		</module>
 		<module name="GenericWhitespace"/>
-		<module name="MethodParamPad"/>
 		<module name="NoLineWrap"/>
-		<module name="NoWhitespaceAfter"/>
+		<module name="NoWhitespaceAfter">
+			<property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS"/>
+		</module>
 		<module name="NoWhitespaceBefore">
 			<property name="allowLineBreaks" value="true"/>
 		</module>

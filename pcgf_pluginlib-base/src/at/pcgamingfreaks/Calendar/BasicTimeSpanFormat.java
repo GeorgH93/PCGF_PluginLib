@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BasicTimeSpanFormat implements TimeSpanFormat
 {
-	final private String[] unitNames;
+	private final String[] unitNames;
 
 	public BasicTimeSpanFormat()
 	{
@@ -47,7 +47,7 @@ public class BasicTimeSpanFormat implements TimeSpanFormat
 				if(stringBuilder.length() > 0) stringBuilder.append(' ');
 				stringBuilder.append(timeSpan[i]);
 				stringBuilder.append(' ');
-				stringBuilder.append((timeSpan[i] == 1) ? unitNames[i*2] : unitNames[i*2+1]);
+				stringBuilder.append((timeSpan[i] == 1) ? unitNames[i * 2] : unitNames[i * 2 + 1]);
 			}
 		}
 		return stringBuilder.toString();

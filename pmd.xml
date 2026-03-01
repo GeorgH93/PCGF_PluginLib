@@ -46,7 +46,6 @@
 		<exclude name="OnlyOneReturn"/>
 		<exclude name="ShortClassName"/>
 		<exclude name="ShortMethodName"/>
-		<exclude name="ShortVariable"/>
 		<exclude name="TooManyStaticImports"/>
 		<exclude name="PackageCase"/>
 		<exclude name="UselessParentheses"/>
