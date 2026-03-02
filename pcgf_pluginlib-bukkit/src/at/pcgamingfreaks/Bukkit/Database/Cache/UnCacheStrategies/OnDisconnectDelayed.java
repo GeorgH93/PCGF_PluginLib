@@ -45,7 +45,7 @@ public class OnDisconnectDelayed extends BaseUnCacheStrategy implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void playerLeaveEvent(PlayerQuitEvent event)
+	public void playerLeaveEvent(final PlayerQuitEvent event)
 	{
 		final ICacheablePlayer player = cache.getCachedPlayer(event.getPlayer().getUniqueId());
 		if(player != null && player.canBeUncached()) // We only uncache unmarried player.

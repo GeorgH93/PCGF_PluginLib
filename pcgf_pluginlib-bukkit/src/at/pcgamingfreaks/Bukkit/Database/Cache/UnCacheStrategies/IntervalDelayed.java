@@ -24,8 +24,6 @@ import at.pcgamingfreaks.Database.Cache.BaseUnCacheStrategy;
 import com.tcoded.folialib.impl.PlatformScheduler;
 import com.tcoded.folialib.wrapper.task.WrappedTask;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 public class IntervalDelayed extends BaseUnCacheStrategy implements Runnable
@@ -43,8 +41,8 @@ public class IntervalDelayed extends BaseUnCacheStrategy implements Runnable
 	@Override
 	public void run()
 	{
-		long currentTime = System.currentTimeMillis() - delay;
-		for(ICacheablePlayer player : cache.getCachedPlayers())
+		final long currentTime = System.currentTimeMillis() - delay;
+		for(final ICacheablePlayer player : cache.getCachedPlayers())
 		{
 			if(!player.isOnline() && player.canBeUncached() && player.getLastPlayed() < currentTime)
 			{

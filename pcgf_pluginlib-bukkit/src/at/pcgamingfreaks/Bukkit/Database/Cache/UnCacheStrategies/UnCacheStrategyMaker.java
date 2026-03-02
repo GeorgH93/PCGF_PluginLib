@@ -27,7 +27,7 @@ import com.tcoded.folialib.impl.PlatformScheduler;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-public class UnCacheStrategyMaker
+public final class UnCacheStrategyMaker
 {
 	private UnCacheStrategyMaker()
 	{}
@@ -44,8 +44,8 @@ public class UnCacheStrategyMaker
 	@Deprecated
 	public static @NotNull BaseUnCacheStrategy make(final @NotNull Plugin plugin, final @NotNull IPlayerCache cache, final @NotNull IUnCacheStrategyConfig config)
 	{
-		FoliaLib foliaLib = new FoliaLib(plugin);
-		long delay = config.getUnCacheDelay() * 20L, interval = config.getUnCacheInterval() * 20L;
+		final FoliaLib foliaLib = new FoliaLib(plugin);
+		final long delay = config.getUnCacheDelay() * 20L, interval = config.getUnCacheInterval() * 20L;
 		switch(config.getUnCacheStrategy())
 		{
 			case ON_DISCONNECT: return new OnDisconnect(plugin, cache);
@@ -65,7 +65,7 @@ public class UnCacheStrategyMaker
 	 */
 	public static @NotNull BaseUnCacheStrategy make(final @NotNull Plugin plugin, final @NotNull PlatformScheduler scheduler, final @NotNull IPlayerCache cache, final @NotNull IUnCacheStrategyConfig config)
 	{
-		long delay = config.getUnCacheDelay() * 20L, interval = config.getUnCacheInterval() * 20L;
+		final long delay = config.getUnCacheDelay() * 20L, interval = config.getUnCacheInterval() * 20L;
 		switch(config.getUnCacheStrategy())
 		{
 			case ON_DISCONNECT: return new OnDisconnect(plugin, cache);

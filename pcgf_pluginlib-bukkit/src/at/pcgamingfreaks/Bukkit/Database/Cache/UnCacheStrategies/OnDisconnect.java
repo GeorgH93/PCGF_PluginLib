@@ -39,9 +39,9 @@ public class OnDisconnect extends BaseUnCacheStrategy implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void playerLeaveEvent(PlayerQuitEvent event)
+	public void playerLeaveEvent(final PlayerQuitEvent event)
 	{
-		ICacheablePlayer player = cache.getCachedPlayer(event.getPlayer().getUniqueId());
+		final ICacheablePlayer player = cache.getCachedPlayer(event.getPlayer().getUniqueId());
 		if(player != null && !player.isOnline() && player.canBeUncached()) // We only uncache unmarried player.
 		{
 			this.cache.unCache(player);

@@ -39,7 +39,7 @@ public class Interval extends BaseUnCacheStrategy implements Runnable
 	@Override
 	public void run()
 	{
-		for(ICacheablePlayer player : cache.getCachedPlayers())
+		for(final ICacheablePlayer player : cache.getCachedPlayers())
 		{
 			if(!player.isOnline() && player.canBeUncached())
 			{
