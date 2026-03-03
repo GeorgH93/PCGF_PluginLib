@@ -41,11 +41,11 @@ public class Utils
 	 * @param bytes The byte array to convert to hex.
 	 * @return The hex string matching the given byte array. The chars a-f will be lower-case!
 	 */
-	public static @NotNull String byteArrayToHex(byte[] bytes)
+	public static @NotNull String byteArrayToHex(final byte[] bytes)
 	{
 		if(bytes == null || bytes.length == 0) return "";
-		StringBuilder hexBuilder = new StringBuilder(bytes.length * 2);
-		for(byte b: bytes)
+		final StringBuilder hexBuilder = new StringBuilder(bytes.length * 2);
+		for(final byte b: bytes)
 		{
 			hexBuilder.append(String.format("%02x", b));
 		}
@@ -57,7 +57,7 @@ public class Utils
 	 *
 	 * @param pauseTime The time in seconds that the thread should be blocked
 	 */
-	public static void blockThread(int pauseTime)
+	public static void blockThread(final int pauseTime)
 	{
 		if(pauseTime > 0) // If there is a valid time we pause the current thread for that time
 		{
@@ -65,7 +65,7 @@ public class Utils
 			{
 				Thread.sleep(pauseTime * 1000L);
 			}
-			catch(InterruptedException ignored)
+			catch(final InterruptedException ignored)
 			{
 				Thread.currentThread().interrupt();
 			}
@@ -80,9 +80,9 @@ public class Utils
 	 * @param <T>   The class of the array and data
 	 * @return True if the data is contained within the array, false if not
 	 */
-	public static <T> boolean arrayContains(@NotNull T[] array, @Nullable T data)
+	public static <T> boolean arrayContains(@NotNull final T[] array, @Nullable final T data)
 	{
-		for(T element : array)
+		for(final T element : array)
 		{
 			if(element.equals(data)) return true;
 		}
@@ -92,11 +92,11 @@ public class Utils
 	@SuppressWarnings("UnusedReturnValue")
 	public static long streamCopy(final @NotNull InputStream from, final @NotNull OutputStream to) throws IOException
 	{
-		byte[] buf = new byte[8192];
+		final byte[] buf = new byte[8192];
 		long total = 0;
 		while (true)
 		{
-			int r = from.read(buf);
+			final int r = from.read(buf);
 			if (r == -1) break;
 			to.write(buf, 0, r);
 			total += r;
@@ -121,7 +121,7 @@ public class Utils
 			{
 				logger.log(Level.WARNING, "Failed to delete old file ({0}).", targetFile);
 			}
-			File parentFile = targetFile.getParentFile();
+			final File parentFile = targetFile.getParentFile();
 			if(!parentFile.exists() && !parentFile.mkdirs())
 			{
 				logger.log(Level.WARNING, "Failed creating directory''s! Expected path: {0}", parentFile);
@@ -131,7 +131,7 @@ public class Utils
 				logger.log(Level.WARNING, "Failed create new file ({0}).", targetFile);
 			}
 			if(!inJarPath.startsWith("/")) inJarPath = "/" + inJarPath;
-			try(InputStream is = pluginClass.getResourceAsStream(inJarPath); OutputStream os = new FileOutputStream(targetFile))
+			try(final InputStream is = pluginClass.getResourceAsStream(inJarPath); final OutputStream os = new FileOutputStream(targetFile))
 			{
 				if(is == null)
 				{
@@ -144,7 +144,7 @@ public class Utils
 			logger.log(Level.INFO, "File \"{0}\" extracted successfully!", inJarPath);
 			return true;
 		}
-		catch (IOException | NullPointerException e)
+		catch (final IOException | NullPointerException e)
 		{
 			logger.severe("Failed to extract file \"" + inJarPath + "\"! Reason: " + e.getMessage());
 		}
@@ -158,13 +158,13 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static byte tryParse(@NotNull String string, byte fallbackValue)
+	public static byte tryParse(@NotNull final String string, final byte fallbackValue)
 	{
 		try
 		{
 			return Byte.parseByte(string);
 		}
-		catch (NumberFormatException ignored) {}
+		catch (final NumberFormatException ignored) {}
 		return fallbackValue;
 	}
 
@@ -175,13 +175,13 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static short tryParse(@NotNull String string, short fallbackValue)
+	public static short tryParse(@NotNull final String string, final short fallbackValue)
 	{
 		try
 		{
 			return Short.parseShort(string);
 		}
-		catch (NumberFormatException ignored) {}
+		catch (final NumberFormatException ignored) {}
 		return fallbackValue;
 	}
 
@@ -192,13 +192,13 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static int tryParse(@NotNull String string, int fallbackValue)
+	public static int tryParse(@NotNull final String string, final int fallbackValue)
 	{
 		try
 		{
 			return Integer.parseInt(string);
 		}
-		catch (NumberFormatException ignored) {}
+		catch (final NumberFormatException ignored) {}
 		return fallbackValue;
 	}
 
@@ -209,13 +209,13 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static long tryParse(@NotNull String string, long fallbackValue)
+	public static long tryParse(@NotNull final String string, final long fallbackValue)
 	{
 		try
 		{
 			return Long.parseLong(string);
 		}
-		catch (NumberFormatException ignored) {}
+		catch (final NumberFormatException ignored) {}
 		return fallbackValue;
 	}
 
@@ -226,13 +226,13 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static float tryParse(@NotNull String string, float fallbackValue)
+	public static float tryParse(@NotNull final String string, final float fallbackValue)
 	{
 		try
 		{
 			return Float.parseFloat(string);
 		}
-		catch (NumberFormatException ignored) {}
+		catch (final NumberFormatException ignored) {}
 		return fallbackValue;
 	}
 
@@ -243,13 +243,13 @@ public class Utils
 	 * @param fallbackValue The value that should be returned when there was a problem parsing the given string.
 	 * @return The parsed value (if the parsing was successful) or the given fallback value (if the parsing was not successful).
 	 */
-	public static double tryParse(@NotNull String string, double fallbackValue)
+	public static double tryParse(@NotNull final String string, final double fallbackValue)
 	{
 		try
 		{
 			return Double.parseDouble(string);
 		}
-		catch (NumberFormatException ignored) {}
+		catch (final NumberFormatException ignored) {}
 		return fallbackValue;
 	}
 
@@ -261,7 +261,7 @@ public class Utils
 	 * @param targetDir   The directory in which the files should be extracted.
 	 * @param overwrite   If existing files should be overwritten.
 	 */
-	public static void extractFiles(@NotNull Class<?> pluginClass, @NotNull String inJarPath, @NotNull File targetDir, boolean overwrite)
+	public static void extractFiles(@NotNull final Class<?> pluginClass, @NotNull final String inJarPath, @NotNull final File targetDir, final boolean overwrite)
 	{
 		extractFiles(pluginClass.getProtectionDomain().getCodeSource().getLocation(), inJarPath, targetDir, overwrite);
 	}
@@ -274,17 +274,17 @@ public class Utils
 	 * @param targetDir   The directory in which the files should be extracted.
 	 * @param overwrite   If existing files should be overwritten.
 	 */
-	public static void extractFiles(@NotNull URL jar, @NotNull String inJarPath, @NotNull File targetDir, boolean overwrite)
+	public static void extractFiles(@NotNull final URL jar, @NotNull final String inJarPath, @NotNull final File targetDir, final boolean overwrite)
 	{
-		try(ZipInputStream zip = new ZipInputStream(jar.openStream()))
+		try(final ZipInputStream zip = new ZipInputStream(jar.openStream()))
 		{
 			ZipEntry e;
 			while((e = zip.getNextEntry()) != null)
 			{
-				String name = e.getName();
+				final String name = e.getName();
 				if (name.startsWith(inJarPath))
 				{
-					File target = new File(targetDir, name.replace(inJarPath, ""));
+					final File target = new File(targetDir, name.replace(inJarPath, ""));
 					if (!target.getCanonicalPath().startsWith(targetDir.getCanonicalPath()))
 					{
 						System.out.println("Skip file \"" + name + "\" in \"" + jar.getPath() + "\" because it is outside the target directory.");
@@ -296,7 +296,7 @@ public class Utils
 						//noinspection ResultOfMethodCallIgnored
 						target.delete(); // Delete old file
 					}
-					try(FileOutputStream fileOutputStream = new FileOutputStream(target))
+					try(final FileOutputStream fileOutputStream = new FileOutputStream(target))
 					{
 						streamCopy(zip, fileOutputStream);
 						fileOutputStream.flush();
@@ -304,7 +304,7 @@ public class Utils
 				}
 			}
 		}
-		catch(IOException e)
+		catch(final IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -316,11 +316,11 @@ public class Utils
 		{
 			final URL url = pluginMainClass.getClassLoader().getResource(filename);
 			if (url == null) return null;
-			URLConnection connection = url.openConnection();
+			final URLConnection connection = url.openConnection();
 			connection.setUseCaches(false);
 			return connection.getInputStream();
 		}
-		catch (IOException ignored)
+		catch (final IOException ignored)
 		{
 			return null;
 		}
@@ -353,7 +353,7 @@ public class Utils
 			//noinspection unchecked
 			v = (T) T.valueOf(clazz, valueName);
 		}
-		catch(IllegalArgumentException ignored)
+		catch(final IllegalArgumentException ignored)
 		{
 			if(logger != null)
 				logger.info(valueName + " is not a valid option for " + clazz.getSimpleName());
@@ -369,7 +369,7 @@ public class Utils
 	 * @param index The index at which the element should be added.
 	 * @param <T> The type of the list and element.
 	 */
-	public static <T> void insertAt(ArrayList<T> list, T element, int index)
+	public static <T> void insertAt(final ArrayList<T> list, final T element, final int index)
 	{
 		if(index < list.size())
 		{

@@ -51,7 +51,7 @@ public class BaseStringUtils
 
 	public static boolean arrayContains(final @NotNull String[] strings, final @Nullable String searchFor)
 	{
-		for(String s : strings)
+		for(final String s : strings)
 		{
 			//noinspection ConstantConditions
 			if((s != null && s.equals(searchFor)) || (s == null && searchFor == null))
@@ -64,7 +64,7 @@ public class BaseStringUtils
 
 	public static boolean arrayContainsIgnoreCase(final @NotNull String[] strings, final @Nullable String searchFor)
 	{
-		for(String s : strings)
+		for(final String s : strings)
 		{
 			//noinspection ConstantConditions
 			if((s != null && s.equalsIgnoreCase(searchFor)) || (s == null && searchFor == null))
@@ -80,7 +80,7 @@ public class BaseStringUtils
 	{
 		if(searchFor != null)
 		{
-			for(String str : searchFor)
+			for(final String str : searchFor)
 			{
 				if(arrayContainsIgnoreCase(strings, str))
 				{
@@ -96,7 +96,7 @@ public class BaseStringUtils
 	{
 		if(searchFor != null)
 		{
-			for(String str : searchFor)
+			for(final String str : searchFor)
 			{
 				if(arrayContains(strings, str))
 				{
@@ -109,8 +109,8 @@ public class BaseStringUtils
 
 	public static @NotNull List<String> getAllContaining(final @NotNull String[] source, final @NotNull String searchFor)
 	{
-		List<String> result = new ArrayList<>(source.length);
-		for(String str : source)
+		final List<String> result = new ArrayList<>(source.length);
+		for(final String str : source)
 		{
 			//noinspection ConstantConditions
 			if(str != null && str.contains(searchFor))
@@ -123,8 +123,8 @@ public class BaseStringUtils
 
 	public static @NotNull List<String> getAllContainingIgnoreCase(final @NotNull String[] source, final @NotNull String searchFor)
 	{
-		List<String> result = new ArrayList<>(source.length);
-		for(String str : source)
+		final List<String> result = new ArrayList<>(source.length);
+		for(final String str : source)
 		{
 			//noinspection ConstantConditions
 			if(str != null && containsIgnoreCase(str, searchFor))
@@ -143,7 +143,7 @@ public class BaseStringUtils
 	public static boolean containsIgnoreCase(@NotNull String string, final @NotNull String... searchFor)
 	{
 		string = string.toLowerCase(Locale.ROOT);
-		for(String s : searchFor)
+		for(final String s : searchFor)
 		{
 			if(string.contains(s.toLowerCase(Locale.ROOT))) return true;
 		}
@@ -152,7 +152,7 @@ public class BaseStringUtils
 
 	public static boolean containsAny(final @NotNull String string, final @NotNull String... searchFor)
 	{
-		for(String s : searchFor)
+		for(final String s : searchFor)
 		{
 			if(string.contains(s)) return true;
 		}
@@ -168,7 +168,7 @@ public class BaseStringUtils
 	 */
 	public static @NotNull String limitLength(final @NotNull String text, final int maxLength)
 	{
-		if(text.length() == 0 || maxLength <= 0) return "";
+		if(text.isEmpty() || maxLength <= 0) return "";
 		if(text.length() <= maxLength) return text; // No need to create a new object if the string has not changed
 		return text.substring(0, maxLength);
 	}
@@ -195,7 +195,7 @@ public class BaseStringUtils
 	 */
 	public static int parsePageNumber(final @NotNull String input) throws NumberFormatException
 	{
-		Matcher matcher = PAGE_REGEX.matcher(input);
+		final Matcher matcher = PAGE_REGEX.matcher(input);
 		if(matcher.matches())
 		{
 			int page = Integer.parseInt(matcher.group("page"));
@@ -220,7 +220,7 @@ public class BaseStringUtils
 	 * @param bytes The size in bytes
 	 * @return The formatted string.
 	 */
-	public static String formatByteCountHumanReadable(long bytes)
+	public static String formatByteCountHumanReadable(final long bytes)
 	{
 		return formatByteCountHumanReadable(Locale.ROOT, bytes);
 	}
@@ -232,7 +232,7 @@ public class BaseStringUtils
 	 * @param bytes The size in bytes
 	 * @return The formatted string.
 	 */
-	public static String formatByteCountHumanReadable(Locale locale, long bytes)
+	public static String formatByteCountHumanReadable(final Locale locale, final long bytes)
 	{
 		if(bytes == 1) return "1 " + BYTE_SIZE_NAMES[0];
 		if(bytes < 1024) return bytes + " " + BYTE_SIZE_NAMES[1];
@@ -245,10 +245,10 @@ public class BaseStringUtils
 		return String.format(locale, (doubleBytes >= 100) ? "%.1f %s" : "%.2f %s", doubleBytes, BYTE_SIZE_NAMES[i]);
 	}
 
-	public static String arrayToString(Object[] array)
+	public static String arrayToString(final Object[] array)
 	{
-		StringBuilder builder = new StringBuilder();
-		for(Object element : array)
+		final StringBuilder builder = new StringBuilder();
+		for(final Object element : array)
 		{
 			builder.append(element).append(' ');
 		}
@@ -261,14 +261,14 @@ public class BaseStringUtils
 		return e.getClass().getName() + ": " + e.getMessage();
 	}
 
-	public static List<String> startsWith(String[] strings, String prefix)
+	public static List<String> startsWith(final String[] strings, final String prefix)
 	{
 		return startsWith(strings, prefix, new ArrayList<>(strings.length));
 	}
 
-	public static List<String> startsWith(String[] strings, String prefix, List<String> output)
+	public static List<String> startsWith(final String[] strings, final String prefix, final List<String> output)
 	{
-		for(String s : strings)
+		for(final String s : strings)
 		{
 			if (s != null && s.startsWith(prefix))
 			{
@@ -278,14 +278,14 @@ public class BaseStringUtils
 		return output;
 	}
 
-	public static List<String> startsWith(Collection<String> strings, String prefix)
+	public static List<String> startsWith(final Collection<String> strings, final String prefix)
 	{
 		return startsWith(strings, prefix, new ArrayList<>(strings.size()));
 	}
 
-	public static List<String> startsWith(Collection<String> strings, String prefix, List<String> output)
+	public static List<String> startsWith(final Collection<String> strings, final String prefix, final List<String> output)
 	{
-		for(String s : strings)
+		for(final String s : strings)
 		{
 			if (s != null && s.startsWith(prefix))
 			{
@@ -295,15 +295,15 @@ public class BaseStringUtils
 		return output;
 	}
 
-	public static List<String> startsWithIgnoreCase(String[] strings, String prefix)
+	public static List<String> startsWithIgnoreCase(final String[] strings, final String prefix)
 	{
 		return startsWithIgnoreCase(strings, prefix, new ArrayList<>(strings.length));
 	}
 
-	public static List<String> startsWithIgnoreCase(String[] strings, String prefix, List<String> output)
+	public static List<String> startsWithIgnoreCase(final String[] strings, String prefix, final List<String> output)
 	{
 		prefix = prefix.toLowerCase(Locale.ENGLISH);
-		for(String s : strings)
+		for(final String s : strings)
 		{
 			if (s != null && s.toLowerCase(Locale.ENGLISH).startsWith(prefix))
 			{
@@ -313,15 +313,15 @@ public class BaseStringUtils
 		return output;
 	}
 
-	public static List<String> startsWithIgnoreCase(Collection<String> strings, String prefix)
+	public static List<String> startsWithIgnoreCase(final Collection<String> strings, final String prefix)
 	{
 		return startsWithIgnoreCase(strings, prefix, new ArrayList<>(strings.size()));
 	}
 
-	public static List<String> startsWithIgnoreCase(Collection<String> strings, String prefix, List<String> output)
+	public static List<String> startsWithIgnoreCase(final Collection<String> strings, String prefix, final List<String> output)
 	{
 		prefix = prefix.toLowerCase(Locale.ENGLISH);
-		for(String s : strings)
+		for(final String s : strings)
 		{
 			if (s != null && s.toLowerCase(Locale.ENGLISH).startsWith(prefix))
 			{
@@ -375,11 +375,11 @@ public class BaseStringUtils
 	 */
 	public static Collection<Integer> indexOfAllMatching(final @NotNull String[] strings, final @NotNull @Language("RegExp") String searchRegex)
 	{
-		Pattern pattern = Pattern.compile(searchRegex);
-		List<Integer> ids = new ArrayList<>();
+		final Pattern pattern = Pattern.compile(searchRegex);
+		final List<Integer> ids = new ArrayList<>();
 		for(int i = 0; i < strings.length; i++)
 		{
-			Matcher matcher = pattern.matcher(strings[i]);
+			final Matcher matcher = pattern.matcher(strings[i]);
 			if(matcher.matches())
 			{
 				ids.add(i);
