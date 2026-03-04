@@ -21,6 +21,7 @@
 	<exclude-pattern>.*/freemarker/.*</exclude-pattern>
 	<exclude-pattern>.*/target/generated-sources/.*</exclude-pattern>
 	<exclude-pattern>.*/test/.*</exclude-pattern>
+	<exclude-pattern>.*/TestClasses/.*</exclude-pattern>
 
 	<!-- ============================================== -->
 	<!-- BEST PRACTICES								-->
