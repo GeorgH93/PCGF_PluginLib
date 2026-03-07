@@ -33,14 +33,14 @@ public class TimeSpan
 
 	private static final BasicTimeSpanFormat DEFAULT_TIME_SPAN_FORMAT = new BasicTimeSpanFormat();
 	private static final int[] CAL_TYPES = new int[] { Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH };
-	private int[] timeSpan = new int[] { 0, 0, 0, 0, 0, 0, 0};
+	private final int[] timeSpan = new int[] { 0, 0, 0, 0, 0, 0, 0};
 
 	//region TimeSpan constructors
 	/**
 	 * Initiate a new TimeSpan object.
 	 * @param time The unix time that should be compared with now.
 	 */
-	public TimeSpan(long time)
+	public TimeSpan(final long time)
 	{
 		this(time, false);
 	}
@@ -50,7 +50,7 @@ public class TimeSpan
 	 * @param time The unix time that should be compared with now.
 	 * @param fastMode If the fast mode is enabled the calculation will be done with less precision, but therefor much faster.
 	 */
-	public TimeSpan(long time, boolean fastMode)
+	public TimeSpan(final long time, final boolean fastMode)
 	{
 		this(time, System.currentTimeMillis(), fastMode);
 	}
@@ -60,7 +60,7 @@ public class TimeSpan
 	 * @param timeFrom The unix time that should be the first point in the calculation.
 	 * @param timeTo The unix time that should be the second point in the calculation.
 	 */
-	public TimeSpan(long timeFrom, long timeTo)
+	public TimeSpan(final long timeFrom, final long timeTo)
 	{
 		this(timeFrom, timeTo, false);
 	}
@@ -71,7 +71,7 @@ public class TimeSpan
 	 * @param timeTo The unix time that should be the second point in the calculation.
 	 * @param fastMode If the fast mode is enabled the calculation will be done with less precision, but therefor much faster.
 	 */
-	public TimeSpan(long timeFrom, long timeTo, boolean fastMode)
+	public TimeSpan(final long timeFrom, final long timeTo, final boolean fastMode)
 	{
 		this(timeFrom, null, timeTo, null, fastMode);
 	}
@@ -80,7 +80,7 @@ public class TimeSpan
 	 * Initiate a new TimeSpan object.
 	 * @param time The date that should be compared with now.
 	 */
-	public TimeSpan(@NotNull Date time)
+	public TimeSpan(final @NotNull Date time)
 	{
 		this(time, false);
 	}
@@ -90,7 +90,7 @@ public class TimeSpan
 	 * @param time The date that should be compared with now.
 	 * @param fastMode If the fast mode is enabled the calculation will be done with less precision, but therefor much faster.
 	 */
-	public TimeSpan(@NotNull Date time, boolean fastMode)
+	public TimeSpan(final @NotNull Date time, final boolean fastMode)
 	{
 		this(time, new Date(), fastMode);
 	}
@@ -100,7 +100,7 @@ public class TimeSpan
 	 * @param timeFrom The date that should be the first point in the calculation.
 	 * @param timeTo The date that should be the second point in the calculation.
 	 */
-	public TimeSpan(@NotNull Date timeFrom, @NotNull Date timeTo)
+	public TimeSpan(final @NotNull Date timeFrom, final @NotNull Date timeTo)
 	{
 		this(timeFrom, timeTo, false);
 	}
@@ -111,7 +111,7 @@ public class TimeSpan
 	 * @param timeTo The date that should be the second point in the calculation.
 	 * @param fastMode If the fast mode is enabled the calculation will be done with less precision, but therefor much faster.
 	 */
-	public TimeSpan(@NotNull Date timeFrom, @NotNull Date timeTo, boolean fastMode)
+	public TimeSpan(final @NotNull Date timeFrom, final @NotNull Date timeTo, final boolean fastMode)
 	{
 		this(timeFrom.getTime(), null, timeTo.getTime(), null, fastMode);
 	}
@@ -120,7 +120,7 @@ public class TimeSpan
 	 * Initiate a new TimeSpan object.
 	 * @param time The date that should be compared with now.
 	 */
-	public TimeSpan(@NotNull Calendar time)
+	public TimeSpan(final @NotNull Calendar time)
 	{
 		this(time, false);
 	}
@@ -130,7 +130,7 @@ public class TimeSpan
 	 * @param time The date that should be compared with now.
 	 * @param fastMode If the fast mode is enabled the calculation will be done with less precision, but therefor much faster.
 	 */
-	public TimeSpan(@NotNull Calendar time, boolean fastMode)
+	public TimeSpan(final @NotNull Calendar time, final boolean fastMode)
 	{
 		this(time, Calendar.getInstance(), fastMode);
 	}
@@ -140,7 +140,7 @@ public class TimeSpan
 	 * @param timeFrom The date that should be the first point in the calculation.
 	 * @param timeTo The date that should be the second point in the calculation.
 	 */
-	public TimeSpan(@NotNull Calendar timeFrom, @NotNull Calendar timeTo)
+	public TimeSpan(final @NotNull Calendar timeFrom, final @NotNull Calendar timeTo)
 	{
 		this(timeFrom, timeTo, false);
 	}
@@ -151,15 +151,15 @@ public class TimeSpan
 	 * @param timeTo The date that should be the second point in the calculation.
 	 * @param fastMode If the fast mode is enabled the calculation will be done with less precision, but therefor much faster.
 	 */
-	public TimeSpan(@NotNull Calendar timeFrom, @NotNull Calendar timeTo, boolean fastMode)
+	public TimeSpan(final @NotNull Calendar timeFrom, final @NotNull Calendar timeTo, final boolean fastMode)
 	{
 		this(timeFrom.getTimeInMillis(), timeFrom, timeTo.getTimeInMillis(), timeTo, fastMode);
 	}
 
 	//region calculation
-	private TimeSpan(long from, @Nullable Calendar fromDate, long to, @Nullable Calendar toDate, boolean fastMode)
+	private TimeSpan(final long from, @Nullable Calendar fromDate, final long to, @Nullable Calendar toDate, final boolean fastMode)
 	{
-		long totalDiffSeconds = totalDiffSeconds(from, to);
+		final long totalDiffSeconds = totalDiffSeconds(from, to);
 		if(fastMode)
 		{
 			calcFast(totalDiffSeconds);
@@ -178,7 +178,7 @@ public class TimeSpan
 			}
 			if(toDate.before(fromDate))
 			{
-				Calendar tmpDate = fromDate;
+				final Calendar tmpDate = fromDate;
 				fromDate = toDate;
 				toDate = tmpDate;
 			}
@@ -186,26 +186,26 @@ public class TimeSpan
 		}
 	}
 
-	private long totalDiffSeconds(long from, long to)
+	private long totalDiffSeconds(final long from, final long to)
 	{
 		return ((to > from) ? (to - from) : (from - to)) / 1000L;
 	}
 
-	private void calcFast(long totalDiffSeconds)
+	private void calcFast(final long totalDiffSeconds)
 	{
 		timeSpan[TOTAL_DAYS] = (int) (totalDiffSeconds / 86400L);
 		timeSpanDaysFast();
 		timeSpanDayComponents(totalDiffSeconds);
 	}
 
-	private void calcCalendar(long totalDiffSeconds, @NotNull Calendar fromDate, @NotNull Calendar toDate)
+	private void calcCalendar(final long totalDiffSeconds, final @NotNull Calendar fromDate, final @NotNull Calendar toDate)
 	{
 		timeSpan[TOTAL_DAYS] = (int) (totalDiffSeconds / 86400L);
 		timeSpanDaysCalendar(fromDate, toDate);
 		timeSpanDayComponents(totalDiffSeconds);
 	}
 
-	private void timeSpanDayComponents(long totalDiffSeconds)
+	private void timeSpanDayComponents(final long totalDiffSeconds)
 	{
 		int secondsOnDay = (int) (totalDiffSeconds % 86400);
 		timeSpan[HOUR] = secondsOnDay / 3600;
@@ -219,11 +219,11 @@ public class TimeSpan
 		timeSpan[YEAR] = timeSpan[TOTAL_DAYS] / 365;
 		timeSpan[DAY] = timeSpan[TOTAL_DAYS] - timeSpan[YEAR] * 365;
 		timeSpan[MONTH] = (int)(timeSpan[DAY] / (365/12.0));
-		timeSpan[DAY] -= timeSpan[MONTH] * (365/12.0);
+		timeSpan[DAY] -= timeSpan[MONTH] * (365 / 12.0);
 	}
 
 	@SuppressWarnings("MagicConstant")
-	private void timeSpanDaysCalendar(@NotNull Calendar fromDate, @NotNull Calendar toDate)
+	private void timeSpanDaysCalendar(final @NotNull Calendar fromDate, final @NotNull Calendar toDate)
 	{
 		timeSpan[YEAR] = timeSpan[MONTH] = timeSpan[DAY] = -1;
 		Calendar from = (Calendar) fromDate.clone(), backup = (Calendar) from.clone();
@@ -255,7 +255,7 @@ public class TimeSpan
 	 * @param ms The amount of milliseconds that should be converted into a {@link TimeSpan}.
 	 * @return The {@link TimeSpan} created from the given amount of milliseconds.
 	 */
-	public static @NotNull TimeSpan fromMilliseconds(long ms)
+	public static @NotNull TimeSpan fromMilliseconds(final long ms)
 	{
 		return fromSeconds(ms / 1000L);
 	}
@@ -267,9 +267,9 @@ public class TimeSpan
 	 * @param seconds The amount of seconds that should be converted into a {@link TimeSpan}.
 	 * @return The {@link TimeSpan} created from the given amount of seconds.
 	 */
-	public static @NotNull TimeSpan fromSeconds(long seconds)
+	public static @NotNull TimeSpan fromSeconds(final long seconds)
 	{
-		TimeSpan timeSpan = new TimeSpan();
+		final TimeSpan timeSpan = new TimeSpan();
 		timeSpan.calcFast(seconds);
 		return timeSpan;
 	}
@@ -289,12 +289,12 @@ public class TimeSpan
 	 * @deprecated Use {@link #toString(TimeSpanFormat)} with a {@link BasicTimeSpanFormat} instead.
 	 */
 	@Deprecated
-	public String toString(@NotNull String[] unitNames)
+	public String toString(final @NotNull String[] unitNames)
 	{
 		return toString(new BasicTimeSpanFormat(unitNames));
 	}
 
-	public String toString(TimeSpanFormat timeSpanFormat)
+	public String toString(final TimeSpanFormat timeSpanFormat)
 	{
 		return timeSpanFormat.format(this);
 	}
@@ -341,7 +341,7 @@ public class TimeSpan
 	 *
 	 * @return The internal time span array.
 	 */
-	public @NotNull int[] getArray()
+	public int[] getArray()
 	{
 		return timeSpan.clone();
 	}
@@ -351,11 +351,11 @@ public class TimeSpan
 	 *
 	 * @return The internal time span array.
 	 */
-	public @NotNull int[] getArrayNoCopy() { return timeSpan; }
+	public int[] getArrayNoCopy() { return timeSpan; }
 	//endregion
 
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		return obj instanceof TimeSpan && Arrays.equals(((TimeSpan) obj).timeSpan, this.timeSpan);
 	}
