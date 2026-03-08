@@ -38,7 +38,7 @@ final class LegacyMessageParser
 		this(builder, true);
 	}
 
-	LegacyMessageParser(final MessageBuilder<?,?> builder, boolean useJavaEditionFormatting)
+	LegacyMessageParser(final MessageBuilder<?,?> builder, final boolean useJavaEditionFormatting)
 	{
 		this.builder = builder;
 		this.useJavaEditionFormatting = useJavaEditionFormatting;
@@ -46,14 +46,14 @@ final class LegacyMessageParser
 
 	public void parse(final @NotNull String legacyMessage)
 	{
-		if(legacyMessage.length() == 0) return;
+		if(legacyMessage.isEmpty()) return;
 		reset();
 		for(int i = 0; i < legacyMessage.length(); i++)
 		{
-			char c = legacyMessage.charAt(i);
+			final char c = legacyMessage.charAt(i);
 			if(c == MessageColor.COLOR_CHAR && i + 1 < legacyMessage.length())
 			{
-				char formatChar = legacyMessage.charAt(++i);
+				final char formatChar = legacyMessage.charAt(++i);
 				if(MessageColor.isColorChar(formatChar) || MessageFormat.isFormatOrResetChar(formatChar)) // handle single char formatting
 				{
 					append();
@@ -88,7 +88,7 @@ final class LegacyMessageParser
 		append();
 	}
 
-	private @Nullable String getRgbCode(final @NotNull String legacyMessage, int i, int charCount)
+	private @Nullable String getRgbCode(final @NotNull String legacyMessage, final int i, final int charCount)
 	{
 		if (i + charCount < legacyMessage.length())
 		{
@@ -97,7 +97,7 @@ final class LegacyMessageParser
 		return null;
 	}
 
-	private boolean endsWord(char c)
+	private boolean endsWord(final char c)
 	{
 		return c == ' ' || c == '\n' || c == '\r' || c == '\t';
 	}
@@ -115,11 +115,11 @@ final class LegacyMessageParser
 	{
 		if(legacyRGB.length() == 12 && legacyRGB.matches("(" + MessageColor.COLOR_CHAR + "[\\da-fA-F]){6}"))
 		{
-			return '#' + legacyRGB.replaceAll(MessageColor.COLOR_CHAR + "", "");
+			return '#' + legacyRGB.replace(MessageColor.COLOR_CHAR + "", "");
 		}
 		else if(legacyRGB.length() == 6 && legacyRGB.matches("[\\da-fA-F]{6}"))
 		{
-			return '#' + legacyRGB.replaceAll(MessageColor.COLOR_CHAR + "", "");
+			return '#' + legacyRGB.replace(MessageColor.COLOR_CHAR + "", "");
 		}
 		return null;
 	}
@@ -148,7 +148,7 @@ final class LegacyMessageParser
 	private void endWord()
 	{
 		if(wordBuilder.length() == 0) return;
-		String word = wordBuilder.toString();
+		final String word = wordBuilder.toString();
 		wordBuilder.setLength(0);
 		if(StringUtils.URL_PATTERN.matcher(word).matches()) //URL
 		{

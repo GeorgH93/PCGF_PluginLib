@@ -35,7 +35,7 @@ public final class MessageColor
 	private static final Map<String, MessageColor> BY_NAME = new HashMap<>();
 	private static final MessageColor[] COLORS = new MessageColor[17];
 
-	public static final char COLOR_CHAR = '\u00A7';
+	public static final char COLOR_CHAR = '§';
 	public static final String COLOR_CODES = "0123456789AaBbCcDdEeFfRrXx";
 	public static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx";
 
@@ -152,8 +152,8 @@ public final class MessageColor
 	private MessageColor(final String rgbColor)
 	{
 		this.code = 'x';
-		StringBuilder builder = new StringBuilder().append(COLOR_CHAR).append(code);
-		for(char code : rgbColor.toCharArray())
+		final StringBuilder builder = new StringBuilder().append(COLOR_CHAR).append(code);
+		for(final char code : rgbColor.toCharArray())
 		{
 			builder.append(COLOR_CHAR).append(code);
 		}
@@ -179,7 +179,7 @@ public final class MessageColor
 	}
 
 	@Override
-	public boolean equals(Object other)
+	public boolean equals(final Object other)
 	{
 		if(other == this) return true;
 		if(other == null || getClass() != other.getClass()) return false;
@@ -193,22 +193,22 @@ public final class MessageColor
 		return BY_NAME.keySet().stream().filter(name -> name.startsWith(starts)).collect(Collectors.toList());
 	}
 
-	public static boolean isColorChar(char code)
+	public static boolean isColorChar(final char code)
 	{
 		return ((code >= '0' && code <= '9') || (code >= 'A' && code <= 'F') || (code >= 'a' && code <= 'f'));
 	}
 
-	public static boolean isResetChar(char code)
+	public static boolean isResetChar(final char code)
 	{
 		return code == 'r' || code == 'R';
 	}
 
-	public static boolean isColorOrResetChar(char code)
+	public static boolean isColorOrResetChar(final char code)
 	{
 		return isColorChar(code) || isResetChar(code);
 	}
 
-	public static boolean isRgbIndicatorChar(char code)
+	public static boolean isRgbIndicatorChar(final char code)
 	{
 		return code == 'x' || code == 'X';
 	}
@@ -224,16 +224,16 @@ public final class MessageColor
 
 	public static @Nullable MessageColor getColor(@NotNull String color)
 	{
-		if(color.length() == 0) return null;
+		if(color.isEmpty()) return null;
 		if(color.charAt(0) == '&' || color.charAt(0) == COLOR_CHAR) color = color.substring(1);
-		if(color.length() == 0) return null;
+		if(color.isEmpty()) return null;
 		if(color.length() == 1)
 		{
 			try
 			{
 				return getFromCode(color.charAt(0));
 			}
-			catch(IllegalArgumentException ignored)
+			catch(final IllegalArgumentException ignored)
 			{
 				return null;
 			}
@@ -244,7 +244,7 @@ public final class MessageColor
 			{
 				return values()[Integer.parseInt(color)];
 			}
-			catch(NumberFormatException | IndexOutOfBoundsException ignored)
+			catch(final NumberFormatException | IndexOutOfBoundsException ignored)
 			{
 				return null;
 			}
@@ -254,7 +254,7 @@ public final class MessageColor
 		{
 			return valueOf(color);
 		}
-		catch(IllegalArgumentException ignored) {}
+		catch(final IllegalArgumentException ignored) {}
 		return null;
 	}
 
@@ -264,15 +264,17 @@ public final class MessageColor
 		return getNearestColor(Integer.parseInt(rgbColor, 16));
 	}
 
-	private static MessageColor getNearestColor(int rgb)
+	private static MessageColor getNearestColor(final int rgb)
 	{
 		int nearest = Integer.MAX_VALUE;
 		MessageColor nearestColor = null;
 		for(int i = 0; i < 16; i++)
 		{
-			MessageColor c = values()[i];
-			int r = (c.rgb >> 16) - (rgb >> 16), g = ((c.rgb >> 8) & 0xff) - ((rgb >> 8) & 0xff), b = (c.rgb & 0xff) - (rgb & 0xff);
-			int dist = r * r + g * g + b * b;
+			final MessageColor c = values()[i];
+			final int r = (c.rgb >> 16) - (rgb >> 16);
+			final int g = ((c.rgb >> 8) & 0xff) - ((rgb >> 8) & 0xff);
+			final int b = (c.rgb & 0xff) - (rgb & 0xff);
+			final int dist = r * r + g * g + b * b;
 			if(dist < nearest)
 			{
 				nearest = dist;
@@ -287,7 +289,7 @@ public final class MessageColor
 	{
 		if(name.equals("RESET")) return RESET;
 		if(name.length() == 7 && name.charAt(0) == '#') return new MessageColor(name.substring(1));
-		MessageColor color = BY_NAME.get(name);
+		final MessageColor color = BY_NAME.get(name);
 		if(color == null) throw new IllegalArgumentException(name + " is not a MessageColor!");
 		return color;
 	}
@@ -353,7 +355,7 @@ public final class MessageColor
 	}
 
 	@Contract("_,!null->!null; _,null->null")
-	public static @Nullable String translateAlternateColorCodes(char altColorChar, @Nullable String textToTranslate)
+	public static @Nullable String translateAlternateColorCodes(final char altColorChar, @Nullable final String textToTranslate)
 	{
 		return translateColorCode(altColorChar, COLOR_CHAR, textToTranslate, COLOR_CODES);
 	}
@@ -365,7 +367,7 @@ public final class MessageColor
 	}
 
 	@Contract("_,!null->!null; _,null->null")
-	public static @Nullable String translateToAlternateColorCodes(char altColorChar, @Nullable String textToTranslate)
+	public static @Nullable String translateToAlternateColorCodes(final char altColorChar, @Nullable final String textToTranslate)
 	{
 		return translateColorCode(COLOR_CHAR, altColorChar, textToTranslate, COLOR_CODES);
 	}
@@ -377,10 +379,10 @@ public final class MessageColor
 	}
 
 	@Contract("_,_,!null,_->!null; _,_,null,_->null")
-	private static @Nullable String translateColorCode(char from, char to, @Nullable String textToTranslate, @NotNull String charSet)
+	private static @Nullable String translateColorCode(final char from, final char to, @Nullable final String textToTranslate, @NotNull final String charSet)
 	{
 		if(textToTranslate == null || textToTranslate.length() < 2) return textToTranslate;
-		char[] chars = textToTranslate.toCharArray();
+		final char[] chars = textToTranslate.toCharArray();
 		for(int i = 0; i + 1 < chars.length; i++)
 		{
 			if(chars[i] == from && charSet.indexOf(chars[i + 1]) > -1)
@@ -396,7 +398,7 @@ public final class MessageColor
 	public static class MessageColorSerializer implements JsonSerializer<MessageColor>, JsonDeserializer<MessageColor>
 	{
 		@Override
-		public JsonElement serialize(MessageColor src, Type typeOfSrc, JsonSerializationContext context)
+		public JsonElement serialize(final MessageColor src, final Type typeOfSrc, final JsonSerializationContext context)
 		{
 			if(src.getName() != null) return new JsonPrimitive(src.getName());
 			if(src.getRgbColor() != null) return  new JsonPrimitive(src.getRgbColor());
@@ -404,7 +406,7 @@ public final class MessageColor
 		}
 
 		@Override
-		public MessageColor deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		public MessageColor deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
 		{
 			return valueOf(json.getAsString());
 		}

@@ -113,10 +113,8 @@
 		<module name="FallThrough"/>
 		<module name="IllegalInstantiation"/>
 		<module name="MissingSwitchDefault"/>
-		<module name="ModifiedControlVariable"/>
 		<module name="NoClone"/>
 		<module name="NoFinalizer"/>
-		<module name="OneStatementPerLine"/>
 		<module name="PackageDeclaration"/>
 		<module name="SimplifyBooleanExpression"/>
 		<module name="SimplifyBooleanReturn"/>
@@ -310,7 +308,7 @@
 		</module>
 		<module name="TypecastParenPad"/>
 		<module name="WhitespaceAfter">
-			<property name="tokens" value="COMMA, SEMI, TYPECAST, LITERAL_FINALLY, LITERAL_RETURN, LITERAL_YIELD"/>
+			<property name="tokens" value="SEMI, TYPECAST, LITERAL_FINALLY, LITERAL_RETURN, LITERAL_YIELD"/>
 		</module>
 		<module name="WhitespaceAround">
 			<property name="allowEmptyConstructors" value="true"/>
@@ -322,8 +320,7 @@
 			<property name="tokens" value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR,
                                    BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN,
                                    DO_WHILE, EQUAL, GE, GT, LAMBDA, LAND, LCURLY, LE,
-                                   LITERAL_FINALLY, LITERAL_RETURN,
-                                   LITERAL_SYNCHRONIZED, LITERAL_TRY, LOR,
+                                   LITERAL_FINALLY, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LOR,
                                    LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL,
                                    PLUS, PLUS_ASSIGN, QUESTION, RCURLY, SL, SL_ASSIGN,
                                    SLIST, SR, SR_ASSIGN, STAR, STAR_ASSIGN, TYPE_EXTENSION_AND"/>

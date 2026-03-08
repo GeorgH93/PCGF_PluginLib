@@ -65,7 +65,7 @@ public class TitleMetadata implements ITitleMetadata
 		setLocation(location);
 	}
 
-	public TitleMetadata(boolean subtitle)
+	public TitleMetadata(final boolean subtitle)
 	{
 		setLocation(subtitle ? TitleLocation.SUBTITLE : TitleLocation.TITLE);
 	}
@@ -85,7 +85,7 @@ public class TitleMetadata implements ITitleMetadata
 	{
 		try
 		{
-			JsonObject object = new JsonParser().parse(json).getAsJsonObject();
+			final JsonObject object = JsonParser.parseString(json).getAsJsonObject();
 			object.entrySet().forEach(e -> {
 				switch(e.getKey().toLowerCase(Locale.ROOT))
 				{
@@ -97,7 +97,7 @@ public class TitleMetadata implements ITitleMetadata
 				}
 			});
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
 			e.printStackTrace();
 		}
