@@ -48,7 +48,7 @@ public enum SendMethod implements ISendMethod, ISender
 	@Getter @NotNull private final SendMethod fallbackSendMethod;
 	@Getter @Nullable private final Supplier<? extends IMetadata> metadataSupplier;
 
-	SendMethod(@Nullable ISender sender, @Nullable SendMethod fallback)
+	SendMethod(final @Nullable ISender sender, final @Nullable SendMethod fallback)
 	{
 		this(sender, null, null, fallback);
 	}
@@ -60,7 +60,7 @@ public enum SendMethod implements ISendMethod, ISender
 	 * @param fallback A fallback send method that should be used if the used send method is not available on the used MC version.
 	 *                    There should always be one available if the send method is not available on all MC versions.
 	 */
-	SendMethod(@Nullable ISender sender, @Nullable Class<? extends IMetadata> metadataClass, @Nullable Supplier<? extends IMetadata> metadataSupplier, @Nullable SendMethod fallback)
+	SendMethod(final @Nullable ISender sender, final @Nullable Class<? extends IMetadata> metadataClass, final @Nullable Supplier<? extends IMetadata> metadataSupplier, @Nullable SendMethod fallback)
 	{
 		this.sender = sender;
 		this.metadataClass = metadataClass;
@@ -94,46 +94,47 @@ public enum SendMethod implements ISendMethod, ISender
 		return metadataClass != null;
 	}
 
+	@Override
 	public @Nullable IMetadata parseMetadata(final @NotNull String json)
 	{
 		if(metadataSupplier == null) return null;
-		IMetadata metadata = metadataSupplier.get();
+		final IMetadata metadata = metadataSupplier.get();
 		metadata.parseJson(json);
 		return metadata;
 	}
 
 	@Override
-	public void send(@NotNull Player player, @NotNull String json)
+	public void send(final @NotNull Player player, final @NotNull String json)
 	{
 		activeSender.send(player, json);
 	}
 
 	@Override
-	public void send(@NotNull Player player, @NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void send(final @NotNull Player player, final @NotNull String json, final @Nullable IMetadata optionalMetadata)
 	{
 		activeSender.send(player, json, optionalMetadata);
 	}
 
 	@Override
-	public void send(@NotNull Collection<? extends Player> players, @NotNull String json)
+	public void send(final @NotNull Collection<? extends Player> players, final @NotNull String json)
 	{
 		activeSender.send(players, json);
 	}
 
 	@Override
-	public void send(@NotNull Collection<? extends Player> players, @NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void send(final @NotNull Collection<? extends Player> players, final @NotNull String json, final @Nullable IMetadata optionalMetadata)
 	{
 		activeSender.send(players, json, optionalMetadata);
 	}
 
 	@Override
-	public void broadcast(@NotNull String json)
+	public void broadcast(final @NotNull String json)
 	{
 		activeSender.broadcast(json);
 	}
 
 	@Override
-	public void broadcast(@NotNull String json, @Nullable IMetadata optionalMetadata)
+	public void broadcast(final @NotNull String json, final @Nullable IMetadata optionalMetadata)
 	{
 		activeSender.broadcast(json, optionalMetadata);
 	}

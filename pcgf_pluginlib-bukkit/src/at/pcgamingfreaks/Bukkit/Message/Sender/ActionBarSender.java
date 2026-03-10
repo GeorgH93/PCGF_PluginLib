@@ -30,16 +30,16 @@ final class ActionBarSender implements ISender
 	private static final ITitleMessagePacketFactory TITLE_MESSAGE_PACKET_FACTORY = ITitleMessagePacketFactory.INSTANCE;
 
 	@Override
-	public void send(@NotNull Player player, @NotNull String json)
+	public void send(final @NotNull Player player, final @NotNull String json)
 	{
 		Utils.sendPacket(player, TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketActionBar(json));
 	}
 
 	@Override
-	public void send(@NotNull Collection<? extends Player> players, @NotNull String json)
+	public void send(final @NotNull Collection<? extends Player> players, final @NotNull String json)
 	{
-		Object titlePacket = TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketActionBar(json);
-		for(Player player : players)
+		final Object titlePacket = TITLE_MESSAGE_PACKET_FACTORY.makeTitlePacketActionBar(json);
+		for(final Player player : players)
 		{
 			Utils.sendPacket(player, titlePacket);
 		}

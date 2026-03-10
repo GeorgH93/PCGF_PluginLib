@@ -32,7 +32,7 @@ public class ItemStackWrapper
 	@Getter private final @NotNull ItemStack itemStack;
 	private final @NotNull Logger logger;
 	private final @NotNull ItemNameResolver itemNameResolver;
-	private String cachedName = null, cachedDisplayName = null, cachedMetadata = null;
+	private String cachedName, cachedDisplayName, cachedMetadata;
 
 	public ItemStackWrapper(final @NotNull ItemStack itemStack, final @NotNull Logger logger, final @NotNull ItemNameResolver resolver)
 	{

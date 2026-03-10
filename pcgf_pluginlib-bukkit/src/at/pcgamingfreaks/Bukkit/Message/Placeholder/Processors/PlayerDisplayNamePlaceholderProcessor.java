@@ -35,39 +35,40 @@ public class PlayerDisplayNamePlaceholderProcessor implements IFormattedPlacehol
 	public static final PlayerDisplayNamePlaceholderProcessor INSTANCE = new PlayerDisplayNamePlaceholderProcessor();
 
 	@Override
-	public @NotNull String process(@Nullable Object parameter)
+	public @NotNull String process(final @Nullable Object parameter)
 	{
 		if (parameter instanceof Player) return ((Player) parameter).getDisplayName();
 		else if (parameter instanceof OfflinePlayer)
 		{
-			String name = ((OfflinePlayer) parameter).getName();
+			final String name = ((OfflinePlayer) parameter).getName();
 			return MessageColor.GRAY + (name == null ? "null" : name);
 		}
 		else if (parameter instanceof CommandSender)
 		{
-			String name = ((CommandSender) parameter).getName();
+			final String name = ((CommandSender) parameter).getName();
 			return MessageColor.GRAY + (name == null ? "null" : name);
 		}
 		return "Unknown";
 	}
 
 	@Override
-	public @NotNull MessageComponent processFormatted(@Nullable Object parameter)
+	public @NotNull MessageComponent processFormatted(final @Nullable Object parameter)
 	{
 		if (parameter instanceof Player)
 		{
-			MessageBuilder builder = new MessageBuilder((MessageComponent) null);
+			//noinspection rawtypes
+			final MessageBuilder builder = new MessageBuilder((MessageComponent) null);
 			builder.appendLegacy(((Player) parameter).getDisplayName());
 			return builder.getAsComponent();
 		}
 		else if (parameter instanceof OfflinePlayer)
 		{
-			String name = ((OfflinePlayer) parameter).getName();
+			final String name = ((OfflinePlayer) parameter).getName();
 			return new MessageComponent(name == null ? "null" : name, MessageColor.GRAY);
 		}
 		else if (parameter instanceof CommandSender)
 		{
-			String name = ((CommandSender) parameter).getName();
+			final String name = ((CommandSender) parameter).getName();
 			return new MessageComponent(name == null ? "null" : name, MessageColor.GRAY);
 		}
 		return NULL_COMPONENT;
