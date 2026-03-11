@@ -65,7 +65,7 @@ public abstract class SQLTableValidator
 	 * @throws IllegalArgumentException If the create query is not in the right format
 	 * @throws SQLException If any handling with the database failed
 	 */
-	public void validate(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition) throws IllegalArgumentException, SQLException
+	public void validate(final @NotNull Connection connection, final @NotNull @Language("SQL") String tableDefinition) throws IllegalArgumentException, SQLException
 	{
 		validate(connection, tableDefinition, null);
 	}
@@ -92,7 +92,7 @@ public abstract class SQLTableValidator
 	 * @throws IllegalArgumentException If the create query is not in the right format
 	 * @throws SQLException If any handling with the database failed
 	 */
-	public void validate(@NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition, @Nullable Logger logger) throws IllegalArgumentException, SQLException
+	public void validate(final @NotNull Connection connection, @NotNull @Language("SQL") String tableDefinition, final @Nullable Logger logger) throws IllegalArgumentException, SQLException
 	{
 		//region validate and prepare table definition
 		tableDefinition = tableDefinition.trim();
@@ -106,19 +106,19 @@ public abstract class SQLTableValidator
 		String tableName = definitionTableInfoMatch.group("tableNameEsc");
 		if(tableName == null) tableName = definitionTableInfoMatch.group("tableName");
 		if(tableName == null || tableName.isEmpty()) throw new IllegalArgumentException("Invalid format of create query detected!");
-		String[] definitionTableColumns = definitionTableInfoMatch.group("columns").split(",\n\\s?");
+		final String[] definitionTableColumns = definitionTableInfoMatch.group("columns").split(",\n\\s?");
 		//endregion
 		//region get current definition
-		List<String> currentTableColumns;
-		@Language("SQL") String currentCreateStatement;
+		final List<String> currentTableColumns;
+		@Language("SQL") final String currentCreateStatement;
 		try
 		{
 			currentCreateStatement = getCurrentCreateStatement(connection, tableName);
 			currentTableColumns = getCurrentTableColumns(currentCreateStatement);
 		}
-		catch(SQLException ignored)
+		catch(final SQLException ignored)
 		{
-			try(Statement statement = connection.createStatement())
+			try(final Statement statement = connection.createStatement())
 			{
 				statement.executeUpdate(tableDefinition);
 			}
@@ -147,7 +147,7 @@ public abstract class SQLTableValidator
 				if(columnMatcher.find()) processName(connection, columnMatcher, tableName, definitionTableColumns[i], currentTableColumns);
 			}
 		}
-		catch(SQLException e)
+		catch(final SQLException e)
 		{
 			if(logger != null)
 			{
@@ -160,7 +160,7 @@ public abstract class SQLTableValidator
 
 	protected List<String> getCurrentTableColumns(@NotNull @Language("SQL") String currentCreateStatement) throws SQLException
 	{
-		List<String> currentTableColumns = new LinkedList<>();
+		final List<String> currentTableColumns = new LinkedList<>();
 		if(!CURRENT_TABLE_INFO.matcher(currentCreateStatement).matches()) currentCreateStatement = reformatTableDefinition(currentCreateStatement);
 		if(currentCreateStatement == null || currentCreateStatement.isEmpty()) throw new SQLException();
 		Collections.addAll(currentTableColumns, currentCreateStatement.split("(,|^\\()?\n\\s*"));
@@ -169,14 +169,18 @@ public abstract class SQLTableValidator
 		return currentTableColumns;
 	}
 
-	protected void processConstraint(@NotNull Connection connection, @NotNull Matcher columnMatcher, @NotNull String tableName, @NotNull String definitionColumn, @NotNull List<String> currentTableColumns) throws SQLException
+	protected void processConstraint(final @NotNull Connection connection, final @NotNull Matcher columnMatcher, final @NotNull String tableName, final @NotNull String definitionColumn, final @NotNull List<String> currentTableColumns) throws SQLException
 	{
 		String columnName = (columnMatcher.group(3) == null ? (columnMatcher.group(2) == null ? "" : columnMatcher.group(2)) : columnMatcher.group(3));
 		boolean keyExists = false, update = false;
 		String tempValue;
-		String[] createKeyArray, tempArray, currentReferenceColumns, currentTargetColumns;
-		Iterator<String> currentTableColumnsIterator;
-		Matcher currentMatcher, tempKeyMatcher;
+		final String[] createKeyArray;
+		String[] tempArray;
+		String[] currentReferenceColumns;
+		String[] currentTargetColumns;
+		final Iterator<String> currentTableColumnsIterator;
+		Matcher currentMatcher;
+		final Matcher tempKeyMatcher;
 		switch(columnMatcher.group(4).toUpperCase(Locale.ROOT))
 		{
 			case "PRIMARY KEY":
@@ -220,7 +224,7 @@ public abstract class SQLTableValidator
 				tempKeyMatcher = UNIQUE_INDEX_PATTERN.matcher(columnMatcher.group(5));
 				if(tempKeyMatcher.find())
 				{
-					if(columnName.length() == 0)
+					if(columnName.isEmpty())
 					{
 						columnName = tempKeyMatcher.group(2) == null ? tempKeyMatcher.group(1) : tempKeyMatcher.group(2);
 					}
@@ -268,7 +272,7 @@ public abstract class SQLTableValidator
 								currentMatcher = UNIQUE_INDEX_PATTERN.matcher(currentMatcher.group(5));
 								if(currentMatcher.find())
 								{
-									if(tempValue.length() == 0)
+									if(tempValue.isEmpty())
 									{
 										tempValue = currentMatcher.group(2) == null ? currentMatcher.group(1) : currentMatcher.group(2);
 									}
@@ -313,7 +317,7 @@ public abstract class SQLTableValidator
 			case "FOREIGN KEY":
 				tempKeyMatcher = FOREIGN_KEY_PATTERN.matcher(columnMatcher.group(5));
 				if(!tempKeyMatcher.find()) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
-				if(columnName.length() == 0)
+				if(columnName.isEmpty())
 				{
 					columnName = tempKeyMatcher.group(2) == null ? tempKeyMatcher.group(1) : tempKeyMatcher.group(2);
 				}
@@ -391,7 +395,7 @@ public abstract class SQLTableValidator
 							currentMatcher = FOREIGN_KEY_PATTERN.matcher(currentMatcher.group(5));
 							if(currentMatcher.find())
 							{
-								if(tempValue.length() == 0)
+								if(tempValue.isEmpty())
 								{
 									tempValue = currentMatcher.group(2) == null ? currentMatcher.group(1) : currentMatcher.group(2);
 								}
@@ -447,24 +451,24 @@ public abstract class SQLTableValidator
 		}
 	}
 
-	protected void processKey(@NotNull Connection connection, @NotNull Matcher columnMatcher, @NotNull String tableName, @NotNull String definitionColumn, @NotNull List<String> currentTableColumns) throws SQLException
+	protected void processKey(final @NotNull Connection connection, final @NotNull Matcher columnMatcher, final @NotNull String tableName, final @NotNull String definitionColumn, final @NotNull List<String> currentTableColumns) throws SQLException
 	{
-		String columnName = columnMatcher.group(3) == null ? columnMatcher.group(2) : columnMatcher.group(3);
+		final String columnName = columnMatcher.group(3) == null ? columnMatcher.group(2) : columnMatcher.group(3);
 		boolean keyExists = false, update = false;
-		String[] createKeyArray = columnMatcher.group(5).replaceAll("[`\\s]", "").split(",");
-		if(columnName.length() > 0)
+		final String[] createKeyArray = columnMatcher.group(5).replaceAll("[`\\s]", "").split(",");
+		if(!columnName.isEmpty())
 		{
-			Iterator<String> currentTableColumnsIterator = currentTableColumns.iterator();
+			final Iterator<String> currentTableColumnsIterator = currentTableColumns.iterator();
 			while(currentTableColumnsIterator.hasNext())
 			{
-				Matcher tempKeyMatcher = COLUMN_KEY_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
+				final Matcher tempKeyMatcher = COLUMN_KEY_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
 				if(tempKeyMatcher.find())
 				{
 					if((tempKeyMatcher.group(3) == null ? tempKeyMatcher.group(2) : tempKeyMatcher.group(3)).equalsIgnoreCase(columnName))
 					{
 						currentTableColumnsIterator.remove();
 						keyExists = true;
-						String[] tempArray = tempKeyMatcher.group(5).replace("`", "").split(",\\s*");
+						final String[] tempArray = tempKeyMatcher.group(5).replace("`", "").split(",\\s*");
 						if(tempArray.length != createKeyArray.length)
 						{
 							update = true;
@@ -490,12 +494,12 @@ public abstract class SQLTableValidator
 		}
 		else
 		{
-			for(String currentTableColumn : currentTableColumns)
+			for(final String currentTableColumn : currentTableColumns)
 			{
-				Matcher tempKeyMatcher = COLUMN_KEY_CHECKER_PATTERN.matcher(currentTableColumn);
+				final Matcher tempKeyMatcher = COLUMN_KEY_CHECKER_PATTERN.matcher(currentTableColumn);
 				if(tempKeyMatcher.find())
 				{
-					String[] tempArray = tempKeyMatcher.group(5).replaceAll("[`\\s]", "").split(",");
+					final String[] tempArray = tempKeyMatcher.group(5).replaceAll("[`\\s]", "").split(",");
 					if(tempArray.length != createKeyArray.length) continue;
 					for(int i = 0; i < createKeyArray.length; i++)
 					{
@@ -514,11 +518,11 @@ public abstract class SQLTableValidator
 		}
 	}
 
-	protected void processName(@NotNull Connection connection, @NotNull Matcher columnMatcher, @NotNull String tableName, @NotNull String definitionColumn, @NotNull List<String> currentTableColumns) throws SQLException
+	protected void processName(final @NotNull Connection connection, final @NotNull Matcher columnMatcher, final @NotNull String tableName, final @NotNull String definitionColumn, final @NotNull List<String> currentTableColumns) throws SQLException
 	{
-		String columnName = columnMatcher.group(2) == null ? columnMatcher.group(1) : columnMatcher.group(2);
+		final String columnName = columnMatcher.group(2) == null ? columnMatcher.group(1) : columnMatcher.group(2);
 		boolean keyExists = false, update = true;
-		Iterator<String> currentTableColumnsIterator = currentTableColumns.iterator();
+		final Iterator<String> currentTableColumnsIterator = currentTableColumns.iterator();
 		while(currentTableColumnsIterator.hasNext())
 		{
 			String tempValue = currentTableColumnsIterator.next();
@@ -531,15 +535,15 @@ public abstract class SQLTableValidator
 				keyExists = true;
 				if(!columnMatcher.group(3).equalsIgnoreCase(tempKeyMatcher.group(3)))
 				{
-					Matcher currentMatcher = COLUMN_TYPE_EXTRACTOR_PATTERN.matcher(tempKeyMatcher.group(3));
+					final Matcher currentMatcher = COLUMN_TYPE_EXTRACTOR_PATTERN.matcher(tempKeyMatcher.group(3));
 					tempKeyMatcher = COLUMN_TYPE_EXTRACTOR_PATTERN.matcher(columnMatcher.group(3));
 					if(currentMatcher.find() && tempKeyMatcher.find() && currentMatcher.group(1).equalsIgnoreCase(tempKeyMatcher.group(1)))
 					{
-						List<String> currentFlags = new LinkedList<>(Arrays.asList(currentMatcher.group(4).split("\\s+")));
-						for(String flag : tempKeyMatcher.group(4).split("\\s+"))
+						final List<String> currentFlags = new LinkedList<>(Arrays.asList(currentMatcher.group(4).split("\\s+")));
+						for(final String flag : tempKeyMatcher.group(4).split("\\s+"))
 						{
 							update = true;
-							Iterator<String> currentFlagsIterator = currentFlags.iterator();
+							final Iterator<String> currentFlagsIterator = currentFlags.iterator();
 							while(currentFlagsIterator.hasNext())
 							{
 								tempValue = currentFlagsIterator.next();
@@ -599,12 +603,12 @@ public abstract class SQLTableValidator
 		query = query.replace("\r", "").replace("\n", " ");
 		Matcher tempMatcher = QUERY_END.matcher(query);
 		if(!tempMatcher.find()) return null;
-		String temp = tempMatcher.group("engine");
+		final String temp = tempMatcher.group("engine");
 		query = tempMatcher.replaceAll("");
-		String queryEnd = ")" + ((temp != null) ? temp : "") + ";";
+		final String queryEnd = ")" + ((temp != null) ? temp : "") + ";";
 		tempMatcher = QUERY_BEGIN.matcher(query);
 		if(!tempMatcher.find()) return null;
-		String queryBegin = tempMatcher.group();
+		final String queryBegin = tempMatcher.group();
 		query = tempMatcher.replaceAll("").trim();
 		return queryBegin + "\n" + query.replaceAll(",(?=([^\"'`]*[\"'`][^\"'`]*[\"'`])*[^\"'`]*$)", ",\n").replaceAll("(,\\n)(?=[^(]*?\\))", ",") + "\n" + queryEnd;
 	}
