@@ -35,7 +35,7 @@
 			<!-- Configures used Java version -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.15.0</version>
 				<configuration>
 					<source>21</source>
 					<target>21</target>
