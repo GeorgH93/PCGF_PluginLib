@@ -34,7 +34,6 @@ public class UuidConverter
 	private static final Pattern UUID_FORMAT_PATTERN = Pattern.compile("([0-9a-fA-F]{8})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{4})-?([0-9a-fA-F]{12})");
 	private final @NotNull UuidCache cache;
 	private final @NotNull MojangUuidResolver mojangUuidResolver;
-	private final @NotNull Logger logger;
 
 	//region Constructors
 	public UuidConverter()
@@ -47,7 +46,7 @@ public class UuidConverter
 		this(null, logger);
 	}
 
-	public UuidConverter(@Nullable UuidCache uuidCache)
+	public UuidConverter(final @Nullable UuidCache uuidCache)
 	{
 		this(uuidCache, null);
 	}
@@ -58,8 +57,7 @@ public class UuidConverter
 		if(logger == null) logger = Logger.getLogger("UUID Converter");
 
 		this.cache = uuidCache;
-		this.mojangUuidResolver = new MojangUuidResolver(uuidCache);
-		this.logger = logger;
+		this.mojangUuidResolver = new MojangUuidResolver(uuidCache, logger);
 	}
 	//endregion
 
@@ -81,8 +79,8 @@ public class UuidConverter
 
 	public static @NotNull Map<String, UUID> getOfflineModeUUIDs(final @NotNull Collection<String> names)
 	{
-		Map<String, UUID> resolved = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-		for(String name : names)
+		final Map<String, UUID> resolved = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+		for(final String name : names)
 		{
 			resolved.put(name, getOfflineModeUUID(name));
 		}
@@ -91,16 +89,16 @@ public class UuidConverter
 	//endregion
 
 	@Contract("_,true->!null")
-	public @Nullable UUID getUUIDCacheOnly(final @NotNull String name, boolean offlineModeFallback)
+	public @Nullable UUID getUUIDCacheOnly(final @NotNull String name, final boolean offlineModeFallback)
 	{
 		if(offlineModeFallback && !cache.contains(name)) return getOfflineModeUUID(name);
 		return cache.getUuidFromName(name);
 	}
 
 	@Contract("_,true->!null")
-	public @Nullable UUID getUUID(final @NotNull String name, boolean offlineModeFallback)
+	public @Nullable UUID getUUID(final @NotNull String name, final boolean offlineModeFallback)
 	{
-		UUID uuid = mojangUuidResolver.getUUID(name, null);
+		final UUID uuid = mojangUuidResolver.getUUID(name, null);
 		if(uuid != null || !offlineModeFallback) return uuid;
 		return getOfflineModeUUID(name);
 	}
@@ -110,12 +108,12 @@ public class UuidConverter
 		return mojangUuidResolver.getName(uuid);
 	}
 
-	public @NotNull Map<String, UUID> getUUIDs(final @NotNull Collection<String> names, boolean offlineModeFallback)
+	public @NotNull Map<String, UUID> getUUIDs(final @NotNull Collection<String> names, final boolean offlineModeFallback)
 	{
-		Map<String, UUID> resolved = mojangUuidResolver.getUUIDs(names);
+		final Map<String, UUID> resolved = mojangUuidResolver.getUUIDs(names);
 		if (offlineModeFallback && resolved.size() < names.size())
 		{
-			for(String name : names)
+			for(final String name : names)
 			{
 				resolved.computeIfAbsent(name, UuidConverter::getOfflineModeUUID);
 			}
@@ -123,7 +121,7 @@ public class UuidConverter
 		return resolved;
 	}
 
-	public @NotNull Map<String, UUID> getUUIDs(final @NotNull Collection<String> names, boolean offlineModeFallback, boolean onlineUUIDs)
+	public @NotNull Map<String, UUID> getUUIDs(final @NotNull Collection<String> names, final boolean offlineModeFallback, final boolean onlineUUIDs)
 	{
 		if (onlineUUIDs)
 		{

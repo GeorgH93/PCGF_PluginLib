@@ -55,15 +55,14 @@ public class UuidCache
 		{
 			System.out.println("Loading local uuid cache.");
 			int loaded = 0;
-			//noinspection SpellCheckingInspection
-			File uuidCache = new File("usercache.json");
+			final File uuidCache = new File("usercache.json");
 			if(uuidCache.exists())
 			{
-				try(JsonReader reader = new JsonReader(new FileReader(uuidCache)))
+				try(final JsonReader reader = new JsonReader(new FileReader(uuidCache)))
 				{
-					ServerUserCacheData[] dat = new Gson().fromJson(reader, ServerUserCacheData[].class);
-					Date now = new Date();
-					for(ServerUserCacheData d : dat)
+					final ServerUserCacheData[] dat = new Gson().fromJson(reader, ServerUserCacheData[].class);
+					final Date now = new Date();
+					for(final ServerUserCacheData d : dat)
 					{
 						if(now.before(d.getExpiresDate()))
 						{
@@ -72,8 +71,9 @@ public class UuidCache
 						}
 					}
 				}
-				catch(Exception e)
+				catch(final Exception e)
 				{
+					//noinspection CallToPrintStackTrace
 					e.printStackTrace();
 				}
 			}
