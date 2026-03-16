@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<mockito.version>4.11.0</mockito.version>
-		<mavenShade.version>3.5.3</mavenShade.version>
+		<mavenShade.version>3.6.2</mavenShade.version>
 		<lombok.version>1.18.42</lombok.version>
 		<pluginName>PCGF_PluginLib</pluginName>
 		<author>GeorgH93</author>
