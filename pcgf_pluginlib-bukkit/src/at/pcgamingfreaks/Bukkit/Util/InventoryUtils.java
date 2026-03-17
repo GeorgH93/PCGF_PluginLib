@@ -32,16 +32,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Logger;
 
-public class InventoryUtils
+public final class InventoryUtils
 {
 	private static final IInventoryUtils INSTANCE = PlatformResolver.createPlatformInstance(IInventoryUtils.class);
 
 	/**
-	 * Converts an item stack into a json string used for chat messages.
+	 * Converts an item stack into a JSON string used for chat messages.
 	 *
 	 * @param itemStack The item stack that should be converted into a json string
 	 * @param logger The logger that should display the error message in case of an problem
-	 * @return The item stack as a json string. empty string if the conversation failed
+	 * @return The item stack as a JSON string. empty string if the conversation failed
 	 */
 	public static String convertItemStackToJson(final @NotNull ItemStack itemStack, final @NotNull Logger logger)
 	{
@@ -67,9 +67,9 @@ public class InventoryUtils
 	 * @param location The location the inventory should be dropped to
 	 * @param clearInventory Defines if the inventory should be cleared after dropping it or not
 	 */
-	public static void dropInventory(final @NotNull Inventory inventory, final @NotNull Location location, boolean clearInventory)
+	public static void dropInventory(final @NotNull Inventory inventory, final @NotNull Location location, final boolean clearInventory)
 	{
-		for(ItemStack i : inventory.getContents())
+		for(final ItemStack i : inventory.getContents())
 		{
 			if(i != null)
 			{
@@ -101,7 +101,7 @@ public class InventoryUtils
 	{
 		if(MCVersion.isDualWieldingMC())
 		{
-			ItemStack item = player.getInventory().getItemInMainHand();
+			final ItemStack item = player.getInventory().getItemInMainHand();
 			if(item != null && item.getType() != Material.AIR) return item;
 			return player.getInventory().getItemInOffHand();
 		}
@@ -132,10 +132,10 @@ public class InventoryUtils
 	}
 
 	/**
-	 * Get the item in the players off hand.
+	 * Get the item in the players offhand.
 	 *
 	 * @param player The player for whom the item should be obtained.
-	 * @return The item in the players off hand.
+	 * @return The item in the players offhand.
 	 */
 	public static @Nullable ItemStack getItemInOffHand(final @NotNull Player player)
 	{
