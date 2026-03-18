@@ -72,7 +72,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 		{
 			return SAVE_NMS_ITEM_STACK_METHOD.invoke(AS_NMS_COPY_METHOD.invoke(null, itemStack), NBT_TAG_COMPOUND_CONSTRUCTOR.newInstance()).toString();
 		}
-		catch (Throwable t)
+		catch (final Throwable t)
 		{
 			logger.log(Level.SEVERE, SERIALISATION_FAILED_LOG_MESSAGE, t);
 		}
@@ -93,7 +93,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 				METHOD_COMPONENT_LITERAL.invoke(null, title);
 			}
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -111,23 +111,23 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	public void updateInventoryTitlePrepared(final @NotNull Player player, final @NotNull Object title)
 	{
 		if(MCVersion.isOlderThan(MCVersion.MC_1_14)) return;
-		InventoryView view = player.getOpenInventory();
-		Inventory topInv = view.getTopInventory();
+		final InventoryView view = player.getOpenInventory();
+		final Inventory topInv = view.getTopInventory();
 		if(topInv.getType() == InventoryType.CRAFTING) return;
 		try
 		{
-			Object entityPlayer = NmsReflector.getHandle(player);
+			final Object entityPlayer = NmsReflector.getHandle(player);
 			if(entityPlayer == null || entityPlayer.getClass() != ENTITY_PLAYER) return; // Not a real player
-			Object activeContainer = FIELD_ACTIVE_CONTAINER.get(entityPlayer);
-			Object windowId = FIELD_CONTAINER_WINDOW_ID.get(activeContainer);
-			Object packet = CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW.newInstance(windowId, InventoryTypeMapper_Reflection.getInvContainersObject(topInv), title);
+			final Object activeContainer = FIELD_ACTIVE_CONTAINER.get(entityPlayer);
+			final Object windowId = FIELD_CONTAINER_WINDOW_ID.get(activeContainer);
+			final Object packet = CONSTRUCTOR_PACKET_PLAY_OUT_OPEN_WINDOW.newInstance(windowId, InventoryTypeMapper_Reflection.getInvContainersObject(topInv), title);
 			SEND_PACKET.invoke(PLAYER_CONNECTION.get(entityPlayer), packet);
 			if(METHOD_ENTITY_PLAYER_UPDATE_INVENTORY != null)
 				METHOD_ENTITY_PLAYER_UPDATE_INVENTORY.invoke(entityPlayer, activeContainer);
 			else if(METHOD_CONTAINER_UPDATE_INVENTORY != null)
 				METHOD_CONTAINER_UPDATE_INVENTORY.invoke(activeContainer);
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -175,7 +175,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 		{
 			return FIELD_TITLE.get(METHOD_GET_INVENTORY.invoke(inventory));
 		}
-		catch(IllegalAccessException | InvocationTargetException e)
+		catch(final IllegalAccessException | InvocationTargetException e)
 		{
 			e.printStackTrace();
 		}
@@ -191,7 +191,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	}
 
 	@Override
-	public Object prepareTitleForSetInventoryTitle(@NotNull String title)
+	public Object prepareTitleForSetInventoryTitle(@NotNull final String title)
 	{
 		if(MCVersion.isAny(MCVersion.MC_1_13))
 		{
@@ -200,7 +200,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 				//noinspection ConstantConditions
 				return METHOD_CRAFT_CHAT_MESSAGE_FROM_STRING.invoke(null, title);
 			}
-			catch(Exception e)
+			catch(final Exception e)
 			{
 				e.printStackTrace();
 			}
@@ -219,7 +219,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 		{
 			FIELD_TITLE.set(METHOD_GET_INVENTORY.invoke(inventory), newTitle);
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -231,8 +231,8 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	{
 		if (event.getRawSlot() < 0) return null;
 
-		InventoryView view = event.getView();
-		Inventory topInventory = view.getTopInventory();
+		final InventoryView view = event.getView();
+		final Inventory topInventory = view.getTopInventory();
 		if (event.getRawSlot() < topInventory.getSize())
 			return topInventory;
 		else
@@ -242,7 +242,7 @@ public class InventoryUtils_Reflection implements IInventoryUtils
 	@Override
 	public @Nullable Inventory getPlayerTopInventory(final @NotNull Player player)
 	{
-		InventoryView view = player.getOpenInventory();
+		final InventoryView view = player.getOpenInventory();
 		if(view == null) return null;
 		return view.getTopInventory();
 	}

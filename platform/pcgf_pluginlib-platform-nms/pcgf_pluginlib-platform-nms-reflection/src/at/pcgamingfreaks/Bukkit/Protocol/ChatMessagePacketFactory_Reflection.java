@@ -49,7 +49,7 @@ public class ChatMessagePacketFactory_Reflection implements IChatMessagePacketFa
 		}
 		else
 		{
-			Class<?> chatMessageType = NmsReflector.INSTANCE.getNmsClass("ChatMessageType");
+			final Class<?> chatMessageType = NmsReflector.INSTANCE.getNmsClass("ChatMessageType");
 			BYTE_TO_MESSAGE_TYPE_ENUM = NmsReflector.INSTANCE.getNmsMethod(chatMessageType, "a", Byte.TYPE);
 			if(MCVersion.isOlderThan(MCVersion.MC_1_16))
 				PACKET_PLAY_OUT_CHAT_CONSTRUCTOR = Reflection.getConstructor(PACKET_PLAY_OUT_CHAT, I_CHAT_BASE_COMPONENT, chatMessageType);
@@ -62,7 +62,7 @@ public class ChatMessagePacketFactory_Reflection implements IChatMessagePacketFa
 				BYTE_TO_MESSAGE_MAP[SYSTEM_TYPE] = BYTE_TO_MESSAGE_TYPE_ENUM.invoke(null, SYSTEM_TYPE);
 				BYTE_TO_MESSAGE_MAP[ACTION_BAR_TYPE] = BYTE_TO_MESSAGE_TYPE_ENUM.invoke(null, ACTION_BAR_TYPE);
 			}
-			catch(IllegalAccessException | InvocationTargetException e)
+			catch(final IllegalAccessException | InvocationTargetException e)
 			{
 				e.printStackTrace();
 			}
@@ -70,34 +70,34 @@ public class ChatMessagePacketFactory_Reflection implements IChatMessagePacketFa
 	}
 
 	@Override
-	public Object makeChatPacket(@NotNull String json, @NotNull UUID sender)
+	public Object makeChatPacket(@NotNull final String json, @NotNull final UUID sender)
 	{
 		return mkPacket(json, sender, CHAT_TYPE);
 	}
 
 	@Override
-	public Object makeChatPacketSystem(@NotNull String json)
+	public Object makeChatPacketSystem(@NotNull final String json)
 	{
 		return mkPacket(json, EMPTY_UUID, SYSTEM_TYPE);
 	}
 
 	@Override
-	public Object makeChatPacketActionBar(@NotNull String json)
+	public Object makeChatPacketActionBar(@NotNull final String json)
 	{
 		return mkPacket(json, EMPTY_UUID, ACTION_BAR_TYPE);
 	}
 
-	private static Object mkPacket(@NotNull String json, @NotNull UUID sender, byte type)
+	private static Object mkPacket(@NotNull final String json, @NotNull final UUID sender, final byte type)
 	{
 		try
 		{
-			Object chatComponent = IUtils.INSTANCE.jsonToIChatComponent(json);
+			final Object chatComponent = IUtils.INSTANCE.jsonToIChatComponent(json);
 			if(MCVersion.isOlderThan(MCVersion.MC_1_16))
 				return PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(chatComponent, (MCVersion.isOlderThan(MCVersion.MC_1_12)) ? type : BYTE_TO_MESSAGE_MAP[type]);
 			else
 				return PACKET_PLAY_OUT_CHAT_CONSTRUCTOR.newInstance(chatComponent, BYTE_TO_MESSAGE_MAP[type], sender);
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
 			e.printStackTrace();
 		}

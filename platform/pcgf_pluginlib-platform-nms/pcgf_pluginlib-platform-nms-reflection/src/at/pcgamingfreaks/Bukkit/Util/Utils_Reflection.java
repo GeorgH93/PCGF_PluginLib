@@ -56,14 +56,14 @@ public class Utils_Reflection implements IUtils
 	{
 		if(PLAYER_PING != null)
 		{
-			Object handle = getHandle(player);
+			final Object handle = getHandle(player);
 			if(handle != null && handle.getClass() == ENTITY_PLAYER) // If it's not a real player we can't send him the packet
 			{
 				try
 				{
 					return PLAYER_PING.getInt(handle);
 				}
-				catch(IllegalAccessException e)
+				catch(final IllegalAccessException e)
 				{
 					e.printStackTrace();
 				}
@@ -75,15 +75,15 @@ public class Utils_Reflection implements IUtils
 			{
 				return (int) GET_PLAYER_PING.invoke(player);
 			}
-			catch(IllegalAccessException | InvocationTargetException ignored) {}
+			catch(final IllegalAccessException | InvocationTargetException ignored) {}
 		}
 		return -1;
 	}
 
 	@Override
-	public void sendPacket(@NotNull Player player, @NotNull Object packet)
+	public void sendPacket(@NotNull final Player player, @NotNull final Object packet)
 	{
-		Object handle = getHandle(player);
+		final Object handle = getHandle(player);
 		if(handle != null && (ENTITY_PLAYER == null || handle.getClass() == ENTITY_PLAYER)) // If it's not a real player we can't send him the packet
 		{
 			try
@@ -94,19 +94,15 @@ public class Utils_Reflection implements IUtils
 				}
 				else
 				{
-					Object conn = handle.getClass().getField("connection").get(handle);
+					final Object conn = handle.getClass().getField("connection").get(handle);
 					conn.getClass().getMethod("sendPacket", PACKET).invoke(conn, packet);
 				}
 			}
-			catch(IllegalAccessException | InvocationTargetException e)
+			catch(final IllegalAccessException | InvocationTargetException e)
 			{
 				e.printStackTrace();
 			}
-			catch(NoSuchFieldException e)
-			{
-				throw new RuntimeException(e);
-			}
-			catch(NoSuchMethodException e)
+			catch(final NoSuchFieldException | NoSuchMethodException e)
 			{
 				throw new RuntimeException(e);
 			}
@@ -120,7 +116,7 @@ public class Utils_Reflection implements IUtils
 		{
 			return CHAT_SERIALIZER_METHOD_A.invoke(null, json);
 		}
-		catch(IllegalAccessException | InvocationTargetException | NullPointerException e)
+		catch(final IllegalAccessException | InvocationTargetException | NullPointerException e)
 		{
 			e.printStackTrace();
 		}

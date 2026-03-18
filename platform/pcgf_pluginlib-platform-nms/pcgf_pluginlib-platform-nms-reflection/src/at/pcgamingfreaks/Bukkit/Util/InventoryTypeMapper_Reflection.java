@@ -39,21 +39,21 @@ final class InventoryTypeMapper_Reflection
 	{
 		if(CLASS_CONTAINERS != null)
 		{
-			Collection<Field> fields = Reflection.getFieldsIncludeParents(CLASS_CONTAINERS);
-			Map<String, Field> fieldMap = new HashMap<>();
-			for(Field f : fields)
+			final Collection<Field> fields = Reflection.getFieldsIncludeParents(CLASS_CONTAINERS);
+			final Map<String, Field> fieldMap = new HashMap<>();
+			for(final Field f : fields)
 			{
 				//System.out.println(f.getName());
 				fieldMap.put(f.getName(), f);
 				fieldMap.put(f.getName().toUpperCase(Locale.ENGLISH), f);
 			}
-			Function<String, Field> resolveField = type -> {
+			final Function<String, Field> resolveField = type -> {
 				Field field = fieldMap.get(type); // Fast pass when no remapping is needed
 				if(field != null) return field;
 				field = NmsReflector.INSTANCE.getNmsField(CLASS_CONTAINERS, type);  // Fallback when remapping is needed
 				return field;
 			};
-			for(InventoryType inventoryType : InventoryType.values())
+			for(final InventoryType inventoryType : InventoryType.values())
 			{
 				String type = inventoryType.name();
 				if(inventoryType == InventoryType.CHEST || inventoryType == InventoryType.PLAYER || inventoryType == InventoryType.CREATIVE) continue;
@@ -67,12 +67,12 @@ final class InventoryTypeMapper_Reflection
 				else if(type.equals("COMPOSTER") || type.equals("CHISELED_BOOKSHELF") || type.equals("SMITHING_NEW") || type.equals("JUKEBOX") || type.equals("DECORATED_POT") || type.equals("SHELF")) continue; // They don't have inventory screens
 				try
 				{
-					Field field = resolveField.apply(type);
+					final Field field = resolveField.apply(type);
 					if(field == null) continue;
 					INVENTORY_TYPE_MAP.put(inventoryType, field.get(null));
 				}
-				catch(IllegalAccessException ignored) {}
-				catch(Throwable t) { t.printStackTrace(); }
+				catch(final IllegalAccessException ignored) {}
+				catch(final Throwable t) { t.printStackTrace(); }
 			}
 			for(int i = 0; i < 6; i++)
 			{
@@ -80,7 +80,7 @@ final class InventoryTypeMapper_Reflection
 				{
 					INVENTORY_TYPE_CHEST[i] = resolveField.apply("GENERIC_9X" + (i + 1)).get(null);
 				}
-				catch(IllegalAccessException | NullPointerException ignored) {}
+				catch(final IllegalAccessException | NullPointerException ignored) {}
 			}
 		}
 	}

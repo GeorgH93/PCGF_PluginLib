@@ -34,7 +34,7 @@ public final class ParticleSpawner_Reflection extends ParticleSpawnerBukkitNMSBa
 
 	static
 	{
-		for(Particle particle : Particle.values())
+		for(final Particle particle : Particle.values())
 		{
 			if(MCVersion.isNewerOrEqualThan(particle.getMinVersion()))
 				PARTICLE_MAP.put(particle, NmsReflector.INSTANCE.getNmsEnum("EnumParticle", particle.getName()));
@@ -44,13 +44,13 @@ public final class ParticleSpawner_Reflection extends ParticleSpawnerBukkitNMSBa
 	private static final Constructor<?> PACKET_CONSTRUCTOR = Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutWorldParticles"), NmsReflector.INSTANCE.getNmsClass("EnumParticle"), boolean.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class, int[].class);
 
 	@Override
-	public void spawnParticle(Location location, Particle particle, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
+	public void spawnParticle(final Location location, final Particle particle, final double visibleRange, final int count, final float offsetX, final float offsetY, final float offsetZ, final float speed)
 	{
 		spawnParticle(location, particle, visibleRange, count, offsetX, offsetY, offsetZ, speed, new int[0]);
 	}
 
 	@Override
-	protected void spawnParticle(Location location, Particle particle, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data)
+	protected void spawnParticle(final Location location, final Particle particle, final double visibleRange, final int count, final float offsetX, final float offsetY, final float offsetZ, final float speed, final int[] data)
 	{
 		Validate.isTrue(MCVersion.isNewerOrEqualThan(particle.getMinVersion()), "The %s particle is not available in your minecraft version!", particle.getName());
 		try
@@ -58,7 +58,7 @@ public final class ParticleSpawner_Reflection extends ParticleSpawnerBukkitNMSBa
 			//noinspection ConstantConditions
 			spawnParticle(location, visibleRange, PACKET_CONSTRUCTOR.newInstance(PARTICLE_MAP.get(particle), false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count, data));
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
 			System.out.println("Unable to spawn particle " + particle.getOldName() + ". (Version 1.8 - 1.12)");
 			e.printStackTrace();

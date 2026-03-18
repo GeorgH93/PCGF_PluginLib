@@ -46,17 +46,17 @@ public class TitleMessagePacketFactory_Reflection implements ITitleMessagePacket
 	//endregion
 
 	@Override
-	public Object makeTitlePacket(@NotNull String json)
+	public Object makeTitlePacket(@NotNull final String json)
 	{
 		try
 		{
-			Object component = IUtils.INSTANCE.jsonToIChatComponent(json);
+			final Object component = IUtils.INSTANCE.jsonToIChatComponent(json);
 			if(PACKET_PLAY_OUT_TITLE_CONSTRUCTOR != null)
 				return PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_TITLE, component, -1, -1, -1);
 			else if(PACKET_TITLE_CONSTRUCTOR != null)
 				return PACKET_TITLE_CONSTRUCTOR.newInstance(component);
 		}
-		catch(InstantiationException | IllegalAccessException | InvocationTargetException e)
+		catch(final InstantiationException | IllegalAccessException | InvocationTargetException e)
 		{
 			e.printStackTrace();
 		}
@@ -64,17 +64,17 @@ public class TitleMessagePacketFactory_Reflection implements ITitleMessagePacket
 	}
 
 	@Override
-	public Object makeSubTitlePacket(@NotNull String json)
+	public Object makeSubTitlePacket(@NotNull final String json)
 	{
 		try
 		{
-			Object component = IUtils.INSTANCE.jsonToIChatComponent(json);
+			final Object component = IUtils.INSTANCE.jsonToIChatComponent(json);
 			if(PACKET_PLAY_OUT_TITLE_CONSTRUCTOR != null)
 				return PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_SUBTITLE, component, -1, -1, -1);
 			else if(PACKET_SUB_TITLE_CONSTRUCTOR != null)
 				return PACKET_SUB_TITLE_CONSTRUCTOR.newInstance(component);
 		}
-		catch(InstantiationException | IllegalAccessException | InvocationTargetException e)
+		catch(final InstantiationException | IllegalAccessException | InvocationTargetException e)
 		{
 			e.printStackTrace();
 		}
@@ -82,7 +82,7 @@ public class TitleMessagePacketFactory_Reflection implements ITitleMessagePacket
 	}
 
 	@Override
-	public Object makeTitlePacketTime(int fadeIn, int stay, int fadeOut)
+	public Object makeTitlePacketTime(final int fadeIn, final int stay, final int fadeOut)
 	{
 		try
 		{
@@ -91,7 +91,7 @@ public class TitleMessagePacketFactory_Reflection implements ITitleMessagePacket
 			else if(PACKET_TIMING_CONSTRUCTOR != null)
 				return PACKET_TIMING_CONSTRUCTOR.newInstance(fadeIn, stay, fadeOut);
 		}
-		catch(InstantiationException | IllegalAccessException | InvocationTargetException e)
+		catch(final InstantiationException | IllegalAccessException | InvocationTargetException e)
 		{
 			e.printStackTrace();
 		}
@@ -99,18 +99,18 @@ public class TitleMessagePacketFactory_Reflection implements ITitleMessagePacket
 	}
 
 	@Override
-	public Object makeTitlePacketActionBar(@NotNull String json)
+	public Object makeTitlePacketActionBar(@NotNull final String json)
 	{
 		if(ENUM_ACTION_BAR == null && PACKET_ACTIONBAR_CONSTRUCTOR == null) return IChatMessagePacketFactory.INSTANCE.makeChatPacketActionBar(json);
 		try
 		{
-			Object component = IUtils.INSTANCE.jsonToIChatComponent(json);
+			final Object component = IUtils.INSTANCE.jsonToIChatComponent(json);
 			if(PACKET_PLAY_OUT_TITLE_CONSTRUCTOR != null)
 				return PACKET_PLAY_OUT_TITLE_CONSTRUCTOR.newInstance(ENUM_ACTION_BAR, component, -1, -1, -1);
 			else if(PACKET_ACTIONBAR_CONSTRUCTOR != null)
 				return PACKET_ACTIONBAR_CONSTRUCTOR.newInstance(component);
 		}
-		catch(InstantiationException | IllegalAccessException | InvocationTargetException e)
+		catch(final InstantiationException | IllegalAccessException | InvocationTargetException e)
 		{
 			e.printStackTrace();
 		}

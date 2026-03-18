@@ -31,9 +31,9 @@ public final class ParticleSpawner_Reflection_1_7 extends ParticleSpawnerBukkitN
 	private static final Constructor<?> PACKET_CONSTRUCTOR = Reflection.getConstructor(NmsReflector.INSTANCE.getNmsClass("PacketPlayOutWorldParticles"), String.class, float.class, float.class, float.class, float.class, float.class, float.class, float.class, int.class);
 
 	@Override
-	protected void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed, int[] data) {}
+	protected void spawnParticle(final Location location, final Particle type, final double visibleRange, final int count, final float offsetX, final float offsetY, final float offsetZ, final float speed, final int[] data) {}
 
-	public void spawnParticle(Location location, Particle type, double visibleRange, int count, float offsetX, float offsetY, float offsetZ, float speed)
+	public void spawnParticle(final Location location, final Particle type, final double visibleRange, final int count, final float offsetX, final float offsetY, final float offsetZ, final float speed)
 	{
 		Validate.isTrue(type.getMinVersion().olderOrEqualThan(MCVersion.MC_1_7_10), "The %s particle is not available in your minecraft version!", type.getName());
 		try
@@ -41,7 +41,7 @@ public final class ParticleSpawner_Reflection_1_7 extends ParticleSpawnerBukkitN
 			//noinspection ConstantConditions
 			spawnParticle(location, visibleRange, PACKET_CONSTRUCTOR.newInstance(type.getOldName(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), offsetX, offsetY, offsetZ, speed, count));
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
 			System.out.println("Unable to spawn particle " + type.getOldName() + ". (Version 1.7)");
 			e.printStackTrace();

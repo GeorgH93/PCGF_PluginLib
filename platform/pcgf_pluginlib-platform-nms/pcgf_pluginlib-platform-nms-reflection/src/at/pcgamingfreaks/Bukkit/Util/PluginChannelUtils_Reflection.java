@@ -47,7 +47,7 @@ public class PluginChannelUtils_Reflection implements IPluginChannelUtils
 	private static final Method METHOD_UNPOOLED_WRAPPED_BUFFER = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Reflection.getMethod(CLASS_NETTY_UNPOOLED, "wrappedBuffer", byte[].class) : null;
 
 	@Override
-	public void registerOutgoingChannelUnchecked(@NotNull Plugin plugin, @NotNull String channel)
+	public void registerOutgoingChannelUnchecked(@NotNull final Plugin plugin, @NotNull final String channel)
 	{
 		if(METHOD_ADD_TO_OUTGOING != null)
 		{
@@ -55,7 +55,7 @@ public class PluginChannelUtils_Reflection implements IPluginChannelUtils
 			{
 				METHOD_ADD_TO_OUTGOING.invoke(plugin.getServer().getMessenger(), plugin, channel);
 			}
-			catch(Exception e)
+			catch(final Exception e)
 			{
 				e.printStackTrace();
 			}
@@ -64,7 +64,7 @@ public class PluginChannelUtils_Reflection implements IPluginChannelUtils
 	}
 
 	@Override
-	public void unregisterOutgoingChannelUnchecked(@NotNull Plugin plugin, @NotNull String channel)
+	public void unregisterOutgoingChannelUnchecked(@NotNull final Plugin plugin, @NotNull final String channel)
 	{
 		if(METHOD_REMOVE_FROM_OUTGOING != null)
 		{
@@ -72,7 +72,7 @@ public class PluginChannelUtils_Reflection implements IPluginChannelUtils
 			{
 				METHOD_REMOVE_FROM_OUTGOING.invoke(plugin.getServer().getMessenger(), plugin, channel);
 			}
-			catch(Exception e)
+			catch(final Exception e)
 			{
 				e.printStackTrace();
 			}
@@ -81,17 +81,17 @@ public class PluginChannelUtils_Reflection implements IPluginChannelUtils
 	}
 
 	@Override
-	public void sendPluginMessageUnchecked(@NotNull Plugin plugin, @NotNull Player player, @NotNull String channel, @NotNull byte[] message)
+	public void sendPluginMessageUnchecked(@NotNull final Plugin plugin, @NotNull final Player player, @NotNull final String channel, final byte[] message)
 	{
 		if(CONSTRUCTOR_PACKED_DATA_SERIALIZER != null)
 		{
 			try
 			{
-				Object packedMsg = CONSTRUCTOR_PACKED_DATA_SERIALIZER.newInstance(METHOD_UNPOOLED_WRAPPED_BUFFER.invoke(null, message));
-				Object pack = CONSTRUCTOR_PACKET_PLAY_OUT_CUSTOM_PAYLOAD.newInstance(CONSTRUCTOR_MINECRAFT_KEY.newInstance(channel), packedMsg);
+				final Object packedMsg = CONSTRUCTOR_PACKED_DATA_SERIALIZER.newInstance(METHOD_UNPOOLED_WRAPPED_BUFFER.invoke(null, message));
+				final Object pack = CONSTRUCTOR_PACKET_PLAY_OUT_CUSTOM_PAYLOAD.newInstance(CONSTRUCTOR_MINECRAFT_KEY.newInstance(channel), packedMsg);
 				IUtils.INSTANCE.sendPacket(player, pack);
 			}
-			catch(Exception e)
+			catch(final Exception e)
 			{
 				e.printStackTrace();
 			}
