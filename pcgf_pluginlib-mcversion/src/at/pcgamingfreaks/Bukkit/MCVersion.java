@@ -152,14 +152,18 @@ public enum MCVersion
 	MC_NMS_1_21_R6(156, 773, "1_21", "1.21_NMS_R6", MC_1_21),
 	MC_1_21_11(157, 774, "1_21", "1.21.11"),
 	MC_NMS_1_21_R7(157, 774, "1_21", "1.21_NMS_R7", MC_1_21),
-	MC_1_22(161, Integer.MAX_VALUE, "1_22", "1.22"),
-	MC_NMS_1_22_R1(161, Integer.MAX_VALUE, "1_22", "1.22_NMS_R1", MC_1_22);
+	MC_26_1(260100, Integer.MAX_VALUE, "26_1", "26.1"),
+	MC_NMS_26_1_R1(260100, Integer.MAX_VALUE, "26_1", "26.1_NMS_R1", MC_26_1),
+	MC_26_2(260200, Integer.MAX_VALUE, "26_2", "26.2"),
+	MC_NMS_26_2_R1(260200, Integer.MAX_VALUE, "26_2", "26.2_NMS_R1", MC_26_2),
+	MC_27_1(270100, Integer.MAX_VALUE, "27_1", "27.1"),
+	MC_NMS_27_1_R1(270100, Integer.MAX_VALUE, "27_1", "27.1_NMS_R1", MC_27_1);
 
 	private static final Map<String, MCVersion> VERSION_MAP = new HashMap<>();
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new HashMap<>();
 	private static final Map<Integer, MCVersion> PROTOCOL_VERSION_MAP = new HashMap<>();
 
-	private static final Pattern VERSION_PATTERN = Pattern.compile("\\(MC: (?<version>\\d(.\\d{1,5}){1,2})\\)");
+	private static final Pattern VERSION_PATTERN = Pattern.compile("\\(MC: (?<version>\\d+(.\\d{1,5}){1,2})\\)");
 
 	/**
 	 * The current version of the minecraft server.
@@ -218,37 +222,37 @@ public enum MCVersion
 	@Getter private final boolean dualWielding;
 	@Getter private final String name;
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString)
+	MCVersion(final int versionID, final int protocolVersion, final String mainVersionString, final String versionString)
 	{
 		this(versionID, protocolVersion, mainVersionString, versionString, true);
 	}
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, String nmsPatch)
+	MCVersion(final int versionID, final int protocolVersion, final String mainVersionString, final String versionString, final String nmsPatch)
 	{
 		this(versionID, protocolVersion, mainVersionString, versionString, true, nmsPatch);
 	}
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, boolean supportsUUIDs)
+	MCVersion(final int versionID, final int protocolVersion, final String mainVersionString, final String versionString, final boolean supportsUUIDs)
 	{
 		this(versionID, protocolVersion, mainVersionString, versionString, supportsUUIDs, "");
 	}
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, MCVersion mainVersion)
+	MCVersion(final int versionID, final int protocolVersion, final String mainVersionString, final String versionString, final MCVersion mainVersion)
 	{
 		this(versionID, protocolVersion, mainVersionString, versionString, mainVersion, true);
 	}
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, MCVersion mainVersion, boolean supportsUUIDs)
+	MCVersion(final int versionID, final int protocolVersion, final String mainVersionString, final String versionString, final MCVersion mainVersion, final boolean supportsUUIDs)
 	{
 		this(versionID, protocolVersion, mainVersionString, versionString, mainVersion, supportsUUIDs, "");
 	}
 
-	private static String buildIdentifier(String mainVersionString, int versionID, String nmsPatch)
+	private static String buildIdentifier(final String mainVersionString, final int versionID, final String nmsPatch)
 	{
 		return mainVersionString + "_R" + versionID % 10 + (nmsPatch.isEmpty() ? "" : "_" + nmsPatch);
 	}
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, boolean supportsUUIDs, String nmsPatch)
+	MCVersion(final int versionID, final int protocolVersion, final String mainVersionString, final String versionString, final boolean supportsUUIDs, final String nmsPatch)
 	{
 		this.versionID = versionID;
 		this.protocolVersion = protocolVersion;
@@ -260,7 +264,7 @@ public enum MCVersion
 		supportsRgbColors = protocolVersion >= 735;
 	}
 
-	MCVersion(int versionID, int protocolVersion, String mainVersionString, String versionString, MCVersion mainVersion, boolean supportsUUIDs, String nmsPatch)
+	MCVersion(final int versionID, final int protocolVersion, final String mainVersionString, final String versionString, final MCVersion mainVersion, final boolean supportsUUIDs, final String nmsPatch)
 	{
 		this.versionID = versionID;
 		this.protocolVersion = protocolVersion;
@@ -284,27 +288,27 @@ public enum MCVersion
 
 	public boolean isRgbColorSupported() { return supportsRgbColors; }
 
-	public boolean isSame(MCVersion other)
+	public boolean isSame(final MCVersion other)
 	{
 		return this.versionID == other.versionID;
 	}
 
-	public boolean newerThan(MCVersion other)
+	public boolean newerThan(final MCVersion other)
 	{
 		return this.versionID > other.versionID && other != UNKNOWN;
 	}
 
-	public boolean newerOrEqualThan(MCVersion other)
+	public boolean newerOrEqualThan(final MCVersion other)
 	{
 		return isSame(other) || newerThan(other);
 	}
 
-	public boolean olderThan(MCVersion other)
+	public boolean olderThan(final MCVersion other)
 	{
 		return this.versionID < other.versionID && this != UNKNOWN;
 	}
 
-	public boolean olderOrEqualThan(MCVersion other)
+	public boolean olderOrEqualThan(final MCVersion other)
 	{
 		return isSame(other) || olderThan(other);
 	}
@@ -317,7 +321,7 @@ public enum MCVersion
 	 * @param other The other version to compare with
 	 * @return True if both are from the same major MC version. false if not.
 	 */
-	public boolean isSameMajorVersion(MCVersion other)
+	public boolean isSameMajorVersion(final MCVersion other)
 	{
 		return this.versionID / 10 == other.versionID / 10;
 	}
@@ -330,32 +334,32 @@ public enum MCVersion
 	 * @param other The other version to compare with
 	 * @return True if both are from the same major MC version. false if not.
 	 */
-	public static boolean isAny(MCVersion other)
+	public static boolean isAny(final MCVersion other)
 	{
 		return CURRENT_VERSION.isSameMajorVersion(other);
 	}
 
-	public static boolean is(MCVersion other)
+	public static boolean is(final MCVersion other)
 	{
 		return CURRENT_VERSION.versionID == other.versionID;
 	}
 
-	public static boolean isNewerThan(MCVersion other)
+	public static boolean isNewerThan(final MCVersion other)
 	{
 		return CURRENT_VERSION.versionID > other.versionID && other != UNKNOWN;
 	}
 
-	public static boolean isNewerOrEqualThan(MCVersion other)
+	public static boolean isNewerOrEqualThan(final MCVersion other)
 	{
 		return is(other) || isNewerThan(other);
 	}
 
-	public static boolean isOlderThan(MCVersion other)
+	public static boolean isOlderThan(final MCVersion other)
 	{
 		return CURRENT_VERSION.versionID < other.versionID && CURRENT_VERSION != UNKNOWN;
 	}
 
-	public static boolean isOlderOrEqualThan(MCVersion other)
+	public static boolean isOlderOrEqualThan(final MCVersion other)
 	{
 		return is(other) || isOlderThan(other);
 	}
