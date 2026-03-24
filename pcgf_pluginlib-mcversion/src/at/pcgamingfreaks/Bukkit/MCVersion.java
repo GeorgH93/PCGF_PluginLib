@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2025 GeorgH93
+ *   Copyright (C) 2026 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,9 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import lombok.Getter;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -152,8 +150,8 @@ public enum MCVersion
 	MC_NMS_1_21_R6(156, 773, "1_21", "1.21_NMS_R6", MC_1_21),
 	MC_1_21_11(157, 774, "1_21", "1.21.11"),
 	MC_NMS_1_21_R7(157, 774, "1_21", "1.21_NMS_R7", MC_1_21),
-	MC_26_1(260100, Integer.MAX_VALUE, "26_1", "26.1"),
-	MC_NMS_26_1_R1(260100, Integer.MAX_VALUE, "26_1", "26.1_NMS_R1", MC_26_1),
+	MC_26_1(260100, 775, "26_1", "26.1"),
+	MC_NMS_26_1_R1(260100, 775, "26_1", "26.1_NMS_R1", MC_26_1),
 	MC_26_2(260200, Integer.MAX_VALUE, "26_2", "26.2"),
 	MC_NMS_26_2_R1(260200, Integer.MAX_VALUE, "26_2", "26.2_NMS_R1", MC_26_2),
 	MC_27_1(270100, Integer.MAX_VALUE, "27_1", "27.1"),
@@ -161,7 +159,7 @@ public enum MCVersion
 
 	private static final Map<String, MCVersion> VERSION_MAP = new HashMap<>();
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new HashMap<>();
-	private static final Map<Integer, MCVersion> PROTOCOL_VERSION_MAP = new HashMap<>();
+	private static final NavigableMap<Integer, MCVersion> PROTOCOL_VERSION_MAP = new TreeMap<>();
 
 	private static final Pattern VERSION_PATTERN = Pattern.compile("\\(MC: (?<version>\\d+(.\\d{1,5}){1,2})\\)");
 
@@ -172,7 +170,7 @@ public enum MCVersion
 
 	static
 	{
-		for (MCVersion version : values())
+		for (final MCVersion version : values())
 		{
 			if(version.name().contains("NMS"))
 			{
@@ -187,7 +185,7 @@ public enum MCVersion
 		MCVersion currentVersion = UNKNOWN;
 		try
 		{
-			Matcher matcher = VERSION_PATTERN.matcher(Bukkit.getVersion());
+			final Matcher matcher = VERSION_PATTERN.matcher(Bukkit.getVersion());
 			if(matcher.find())
 			{
 				currentVersion = getFromVersionName(matcher.group("version"));
@@ -197,7 +195,7 @@ public enum MCVersion
 				currentVersion = getFromServerVersion(Bukkit.getServer().getClass().getName().split("\\.")[3]);
 			}
 		}
-		catch(Throwable ignored)
+		catch(final Throwable ignored)
 		{
 			System.out.println("Failed to obtain server version!");
 		}
@@ -372,7 +370,7 @@ public enum MCVersion
 
 	public static @NotNull MCVersion getFromServerVersion(final @NotNull String serverVersion)
 	{
-		for(Map.Entry<String, MCVersion> entry : NMS_VERSION_MAP.entrySet())
+		for(final Map.Entry<String, MCVersion> entry : NMS_VERSION_MAP.entrySet())
 		{
 			if(serverVersion.contains(entry.getKey()))
 			{
@@ -400,5 +398,11 @@ public enum MCVersion
 	public String toString()
 	{
 		return name;
+	}
+
+	public @NotNull MCVersion getPreviousVersion()
+	{
+		final Map.Entry<Integer, MCVersion> entry = PROTOCOL_VERSION_MAP.lowerEntry(getProtocolVersion());
+		return entry != null ? entry.getValue() : UNKNOWN;
 	}
 }

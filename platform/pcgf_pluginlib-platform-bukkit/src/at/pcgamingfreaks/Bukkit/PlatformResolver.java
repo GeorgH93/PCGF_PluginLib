@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2024 GeorgH93
+ *   Copyright (C) 2026 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -93,23 +93,34 @@ public final class PlatformResolver
 		{
 			tmp = getClass(className + "_Glowstone");
 		}
+		else if (forceReflection) tmp = getClass(className + "_Reflection");
 		else
 		{
-			final String nmsServerVersion = MCVersion.CURRENT_VERSION.getIdentifier();
-			if (ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4))
-				tmp = getClass(className + "_" + nmsServerVersion + "_Paper");
-			if (tmp == null)
-				tmp = getClass(className + "_" + nmsServerVersion);
-			if(tmp == null || forceReflection)
+			MCVersion version = MCVersion.CURRENT_VERSION;
+			do
 			{
-				tmp = getClass(className + "_Reflection");
-			}
+				tmp = findClassForMcVersion(version, className);
+				version = version.getPreviousVersion();
+			} while(tmp == null && version.newerOrEqualThan(MCVersion.MC_26_1));
+
+			if(tmp == null) tmp = getClass(className + "_Reflection"); // Fallback
 		}
 		if(tmp == null) throw new ClassNotFoundException("Could not find a platform implementation for " + clazz.getName());
 		if(tmp.isInterface()) throw new IllegalStateException("Found platform class '" + tmp.getName() + "' is an interface!");
 		if(tmp.isInstance(clazz)) throw new IllegalStateException("Found platform class '" + tmp.getName() + "' is not of the expected type!");
 		//noinspection unchecked
 		return (T) tmp.newInstance();
+	}
+
+	private static Class<?> findClassForMcVersion(final @NotNull MCVersion version, final @NotNull String className)
+	{
+		Class<?> tmp = null;
+		final String nmsServerVersion = version.getIdentifier();
+		if (ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4))
+			tmp = getClass(className + "_" + nmsServerVersion + "_Paper");
+		if (tmp == null)
+			tmp = getClass(className + "_" + nmsServerVersion);
+		return tmp;
 	}
 
 	private static Class<?> getClass(final String className)
