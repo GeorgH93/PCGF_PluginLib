@@ -29,7 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
-public class ChatMessagePacketFactory_Reflection implements IChatMessagePacketFactory
+public final class ChatMessagePacketFactory_Reflection implements IChatMessagePacketFactory
 {
 	private static final byte CHAT_TYPE = 0, SYSTEM_TYPE = 1, ACTION_BAR_TYPE = 2;
 

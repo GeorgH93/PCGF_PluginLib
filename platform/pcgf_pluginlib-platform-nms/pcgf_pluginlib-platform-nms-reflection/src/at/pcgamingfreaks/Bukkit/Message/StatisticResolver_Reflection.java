@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public final class StatisticResolver_Reflection implements IStatisticResolver
 {
 	//region Reflection Variables
@@ -47,7 +48,7 @@ public final class StatisticResolver_Reflection implements IStatisticResolver
 	private static final Field FIELD_STATISTIC_NAME = MCVersion.isOlderThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsField("Statistic", "name") : null;
 	//endregion
 
-	private static String getStatisticName(Object statistic) throws Exception
+	private static String getStatisticName(final Object statistic) throws Exception
 	{
 		if(FIELD_STATISTIC_NAME != null) return (String) FIELD_STATISTIC_NAME.get(statistic);
 		else return (String) GET_STATISTIC_NAME.invoke(statistic);
@@ -60,7 +61,7 @@ public final class StatisticResolver_Reflection implements IStatisticResolver
 		{
 			return getStatisticName(GET_NMS_STATISTIC.invoke(null, statistic));
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -74,7 +75,7 @@ public final class StatisticResolver_Reflection implements IStatisticResolver
 		{
 			return getStatisticName(GET_MATERIAL_STATISTIC.invoke(null, statistic, material));
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -88,7 +89,7 @@ public final class StatisticResolver_Reflection implements IStatisticResolver
 		{
 			return getStatisticName(GET_ENTITY_STATISTIC.invoke(null, statistic, entityType));
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -102,7 +103,7 @@ public final class StatisticResolver_Reflection implements IStatisticResolver
 		{
 			return getStatisticName(GET_NMS_ACHIEVEMENT.invoke(null, achievement));
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
 			e.printStackTrace();
 		}

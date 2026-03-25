@@ -29,13 +29,12 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({ "ConstantConditions", "CallToPrintStackTrace" })
 public class PluginChannelUtils_Reflection implements IPluginChannelUtils
 {
 	private static final Class<?> CLASS_MINECRAFT_KEY = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsClass("MinecraftKey") : null;
 	private static final Class<?> CLASS_PACKET_DATA_SERIALIZER = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsClass("PacketDataSerializer") : null;
 	private static final Class<?> CLASS_PACKET_PLAY_OUT_CUSTOM_PAYLOAD = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? NmsReflector.INSTANCE.getNmsClass("PacketPlayOutCustomPayload") : null;
-	@SuppressWarnings("SpellCheckingInspection")
 	private static final Class<?> CLASS_NETTY_UNPOOLED = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Reflection.getClass("io.netty.buffer.Unpooled") : null;
 	private static final Class<?> CLASS_NETTY_BYTE_BUF = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Reflection.getClass("io.netty.buffer.ByteBuf") : null;
 	private static final Constructor<?> CONSTRUCTOR_MINECRAFT_KEY = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Reflection.getConstructor(CLASS_MINECRAFT_KEY, String.class) : null;
@@ -43,11 +42,10 @@ public class PluginChannelUtils_Reflection implements IPluginChannelUtils
 	private static final Constructor<?> CONSTRUCTOR_PACKET_PLAY_OUT_CUSTOM_PAYLOAD = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Reflection.getConstructor(CLASS_PACKET_PLAY_OUT_CUSTOM_PAYLOAD, CLASS_MINECRAFT_KEY, CLASS_PACKET_DATA_SERIALIZER) : null;
 	private static final Method METHOD_ADD_TO_OUTGOING = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Reflection.getMethod(StandardMessenger.class, "addToOutgoing", Plugin.class, String.class) : null;
 	private static final Method METHOD_REMOVE_FROM_OUTGOING = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Reflection.getMethod(StandardMessenger.class, "removeFromOutgoing", Plugin.class, String.class) : null;
-	@SuppressWarnings("SpellCheckingInspection")
 	private static final Method METHOD_UNPOOLED_WRAPPED_BUFFER = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Reflection.getMethod(CLASS_NETTY_UNPOOLED, "wrappedBuffer", byte[].class) : null;
 
 	@Override
-	public void registerOutgoingChannelUnchecked(@NotNull final Plugin plugin, @NotNull final String channel)
+	public void registerOutgoingChannelUnchecked(final @NotNull Plugin plugin, final @NotNull String channel)
 	{
 		if(METHOD_ADD_TO_OUTGOING != null)
 		{
@@ -64,7 +62,7 @@ public class PluginChannelUtils_Reflection implements IPluginChannelUtils
 	}
 
 	@Override
-	public void unregisterOutgoingChannelUnchecked(@NotNull final Plugin plugin, @NotNull final String channel)
+	public void unregisterOutgoingChannelUnchecked(final @NotNull Plugin plugin, final @NotNull String channel)
 	{
 		if(METHOD_REMOVE_FROM_OUTGOING != null)
 		{
@@ -81,7 +79,7 @@ public class PluginChannelUtils_Reflection implements IPluginChannelUtils
 	}
 
 	@Override
-	public void sendPluginMessageUnchecked(@NotNull final Plugin plugin, @NotNull final Player player, @NotNull final String channel, final byte[] message)
+	public void sendPluginMessageUnchecked(final @NotNull Plugin plugin, final @NotNull Player player, final @NotNull String channel, final byte[] message)
 	{
 		if(CONSTRUCTOR_PACKED_DATA_SERIALIZER != null)
 		{

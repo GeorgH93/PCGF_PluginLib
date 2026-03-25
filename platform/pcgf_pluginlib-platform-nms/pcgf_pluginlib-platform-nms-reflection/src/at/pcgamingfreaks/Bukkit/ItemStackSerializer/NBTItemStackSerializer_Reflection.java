@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @SuppressWarnings("ConstantConditions")
@@ -117,8 +118,9 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 					registry = Reflection.getField(Reflection.getClass("net.minecraft.core.IRegistryCustom"), "b").get(null);
 				}
 			}
-			catch(Exception e)
+			catch(final Exception e)
 			{
+				//noinspection CallToPrintStackTrace
 				e.printStackTrace();
 			}
 		}
@@ -138,13 +140,13 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 		else if(MCVersion.is(MCVersion.MC_NMS_1_13_R2)) CURRENT_DATA_VERSION = 1631;
 		else if(MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_14_R1))
 		{
-			String getGameVersion = MCVersion.isOlderThan(MCVersion.MC_NMS_1_15_R1) ? "a" : "getGameVersion";
+			final String getGameVersion = MCVersion.isOlderThan(MCVersion.MC_NMS_1_15_R1) ? "a" : "getGameVersion";
 			int version = -1;
 			try
 			{
-				Method methodSharedConstantsGetGameVersion = NmsReflector.INSTANCE.getNmsMethod("SharedConstants", getGameVersion);
-				Object gameVersion = methodSharedConstantsGetGameVersion.invoke(null);
-				Method methodGameVersionGetWorldVersion;
+				final Method methodSharedConstantsGetGameVersion = NmsReflector.INSTANCE.getNmsMethod("SharedConstants", getGameVersion);
+				final Object gameVersion = methodSharedConstantsGetGameVersion.invoke(null);
+				final Method methodGameVersionGetWorldVersion;
 				if (MCVersion.isOlderThan(MCVersion.MC_NMS_1_19_R3))
 				{
 					methodGameVersionGetWorldVersion = Reflection.getMethod(Reflection.getClass("com.mojang.bridge.game.GameVersion"), "getWorldVersion");
@@ -153,12 +155,13 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 				else
 				{
 					methodGameVersionGetWorldVersion = NmsReflector.INSTANCE.getNmsMethod("WorldVersion", "getWorldVersion");
-					Object dataVersion = methodGameVersionGetWorldVersion.invoke(gameVersion);
+					final Object dataVersion = methodGameVersionGetWorldVersion.invoke(gameVersion);
 					version = (int) NmsReflector.INSTANCE.getNmsMethod("DataVersion", "getVersion").invoke(dataVersion);
 				}
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
+				//noinspection CallToPrintStackTrace
 				e.printStackTrace();
 			}
 
@@ -171,7 +174,7 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 	private Logger logger = null;
 
 	@Override
-	public void setLogger(@Nullable Logger logger)
+	public void setLogger(@Nullable final Logger logger)
 	{
 		this.logger = logger;
 		if(logger == null) return;
@@ -184,15 +187,15 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 		}
 	}
 
-	private void convertOldFormatToNew(Object localNBTTagCompound, int size) throws Exception
+	private void convertOldFormatToNew(final Object localNBTTagCompound, final int size) throws Exception
 	{
-		Object nbtItemList = CONSTRUCTOR_NBT_TAG_LIST.newInstance();
+		final Object nbtItemList = CONSTRUCTOR_NBT_TAG_LIST.newInstance();
 		METHOD_NBT_TAG_C_SET_NBT_BASE.invoke(localNBTTagCompound, KEY_INVENTORY, nbtItemList);
 		for(int i = 0; i < size; i++)
 		{
 			if((boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, String.valueOf(i), 10))
 			{
-				Object itemNBTCompound = METHOD_GET_COMPOUND.invoke(localNBTTagCompound, String.valueOf(i));
+				final Object itemNBTCompound = METHOD_GET_COMPOUND.invoke(localNBTTagCompound, String.valueOf(i));
 				METHOD_NBT_TAG_C_SET_BYTE.invoke(itemNBTCompound, "Slot", (byte) i);
 				METHOD_NBT_TAG_LIST_ADD.invoke(nbtItemList, itemNBTCompound);
 			}
@@ -206,7 +209,7 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 	 * @return The deserialized ItemStack array.
 	 */
 	@Override
-	public ItemStack[] deserialize(byte[] data)
+	public ItemStack[] deserialize(final byte[] data)
 	{
 		if(data != null)
 		{
@@ -214,7 +217,8 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 			{
 				Object localNBTTagCompound = METHOD_NBT_COMP_STREAM_A2.invoke(null, new ByteArrayInputStream(data));
 				if (METHOD_NBT_COMP_STREAM_FROM_DATA_INPUT != null) localNBTTagCompound = METHOD_NBT_COMP_STREAM_FROM_DATA_INPUT.invoke(null, localNBTTagCompound);
-				int size = (int) METHOD_GET_INT.invoke(localNBTTagCompound, KEY_SIZE), dataVersion = CURRENT_DATA_VERSION;
+				final int size = (int) METHOD_GET_INT.invoke(localNBTTagCompound, KEY_SIZE);
+				int dataVersion = CURRENT_DATA_VERSION;
 				if((boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, KEY_DATA_VERSION, 3)) dataVersion = (int) METHOD_GET_INT.invoke(localNBTTagCompound, KEY_DATA_VERSION);
 				if (dataVersion == MCVersion.MC_1_19_4.getProtocolVersion()) dataVersion = 3337;
 				if(!(boolean) METHOD_HAS_KEY_OF_TYPE.invoke(localNBTTagCompound, KEY_INVENTORY, 9)) convertOldFormatToNew(localNBTTagCompound, size);
@@ -229,36 +233,36 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 						localNBTTagCompound = METHOD_DATA_FIXER_UPDATE.invoke(ENUM_DATA_FIX_TYPE, DATA_FIXER, localNBTTagCompound, dataVersion);
 					}
 				}
-				ItemStack[] its = new ItemStack[size];
-				Object nbtItemList = METHOD_GET_COMPOUND_LIST.invoke(localNBTTagCompound, KEY_INVENTORY, 10);
-				int listSize = (int) METHOD_NBT_TAG_LIST_SIZE.invoke(nbtItemList);
+				final ItemStack[] its = new ItemStack[size];
+				final Object nbtItemList = METHOD_GET_COMPOUND_LIST.invoke(localNBTTagCompound, KEY_INVENTORY, 10);
+				final int listSize = (int) METHOD_NBT_TAG_LIST_SIZE.invoke(nbtItemList);
 				for(int i = 0; i < listSize; i++)
 				{
-					Object compound = METHOD_GET_COMPOUND_FROM_LIST.invoke(nbtItemList, i);
-					byte slot = (byte) METHOD_GET_BYTE.invoke(compound, KEY_SLOT);
+					final Object compound = METHOD_GET_COMPOUND_FROM_LIST.invoke(nbtItemList, i);
+					final byte slot = (byte) METHOD_GET_BYTE.invoke(compound, KEY_SLOT);
 					try
 					{
 						its[slot] = deserializeNBTCompound(compound);
 					}
-					catch(Exception ignored)
+					catch(final Exception ignored)
 					{
 						if(logger != null) logger.warning("Failed to restore item on slot " + i + " with json:\n" + compound.toString());
 					}
 				}
 				return its;
 			}
-			catch(Exception e)
+			catch(final Exception e)
 			{
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Failed to deserialize items.", e);
 			}
 		}
 		return null;
 	}
 
 	@SuppressWarnings({ "ConstantConditions", "Duplicates" })
-	private static @Nullable ItemStack deserializeNBTCompound(@NotNull Object compound) throws Exception
+	private static @Nullable ItemStack deserializeNBTCompound(@NotNull final Object compound) throws Exception
 	{
-		Object nmsItemStack;
+		final Object nmsItemStack;
 		if(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_11) && MCVersion.isOlderThan(MCVersion.MC_1_13))
 		{
 			nmsItemStack = CONSTRUCTOR_NMS_ITEM_STACK.newInstance(compound);
@@ -280,18 +284,18 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 	 * @return Serialized ItemsStacks as byte array. Null if serialization failed.
 	 */
 	@Override
-	public byte[] serialize(ItemStack[] itemStacks)
+	public byte[] serialize(final ItemStack[] itemStacks)
 	{
 		byte[] ba = null;
 		if(itemStacks != null)
 		{
-			try(ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream))
+			try(final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); final DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream))
 			{
 				//noinspection ConstantConditions
-				Object localNBTTagCompound = CONSTRUCTOR_NBT_TAG_COMPOUND.newInstance();
+				final Object localNBTTagCompound = CONSTRUCTOR_NBT_TAG_COMPOUND.newInstance();
 				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, KEY_SIZE, itemStacks.length);
 				METHOD_NBT_TAG_C_SET_INT.invoke(localNBTTagCompound, KEY_DATA_VERSION, CURRENT_DATA_VERSION);
-				Object nbtItemList = CONSTRUCTOR_NBT_TAG_LIST.newInstance();
+				final Object nbtItemList = CONSTRUCTOR_NBT_TAG_LIST.newInstance();
 				METHOD_NBT_TAG_C_SET_NBT_BASE.invoke(localNBTTagCompound, KEY_INVENTORY, nbtItemList);
 				for(int i = 0, used = -1; i < itemStacks.length; i++)
 				{
@@ -299,7 +303,7 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 					{
 						Object itemNBTCompound = CONSTRUCTOR_NBT_TAG_COMPOUND.newInstance();
 						METHOD_NBT_TAG_C_SET_BYTE.invoke(itemNBTCompound, KEY_SLOT, (byte) i);
-						Object nmsCopy = METHOD_AS_NMS_COPY.invoke(null, itemStacks[i]);
+						final Object nmsCopy = METHOD_AS_NMS_COPY.invoke(null, itemStacks[i]);
 						if (METHOD_SAVE != null) METHOD_SAVE.invoke(nmsCopy, itemNBTCompound);
 						else itemNBTCompound = METHOD_SAVE_NEW.invoke(nmsCopy, REGISTRY, itemNBTCompound);
 						if(MCVersion.isOlderThan(MCVersion.MC_1_14))
@@ -312,9 +316,9 @@ public class NBTItemStackSerializer_Reflection implements ItemStackSerializer
 				dataOutputStream.flush();
 				ba = byteArrayOutputStream.toByteArray();
 			}
-			catch(Exception e)
+			catch(final Exception e)
 			{
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Failed to serialize items.", e);
 			}
 		}
 		return ba;

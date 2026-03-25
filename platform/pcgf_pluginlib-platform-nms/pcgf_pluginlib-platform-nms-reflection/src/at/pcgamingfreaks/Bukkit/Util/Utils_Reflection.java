@@ -30,7 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 @SuppressWarnings("ConstantConditions")
-public class Utils_Reflection implements IUtils
+public final class Utils_Reflection implements IUtils
 {
 	//region Reflection constants for the sendPacket method
 	static final Class<?> ENTITY_PLAYER = MCVersion.isOlderThan(MCVersion.MC_NMS_1_20_R4) ? NmsReflector.INSTANCE.getNmsClass("EntityPlayer") : null;

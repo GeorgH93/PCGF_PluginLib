@@ -28,7 +28,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
-public class TitleMessagePacketFactory_Reflection implements ITitleMessagePacketFactory
+public final class TitleMessagePacketFactory_Reflection implements ITitleMessagePacketFactory
 {
 	//region Reflection stuff
 	private static final Class<?> I_CHAT_BASE_COMPONENT = NmsReflector.INSTANCE.getNmsClass("IChatBaseComponent");
