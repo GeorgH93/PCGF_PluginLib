@@ -50,7 +50,11 @@ import net.minecraft.world.inventory.Containers;
 <#if !mojangMapped>
 import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
 </#if>
+<#if mcVersion < 2000000000>
 import org.bukkit.craftbukkit.v${nmsVersion}.inventory.CraftItemStack;
+<#else>
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+</#if>
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;

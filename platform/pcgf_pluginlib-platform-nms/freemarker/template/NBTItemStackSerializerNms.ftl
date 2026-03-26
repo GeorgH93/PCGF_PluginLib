@@ -32,8 +32,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.server.MinecraftServer;
 
 import org.bukkit.Bukkit;
+<#if mcVersion < 2000000000>
 import org.bukkit.craftbukkit.v${nmsVersion}.CraftServer;
 import org.bukkit.craftbukkit.v${nmsVersion}.inventory.CraftItemStack;
+<#else>
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+</#if>
 import org.bukkit.inventory.ItemStack;
 
 import lombok.Setter;

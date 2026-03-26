@@ -94,5 +94,15 @@
 				<module>pcgf_pluginlib-platform-nms_paper-1_21_R7</module>
 			</modules>
 		</profile>
+		<profile>
+			<id>Java25AndUp</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<jdk>[25,)</jdk>
+			</activation>
+			<modules>
+				<module>pcgf_pluginlib-platform-nms_mm-26_1_R1</module>
+			</modules>
+		</profile>
 	</profiles>
 </project>

@@ -26,7 +26,7 @@ import java.util.UUID;
 
 public interface IChatMessagePacketFactory extends IPlatformDependent
 {
-	IChatMessagePacketFactory INSTANCE = PlatformResolver.createPlatformInstance(IChatMessagePacketFactory.class/*, ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_20_R4)*/);
+	IChatMessagePacketFactory INSTANCE = PlatformResolver.createPlatformInstance(IChatMessagePacketFactory.class);
 	UUID EMPTY_UUID = new UUID(0, 0);
 
 	default Object makeChatPacket(final @NotNull String json)

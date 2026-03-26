@@ -150,8 +150,8 @@ public enum MCVersion
 	MC_NMS_1_21_R6(156, 773, "1_21", "1.21_NMS_R6", MC_1_21),
 	MC_1_21_11(157, 774, "1_21", "1.21.11"),
 	MC_NMS_1_21_R7(157, 774, "1_21", "1.21_NMS_R7", MC_1_21),
-	MC_26_1(260100, 775, "26_1", "26.1"),
-	MC_NMS_26_1_R1(260100, 775, "26_1", "26.1_NMS_R1", MC_26_1),
+	MC_26_1(260101, 775, "26_1", "26.1"),
+	MC_NMS_26_1_R1(260101, 775, "26_1", "26.1_NMS_R1", MC_26_1),
 	MC_26_2(260200, Integer.MAX_VALUE, "26_2", "26.2"),
 	MC_NMS_26_2_R1(260200, Integer.MAX_VALUE, "26_2", "26.2_NMS_R1", MC_26_2),
 	MC_27_1(270100, Integer.MAX_VALUE, "27_1", "27.1"),
@@ -247,7 +247,8 @@ public enum MCVersion
 
 	private static String buildIdentifier(final String mainVersionString, final int versionID, final String nmsPatch)
 	{
-		return mainVersionString + "_R" + versionID % 10 + (nmsPatch.isEmpty() ? "" : "_" + nmsPatch);
+		final int r = versionID % 10;
+		return mainVersionString + (r > 0 ? ("_R" + r) : "") + (nmsPatch.isEmpty() ? "" : "_" + nmsPatch);
 	}
 
 	MCVersion(final int versionID, final int protocolVersion, final String mainVersionString, final String versionString, final boolean supportsUUIDs, final String nmsPatch)

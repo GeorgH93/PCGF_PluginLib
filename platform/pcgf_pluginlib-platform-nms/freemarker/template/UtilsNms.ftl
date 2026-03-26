@@ -35,10 +35,15 @@ import net.minecraft.server.level.EntityPlayer;
 	</#if>
 </#if>
 
+<#if mcVersion < 2000000000>
 import org.bukkit.craftbukkit.v${nmsVersion}.entity.CraftPlayer;
 <#if mcVersion < 100200005>
 <#else>
 import org.bukkit.craftbukkit.v${nmsVersion}.util.CraftChatMessage;
+</#if>
+<#else>
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.util.CraftChatMessage;
 </#if>
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
