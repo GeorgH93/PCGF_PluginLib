@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2025 GeorgH93
+ *   Copyright (C) 2026 GeorgH93
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import java.util.function.Function;
 
 final class InventoryTypeMapper_Reflection
 {
-	private static final Class<?> CLASS_CONTAINERS = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass("Containers");
+	private static final Class<?> CLASS_CONTAINERS = (MCVersion.isOlderThan(MCVersion.MC_1_14)) ? null : NmsReflector.INSTANCE.getNmsClass(MCVersion.isOlderThan(MCVersion.MC_NMS_26_1_R1) ? "Containers" : "MenuType");
 	private static final EnumMap<InventoryType, Object> INVENTORY_TYPE_MAP = new EnumMap<>(InventoryType.class);
 	private static final Object[] INVENTORY_TYPE_CHEST = new Object[6];
 
@@ -62,6 +62,7 @@ final class InventoryTypeMapper_Reflection
 				else if(inventoryType == InventoryType.WORKBENCH) type = "CRAFTING";
 				else if(inventoryType == InventoryType.ENDER_CHEST) type = "GENERIC_9X3";
 				else if(inventoryType == InventoryType.ENCHANTING) type = "ENCHANTMENT";
+				else if (type.equals("CRAFTER") && MCVersion.isNewerOrEqualThan(MCVersion.MC_26_1)) type = "CRAFTER_3x3";
 				else if(type.equals("BARREL")) type = "GENERIC_9X3";
 				else if(type.equals("CARTOGRAPHY") && MCVersion.isNewerOrEqualThan(MCVersion.MC_NMS_1_15_R1)) type = "CARTOGRAPHY_TABLE";
 				else if(type.equals("COMPOSTER") || type.equals("CHISELED_BOOKSHELF") || type.equals("SMITHING_NEW") || type.equals("JUKEBOX") || type.equals("DECORATED_POT") || type.equals("SHELF")) continue; // They don't have inventory screens
@@ -72,7 +73,10 @@ final class InventoryTypeMapper_Reflection
 					INVENTORY_TYPE_MAP.put(inventoryType, field.get(null));
 				}
 				catch(final IllegalAccessException ignored) {}
-				catch(final Throwable t) { t.printStackTrace(); }
+				catch(final Throwable t)
+				{ //noinspection CallToPrintStackTrace
+					t.printStackTrace();
+				}
 			}
 			for(int i = 0; i < 6; i++)
 			{
