@@ -112,8 +112,8 @@ public enum MCVersion
 	MC_1_18_2(122, 758, "1_18", "1.18.2", MC_1_18),
 	MC_NMS_1_18_R2(122, 758, "1_18", "1.18_NMS_R2", MC_1_18),
 	MC_1_19(131, 759, "1_19", "1.19"),
-	MC_1_19_1(131, 760, "1_19", "1.19.1", "1"),
-	MC_1_19_2(131, 761, "1_19", "1.19.2", "1"),
+	MC_1_19_1(131, 760, "1_19", "1.19.1", MC_1_19, true, "1"),
+	MC_1_19_2(131, 761, "1_19", "1.19.2", MC_1_19, true, "1"),
 	MC_NMS_1_19_R1(131, 759, "1_19", "1.19_NMS_R1", MC_1_19),
 	MC_NMS_1_19_R1_1(131, 760, "1_19", "1.19_NMS_R1_1", MC_1_19),
 	MC_1_19_3(132, 761, "1_19", "1.19.3", MC_1_19),
@@ -190,7 +190,20 @@ public enum MCVersion
 			final Matcher matcher = VERSION_PATTERN.matcher(Bukkit.getVersion());
 			if(matcher.find())
 			{
-				currentVersion = getFromVersionName(matcher.group("version"));
+				String versionString = matcher.group("version");
+				currentVersion = getFromVersionName(versionString);
+				try
+				{
+					if(Integer.parseInt(versionString.split("\\.")[0]) > 25)
+					{
+						while(currentVersion == UNKNOWN && versionString.contains("."))
+						{
+							versionString = versionString.replaceFirst("\\.\\d+$", "");
+							currentVersion = getFromVersionName(versionString);
+						}
+					}
+				}
+				catch(final NumberFormatException ignored) {}
 			}
 			if(currentVersion == UNKNOWN)
 			{ // Could not identify version from API, trying to use OBC
