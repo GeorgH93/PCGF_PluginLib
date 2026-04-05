@@ -18,6 +18,7 @@
 package at.pcgamingfreaks.Bukkit.Util;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
+import at.pcgamingfreaks.ServerType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Base64;
 import java.util.UUID;
 
-public class HeadUtils
+public final class HeadUtils
 {
 	public static final Material HEAD_MATERIAL = MCVersion.isNewerOrEqualThan(MCVersion.MC_1_13) ? Material.valueOf("PLAYER_HEAD") : Material.valueOf("SKULL_ITEM");
 
@@ -62,7 +63,7 @@ public class HeadUtils
 		return fromBase64(createHeadItemStack(), value, itemName, ownerUUID);
 	}
 
-	public static ItemStack fromBase64(final @NotNull String value, @Nullable String itemName, @Nullable UUID ownerUUID, int amount)
+	public static ItemStack fromBase64(final @NotNull String value, final @Nullable String itemName, final @Nullable UUID ownerUUID, final int amount)
 	{
 		return fromBase64(createHeadItemStack(amount), value, itemName, ownerUUID);
 	}
@@ -77,17 +78,17 @@ public class HeadUtils
 		}
 	}
 
-	private static void formatUUID(@NotNull UUID uuid, @NotNull StringBuilder builder)
+	private static void formatUUID(final @NotNull UUID uuid, final @NotNull StringBuilder builder)
 	{
-		long most = uuid.getMostSignificantBits(), least = uuid.getLeastSignificantBits();
+		final long most = uuid.getMostSignificantBits(), least = uuid.getLeastSignificantBits();
 		builder.append("[I;");
 		builder.append((int) (most >> 32)).append(',').append((int) most).append(',');
 		builder.append((int) (least >> 32)).append(',').append((int) least).append(']');
 	}
 
-	public static ItemStack fromBase64MCKeyed(final @NotNull ItemStack item, final @NotNull String value, final @Nullable String itemName, @NotNull UUID ownerUUID)
+	public static ItemStack fromBase64MCKeyed(final @NotNull ItemStack item, final @NotNull String value, final @Nullable String itemName, final @NotNull UUID ownerUUID)
 	{
-		StringBuilder builder = new StringBuilder("player_head[");
+		final StringBuilder builder = new StringBuilder(ServerType.isPaperCompatible() && MCVersion.isNewerOrEqualThan(MCVersion.MC_26_1) ? "[" : "player_head[");
 
 		if (itemName != null)
 		{
@@ -103,12 +104,13 @@ public class HeadUtils
 		builder.append(",properties:[{name:\"textures\",value:\"").append(value).append("\"}]}");
 
 		builder.append("]");
+		System.out.println(builder.toString());
 		return Bukkit.getUnsafe().modifyItemStack(item, builder.toString());
 	}
 
-	public static ItemStack fromBase64Legacy(final @NotNull ItemStack item, final @NotNull String value, final @Nullable String itemName, @NotNull UUID ownerUUID)
+	public static ItemStack fromBase64Legacy(final @NotNull ItemStack item, final @NotNull String value, final @Nullable String itemName, final @NotNull UUID ownerUUID)
 	{
-		StringBuilder builder = new StringBuilder("{");
+		final StringBuilder builder = new StringBuilder("{");
 		if(itemName != null)
 		{
 			builder.append("display:{Name:\"");
@@ -133,9 +135,9 @@ public class HeadUtils
 
 
 
-	private static String encodeUrl(String url)
+	private static String encodeUrl(final String url)
 	{
-		String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + url + "\"}}}";
+		final String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + url + "\"}}}";
 		return Base64.getEncoder().encodeToString(toEncode.getBytes());
 	}
 
