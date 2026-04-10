@@ -104,7 +104,6 @@ public final class HeadUtils
 		builder.append(",properties:[{name:\"textures\",value:\"").append(value).append("\"}]}");
 
 		builder.append("]");
-		System.out.println(builder.toString());
 		return Bukkit.getUnsafe().modifyItemStack(item, builder.toString());
 	}
 
