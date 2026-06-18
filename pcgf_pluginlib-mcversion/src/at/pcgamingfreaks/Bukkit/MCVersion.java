@@ -155,10 +155,22 @@ public enum MCVersion
 	MC_26_1_1(260101, 775, "26_1", "26.1.1", MC_26_1),
 	MC_26_1_2(260101, 775, "26_1", "26.1.2", MC_26_1),
 	MC_NMS_26_1_R1(260101, 775, "26_1", "26.1_NMS_R1", MC_26_1),
-	MC_26_2(260200, Integer.MAX_VALUE, "26_2", "26.2"),
-	MC_NMS_26_2_R1(260200, Integer.MAX_VALUE, "26_2", "26.2_NMS_R1", MC_26_2),
+	MC_26_2(260201, 776, "26_2", "26.2"),
+	MC_26_2_1(260201, 776, "26_2", "26.2.1", MC_26_2),
+	MC_26_2_2(260201, 776, "26_2", "26.2.2", MC_26_2),
+	MC_26_2_3(260201, 776, "26_2", "26.2.2", MC_26_2),
+	MC_26_2_4(260201, 776, "26_2", "26.2.2", MC_26_2),
+	MC_NMS_26_2_R1(260201, 776, "26_2", "26.2_NMS_R1", MC_26_2),
+	//region Definitions for future versions to be detected
+	MC_26_3(260201, 776, "26_2", "26.3", MC_26_2),
+	MC_26_3_1(260201, 776, "26_2", "26.3.1", MC_26_2),
+	MC_26_3_2(260201, 776, "26_2", "26.3.2", MC_26_2),
+	MC_26_3_3(260201, 776, "26_2", "26.3.2", MC_26_2),
+	MC_26_3_4(260201, 776, "26_2", "26.3.2", MC_26_2),
+	MC_NMS_26_3_R1(260201, 776, "26_2", "26.3_NMS_R1", MC_26_2),
 	MC_27_1(270100, Integer.MAX_VALUE, "27_1", "27.1"),
 	MC_NMS_27_1_R1(270100, Integer.MAX_VALUE, "27_1", "27.1_NMS_R1", MC_27_1);
+	//endregion
 
 	private static final Map<String, MCVersion> VERSION_MAP = new HashMap<>();
 	private static final Map<String, MCVersion> NMS_VERSION_MAP = new HashMap<>();

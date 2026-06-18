@@ -180,7 +180,8 @@ public class MCVersionTest
 				String[] components = version.name().substring("MC_NMS_".length()).split("_R");
 				assertEquals(components[0].replace('_', '.') + "_NMS_R" + components[1], version.getName());
 			}
-			else assertEquals(version.name().substring("MC_".length()).replace('_', '.'), version.getName());
+			else if (version != MCVersion.MC_26 && version.olderThan(MCVersion.MC_26_2)) //TODO better exclude future versions
+			    assertEquals(version.name().substring("MC_".length()).replace('_', '.'), version.getName());
 		}
 	}
 

@@ -191,6 +191,11 @@
 			<artifactId>pcgf_pluginlib-platform-nms-26_1_R1</artifactId>
 			<version>${revision}</version>
 		</dependency>
+		<dependency>
+			<groupId>at.pcgamingfreaks.pcgf_pluginlib.platform</groupId>
+			<artifactId>pcgf_pluginlib-platform-nms-26_2_R1</artifactId>
+			<version>${revision}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

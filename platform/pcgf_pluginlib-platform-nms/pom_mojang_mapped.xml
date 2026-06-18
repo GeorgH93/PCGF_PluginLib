@@ -54,7 +54,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+
 	<modules>
 		<module>pcgf_pluginlib-platform-nms_mm-1_17_R1</module>
 		<module>pcgf_pluginlib-platform-nms_mm-1_18_R1</module>
@@ -102,6 +102,7 @@
 			</activation>
 			<modules>
 				<module>pcgf_pluginlib-platform-nms_mm-26_1_R1</module>
+				<module>pcgf_pluginlib-platform-nms_mm-26_2_R1</module>
 			</modules>
 		</profile>
 	</profiles>
