@@ -22,6 +22,8 @@ public final class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExte
 {}
 <#else>
 import at.pcgamingfreaks.Bukkit.MCVersion;
+import at.pcgamingfreaks.Reflection;
+import at.pcgamingfreaks.ServerType;
 
 import com.mojang.datafixers.DataFixer;
 
@@ -60,7 +62,11 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 	<#else>
 	private static final int DATA_VERSION = SharedConstants.getCurrentVersion().dataVersion().version();
 	</#if>
+	<#if mcVersion < 2600020000>
 	private static final DataFixer DATA_FIXER = ((CraftServer) Bukkit.getServer()).getServer().fixerUpper;
+	<#else>
+	private static final DataFixer DATA_FIXER = ((CraftServer) Bukkit.getServer()).getServer().getFixerUpper();
+	</#if>
 
 	@Setter private Logger logger = null;
 
@@ -134,7 +140,19 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 							logger.severe(String.format("Tried to load invalid item: '%s'", s));
 						});
 						</#if>
-						its[slot] = CraftItemStack.asBukkitCopy(item.orElse(net.minecraft.world.item.ItemStack.EMPTY));
+						net.minecraft.world.item.ItemStack is = item.orElse(net.minecraft.world.item.ItemStack.EMPTY);
+						<#if mcVersion < 2600020000>
+						its[slot] = CraftItemStack.asBukkitCopy(is);
+						<#else>
+						if (ServerType.isPaperCompatible())
+						{
+							its[slot] = (ItemStack) Reflection.getMethod(CraftItemStack.class, "asBukkitCopy", net.minecraft.world.item.ItemStack.class).invoke(null, is);
+						}
+						else
+						{
+							its[slot] = CraftItemStack.asBukkitCopy(is);
+						}
+						</#if>
 					}
 					catch(Exception ignored)
 					{
