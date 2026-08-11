@@ -20,6 +20,9 @@ package at.pcgamingfreaks.Message;
 import at.pcgamingfreaks.TestClasses.TestMessage;
 import at.pcgamingfreaks.TestClasses.TestUtils;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -232,5 +235,74 @@ public class MessageComponentTest
 
 		messageComponent = new MessageComponent("test {Placeholder} test2.", MessageColor.BLUE).addExtra(new MessageComponent("Some {Placeholder} {Placeholder2} magic.", MessageColor.GRAY));
 		assertEquals("{\"text\":\"test \",\"color\":\"blue\",\"extra\":[{\"text\":\"{Placeholder}\"},{\"text\":\" test2.\"},{\"text\":\"Some \",\"color\":\"gray\",\"extra\":[{\"text\":\"{Placeholder}\"},{\"text\":\" {Placeholder2} magic.\"}]}]}", messageComponent.split("\\{Placeholder}").toString());
+	}
+
+	@Test
+	public void testClickEventLegacyJsonFormat()
+	{
+		MessageComponent messageComponent = new MessageComponent("Test");
+		messageComponent.onClick(MessageClickEvent.ClickEventAction.RUN_COMMAND, "cmd run");
+		JsonObject json = JsonParser.parseString(messageComponent.toString()).getAsJsonObject();
+		assertTrue("The component should contain the legacy clickEvent tag", json.has("clickEvent"));
+		assertFalse("The component should not contain the new click_event tag", json.has("click_event"));
+		JsonObject clickEvent = json.getAsJsonObject("clickEvent");
+		assertEquals("The click action should match", "run_command", clickEvent.get("action").getAsString());
+		assertEquals("The click value should match", "cmd run", clickEvent.get("value").getAsString());
+	}
+
+	@Test
+	public void testClickEventNewJsonFormat()
+	{
+		MessageClickEvent.setUseNewJsonFormat(true);
+		try
+		{
+			MessageComponent messageComponent = new MessageComponent("Test");
+			messageComponent.onClick(MessageClickEvent.ClickEventAction.RUN_COMMAND, "cmd run");
+			JsonObject json = JsonParser.parseString(messageComponent.toString()).getAsJsonObject();
+			assertFalse("The component should not contain the legacy clickEvent tag", json.has("clickEvent"));
+			assertTrue("The component should contain the new click_event tag", json.has("click_event"));
+			JsonObject clickEvent = json.getAsJsonObject("click_event");
+			assertEquals("The click action should match", "run_command", clickEvent.get("action").getAsString());
+			assertEquals("The click command should match", "cmd run", clickEvent.get("command").getAsString());
+
+			// open_url should use the url tag
+			MessageComponent urlComponent = new MessageComponent("Link").link("https://example.org");
+			JsonObject urlJson = JsonParser.parseString(urlComponent.toString()).getAsJsonObject();
+			JsonObject urlClickEvent = urlJson.getAsJsonObject("click_event");
+			assertEquals("The click action should match", "open_url", urlClickEvent.get("action").getAsString());
+			assertEquals("The click url should match", "https://example.org", urlClickEvent.get("url").getAsString());
+
+			// change_page should use the page tag as an integer
+			MessageComponent pageComponent = new MessageComponent("Page").onClick(MessageClickEvent.ClickEventAction.CHANGE_PAGE, "3");
+			JsonObject pageJson = JsonParser.parseString(pageComponent.toString()).getAsJsonObject();
+			JsonObject pageClickEvent = pageJson.getAsJsonObject("click_event");
+			assertEquals("The click action should match", "change_page", pageClickEvent.get("action").getAsString());
+			assertEquals("The click page should match", 3, pageClickEvent.get("page").getAsInt());
+
+			// nested extra components should be converted as well
+			MessageComponent parent = new MessageComponent("Parent").addExtra(new MessageComponent("Child").onClick(MessageClickEvent.ClickEventAction.SUGGEST_COMMAND, "suggest me"));
+			JsonObject parentJson = JsonParser.parseString(parent.toString()).getAsJsonObject();
+			JsonObject childClickEvent = parentJson.getAsJsonArray("extra").get(0).getAsJsonObject().getAsJsonObject("click_event");
+			assertEquals("The click action should match", "suggest_command", childClickEvent.get("action").getAsString());
+			assertEquals("The click command should match", "suggest me", childClickEvent.get("command").getAsString());
+		}
+		finally
+		{
+			MessageClickEvent.setUseNewJsonFormat(false);
+		}
+	}
+
+	@Test
+	public void testClickEventNewJsonFormatDeserialization()
+	{
+		// parsing the new format should work regardless of the serialization format flag
+		MessageComponent messageComponent = MessageComponent.fromJson("[\"\",{\"text\":\"Test\",\"click_event\":{\"action\":\"run_command\",\"command\":\"/say hi\"}}]").get(1);
+		assertEquals("The click action should match", MessageClickEvent.ClickEventAction.RUN_COMMAND, messageComponent.getClickEvent().getAction());
+		assertEquals("The click command should match", "/say hi", messageComponent.getClickEvent().getValue());
+
+		// change_page uses an integer page value in the new format
+		MessageComponent pageComponent = MessageComponent.fromJson("[\"\",{\"text\":\"Page\",\"click_event\":{\"action\":\"change_page\",\"page\":5}}]").get(1);
+		assertEquals("The click action should match", MessageClickEvent.ClickEventAction.CHANGE_PAGE, pageComponent.getClickEvent().getAction());
+		assertEquals("The click page should match", "5", pageComponent.getClickEvent().getValue());
 	}
 }

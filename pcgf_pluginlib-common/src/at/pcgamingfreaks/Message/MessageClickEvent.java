@@ -30,6 +30,12 @@ import lombok.Setter;
 public class MessageClickEvent
 {
 	/**
+	 * If set to true the new (1.21.5+) JSON format is used for serialization of the click event.
+	 * In the new format the "clickEvent" tag is renamed to "click_event" and the "value" tag is renamed depending on the action (command, url, path, page, value).
+	 */
+	private static boolean useNewJsonFormat = false;
+
+	/**
 	 * The action that should be executed when the click event is triggered.
 	 */
 	@Getter @Setter	private @NotNull ClickEventAction action;
@@ -49,6 +55,27 @@ public class MessageClickEvent
 	{
 		this.action = action;
 		this.value = value;
+	}
+
+	/**
+	 * Checks if the new (1.21.5+) JSON format is used for the serialization of click events.
+	 *
+	 * @return True if the new JSON format is used, false otherwise.
+	 */
+	public static boolean useNewJsonFormat()
+	{
+		return useNewJsonFormat;
+	}
+
+	/**
+	 * Sets if the new (1.21.5+) JSON format should be used for the serialization of click events.
+	 * Should be enabled for minecraft versions 1.21.5 and newer.
+	 *
+	 * @param useNewJsonFormat True to enable the new JSON format, false to use the legacy format.
+	 */
+	public static void setUseNewJsonFormat(final boolean useNewJsonFormat)
+	{
+		MessageClickEvent.useNewJsonFormat = useNewJsonFormat;
 	}
 
 	/**
@@ -76,6 +103,10 @@ public class MessageClickEvent
 		 * Opens a file on the clicking players hard drive. Used from minecraft for the clickable screenshot link.
 		 * The chance that we know the path to a file on the clients hard disk is pretty low, so the usage of this is pretty limited.
 		 */
-		@SerializedName("open_file") OPEN_FILE
+		@SerializedName("open_file") OPEN_FILE,
+		/**
+		 * Copies the given text to the clipboard of the clicking player.
+		 */
+		@SerializedName("copy_to_clipboard") COPY_TO_CLIPBOARD
 	}
 }
