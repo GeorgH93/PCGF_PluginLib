@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @SuppressWarnings({ "UnusedReturnValue" })
 public final class MessageComponent implements Serializable
@@ -959,7 +960,8 @@ public final class MessageComponent implements Serializable
 
 	//region Deserializer and Deserializer Functions
 	//region deserializer variables
-	protected transient static final Gson GSON = new GsonBuilder().registerTypeHierarchyAdapter(List.class, new ListAdapter()).registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).disableHtmlEscaping().create();
+	protected transient static final Gson GSON = new GsonBuilder().registerTypeHierarchyAdapter(List.class, new ListAdapter()).registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).registerTypeAdapter(MessageComponent.class, new MessageComponentSerializer()).disableHtmlEscaping().create();
+	private static final Gson GSON_DEFAULT = new GsonBuilder().registerTypeHierarchyAdapter(List.class, new ListAdapter()).registerTypeAdapter(MessageColor.class, new MessageColor.MessageColorSerializer()).disableHtmlEscaping().create();
 	protected transient static final MessageComponent MESSAGE_COMPONENT_INSTANCE = new MessageComponent();
 	//endregion
 
@@ -1053,6 +1055,129 @@ public final class MessageComponent implements Serializable
 				array.add(element);
 			}
 			return array;
+		}
+	}
+
+	/**
+	 * Custom serializer/deserializer for {@link MessageComponent}. It is used to convert the click event between the legacy
+	 * ("clickEvent"/"value") and the new ("click_event"/"command"/"url"/"path"/"page"/"value") JSON format used by minecraft 1.21.5+.
+	 * When the new format is enabled the serialization converts the legacy "clickEvent" tag to the new "click_event" tag.
+	 * The deserialization always accepts both formats and converts the new format back to the legacy one, so the rest of the library keeps working with the legacy format.
+	 */
+	private static class MessageComponentSerializer implements JsonSerializer<MessageComponent>, JsonDeserializer<MessageComponent>
+	{
+		@Override
+		public JsonElement serialize(final MessageComponent src, final Type typeOfSrc, final JsonSerializationContext context)
+		{
+			final JsonElement element = GSON_DEFAULT.toJsonTree(src);
+			if(MessageClickEvent.useNewJsonFormat())
+			{
+				convertClickEventToNewFormat(element);
+			}
+			return element;
+		}
+
+		@Override
+		public MessageComponent deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
+		{
+			convertClickEventToOldFormat(json);
+			return GSON_DEFAULT.fromJson(json, MessageComponent.class);
+		}
+
+		/**
+		 * Converts the legacy click event format ("clickEvent" with "action" and "value") into the new (1.21.5+) format ("click_event" with "action" and an action dependent value tag). Applied recursively on the whole tree.
+		 */
+		private static void convertClickEventToNewFormat(final JsonElement element)
+		{
+			if(element.isJsonObject())
+			{
+				final JsonObject obj = element.getAsJsonObject();
+				if(obj.has("clickEvent") && obj.get("clickEvent").isJsonObject())
+				{
+					final JsonObject clickEvent = obj.getAsJsonObject("clickEvent");
+					final String action = (clickEvent.has("action") && clickEvent.get("action").isJsonPrimitive()) ? clickEvent.get("action").getAsString() : null;
+					final String value = (clickEvent.has("value") && clickEvent.get("value").isJsonPrimitive()) ? clickEvent.get("value").getAsString() : null;
+					if(action != null && value != null)
+					{
+						final JsonObject newClickEvent = new JsonObject();
+						newClickEvent.addProperty("action", action);
+						switch(action)
+						{
+							case "run_command":
+							case "suggest_command": newClickEvent.addProperty("command", value); break;
+							case "open_url": newClickEvent.addProperty("url", value); break;
+							case "open_file": newClickEvent.addProperty("path", value); break;
+							case "change_page":
+								try { newClickEvent.addProperty("page", Integer.parseInt(value)); }
+								catch(final NumberFormatException e) { newClickEvent.addProperty("page", value); }
+								break;
+							default: newClickEvent.addProperty("value", value); break; // copy_to_clipboard and unknown actions
+						}
+						obj.add("click_event", newClickEvent);
+						obj.remove("clickEvent");
+					}
+				}
+				for(final Map.Entry<String, JsonElement> entry : obj.entrySet())
+				{
+					convertClickEventToNewFormat(entry.getValue());
+				}
+			}
+			else if(element.isJsonArray())
+			{
+				for(final JsonElement child : element.getAsJsonArray())
+				{
+					convertClickEventToNewFormat(child);
+				}
+			}
+		}
+
+		/**
+		 * Converts the new (1.21.5+) click event format ("click_event" with "action" and an action dependent value tag) back into the legacy format ("clickEvent" with "action" and "value"). Applied recursively on the whole tree.
+		 */
+		private static void convertClickEventToOldFormat(final JsonElement element)
+		{
+			if(element.isJsonObject())
+			{
+				final JsonObject obj = element.getAsJsonObject();
+				if(obj.has("click_event") && obj.get("click_event").isJsonObject())
+				{
+					final JsonObject clickEvent = obj.getAsJsonObject("click_event");
+					final String action = (clickEvent.has("action") && clickEvent.get("action").isJsonPrimitive()) ? clickEvent.get("action").getAsString() : null;
+					final String value = getFirstPrimitiveValue(clickEvent, "command", "url", "path", "page", "value");
+					if(action != null && value != null)
+					{
+						final JsonObject oldClickEvent = new JsonObject();
+						oldClickEvent.addProperty("action", action);
+						oldClickEvent.addProperty("value", value);
+						obj.add("clickEvent", oldClickEvent);
+						obj.remove("click_event");
+					}
+				}
+				for(final Map.Entry<String, JsonElement> entry : obj.entrySet())
+				{
+					convertClickEventToOldFormat(entry.getValue());
+				}
+			}
+			else if(element.isJsonArray())
+			{
+				for(final JsonElement child : element.getAsJsonArray())
+				{
+					convertClickEventToOldFormat(child);
+				}
+			}
+		}
+
+		private static String getFirstPrimitiveValue(final JsonObject obj, final String... keys)
+		{
+			for(final String key : keys)
+			{
+				final JsonElement element = obj.get(key);
+				if(element != null && element.isJsonPrimitive())
+				{
+					return element.getAsString();
+				}
+			}
+			return null;
 		}
 	}
 }

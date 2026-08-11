@@ -21,6 +21,7 @@ import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.Message.Sender.BossBarMetadata;
 import at.pcgamingfreaks.Bukkit.Message.Sender.SendMethod;
 import at.pcgamingfreaks.Bukkit.Util.IUtils;
+import at.pcgamingfreaks.Message.MessageClickEvent;
 import at.pcgamingfreaks.Message.MessageColor;
 import at.pcgamingfreaks.Message.MessageComponent;
 import at.pcgamingfreaks.Message.Sender.IMetadata;
@@ -49,6 +50,8 @@ public final class Message extends at.pcgamingfreaks.Message.Message<Message, Pl
 {
 	static
 	{
+		// Since minecraft 1.21.5 the click event JSON format changed ("clickEvent"/"value" -> "click_event"/"command"/"url"/...). Enable the new format for newer servers.
+		MessageClickEvent.setUseNewJsonFormat(MCVersion.isNewerOrEqualThan(MCVersion.MC_1_21_5));
 		Constructor<MessageBuilder> builderConstructor = null;
 		try
 		{
