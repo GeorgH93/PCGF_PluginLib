@@ -172,282 +172,290 @@ public abstract class SQLTableValidator
 	protected void processConstraint(final @NotNull Connection connection, final @NotNull Matcher columnMatcher, final @NotNull String tableName, final @NotNull String definitionColumn, final @NotNull List<String> currentTableColumns) throws SQLException
 	{
 		String columnName = (columnMatcher.group(3) == null ? (columnMatcher.group(2) == null ? "" : columnMatcher.group(2)) : columnMatcher.group(3));
-		boolean keyExists = false, update = false;
-		String tempValue;
-		final String[] createKeyArray;
-		String[] tempArray;
-		String[] currentReferenceColumns;
-		String[] currentTargetColumns;
-		final Iterator<String> currentTableColumnsIterator;
-		Matcher currentMatcher;
-		final Matcher tempKeyMatcher;
 		switch(columnMatcher.group(4).toUpperCase(Locale.ROOT))
 		{
 			case "PRIMARY KEY":
-				createKeyArray = columnMatcher.group(5).replaceAll("[`()]", "").split(",\\s*");
-				currentTableColumnsIterator = currentTableColumns.iterator();
-				while(currentTableColumnsIterator.hasNext())
+				processPrimaryKeyConstraint(connection, columnMatcher, tableName, currentTableColumns);
+				break;
+			case "UNIQUE INDEX":
+			case "UNIQUE KEY":
+				processUniqueIndexConstraint(connection, columnMatcher, columnName, tableName, currentTableColumns);
+				break;
+			case "FOREIGN KEY":
+				processForeignKeyConstraint(connection, columnMatcher, columnName, tableName, currentTableColumns);
+				break;
+			default:
+				break;
+		}
+	}
+
+	private void processPrimaryKeyConstraint(final @NotNull Connection connection, final @NotNull Matcher columnMatcher, final @NotNull String tableName, final @NotNull List<String> currentTableColumns) throws SQLException
+	{
+		final String[] createKeyArray = columnMatcher.group(5).replaceAll("[`()]", "").split(",\\s*");
+		boolean keyExists = false, update = false;
+		final Iterator<String> currentTableColumnsIterator = currentTableColumns.iterator();
+		while(currentTableColumnsIterator.hasNext())
+		{
+			final Matcher currentMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
+			if(currentMatcher.find() && currentMatcher.group(4).equalsIgnoreCase("PRIMARY KEY"))
+			{
+				keyExists = true;
+				currentTableColumnsIterator.remove();
+				final String[] tempArray = currentMatcher.group(5).replaceAll("[`()]", "").split(",\\s*");
+				if(createKeyArray.length != tempArray.length)
 				{
-					currentMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
-					if(currentMatcher.find() && currentMatcher.group(4).equalsIgnoreCase("PRIMARY KEY"))
+					update = true;
+					break;
+				}
+				for(int index = 0; index < createKeyArray.length; index++)
+				{
+					if(!createKeyArray[index].equalsIgnoreCase(tempArray[index]))
 					{
-						keyExists = true;
-						currentTableColumnsIterator.remove();
-						tempArray = currentMatcher.group(5).replaceAll("[`()]", "").split(",\\s*");
+						update = true;
+						break;
+					}
+				}
+				break;
+			}
+		}
+		if(!keyExists)
+		{
+			addPrimaryKey(connection, tableName, columnMatcher.group(5));
+		}
+		else if(update)
+		{
+			modifyPrimaryKey(connection, tableName, columnMatcher.group(5));
+		}
+	}
+
+	private void processUniqueIndexConstraint(final @NotNull Connection connection, final @NotNull Matcher columnMatcher, @NotNull String columnName, final @NotNull String tableName, final @NotNull List<String> currentTableColumns) throws SQLException
+	{
+		final Matcher tempKeyMatcher = UNIQUE_INDEX_PATTERN.matcher(columnMatcher.group(5));
+		if(!tempKeyMatcher.find())
+		{
+			throw new IllegalArgumentException("Invalid format of create query detected - invalid unique index definition!");
+		}
+		if(columnName.isEmpty())
+		{
+			columnName = tempKeyMatcher.group(2) == null ? tempKeyMatcher.group(1) : tempKeyMatcher.group(2);
+		}
+		final String[] createKeyArray = tempKeyMatcher.group(3).replace("`", "").split(",\\s*");
+		boolean keyExists = false;
+		final Iterator<String> currentTableColumnsIterator = currentTableColumns.iterator();
+		if(columnName == null)
+		{
+			while(currentTableColumnsIterator.hasNext())
+			{
+				Matcher currentMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
+				if(currentMatcher.find() && (currentMatcher.group(4).equalsIgnoreCase("UNIQUE INDEX") || currentMatcher.group(4).equalsIgnoreCase("UNIQUE KEY")))
+				{
+					keyExists = true;
+					currentMatcher = UNIQUE_INDEX_PATTERN.matcher(currentMatcher.group(5));
+					if(currentMatcher.find())
+					{
+						final String[] tempArray = currentMatcher.group(3).replace("`", "").split(",\\s*");
 						if(createKeyArray.length != tempArray.length)
 						{
-							update = true;
-							break;
+							keyExists = false;
+							continue;
 						}
 						for(int index = 0; index < createKeyArray.length; index++)
 						{
 							if(!createKeyArray[index].equalsIgnoreCase(tempArray[index]))
 							{
-								update = true;
+								keyExists = false;
 								break;
 							}
 						}
-						break;
+						if(keyExists) break;
 					}
 				}
-				if(!keyExists)
+			}
+		}
+		else
+		{
+			boolean update = false;
+			while(currentTableColumnsIterator.hasNext())
+			{
+				Matcher currentMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
+				if(currentMatcher.find() && (currentMatcher.group(4).equalsIgnoreCase("UNIQUE INDEX") || currentMatcher.group(4).equalsIgnoreCase("UNIQUE KEY")))
 				{
-					addPrimaryKey(connection, tableName, columnMatcher.group(5));
-				}
-				else if(update)
-				{
-					modifyPrimaryKey(connection, tableName, columnMatcher.group(5));
-				}
-				break;
-			case "UNIQUE INDEX":
-			case "UNIQUE KEY":
-				tempKeyMatcher = UNIQUE_INDEX_PATTERN.matcher(columnMatcher.group(5));
-				if(tempKeyMatcher.find())
-				{
-					if(columnName.isEmpty())
+					String tempValue = (columnMatcher.group(3) == null ? (columnMatcher.group(2) == null ? "" : columnMatcher.group(2)) : columnMatcher.group(3));
+					currentMatcher = UNIQUE_INDEX_PATTERN.matcher(currentMatcher.group(5));
+					if(currentMatcher.find())
 					{
-						columnName = tempKeyMatcher.group(2) == null ? tempKeyMatcher.group(1) : tempKeyMatcher.group(2);
-					}
-					createKeyArray = tempKeyMatcher.group(3).replace("`", "").split(",\\s*");
-					currentTableColumnsIterator = currentTableColumns.iterator();
-					if(columnName == null)
-					{
-						while(currentTableColumnsIterator.hasNext())
+						if(tempValue.isEmpty())
 						{
-							currentMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
-							if(currentMatcher.find() && (currentMatcher.group(4).equalsIgnoreCase("UNIQUE INDEX") || currentMatcher.group(4).equalsIgnoreCase("UNIQUE KEY")))
-							{
-								keyExists = true;
-								currentMatcher = UNIQUE_INDEX_PATTERN.matcher(currentMatcher.group(5));
-								if(currentMatcher.find())
-								{
-									tempArray = currentMatcher.group(3).replace("`", "").split(",\\s*");
-									if(createKeyArray.length != tempArray.length)
-									{
-										keyExists = false;
-										continue;
-									}
-									for(int index = 0; index < createKeyArray.length; index++)
-									{
-										if(!createKeyArray[index].equalsIgnoreCase(tempArray[index]))
-										{
-											keyExists = false;
-											break;
-										}
-									}
-									if(keyExists) break;
-								}
-							}
+							tempValue = currentMatcher.group(2) == null ? currentMatcher.group(1) : currentMatcher.group(2);
 						}
-					}
-					else
-					{
-						update = false;
-						while(currentTableColumnsIterator.hasNext())
-						{
-							currentMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
-							if(currentMatcher.find() && (currentMatcher.group(4).equalsIgnoreCase("UNIQUE INDEX") || currentMatcher.group(4).equalsIgnoreCase("UNIQUE KEY")))
-							{
-								tempValue = (columnMatcher.group(3) == null ? (columnMatcher.group(2) == null ? "" : columnMatcher.group(2)) : columnMatcher.group(3));
-								currentMatcher = UNIQUE_INDEX_PATTERN.matcher(currentMatcher.group(5));
-								if(currentMatcher.find())
-								{
-									if(tempValue.isEmpty())
-									{
-										tempValue = currentMatcher.group(2) == null ? currentMatcher.group(1) : currentMatcher.group(2);
-									}
-									if(tempValue != null && tempValue.equalsIgnoreCase(columnName))
-									{
-										keyExists = true;
-										currentTableColumnsIterator.remove();
-										tempArray = currentMatcher.group(3).replace("`", "").split(",\\s*");
-										if(createKeyArray.length != tempArray.length)
-										{
-											update = true;
-											break;
-										}
-										for(int index = 0; index < createKeyArray.length; index++)
-										{
-											if(!createKeyArray[index].equalsIgnoreCase(tempArray[index]))
-											{
-												update = true;
-												break;
-											}
-										}
-										break;
-									}
-								}
-							}
-						}
-						if(update)
-						{
-							makeIndexUnique(connection, tableName, columnName, tempKeyMatcher.group(3));
-						}
-					}
-				}
-				else
-				{
-					throw new IllegalArgumentException("Invalid format of create query detected - invalid unique index definition!");
-				}
-				if(!keyExists)
-				{
-					addUniqueIndex(connection, tableName, columnName,  tempKeyMatcher.group(3));
-				}
-				break;
-			case "FOREIGN KEY":
-				tempKeyMatcher = FOREIGN_KEY_PATTERN.matcher(columnMatcher.group(5));
-				if(!tempKeyMatcher.find()) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
-				if(columnName.isEmpty())
-				{
-					columnName = tempKeyMatcher.group(2) == null ? tempKeyMatcher.group(1) : tempKeyMatcher.group(2);
-				}
-				createKeyArray = tempKeyMatcher.group(3).replace("`", "").split(",\\s*");
-				tempArray = tempKeyMatcher.group(5).replace("`", "").split(",\\s*");
-				if(createKeyArray.length != tempArray.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
-				currentTableColumnsIterator = currentTableColumns.iterator();
-				if(columnName == null)
-				{
-					while(currentTableColumnsIterator.hasNext())
-					{
-						currentMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
-						if(currentMatcher.find() && currentMatcher.group(4).equalsIgnoreCase("FOREIGN KEY"))
+						if(tempValue != null && tempValue.equalsIgnoreCase(columnName))
 						{
 							keyExists = true;
-							currentMatcher = FOREIGN_KEY_PATTERN.matcher(currentMatcher.group(5));
-							if(currentMatcher.find())
+							currentTableColumnsIterator.remove();
+							final String[] tempArray = currentMatcher.group(3).replace("`", "").split(",\\s*");
+							if(createKeyArray.length != tempArray.length)
 							{
-								currentReferenceColumns = currentMatcher.group(3).replace("`", "").split(",\\s*");
-								currentTargetColumns = currentMatcher.group(5).replace("`", "").split(",\\s*");
-								if(currentReferenceColumns.length != currentTargetColumns.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
-								if(createKeyArray.length != currentReferenceColumns.length)
-								{
-									keyExists = false;
-									continue;
-								}
-								if(currentMatcher.group(7) != null)
-								{
-									if(tempKeyMatcher.group(7) == null || !currentMatcher.group(7).equalsIgnoreCase(tempKeyMatcher.group(7)))
-									{
-										keyExists = false;
-										continue;
-									}
-								}
-								else if(tempKeyMatcher.group(7) != null)
-								{
-									keyExists = false;
-									continue;
-								}
-								if(currentMatcher.group(9) != null)
-								{
-									if(tempKeyMatcher.group(9) == null || !currentMatcher.group(9).equalsIgnoreCase(tempKeyMatcher.group(9)))
-									{
-										keyExists = false;
-										continue;
-									}
-								}
-								else if(tempKeyMatcher.group(9) != null)
-								{
-									keyExists = false;
-									continue;
-								}
-								for(int index = 0; index < createKeyArray.length; index++)
-								{
-									if(!(createKeyArray[index].equalsIgnoreCase(currentReferenceColumns[index]) && tempArray[index].equalsIgnoreCase(currentTargetColumns[index])))
-									{
-										keyExists = false;
-										break;
-									}
-								}
-								if(keyExists) break;
+								update = true;
+								break;
 							}
-						}
-					}
-				}
-				else
-				{
-					update = false;
-					while(currentTableColumnsIterator.hasNext())
-					{
-						currentMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
-						if(currentMatcher.find() && currentMatcher.group(4).equalsIgnoreCase("FOREIGN KEY"))
-						{
-							tempValue = (currentMatcher.group(3) == null ? currentMatcher.group(2) : currentMatcher.group(3));
-							currentMatcher = FOREIGN_KEY_PATTERN.matcher(currentMatcher.group(5));
-							if(currentMatcher.find())
+							for(int index = 0; index < createKeyArray.length; index++)
 							{
-								if(tempValue.isEmpty())
+								if(!createKeyArray[index].equalsIgnoreCase(tempArray[index]))
 								{
-									tempValue = currentMatcher.group(2) == null ? currentMatcher.group(1) : currentMatcher.group(2);
-								}
-								if(tempValue != null && tempValue.equalsIgnoreCase(columnName))
-								{
-									keyExists = true;
-									currentTableColumnsIterator.remove();
-									currentReferenceColumns = currentMatcher.group(3).replace("`", "").split(",\\s*");
-									currentTargetColumns = currentMatcher.group(5).replace("`", "").split(",\\s*");
-									if(currentReferenceColumns.length != currentTargetColumns.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
-									if(createKeyArray.length != currentReferenceColumns.length)
-									{
-										update = true;
-										break;
-									}
-									for(int index = 0; index < createKeyArray.length; index++)
-									{
-										if(!(createKeyArray[index].equalsIgnoreCase(currentReferenceColumns[index]) && tempArray[index].equalsIgnoreCase(currentTargetColumns[index])))
-										{
-											update = true;
-											break;
-										}
-									}
-									if(currentMatcher.group(7) != null)
-									{
-										if(tempKeyMatcher.group(7) == null || !currentMatcher.group(7).equalsIgnoreCase(tempKeyMatcher.group(7))) update = true;
-									}
-									else if(tempKeyMatcher.group(7) != null)
-									{
-										if(!(tempKeyMatcher.group(7).equalsIgnoreCase("RESTRICT") || tempKeyMatcher.group(7).equalsIgnoreCase("NO ACTION")))
-											update = true;
-									}
-									if(currentMatcher.group(9) != null)
-									{
-										if(tempKeyMatcher.group(9) == null || !currentMatcher.group(9).equalsIgnoreCase(tempKeyMatcher.group(9))) update = true;
-									}
-									else if(tempKeyMatcher.group(9) != null) update = true;
+									update = true;
 									break;
 								}
 							}
+							break;
 						}
 					}
-					if(update)
+				}
+			}
+			if(update)
+			{
+				makeIndexUnique(connection, tableName, columnName, tempKeyMatcher.group(3));
+			}
+		}
+		if(!keyExists)
+		{
+			addUniqueIndex(connection, tableName, columnName, tempKeyMatcher.group(3));
+		}
+	}
+
+	private void processForeignKeyConstraint(final @NotNull Connection connection, final @NotNull Matcher columnMatcher, @NotNull String columnName, final @NotNull String tableName, final @NotNull List<String> currentTableColumns) throws SQLException
+	{
+		final Matcher tempKeyMatcher = FOREIGN_KEY_PATTERN.matcher(columnMatcher.group(5));
+		if(!tempKeyMatcher.find()) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
+		if(columnName.isEmpty())
+		{
+			columnName = tempKeyMatcher.group(2) == null ? tempKeyMatcher.group(1) : tempKeyMatcher.group(2);
+		}
+		final String[] createKeyArray = tempKeyMatcher.group(3).replace("`", "").split(",\\s*");
+		final String[] tempArray = tempKeyMatcher.group(5).replace("`", "").split(",\\s*");
+		if(createKeyArray.length != tempArray.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
+		boolean keyExists = false;
+		final Iterator<String> currentTableColumnsIterator = currentTableColumns.iterator();
+		if(columnName == null)
+		{
+			while(currentTableColumnsIterator.hasNext())
+			{
+				Matcher currentMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
+				if(currentMatcher.find() && currentMatcher.group(4).equalsIgnoreCase("FOREIGN KEY"))
+				{
+					keyExists = true;
+					currentMatcher = FOREIGN_KEY_PATTERN.matcher(currentMatcher.group(5));
+					if(currentMatcher.find())
 					{
-						modifyConstraint(connection, tableName, columnName, tempKeyMatcher.group(3), tempKeyMatcher.group(4) + " (" + tempKeyMatcher.group(5) + ") " + (tempKeyMatcher.group(6) == null ? "" : tempKeyMatcher.group(6) + " ") + (tempKeyMatcher.group(8) == null ? "" : tempKeyMatcher.group(8)));
+						final String[] currentReferenceColumns = currentMatcher.group(3).replace("`", "").split(",\\s*");
+						final String[] currentTargetColumns = currentMatcher.group(5).replace("`", "").split(",\\s*");
+						if(currentReferenceColumns.length != currentTargetColumns.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
+						if(createKeyArray.length != currentReferenceColumns.length)
+						{
+							keyExists = false;
+							continue;
+						}
+						if(currentMatcher.group(7) != null)
+						{
+							if(tempKeyMatcher.group(7) == null || !currentMatcher.group(7).equalsIgnoreCase(tempKeyMatcher.group(7)))
+							{
+								keyExists = false;
+								continue;
+							}
+						}
+						else if(tempKeyMatcher.group(7) != null)
+						{
+							keyExists = false;
+							continue;
+						}
+						if(currentMatcher.group(9) != null)
+						{
+							if(tempKeyMatcher.group(9) == null || !currentMatcher.group(9).equalsIgnoreCase(tempKeyMatcher.group(9)))
+							{
+								keyExists = false;
+								continue;
+							}
+						}
+						else if(tempKeyMatcher.group(9) != null)
+						{
+							keyExists = false;
+							continue;
+						}
+						for(int index = 0; index < createKeyArray.length; index++)
+						{
+							if(!(createKeyArray[index].equalsIgnoreCase(currentReferenceColumns[index]) && tempArray[index].equalsIgnoreCase(currentTargetColumns[index])))
+							{
+								keyExists = false;
+								break;
+							}
+						}
+						if(keyExists) break;
 					}
 				}
-				if(!keyExists)
+			}
+		}
+		else
+		{
+			boolean update = false;
+			while(currentTableColumnsIterator.hasNext())
+			{
+				Matcher currentMatcher = COLUMN_CONSTRAINT_CHECKER_PATTERN.matcher(currentTableColumnsIterator.next());
+				if(currentMatcher.find() && currentMatcher.group(4).equalsIgnoreCase("FOREIGN KEY"))
 				{
-					addConstraint(connection, tableName, columnName, tempKeyMatcher.group(3), tempKeyMatcher.group(4) + " (" + tempKeyMatcher.group(5) + ") " + (tempKeyMatcher.group(6) == null ? "" : tempKeyMatcher.group(6) + " ") + (tempKeyMatcher.group(8) == null ? "" : tempKeyMatcher.group(8)));
+					String tempValue = (currentMatcher.group(3) == null ? currentMatcher.group(2) : currentMatcher.group(3));
+					currentMatcher = FOREIGN_KEY_PATTERN.matcher(currentMatcher.group(5));
+					if(currentMatcher.find())
+					{
+						if(tempValue.isEmpty())
+						{
+							tempValue = currentMatcher.group(2) == null ? currentMatcher.group(1) : currentMatcher.group(2);
+						}
+						if(tempValue != null && tempValue.equalsIgnoreCase(columnName))
+						{
+							keyExists = true;
+							currentTableColumnsIterator.remove();
+							final String[] currentReferenceColumns = currentMatcher.group(3).replace("`", "").split(",\\s*");
+							final String[] currentTargetColumns = currentMatcher.group(5).replace("`", "").split(",\\s*");
+							if(currentReferenceColumns.length != currentTargetColumns.length) throw new IllegalArgumentException("Invalid format of create query detected - invalid reference detected!");
+							if(createKeyArray.length != currentReferenceColumns.length)
+							{
+								update = true;
+								break;
+							}
+							for(int index = 0; index < createKeyArray.length; index++)
+							{
+								if(!(createKeyArray[index].equalsIgnoreCase(currentReferenceColumns[index]) && tempArray[index].equalsIgnoreCase(currentTargetColumns[index])))
+								{
+									update = true;
+									break;
+								}
+							}
+							if(currentMatcher.group(7) != null)
+							{
+								if(tempKeyMatcher.group(7) == null || !currentMatcher.group(7).equalsIgnoreCase(tempKeyMatcher.group(7))) update = true;
+							}
+							else if(tempKeyMatcher.group(7) != null)
+							{
+								if(!(tempKeyMatcher.group(7).equalsIgnoreCase("RESTRICT") || tempKeyMatcher.group(7).equalsIgnoreCase("NO ACTION")))
+									update = true;
+							}
+							if(currentMatcher.group(9) != null)
+							{
+								if(tempKeyMatcher.group(9) == null || !currentMatcher.group(9).equalsIgnoreCase(tempKeyMatcher.group(9))) update = true;
+							}
+							else if(tempKeyMatcher.group(9) != null) update = true;
+							break;
+						}
+					}
 				}
-				break;
+			}
+			if(update)
+			{
+				modifyConstraint(connection, tableName, columnName, tempKeyMatcher.group(3), tempKeyMatcher.group(4) + " (" + tempKeyMatcher.group(5) + ") " + (tempKeyMatcher.group(6) == null ? "" : tempKeyMatcher.group(6) + " ") + (tempKeyMatcher.group(8) == null ? "" : tempKeyMatcher.group(8)));
+			}
+		}
+		if(!keyExists)
+		{
+			addConstraint(connection, tableName, columnName, tempKeyMatcher.group(3), tempKeyMatcher.group(4) + " (" + tempKeyMatcher.group(5) + ") " + (tempKeyMatcher.group(6) == null ? "" : tempKeyMatcher.group(6) + " ") + (tempKeyMatcher.group(8) == null ? "" : tempKeyMatcher.group(8)));
 		}
 	}
 
