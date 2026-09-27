@@ -146,7 +146,11 @@ public class NBTItemStackSerializer_${nmsVersion}${nmsPatchLevel}${nmsExtension}
 						<#else>
 						if (ServerType.isPaperCompatible())
 						{
+					    	<#if mcVersion < 2600030000>
 							its[slot] = (ItemStack) Reflection.getMethod(CraftItemStack.class, "asBukkitCopy", net.minecraft.world.item.ItemStack.class).invoke(null, is);
+							<#else>
+							its[slot] = (ItemStack) Reflection.getMethod(CraftItemStack.class, "asBukkitMirror", net.minecraft.world.item.ItemStack.class).invoke(null, is);
+							</#if>
 						}
 						else
 						{
